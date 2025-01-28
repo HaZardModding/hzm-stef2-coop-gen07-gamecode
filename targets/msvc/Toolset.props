@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ProjectFileVersion>16.0.30804.86</_ProjectFileVersion>
+    <_PropertySheetDisplayName>Toolset Common Default</_PropertySheetDisplayName>
+  </PropertyGroup>
+
+  <!-- If there is no DefaultPlatformToolset set, we will try to detect the version based on version of the build tools. -->
+  <PropertyGroup>
+    <BuildToolVersion>$(VisualStudioVersion)</BuildToolVersion>
+    <!-- Only use the MSBuildToolsVersion if we don't have the VisualStudioVersion and MSBuildToolsVersion is set to something other than Current. -->
+    <BuildToolVersion Condition="'$(BuildToolVersion)'=='' and '$(MSBuildToolsVersion)' != 'Current'">$(MSBuildToolsVersion)</BuildToolVersion>
+    <!-- Note:
+      v141 is the Visual Studio 2019 toolset. (15.0)
+      v142 is the Visual Studio 2019 toolset. (16.0)
+      v143 is the Visual Studio 2022 toolset. (17.0)
+    -->
+    <AutoDetectedPlatformToolset Condition="'$(BuildToolVersion)'=='15.0'">v141</AutoDetectedPlatformToolset>
+    <AutoDetectedPlatformToolset Condition="'$(BuildToolVersion)'=='16.0'">v142</AutoDetectedPlatformToolset>
+    <AutoDetectedPlatformToolset Condition="'$(BuildToolVersion)'=='17.0'">v143</AutoDetectedPlatformToolset>
+
+    <ClangTidyAdditionalOptions>-D__INTELLISENSE__=1 -DNTDDI_WIN7SP1=0x06010100 -D_CONTROL_FLOW_GUARD_XFG=0 -D_M_HYBRID=0 -D_NT_TARGET_VERSION_WIN10_RS4=0xFFFFFFFF -D_WIN32_WINNT_WIN10_FE=0xFFFFFFFF -D_WIN32_WINNT_WIN10_RS1=0xFFFFFFFF -D_WIN32_WINNT_WIN10_RS3=0xFFFFFFFF -D_WIN32_WINNT_WIN10_RS5=0xFFFFFFFF -D__STDC_VERSION__=0 -D__STDC__=0</ClangTidyAdditionalOptions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PROCESSOR_ARCHITEW6432)' == 'AMD64'">
+    <LLVMHostTargetTriple>x86_64-pc-windows-msvc</LLVMHostTargetTriple>
+    <HostNativePlatformShortName>x64</HostNativePlatformShortName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PROCESSOR_ARCHITEW6432)' == 'ARM64'">
+    <LLVMHostTargetTriple>arm64-pc-windows-msvc</LLVMHostTargetTriple>
+    <HostNativePlatformShortName>ARM64</HostNativePlatformShortName>
+  </PropertyGroup>
+
+  <!--
+    Notable properties from below
+
+    SelectedToolset: Allows detecting which specific group of toolset files are
+      in use, for enabling/disabling features that may or may not work (such as
+      /MP or precompiled headers).
+
+    ToolsetFamily: The compiler family for the toolset. Used for detecting
+      which compiler flags are most appropriate, and which subset of our .props
+      files we should include.
+  -->
+
+  <PropertyGroup Label="EmptyDefaultPlatformToolset" Condition="'$(ToolsetFamily)' == ''">
+    <DefaultPlatformToolset>$(AutoDetectedPlatformToolset)</DefaultPlatformToolset>
+    <SelectedToolset>MS</SelectedToolset>
+    <ToolsetFamily>MS</ToolsetFamily>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration">
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+    <PreferredToolArchitecture Condition="'$(PROCESSOR_ARCHITECTURE)' == 'ARM64'">arm64</PreferredToolArchitecture>
+    <PreferredToolArchitecture Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64'">x64</PreferredToolArchitecture>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+</Project>

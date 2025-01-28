@@ -1,0 +1,1101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Gamefix Files">
+      <UniqueIdentifier>{d3bbd3c1-1b48-410b-8520-55eb819e9dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{450026a4-821b-4f0b-b86c-2b80ac9e81b8}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\BehaviorHeaders">
+      <UniqueIdentifier>{6a6a458c-23ae-4599-8ca6-b25362f2dafb}</UniqueIdentifier>
+      <Extensions>.hpp</Extensions>
+    </Filter>
+    <Filter Include="Header Files\botlib header files">
+      <UniqueIdentifier>{4bd10b28-04c4-4969-8195-2aa60abf965c}</UniqueIdentifier>
+      <Extensions>.h</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Multiplayer Headers">
+      <UniqueIdentifier>{699b8926-cbde-4f71-ad2c-683281763126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3ed57cc9-f828-4ec4-afd3-e268ec7ca41d}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4b2113ae-e078-4345-acc5-98fcb49dce58}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Behaviors">
+      <UniqueIdentifier>{68999a6d-1a00-48b7-ad5a-d5958fce8314}</UniqueIdentifier>
+      <Extensions>.cpp</Extensions>
+    </Filter>
+    <Filter Include="Source Files\botlib source">
+      <UniqueIdentifier>{5fa05c64-3ba5-4bc7-82f4-8457d52691fb}</UniqueIdentifier>
+      <Extensions>.cpp</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Multiplayer">
+      <UniqueIdentifier>{36d6c82b-e97d-4aaf-87b0-a2f19cffb597}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dlls\game\_pch_cpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_combatsubsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_enemymanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_headwatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_locomotion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_posturecontroller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actor_sensoryperception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actorgamecomponents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actorstrategies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\actorutil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_chat.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_cmd.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_dmnet.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_dmq3.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_main.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_team.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ai_vcmd.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ammo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\animate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\api_stef2.cpp">
+      <Filter>Gamefix Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\armor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\beam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\behavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\behaviors_general.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\behaviors_specific.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\bg_misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\bg_pmove.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\body.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\bspline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\CameraPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\changePosture.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\characterstate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\CinematicArmature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\closeInOnEnemy.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\closeInOnEnemyWhileFiringWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\closeInOnPlayer.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\compiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\corridorCombatWithRangedWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\coverCombatWithRangedWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\DamageModification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\debuglines.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\decals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\dispenser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\doAttack.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\doors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\earthquake.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\equipment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\explosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\FollowPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\FollowPathToEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\FollowPathToPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\g_bot.cpp">
+      <Filter>Source Files\botlib source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\g_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\g_phys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\g_spawn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\g_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gamecmds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gamecvars.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gamefix.cpp">
+      <Filter>Gamefix Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gamescript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\generalCombatWithMeleeWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\generalCombatWithRangedWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gibs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\globalcmd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\GoDirectlyToPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\goo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gotoCurrentHelperNode.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gotoHelperNode.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gotoHelperNodeEX.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gotoHelperNodeNearestEnemy.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\gravpath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\groupcoordinator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\healGroupMember.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\health.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\helper_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\holdPosition.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\inventoryitem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\ipfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\lexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\listener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\MoveRandomDirection.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_awardsystem.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_manager.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modeBase.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modeCtf.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modeDm.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modeTeamBase.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modeTeamDm.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_modifiers.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\mp_team.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\nature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\navigate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\patrol.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\PlayAnim.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\player_combat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\player_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\playerheuristics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\PlayerStart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\portal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\powerups.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\puzzleobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\q_mathsys.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\RageAI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\rangedCombatWithWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\rotateToEntity.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\scriptmaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\scriptslave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\scriptvariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\selectBestWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\sentient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\shrapnelbomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\snipeEnemy.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\soundman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\spawners.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\specialfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\stationaryFireCombat.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\stationaryFireCombatEX.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\stationaryvehicle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\steering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\str.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\suppressionFireCombat.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\talk.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\teammateroster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\teleportToEntity.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\teleportToPosition.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\torsoAimAndFireWeapon.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\trigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\useAlarm.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\UseData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\vehicle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\viewthing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\watchEntity.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\watchEntityEX.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\waypoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\WeaponDualWield.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\weaputils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\work.cpp">
+      <Filter>Source Files\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dlls\game\worldspawn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Executable\win32\win_bounds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplaydatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dlls\game\_pch_cpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_combatsubsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_enemymanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_headwatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_locomotion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_posturecontroller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actor_sensoryperception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actorgamecomponents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actorincludes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actorstrategies.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\actorutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_chat.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_cmd.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_dmnet.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_dmq3.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_main.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_team.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ai_vcmd.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ammo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\animate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\api_stef2.hpp">
+      <Filter>Gamefix Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\api_stef2_strings.hpp">
+      <Filter>Gamefix Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\archive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\armor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_aas.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_char.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_chat.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_gen.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_goal.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_move.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ai_weap.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\be_ea.h">
+      <Filter>Source Files\botlib source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\beam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\behavior.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\behaviors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\behaviors_general.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\behaviors_specific.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\bg_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\bg_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\bit_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\body.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\botlib.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\botmenudef.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\bspline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\CameraPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\changePosture.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\characterstate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\chars.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\CinematicArmature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\closeInOnEnemy.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\closeInOnEnemyWhileFiringWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\closeInOnPlayer.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\container.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\corridorCombatWithRangedWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\coverCombatWithRangedWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\DamageModification.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\debuglines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\decals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\dispenser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\doAttack.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\doors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\earthquake.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\equipment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\explosion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\FollowPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\FollowPathToEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\FollowPathToPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_phys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_spawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\g_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gamecmds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gamecvars.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gamefix.hpp">
+      <Filter>Gamefix Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gamefix_strings.hpp">
+      <Filter>Gamefix Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gamescript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\generalCombatWithMeleeWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\generalCombatWithRangedWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gibs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\globalcmd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\GoDirectlyToPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\goo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gotoCurrentHelperNode.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gotoHelperNode.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gotoHelperNodeEX.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gotoHelperNodeNearestEnemy.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\gravpath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\groupcoordinator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\healGroupMember.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\health.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\helper_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\holdPosition.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\interpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\inv.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\inventoryitem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\ipfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\lexer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\Linklist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\listener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\match.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\MoveRandomDirection.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_awardsystem.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_manager.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modeBase.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modeCtf.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modeDm.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modeTeamBase.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modeTeamDm.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_modifiers.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_shared.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\mp_team.hpp">
+      <Filter>Header Files\Multiplayer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\nature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\navigate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\patrol.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\PlayAnim.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\playerheuristics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\PlayerStart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\portal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\powerups.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\puzzleobject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\RageAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\rangedCombatWithWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\rotateToEntity.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\script.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\scriptmaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\scriptslave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\scriptvariable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\selectBestWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\sentient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\shrapnelbomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\snipeEnemy.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\soundman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\spawners.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\specialfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\stationaryFireCombat.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\stationaryFireCombatEX.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\stationaryvehicle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\steering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\str.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\suppressionFireCombat.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\surfaceflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\syn.h">
+      <Filter>Header Files\botlib header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\talk.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\teammateroster.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\teleportToEntity.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\teleportToPosition.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\torsoAimAndFireWeapon.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\trigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\umap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\useAlarm.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\UseData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\vehicle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\viewthing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\watchEntity.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\watchEntityEX.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\waypoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\WeaponDualWield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\weaputils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\work.hpp">
+      <Filter>Header Files\BehaviorHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\game\worldspawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\gameplaydatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\dlls\game\game.def">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

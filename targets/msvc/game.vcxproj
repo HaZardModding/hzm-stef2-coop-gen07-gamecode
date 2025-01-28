@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Demo Release|Win32">
+      <Configuration>Demo Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Intel Release|Win32">
+      <Configuration>Intel Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release CDROM|Win32">
+      <Configuration>Release CDROM</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="VTune|Win32">
+      <Configuration>VTune</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>EliteForce2</ProjectName>
+    <ProjectGuid>{FBA3FDFE-91F7-C103-8A19-685BD2ECF5BB}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <!-- Default setup -->
+    <Import Project="$(ProjectDir)\Setup.props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <!-- Master Property sheet -->
+    <Import Project="$(ProjectDir)\Master.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VTune|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>..\..\Executable/VTune/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OutputFile>..\..\Executable/Release/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Intel Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;_USE_INTEL_COMPILER;MISSIONPACK;ENABLE_ALTROUTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OutputFile>..\..\Executable/IntelRelease/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <OutputFile>..\..\Executable/Debug/game.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>..\..\Executable/Debug/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OutputFile>..\..\Executable/Release/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Demo Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;NDEBUG;WIN32;PRE_RELEASE_DEMO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OutputFile>../Demo_Release/gamex86.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dlls\game\_pch_cpp.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_combatsubsystem.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_enemymanager.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_headwatcher.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_locomotion.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_posturecontroller.cpp" />
+    <ClCompile Include="..\..\dlls\game\actor_sensoryperception.cpp" />
+    <ClCompile Include="..\..\dlls\game\actorgamecomponents.cpp" />
+    <ClCompile Include="..\..\dlls\game\actorstrategies.cpp" />
+    <ClCompile Include="..\..\dlls\game\actorutil.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_chat.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_cmd.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_dmnet.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_dmq3.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_main.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_team.cpp" />
+    <ClCompile Include="..\..\dlls\game\ai_vcmd.cpp" />
+    <ClCompile Include="..\..\dlls\game\ammo.cpp" />
+    <ClCompile Include="..\..\dlls\game\animate.cpp" />
+    <ClCompile Include="..\..\dlls\game\api_stef2.cpp" />
+    <ClCompile Include="..\..\dlls\game\archive.cpp" />
+    <ClCompile Include="..\..\dlls\game\armor.cpp" />
+    <ClCompile Include="..\..\dlls\game\beam.cpp" />
+    <ClCompile Include="..\..\dlls\game\behavior.cpp" />
+    <ClCompile Include="..\..\dlls\game\behaviors_general.cpp" />
+    <ClCompile Include="..\..\dlls\game\behaviors_specific.cpp" />
+    <ClCompile Include="..\..\dlls\game\bg_misc.c" />
+    <ClCompile Include="..\..\dlls\game\bg_pmove.c" />
+    <ClCompile Include="..\..\dlls\game\body.cpp" />
+    <ClCompile Include="..\..\dlls\game\bspline.cpp" />
+    <ClCompile Include="..\..\dlls\game\camera.cpp" />
+    <ClCompile Include="..\..\dlls\game\CameraPath.cpp" />
+    <ClCompile Include="..\..\dlls\game\changePosture.cpp" />
+    <ClCompile Include="..\..\dlls\game\characterstate.cpp" />
+    <ClCompile Include="..\..\dlls\game\CinematicArmature.cpp" />
+    <ClCompile Include="..\..\dlls\game\class.cpp" />
+    <ClCompile Include="..\..\dlls\game\closeInOnEnemy.cpp" />
+    <ClCompile Include="..\..\dlls\game\closeInOnEnemyWhileFiringWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\closeInOnPlayer.cpp" />
+    <ClCompile Include="..\..\dlls\game\compiler.cpp" />
+    <ClCompile Include="..\..\dlls\game\corridorCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\coverCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\DamageModification.cpp" />
+    <ClCompile Include="..\..\dlls\game\debuglines.cpp" />
+    <ClCompile Include="..\..\dlls\game\decals.cpp" />
+    <ClCompile Include="..\..\dlls\game\dispenser.cpp" />
+    <ClCompile Include="..\..\dlls\game\doAttack.cpp" />
+    <ClCompile Include="..\..\dlls\game\doors.cpp" />
+    <ClCompile Include="..\..\dlls\game\earthquake.cpp" />
+    <ClCompile Include="..\..\dlls\game\entity.cpp" />
+    <ClCompile Include="..\..\dlls\game\equipment.cpp" />
+    <ClCompile Include="..\..\dlls\game\explosion.cpp" />
+    <ClCompile Include="..\..\dlls\game\FollowPath.cpp" />
+    <ClCompile Include="..\..\dlls\game\FollowPathToEntity.cpp" />
+    <ClCompile Include="..\..\dlls\game\FollowPathToPoint.cpp" />
+    <ClCompile Include="..\..\dlls\game\g_bot.cpp" />
+    <ClCompile Include="..\..\dlls\game\g_main.cpp" />
+    <ClCompile Include="..\..\dlls\game\g_phys.cpp" />
+    <ClCompile Include="..\..\dlls\game\g_spawn.cpp" />
+    <ClCompile Include="..\..\dlls\game\g_utils.cpp" />
+    <ClCompile Include="..\..\dlls\game\game.cpp" />
+    <ClCompile Include="..\..\dlls\game\gamecmds.cpp" />
+    <ClCompile Include="..\..\dlls\game\gamecvars.cpp" />
+    <ClCompile Include="..\..\dlls\game\gamefix.cpp" />
+    <ClCompile Include="..\..\dlls\game\gamescript.cpp" />
+    <ClCompile Include="..\..\dlls\game\generalCombatWithMeleeWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\generalCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\gibs.cpp" />
+    <ClCompile Include="..\..\dlls\game\globalcmd.cpp" />
+    <ClCompile Include="..\..\dlls\game\GoDirectlyToPoint.cpp" />
+    <ClCompile Include="..\..\dlls\game\goo.cpp" />
+    <ClCompile Include="..\..\dlls\game\gotoCurrentHelperNode.cpp" />
+    <ClCompile Include="..\..\dlls\game\gotoHelperNode.cpp" />
+    <ClCompile Include="..\..\dlls\game\gotoHelperNodeEX.cpp" />
+    <ClCompile Include="..\..\dlls\game\gotoHelperNodeNearestEnemy.cpp" />
+    <ClCompile Include="..\..\dlls\game\gravpath.cpp" />
+    <ClCompile Include="..\..\dlls\game\groupcoordinator.cpp" />
+    <ClCompile Include="..\..\dlls\game\healGroupMember.cpp" />
+    <ClCompile Include="..\..\dlls\game\health.cpp" />
+    <ClCompile Include="..\..\dlls\game\helper_node.cpp" />
+    <ClCompile Include="..\..\dlls\game\holdPosition.cpp" />
+    <ClCompile Include="..\..\dlls\game\interpreter.cpp" />
+    <ClCompile Include="..\..\dlls\game\inventoryitem.cpp" />
+    <ClCompile Include="..\..\dlls\game\ipfilter.cpp" />
+    <ClCompile Include="..\..\dlls\game\item.cpp" />
+    <ClCompile Include="..\..\dlls\game\level.cpp" />
+    <ClCompile Include="..\..\dlls\game\lexer.cpp" />
+    <ClCompile Include="..\..\dlls\game\light.cpp" />
+    <ClCompile Include="..\..\dlls\game\listener.cpp" />
+    <ClCompile Include="..\..\dlls\game\misc.cpp" />
+    <ClCompile Include="..\..\dlls\game\mover.cpp" />
+    <ClCompile Include="..\..\dlls\game\MoveRandomDirection.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_awardsystem.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_manager.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modeBase.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modeCtf.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modeDm.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modeTeamBase.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modeTeamDm.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_modifiers.cpp" />
+    <ClCompile Include="..\..\dlls\game\mp_team.cpp" />
+    <ClCompile Include="..\..\dlls\game\nature.cpp" />
+    <ClCompile Include="..\..\dlls\game\navigate.cpp" />
+    <ClCompile Include="..\..\dlls\game\object.cpp" />
+    <ClCompile Include="..\..\dlls\game\path.cpp" />
+    <ClCompile Include="..\..\dlls\game\patrol.cpp" />
+    <ClCompile Include="..\..\dlls\game\PlayAnim.cpp" />
+    <ClCompile Include="..\..\dlls\game\player.cpp" />
+    <ClCompile Include="..\..\dlls\game\player_combat.cpp" />
+    <ClCompile Include="..\..\dlls\game\player_util.cpp" />
+    <ClCompile Include="..\..\dlls\game\playerheuristics.cpp" />
+    <ClCompile Include="..\..\dlls\game\PlayerStart.cpp" />
+    <ClCompile Include="..\..\dlls\game\portal.cpp" />
+    <ClCompile Include="..\..\dlls\game\powerups.cpp" />
+    <ClCompile Include="..\..\dlls\game\program.cpp" />
+    <ClCompile Include="..\..\dlls\game\puzzleobject.cpp" />
+    <ClCompile Include="..\..\dlls\game\q_math.c" />
+    <ClCompile Include="..\..\dlls\game\q_mathsys.c" />
+    <ClCompile Include="..\..\dlls\game\q_shared.c" />
+    <ClCompile Include="..\..\dlls\game\RageAI.cpp" />
+    <ClCompile Include="..\..\dlls\game\rangedCombatWithWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\rotateToEntity.cpp" />
+    <ClCompile Include="..\..\dlls\game\script.cpp" />
+    <ClCompile Include="..\..\dlls\game\scriptmaster.cpp" />
+    <ClCompile Include="..\..\dlls\game\scriptslave.cpp" />
+    <ClCompile Include="..\..\dlls\game\scriptvariable.cpp" />
+    <ClCompile Include="..\..\dlls\game\selectBestWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\sentient.cpp" />
+    <ClCompile Include="..\..\dlls\game\shrapnelbomb.cpp" />
+    <ClCompile Include="..\..\dlls\game\snipeEnemy.cpp" />
+    <ClCompile Include="..\..\dlls\game\soundman.cpp" />
+    <ClCompile Include="..\..\dlls\game\spawners.cpp" />
+    <ClCompile Include="..\..\dlls\game\specialfx.cpp" />
+    <ClCompile Include="..\..\dlls\game\stationaryFireCombat.cpp" />
+    <ClCompile Include="..\..\dlls\game\stationaryFireCombatEX.cpp" />
+    <ClCompile Include="..\..\dlls\game\stationaryvehicle.cpp" />
+    <ClCompile Include="..\..\dlls\game\steering.cpp" />
+    <ClCompile Include="..\..\dlls\game\str.cpp" />
+    <ClCompile Include="..\..\dlls\game\suppressionFireCombat.cpp" />
+    <ClCompile Include="..\..\dlls\game\talk.cpp" />
+    <ClCompile Include="..\..\dlls\game\teammateroster.cpp" />
+    <ClCompile Include="..\..\dlls\game\teleportToEntity.cpp" />
+    <ClCompile Include="..\..\dlls\game\teleportToPosition.cpp" />
+    <ClCompile Include="..\..\dlls\game\torsoAimAndFireWeapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\trigger.cpp" />
+    <ClCompile Include="..\..\dlls\game\useAlarm.cpp" />
+    <ClCompile Include="..\..\dlls\game\UseData.cpp" />
+    <ClCompile Include="..\..\dlls\game\vehicle.cpp" />
+    <ClCompile Include="..\..\dlls\game\viewthing.cpp" />
+    <ClCompile Include="..\..\dlls\game\watchEntity.cpp" />
+    <ClCompile Include="..\..\dlls\game\watchEntityEX.cpp" />
+    <ClCompile Include="..\..\dlls\game\waypoints.cpp" />
+    <ClCompile Include="..\..\dlls\game\weapon.cpp" />
+    <ClCompile Include="..\..\dlls\game\WeaponDualWield.cpp" />
+    <ClCompile Include="..\..\dlls\game\weaputils.cpp" />
+    <ClCompile Include="..\..\dlls\game\work.cpp" />
+    <ClCompile Include="..\..\dlls\game\worldspawn.cpp" />
+    <ClCompile Include="..\..\Executable\win32\win_bounds.cpp" />
+    <ClCompile Include="..\..\Shared\qcommon\gameplaydatabase.cpp" />
+    <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp" />
+    <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp" />
+    <ClCompile Include="..\..\Shared\qcommon\output.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dlls\game\_pch_cpp.h" />
+    <ClInclude Include="..\..\dlls\game\actor.h" />
+    <ClInclude Include="..\..\dlls\game\actor_combatsubsystem.h" />
+    <ClInclude Include="..\..\dlls\game\actor_enemymanager.h" />
+    <ClInclude Include="..\..\dlls\game\actor_headwatcher.h" />
+    <ClInclude Include="..\..\dlls\game\actor_locomotion.h" />
+    <ClInclude Include="..\..\dlls\game\actor_posturecontroller.hpp" />
+    <ClInclude Include="..\..\dlls\game\actor_sensoryperception.h" />
+    <ClInclude Include="..\..\dlls\game\actorgamecomponents.h" />
+    <ClInclude Include="..\..\dlls\game\actorincludes.h" />
+    <ClInclude Include="..\..\dlls\game\actorstrategies.h" />
+    <ClInclude Include="..\..\dlls\game\actorutil.h" />
+    <ClInclude Include="..\..\dlls\game\ai_chat.h" />
+    <ClInclude Include="..\..\dlls\game\ai_cmd.h" />
+    <ClInclude Include="..\..\dlls\game\ai_dmnet.h" />
+    <ClInclude Include="..\..\dlls\game\ai_dmq3.h" />
+    <ClInclude Include="..\..\dlls\game\ai_main.h" />
+    <ClInclude Include="..\..\dlls\game\ai_team.h" />
+    <ClInclude Include="..\..\dlls\game\ai_vcmd.h" />
+    <ClInclude Include="..\..\dlls\game\ammo.h" />
+    <ClInclude Include="..\..\dlls\game\animate.h" />
+    <ClInclude Include="..\..\dlls\game\archive.h" />
+    <ClInclude Include="..\..\dlls\game\armor.h" />
+    <ClInclude Include="..\..\dlls\game\be_aas.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_char.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_chat.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_gen.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_goal.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_move.h" />
+    <ClInclude Include="..\..\dlls\game\be_ai_weap.h" />
+    <ClInclude Include="..\..\dlls\game\be_ea.h" />
+    <ClInclude Include="..\..\dlls\game\beam.h" />
+    <ClInclude Include="..\..\dlls\game\behavior.h" />
+    <ClInclude Include="..\..\dlls\game\behaviors.h" />
+    <ClInclude Include="..\..\dlls\game\behaviors_general.h" />
+    <ClInclude Include="..\..\dlls\game\behaviors_specific.h" />
+    <ClInclude Include="..\..\dlls\game\bg_local.h" />
+    <ClInclude Include="..\..\dlls\game\bg_public.h" />
+    <ClInclude Include="..\..\dlls\game\bit_vector.h" />
+    <ClInclude Include="..\..\dlls\game\body.h" />
+    <ClInclude Include="..\..\dlls\game\botlib.h" />
+    <ClInclude Include="..\..\dlls\game\botmenudef.h" />
+    <ClInclude Include="..\..\dlls\game\bspline.h" />
+    <ClInclude Include="..\..\dlls\game\camera.h" />
+    <ClInclude Include="..\..\dlls\game\CameraPath.h" />
+    <ClInclude Include="..\..\dlls\game\changePosture.hpp" />
+    <ClInclude Include="..\..\dlls\game\characterstate.h" />
+    <ClInclude Include="..\..\dlls\game\chars.h" />
+    <ClInclude Include="..\..\dlls\game\CinematicArmature.h" />
+    <ClInclude Include="..\..\dlls\game\class.h" />
+    <ClInclude Include="..\..\dlls\game\closeInOnEnemy.hpp" />
+    <ClInclude Include="..\..\dlls\game\closeInOnEnemyWhileFiringWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\closeInOnPlayer.hpp" />
+    <ClInclude Include="..\..\dlls\game\compiler.h" />
+    <ClInclude Include="..\..\dlls\game\container.h" />
+    <ClInclude Include="..\..\dlls\game\corridorCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\coverCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\DamageModification.hpp" />
+    <ClInclude Include="..\..\dlls\game\debuglines.h" />
+    <ClInclude Include="..\..\dlls\game\decals.h" />
+    <ClInclude Include="..\..\dlls\game\dispenser.hpp" />
+    <ClInclude Include="..\..\dlls\game\doAttack.hpp" />
+    <ClInclude Include="..\..\dlls\game\doors.h" />
+    <ClInclude Include="..\..\dlls\game\earthquake.h" />
+    <ClInclude Include="..\..\dlls\game\entity.h" />
+    <ClInclude Include="..\..\dlls\game\equipment.h" />
+    <ClInclude Include="..\..\dlls\game\explosion.h" />
+    <ClInclude Include="..\..\dlls\game\FollowPath.h" />
+    <ClInclude Include="..\..\dlls\game\FollowPathToEntity.h" />
+    <ClInclude Include="..\..\dlls\game\FollowPathToPoint.h" />
+    <ClInclude Include="..\..\dlls\game\g_local.h" />
+    <ClInclude Include="..\..\dlls\game\g_main.h" />
+    <ClInclude Include="..\..\dlls\game\g_phys.h" />
+    <ClInclude Include="..\..\dlls\game\g_public.h" />
+    <ClInclude Include="..\..\dlls\game\g_spawn.h" />
+    <ClInclude Include="..\..\dlls\game\g_utils.h" />
+    <ClInclude Include="..\..\dlls\game\game.h" />
+    <ClInclude Include="..\..\dlls\game\gamecmds.h" />
+    <ClInclude Include="..\..\dlls\game\gamecvars.h" />
+    <ClInclude Include="..\..\dlls\game\gamescript.h" />
+    <ClInclude Include="..\..\dlls\game\generalCombatWithMeleeWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\generalCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\gibs.h" />
+    <ClInclude Include="..\..\dlls\game\globalcmd.h" />
+    <ClInclude Include="..\..\dlls\game\GoDirectlyToPoint.h" />
+    <ClInclude Include="..\..\dlls\game\goo.h" />
+    <ClInclude Include="..\..\dlls\game\gotoCurrentHelperNode.hpp" />
+    <ClInclude Include="..\..\dlls\game\gotoHelperNode.hpp" />
+    <ClInclude Include="..\..\dlls\game\gotoHelperNodeEX.hpp" />
+    <ClInclude Include="..\..\dlls\game\gotoHelperNodeNearestEnemy.hpp" />
+    <ClInclude Include="..\..\dlls\game\gravpath.h" />
+    <ClInclude Include="..\..\dlls\game\groupcoordinator.hpp" />
+    <ClInclude Include="..\..\dlls\game\healGroupMember.hpp" />
+    <ClInclude Include="..\..\dlls\game\health.h" />
+    <ClInclude Include="..\..\dlls\game\helper_node.h" />
+    <ClInclude Include="..\..\dlls\game\holdPosition.hpp" />
+    <ClInclude Include="..\..\dlls\game\interpreter.h" />
+    <ClInclude Include="..\..\dlls\game\inv.h" />
+    <ClInclude Include="..\..\dlls\game\inventoryitem.h" />
+    <ClInclude Include="..\..\dlls\game\ipfilter.h" />
+    <ClInclude Include="..\..\dlls\game\item.h" />
+    <ClInclude Include="..\..\dlls\game\level.h" />
+    <ClInclude Include="..\..\dlls\game\lexer.h" />
+    <ClInclude Include="..\..\dlls\game\light.h" />
+    <ClInclude Include="..\..\dlls\game\Linklist.h" />
+    <ClInclude Include="..\..\dlls\game\listener.h" />
+    <ClInclude Include="..\..\dlls\game\match.h" />
+    <ClInclude Include="..\..\dlls\game\misc.h" />
+    <ClInclude Include="..\..\dlls\game\mover.h" />
+    <ClInclude Include="..\..\dlls\game\MoveRandomDirection.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_awardsystem.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_manager.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modeBase.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modeCtf.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modeDm.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modeTeamBase.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modeTeamDm.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_modifiers.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_shared.hpp" />
+    <ClInclude Include="..\..\dlls\game\mp_team.hpp" />
+    <ClInclude Include="..\..\dlls\game\nature.h" />
+    <ClInclude Include="..\..\dlls\game\navigate.h" />
+    <ClInclude Include="..\..\dlls\game\object.h" />
+    <ClInclude Include="..\..\dlls\game\path.h" />
+    <ClInclude Include="..\..\dlls\game\patrol.hpp" />
+    <ClInclude Include="..\..\dlls\game\PlayAnim.hpp" />
+    <ClInclude Include="..\..\dlls\game\player.h" />
+    <ClInclude Include="..\..\dlls\game\playerheuristics.h" />
+    <ClInclude Include="..\..\dlls\game\PlayerStart.h" />
+    <ClInclude Include="..\..\dlls\game\portal.h" />
+    <ClInclude Include="..\..\dlls\game\powerups.h" />
+    <ClInclude Include="..\..\dlls\game\program.h" />
+    <ClInclude Include="..\..\dlls\game\puzzleobject.hpp" />
+    <ClInclude Include="..\..\dlls\game\q_shared.h" />
+    <ClInclude Include="..\..\dlls\game\queue.h" />
+    <ClInclude Include="..\..\dlls\game\RageAI.h" />
+    <ClInclude Include="..\..\dlls\game\rangedCombatWithWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\rotateToEntity.hpp" />
+    <ClInclude Include="..\..\dlls\game\script.h" />
+    <ClInclude Include="..\..\dlls\game\scriptmaster.h" />
+    <ClInclude Include="..\..\dlls\game\scriptslave.h" />
+    <ClInclude Include="..\..\dlls\game\scriptvariable.h" />
+    <ClInclude Include="..\..\dlls\game\selectBestWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\sentient.h" />
+    <ClInclude Include="..\..\dlls\game\shrapnelbomb.h" />
+    <ClInclude Include="..\..\dlls\game\snipeEnemy.hpp" />
+    <ClInclude Include="..\..\dlls\game\soundman.h" />
+    <ClInclude Include="..\..\dlls\game\spawners.h" />
+    <ClInclude Include="..\..\dlls\game\specialfx.h" />
+    <ClInclude Include="..\..\dlls\game\stack.h" />
+    <ClInclude Include="..\..\dlls\game\stationaryFireCombat.hpp" />
+    <ClInclude Include="..\..\dlls\game\stationaryFireCombatEX.hpp" />
+    <ClInclude Include="..\..\dlls\game\stationaryvehicle.hpp" />
+    <ClInclude Include="..\..\dlls\game\steering.h" />
+    <ClInclude Include="..\..\dlls\game\str.h" />
+    <ClInclude Include="..\..\dlls\game\suppressionFireCombat.hpp" />
+    <ClInclude Include="..\..\dlls\game\surfaceflags.h" />
+    <ClInclude Include="..\..\dlls\game\syn.h" />
+    <ClInclude Include="..\..\dlls\game\talk.hpp" />
+    <ClInclude Include="..\..\dlls\game\teammateroster.hpp" />
+    <ClInclude Include="..\..\dlls\game\teleportToEntity.hpp" />
+    <ClInclude Include="..\..\dlls\game\teleportToPosition.hpp" />
+    <ClInclude Include="..\..\dlls\game\torsoAimAndFireWeapon.hpp" />
+    <ClInclude Include="..\..\dlls\game\trigger.h" />
+    <ClInclude Include="..\..\dlls\game\umap.h" />
+    <ClInclude Include="..\..\dlls\game\useAlarm.hpp" />
+    <ClInclude Include="..\..\dlls\game\UseData.h" />
+    <ClInclude Include="..\..\dlls\game\vector.h" />
+    <ClInclude Include="..\..\dlls\game\vehicle.h" />
+    <ClInclude Include="..\..\dlls\game\viewthing.h" />
+    <ClInclude Include="..\..\dlls\game\watchEntity.hpp" />
+    <ClInclude Include="..\..\dlls\game\watchEntityEX.hpp" />
+    <ClInclude Include="..\..\dlls\game\waypoints.h" />
+    <ClInclude Include="..\..\dlls\game\weapon.h" />
+    <ClInclude Include="..\..\dlls\game\WeaponDualWield.h" />
+    <ClInclude Include="..\..\dlls\game\weaputils.h" />
+    <ClInclude Include="..\..\dlls\game\work.hpp" />
+    <ClInclude Include="..\..\dlls\game\worldspawn.h" />
+    <ClInclude Include="..\..\Shared\qcommon\gameplaydatabase.h" />
+    <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h" />
+    <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h" />
+    <ClInclude Include="..\..\Shared\qcommon\output.h" />
+    <ClInclude Include="..\..\Shared\qcommon\quaternion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\dlls\game\game.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

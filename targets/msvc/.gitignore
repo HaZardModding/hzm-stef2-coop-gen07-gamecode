@@ -1,0 +1,6 @@
+# Visual Studio
+*.vcxproj.user
+bin
+obj
+enc_temp_folder
+build_info_internal.h
