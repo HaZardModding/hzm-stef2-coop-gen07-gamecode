@@ -791,7 +791,7 @@ void Trigger::TriggerStuff( Event *ev )
 			if ( !cls || !checkInheritance( "Item", cls->classname ) )
 			{
 				//--------------------------------------------------------------
-				// GAMEFIX - changed message to always print - chrissstrahl
+				// GAMEFIX - Changed: message to always print - chrissstrahl
 				//--------------------------------------------------------------
 				gi.Printf( "No item named '%s' exists in game\n", key.c_str() );
 				return;
@@ -814,7 +814,7 @@ void Trigger::TriggerStuff( Event *ev )
 				gi.centerprintf ( temp_activator->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$ItemNeeded$$%s", item->getName().c_str() );
 				
 				//--------------------------------------------------------------
-				// GAMEFIX - added print out to hud/chat in multiplayer - chrissstrahl
+				// GAMEFIX - Added: print out to hud/chat in multiplayer - chrissstrahl
 				// - Make sure it doesn't spam, this could cycle out a reliable command otherwhise
 				//--------------------------------------------------------------
 				if (g_gametype->integer != GT_SINGLE_PLAYER && other->isSubclassOf(Player)) {
@@ -982,7 +982,7 @@ void Trigger::ActivateTargets( Event *ev )
 		if ( !other->isClient() )
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - changed importance to high - chrissstrahl
+			// GAMEFIX - Changed: importance to high - chrissstrahl
 			//--------------------------------------------------------------
 			if (g_gametype->integer != GT_SINGLE_PLAYER) {
 				gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_HIGH, message.c_str());
@@ -1004,12 +1004,12 @@ void Trigger::ActivateTargets( Event *ev )
 		else
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - changed importance to high - chrissstrahl
+			// GAMEFIX - Changed: importance to high - chrissstrahl
 			//--------------------------------------------------------------
 			gi.centerprintf( other->edict, CENTERPRINT_IMPORTANCE_HIGH, message.c_str() );
 
 			//--------------------------------------------------------------
-			// GAMEFIX - added print to hud for multiplayer - chrissstrahl
+			// GAMEFIX - Added: print to hud for multiplayer - chrissstrahl
 			//--------------------------------------------------------------
 			if (g_gametype->integer != GT_SINGLE_PLAYER){
 				Player* player = (Player*)other;
@@ -2415,7 +2415,7 @@ Event EV_TriggerHurt_SetDamageType
 CLASS_DECLARATION( TriggerUse, TriggerHurt, "trigger_hurt" )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - Trigger Hurt can no longer be activated by pressing USE - chrissstrahl
+	// GAMEFIX - Fixed: Trigger Hurt can no longer be activated by pressing USE - chrissstrahl
 	//--------------------------------------------------------------
 	{ &EV_Use, NULL },
 
@@ -2491,7 +2491,7 @@ void TriggerHurt::Hurt( Event *ev )
 	other = ev->GetEntity( 1 );
 
 	//--------------------------------------------------------------
-	// GAMEFIX - prevent crash if entity was just deleted in the same frame - chrissstrahl
+	// GAMEFIX - Fixed: prevent crash if entity was just deleted in the same frame - chrissstrahl
 	//--------------------------------------------------------------
 	if (!other) {
 		return;
@@ -2503,7 +2503,7 @@ void TriggerHurt::Hurt( Event *ev )
 	}
 	
 	//--------------------------------------------------------------
-	// GAMEFIX - hurt all players that are inside the trigger field, not just the one who activated it - chrissstrahl
+	// GAMEFIX - Fixed: hurts now all players that are inside the trigger field, not just the one who activated it - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->integer == GT_SINGLE_PLAYER || damage == 0) {
 		return;

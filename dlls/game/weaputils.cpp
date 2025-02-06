@@ -1647,7 +1647,7 @@ void Projectile::Touch( Event *ev )
 		realname = GetRandomAlias( "impact_flesh" );
 	
 	//--------------------------------------------------------------
-	// GAMEFIX - bat'leth/batleth stabbing sound being played global(CHAN_VOICE) on the entire map - chrissstrahl
+	// GAMEFIX - Fixed: bat'leth/batleth stabbing sound being played global(CHAN_VOICE) on the entire map - chrissstrahl
 	//--------------------------------------------------------------
 	if ( realname.length() > 1 )
 		Sound( realname, CHAN_BODY );

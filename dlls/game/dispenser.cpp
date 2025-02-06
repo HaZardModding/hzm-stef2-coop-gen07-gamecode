@@ -237,7 +237,7 @@ void Dispenser::Think( void )
 	{
 		// See if the player is nearby
 		//--------------------------------------------------------------
-		// GAMEFIX - check all players not just client 0 - chrissstrahl
+		// GAMEFIX - Added: check all players not just client 0 - chrissstrahl
 		//--------------------------------------------------------------
 		for (int i = 0; i < maxclients->integer; i++)
 		{

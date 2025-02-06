@@ -3086,7 +3086,7 @@ void Weapon::AttachGun( weaponhand_t temp_hand, qboolean holstering )
 		if ( owner->isSubclassOf( Player ) )
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - mp_bigGunMode also applying in singleplayer - chrissstrahl
+			// GAMEFIX - Fixed: mp_bigGunMode also applying in singleplayer - chrissstrahl
 			//--------------------------------------------------------------
 			if ( mp_bigGunMode->integer )
 				setScale( _weildedScale * 2.0f );

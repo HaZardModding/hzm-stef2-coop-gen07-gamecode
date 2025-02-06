@@ -36,7 +36,7 @@ typedef struct {
 extern Container<str> gamefix_fileContentTokenized;
 
 //--------------------------------------------------------------
-// GAMEFIX - For delayed server commands - daggolin
+// GAMEFIX - Added: For delayed server commands - daggolin
 //--------------------------------------------------------------
 typedef struct gamefix_pendingServerCommand_s
 {

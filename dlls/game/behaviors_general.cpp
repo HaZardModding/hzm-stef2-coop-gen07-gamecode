@@ -5681,7 +5681,7 @@ void DoBeamAttack::_createBeam( Actor &self )
 			}
 
 		//--------------------------------------------------------------
-		// GAMEFIX - error: 'CreateBeam' was not declared in this scope - requires 9 not 7 parameters - chrissstrahl
+		// GAMEFIX - Fixed: 'CreateBeam' was not declared in this scope - requires 9 not 7 parameters - chrissstrahl
 		//--------------------------------------------------------------
 		beam = CreateBeam( NULL, beamShader.c_str(), tagOrig, _beamEndPos, 1, 1.5f, 0.25f, 0.0f, nullptr );      
 		_beamList.AddObject ( beam );

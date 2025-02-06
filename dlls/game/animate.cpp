@@ -240,7 +240,7 @@ void Animate::NewAnim( int animnum, bodypart_t part )
 		
 
 		//--------------------------------------------------------------
-		// GAMEFIX - The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
+		// GAMEFIX - Fixed: The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
 		//--------------------------------------------------------------
 		static tiki_cmd_t cmds_1;
 
@@ -315,7 +315,7 @@ void Animate::NewAnim( int animnum, bodypart_t part )
 
 
 		//--------------------------------------------------------------
-		// GAMEFIX - The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
+		// GAMEFIX - Fixed: The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
 		//--------------------------------------------------------------
 		static tiki_cmd_t cmds_2;
 
@@ -380,7 +380,7 @@ void Animate::NewAnim( int animnum, bodypart_t part )
 				
 				
 				//--------------------------------------------------------------
-				// GAMEFIX - The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
+				// GAMEFIX - Fixed: The function uses ? bytes of stack. Consider moving some data to the heap. - chrissstrahl
 				//--------------------------------------------------------------
 				static tiki_cmd_t cmds_3;
 				

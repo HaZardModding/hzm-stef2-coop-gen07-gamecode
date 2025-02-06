@@ -98,7 +98,7 @@ void ModeDeathmatch::respawnPlayer( Player *player )
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
+	// GAMEFIX - Added: Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
 	//--------------------------------------------------------------
 	if (!spawnPoint) {
 		spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_DeathmatchRespawnPlayer);
@@ -162,7 +162,7 @@ void ModeDeathmatch::AddPlayer( Player *player )
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
+	// GAMEFIX - Added: Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
 	//--------------------------------------------------------------
 	if (!spawnPoint) {
 		spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_DeathmatchAddPlayer);

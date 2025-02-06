@@ -895,7 +895,7 @@ bool HoldableItemTransporter::use( void )
 
 
 			//--------------------------------------------------------------
-			// GAMEFIX - Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
+			// GAMEFIX - Added: Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
 			//--------------------------------------------------------------
 			if (!spawnPoint) {
 				spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_HoldableTransporter);
@@ -1159,13 +1159,13 @@ bool HoldableItemExplosive::isPlayerInRange( const Vector &position, float maxDi
 
 
 		//--------------------------------------------------------------
-		// GAMEFIX - holdable mine beeping if owner is standing on it - chrissstrahl
+		// GAMEFIX - Fixed: holdable mine beeping if owner is standing on it - chrissstrahl
 		//--------------------------------------------------------------
 		if (entity == _owner){
 			continue;
 		}
 		//--------------------------------------------------------------
-		// GAMEFIX - holdable mine beeping if player from same team is standing on it (excluding DEATHMATCH mp_gametype 0) - chrissstrahl
+		// GAMEFIX - Fixed: holdable mine beeping if player from same team is standing on it (excluding DEATHMATCH mp_gametype 0) - chrissstrahl
 		//--------------------------------------------------------------
 		if (multiplayerManager.inMultiplayer() && mp_gametype->integer != 0 && multiplayerManager.getPlayersTeam((Player*)entity) == multiplayerManager.getPlayersTeam((Player*)_owner)) {
 			continue;

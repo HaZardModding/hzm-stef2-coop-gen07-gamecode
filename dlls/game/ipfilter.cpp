@@ -126,7 +126,7 @@ qboolean SV_FilterPacket( const char *from )
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - uninitialized variable - chrissstrahl
+	// GAMEFIX - Fixed: uninitialized variable - chrissstrahl
 	//--------------------------------------------------------------
 	byte m[ 4 ] = { 0 };
 	

@@ -86,7 +86,7 @@ public:
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+	// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 	//--------------------------------------------------------------
 	PendingDelta() : _type(GameplayValueType::GAMEPLAY_VALUE_UNSPECIFIED ) { }
 	PendingDelta( const str &objName, const str &propName, float floatValue )		
@@ -139,7 +139,7 @@ public:
 
 
 			//--------------------------------------------------------------
-			// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+			// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 			//--------------------------------------------------------------
 			_type(GameplayValueType::VALUE_FLOAT),
 

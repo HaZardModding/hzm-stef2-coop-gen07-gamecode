@@ -28,7 +28,7 @@
 
 /* 
 //--------------------------------------------------------------
-// GAMEFIX - Deactivated: Suppression of warnings - Chrissstrahl
+// GAMEFIX - Disabled: Suppression of warnings - Chrissstrahl
 //--------------------------------------------------------------
 #ifdef _WIN32
 #pragma warning(disable : 4244)     // 'conversion' conversion from 'type1' to 'type2', possible loss of data
@@ -449,7 +449,7 @@ void str::BackSlashesToSlashes( void )
 void str::snprintf( char *dst, int size, const char *fmt, ... )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - The function uses 65556 bytes of stack. Consider moving some data to the heap. - chrissstrahl
+	// GAMEFIX - Fixed: The function uses 65556 bytes of stack. Consider moving some data to the heap. - chrissstrahl
 	//--------------------------------------------------------------
 	static char buffer[0x10000];
 
@@ -479,7 +479,7 @@ void str::snprintf( char *dst, int size, const char *fmt, ... )
 
 /*
 //--------------------------------------------------------------
-// GAMEFIX - Deactivated: Suppression of warnings - Chrissstrahl
+// GAMEFIX - Disabled: Suppression of warnings - Chrissstrahl
 //--------------------------------------------------------------
 #ifdef _WIN32
 #pragma warning(disable : 4189)		// local variable is initialized but not referenced
@@ -617,7 +617,7 @@ void TestStringClass( void )
 
 
 //--------------------------------------------------------------
-// GAMEFIX - Deactivated: Suppression of warnings - Chrissstrahl
+// GAMEFIX - Disabled: Suppression of warnings - Chrissstrahl
 //--------------------------------------------------------------
 //#ifdef _WIN32
 //#pragma warning(default : 4189)		// local variable is initialized but not referenced

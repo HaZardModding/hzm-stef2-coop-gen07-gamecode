@@ -149,7 +149,7 @@ bool GameplayProperty::parseProperty(Parser &gameplayFile, const str& type)
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+	// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 	//--------------------------------------------------------------
 	if ( readcount == 1 ) // Single Float
 	{
@@ -220,7 +220,7 @@ void GameplayProperty::Archive(Archiver &arc)
 
 
 		//--------------------------------------------------------------
-		// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+		// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 		//--------------------------------------------------------------
 		case GameplayValueType::VALUE_FLOAT:
 			arc.ArchiveFloat( &_valuefloat );
@@ -1546,7 +1546,7 @@ void GameplayDatabase::Archive(Archiver &arc)
 			for ( int propertyIdx = 1; propertyIdx <= numProperties; ++propertyIdx )
 			{
 				//--------------------------------------------------------------
-				// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+				// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 				//--------------------------------------------------------------
 				GameplayValueType	propertyType	= GameplayValueType::VALUE_FLOAT ;
 				Vector				vectorValue ;

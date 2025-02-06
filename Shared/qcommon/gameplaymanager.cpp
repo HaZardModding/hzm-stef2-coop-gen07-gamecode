@@ -516,7 +516,7 @@ void GameplayManager::processPendingMessages( void )
 		switch ( pendingDelta.getGameplayValueType() )
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - change of GameplayValueType requires usuage of GameplayValueType:: - chrissstrahl
+			// GAMEFIX - Added: change of GameplayValueType no longer requireing the usuage of GameplayValueType:: - chrissstrahl
 			//--------------------------------------------------------------
 			case GameplayValueType::VALUE_FLOAT:
 				floatValue	= pendingDelta.getFloatValue();

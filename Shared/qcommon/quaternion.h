@@ -20,7 +20,7 @@
 #include <math.h>
 
 //--------------------------------------------------------------
-// GAMEFIX - fatal error: vector.h: No such file or directory #include "vector.h" - chrissstrahl
+// GAMEFIX - Fixed: fatal error: vector.h: No such file or directory #include "vector.h" - chrissstrahl
 //--------------------------------------------------------------
 #include <game/vector.h>
 

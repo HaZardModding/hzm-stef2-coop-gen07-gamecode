@@ -371,7 +371,7 @@ public:
 	SafePtr& operator=(T* const obj);
 
 	//--------------------------------------------------------------
-	// GAMEFIX - error: declaration of template parameter 'T' shadows template parameter - chrissstrahl
+	// GAMEFIX - Fixed: declaration of template parameter 'T' shadows template parameter - chrissstrahl
 	//--------------------------------------------------------------
 	template<class F> friend int operator==(SafePtr<F> a, F* b);
 	template<class F> friend int operator!=(SafePtr<F> a, F* b);

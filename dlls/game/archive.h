@@ -183,7 +183,7 @@ inline qboolean Archiver::NoErrors
    }
 
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member *Container<str>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member *Container<str>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<str>::Archive
@@ -211,7 +211,7 @@ inline void Container<str>::Archive
 	}
 
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<Vector>::Archive' requires 'template<>' syntax syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<Vector>::Archive' requires 'template<>' syntax syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<Vector>::Archive
@@ -239,7 +239,7 @@ inline void Container<Vector>::Archive
 	}
 
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<int>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<int>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<int>::Archive
@@ -267,7 +267,7 @@ inline void Container<int>::Archive
 	}
 
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<float>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<float>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<float>::Archive
@@ -313,7 +313,7 @@ inline void Container<float>::Archive
 // 
 //===============================================================
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<Class*>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<Class*>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<Class*>::Archive
@@ -348,7 +348,7 @@ inline void Container<Class*>::Archive
 // 
 //===============================================================
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<Class>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<Class>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<Class>::Archive
@@ -413,7 +413,7 @@ inline void Container< SafePtr<Class*> >::Archive
 // 
 //===============================================================
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<Entity*>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<Entity*>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<Entity*>::Archive
@@ -435,7 +435,7 @@ inline void Container<Entity*>::Archive
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - error: specializing member 'Container<EntityPtr>::Archive' requires 'template<>' syntax - chrissstrahl
+// GAMEFIX - Fixed: specializing member 'Container<EntityPtr>::Archive' requires 'template<>' syntax - chrissstrahl
 //--------------------------------------------------------------
 template<>
 inline void Container<EntityPtr>::Archive

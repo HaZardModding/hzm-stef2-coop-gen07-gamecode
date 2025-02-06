@@ -39,7 +39,7 @@
 Level level;
 
 //--------------------------------------------------------------
-// GAMEFIX - error: '...' was not declared in this scope - chrissstrahl
+// GAMEFIX - Fixed: '...' was not declared in this scope - chrissstrahl
 //--------------------------------------------------------------
 extern void L_ShutdownEvents();
 extern void L_InitEvents();

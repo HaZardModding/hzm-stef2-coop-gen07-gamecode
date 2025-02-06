@@ -35,7 +35,7 @@
 
 
 //--------------------------------------------------------------
-// GAMEFIX - Deactivated: C4710 Suppression of warning. - Chrissstrahl
+// GAMEFIX - Disabled: C4710 Suppression of warning. - Chrissstrahl
 //--------------------------------------------------------------
 //#ifdef _WIN32
 //#pragma warning(disable : 4710)     // function 'blah' not inlined
@@ -58,7 +58,7 @@ class str : public Class
 
 
 		//--------------------------------------------------------------
-		// GAMEFIX - Warning C26495: The Variable str::buffer was not initialized. A Membervariable needs always to be initialized (type.6) - chrissstrahl
+		// GAMEFIX - Fixed: Warning C26495: The Variable str::buffer was not initialized. A Membervariable needs always to be initialized (type.6) - chrissstrahl
 		//--------------------------------------------------------------
 		char buffer[STRING_PREALLOC_SIZE] = { 0 };
 

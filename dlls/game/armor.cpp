@@ -347,7 +347,7 @@ AdaptiveArmor::AdaptiveArmor()
 	
 
 	//--------------------------------------------------------------
-	// GAMEFIX - do not allow borg to adapt to these damage types - chrissstrahl
+	// GAMEFIX - Fixed: Borg adapting to these damage types - chrissstrahl
 	// not sure if I should add: MOD_ACID MOD_GAS MOD_IMPACT MOD_GAS_BLOCKABLE MOD_DROWN MOD_POISON MOD_ELECTRICWATER MOD_ELECTRIC MOD_LAVA MOD_SLIME 
 	//--------------------------------------------------------------    
 	_AddMODToCannotAdaptList(MOD_MELEE); //(hazard)teammates

@@ -1793,7 +1793,7 @@ HelperNode* HelperNode::FindClosestHelperNode( Actor &self , int mask , float ma
 
 
 			//--------------------------------------------------------------
-			// GAMEFIX - error: cannot convert 'bool' to 'HelperNode*' in return - chrissstrahl
+			// GAMEFIX - Fixed: cannot convert 'bool' to 'HelperNode*' in return - chrissstrahl
 			// Also moved logic to grab player outside loop, since it is way more complex now
 			//--------------------------------------------------------------
 			if (!player) return nullptr;
@@ -2346,7 +2346,7 @@ HelperNode* HelperNode::FindClosestHelperNodeThatCannotSeeEntity( Actor &self , 
 
 
 			//--------------------------------------------------------------
-			// GAMEFIX - error: cannot convert 'bool' to 'HelperNode*' in return - chrissstrahl
+			// GAMEFIX - Fixed: cannot convert 'bool' to 'HelperNode*' in return - chrissstrahl
 			// Also moved logic to grab player outside loop, since it is way more complex now
 			//--------------------------------------------------------------
 			if (!player) return nullptr;

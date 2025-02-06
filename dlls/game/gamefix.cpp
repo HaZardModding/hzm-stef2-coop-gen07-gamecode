@@ -52,7 +52,7 @@ Entity* gamefix_getEntity(str& name)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Return Player by client number - chrissstrahl
+// GAMEFIX - Added: Return Player by client number - chrissstrahl
 //--------------------------------------------------------------
 Player* gamefix_getPlayer(int index)
 {
@@ -143,7 +143,7 @@ bool gamefix_checkEntityInsideOfEntity(Entity* eCheck, Entity* eTheBox)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Checks if any other player is targeting the given entity - chrissstrahl
+// GAMEFIX - Added: Checks if any other player is targeting the given entity - chrissstrahl
 //--------------------------------------------------------------
 bool gamefix_targetedByOtherPlayer(Player* player, Entity* entity)
 {
@@ -164,7 +164,7 @@ bool gamefix_targetedByOtherPlayer(Player* player, Entity* entity)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns closest player to given entity - chrissstrahl
+// GAMEFIX - Added: Returns closest player to given entity - chrissstrahl
 //--------------------------------------------------------------
 Player* gamefix_getClosestPlayer(Entity* entity)
 //NO SPECTATOR, NO DEAD

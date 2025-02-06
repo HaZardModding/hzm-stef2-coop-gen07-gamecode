@@ -634,7 +634,7 @@ void AwardSystem::pickedupItem( Player *player, MultiplayerItemType itemType, co
 			continue;
 
 		//--------------------------------------------------------------
-		// GAMEFIX - don't, if a player with a item gets killed and another player picks it up - chrissstrahl
+		// GAMEFIX - Fixed: denied sound being played to dead player if near a special item and another picks it up - if a player with a item gets killed and another player picks it up - chrissstrahl
 		//--------------------------------------------------------------
 		if (playerToCheck->health <= 0.0f)
 			continue;

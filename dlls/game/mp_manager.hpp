@@ -97,7 +97,7 @@ class MultiplayerManager : public Class
    {
    public:
 	   //--------------------------------------------------------------
-	   // GAMEFIX - Functions and Variables - chrissstrahl
+	   // GAMEFIX - Added: Functions and Variables - chrissstrahl
 	   //--------------------------------------------------------------
 	   int						gamefixEF2_voteStartedByClient = -1;
 	   bool						gamefixEF2_updateDynamicLights = false;

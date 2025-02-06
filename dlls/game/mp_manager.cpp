@@ -849,7 +849,7 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 		return;
 
 	//--------------------------------------------------------------
-	// GAMEFIX - can't change model when dead, preventing animation replay - chrissstrahl
+	// GAMEFIX - Fixed: player can't change model anymore when dead, preventing animation replay - chrissstrahl
 	//--------------------------------------------------------------
 	if ( player->health <= 0.0f )
 		return;
@@ -1899,8 +1899,9 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	
 
 	//--------------------------------------------------------------
-	// GAMEFIX - g_gametype changed to correct mp_gametype - chrissstrahl
-	// GAMEFIX - Replaced 5 times - Fixed: Warning: C4996 stricmp: The POSIX name for this item is deprecated. Using instead: Q_stricmp - chrissstrahl
+	// GAMEFIX - Fixed: g_gametype changed to correct mp_gametype - chrissstrahl
+	// GAMEFIX - Fixed: Warning: C4996 stricmp: The POSIX name for this item is deprecated. Using instead: Q_stricmp - chrissstrahl
+	// Replaced 5 times
 	//--------------------------------------------------------------
 	if ( ( Q_stricmp( command.c_str(), "restart" )    != 0 ) &&
 		 ( Q_stricmp( command.c_str(), "nextmap" )    != 0 ) &&
@@ -1931,8 +1932,9 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	// If a map command, make sure the map actually exists
 	
 	//--------------------------------------------------------------
-	// GAMEFIX - check for nextmap - chrissstrahl
-	// GAMEFIX - Replaced 2 times - Fixed: Warning: C4996 stricmp: The POSIX name for this item is deprecated. Using instead: Q_stricmp - chrissstrahl
+	// GAMEFIX - Fixed: not checking for nextmap, server could be crashed - chrissstrahl
+	// GAMEFIX - Fixed: Warning: C4996 stricmp: The POSIX name for this item is deprecated. Using instead: Q_stricmp - chrissstrahl
+	// Replaced 2 times
 	//--------------------------------------------------------------
 	if ( Q_stricmp( command.c_str(), "map" ) == 0 || Q_stricmp(command.c_str(), "nextmap") == 0)
 	{

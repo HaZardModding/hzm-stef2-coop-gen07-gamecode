@@ -870,7 +870,7 @@ void Door::TryOpen( Event *ev )
 			if ( !cls )
 			{
 				//--------------------------------------------------------------
-				// GAMEFIX - changed message to always print - chrissstrahl
+				// GAMEFIX - Changed: message to always print - chrissstrahl
 				//--------------------------------------------------------------
 				gi.Printf( "No item named '%s' exists in game\n", key.c_str() );
 				return;
@@ -883,7 +883,7 @@ void Door::TryOpen( Event *ev )
 			gi.centerprintf ( other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$UnlockItem$$%s", item->getName().c_str() );
 
 			//--------------------------------------------------------------
-			// GAMEFIX - added print out to hud/chat in multiplayer - chrissstrahl
+			// GAMEFIX - Added: print out to hud/chat in multiplayer - chrissstrahl
 			// - Make sure it doesn't spam, this could cycle out a reliable command otherwhise
 			//--------------------------------------------------------------
 			if(g_gametype->integer != GT_SINGLE_PLAYER) {
@@ -912,7 +912,7 @@ void Door::TryOpen( Event *ev )
 
 
 	//--------------------------------------------------------------
-	// GAMEFIX - print message to hud in multiplayer - chrissstrahl
+	// GAMEFIX - Added: print message to hud in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->integer != GT_SINGLE_PLAYER && Message().length() && other->isSubclassOf(Player))
 	{

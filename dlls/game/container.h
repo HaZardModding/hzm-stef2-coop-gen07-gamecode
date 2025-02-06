@@ -36,7 +36,7 @@
 #include "g_local.h"
 
 //--------------------------------------------------------------
-// GAMEFIX - error: 'gi' was not declared in this scope - chrissstrahl
+// GAMEFIX - Fixed: 'gi' was not declared in this scope - chrissstrahl
 //--------------------------------------------------------------
 extern game_import_t gi;
 

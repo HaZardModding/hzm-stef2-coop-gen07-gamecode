@@ -1575,8 +1575,8 @@ void CThread::EventWaitForPlayer( Event *ev )
 void CThread::CPrint( Event *ev )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - importance from normal to critical, to make sure the message is always shown - chrissstrahl
-	// GAMEFIX - message now shown to all players not just client 0 - chrissstrahl
+	// GAMEFIX - Changed: importance from normal to critical, to make sure the message is always shown - chrissstrahl
+	// GAMEFIX - Fixed: message now shown to all players not just client 0 - chrissstrahl
 	//--------------------------------------------------------------
 	int         j;
 	gentity_t* other;
@@ -1600,7 +1600,7 @@ void CThread::Print( Event *ev )
 	for( i = 1; i <= n; i++ )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+		// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 		//--------------------------------------------------------------
 		gi.Printf( "%s", ev->GetString( i ) );
 	}
@@ -1609,7 +1609,7 @@ void CThread::Print( Event *ev )
 void CThread::PrintInt( Event *ev )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+	// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 	//--------------------------------------------------------------
 	gi.Printf( "%d", ev->GetInteger( 1 ) );
 }
@@ -1617,7 +1617,7 @@ void CThread::PrintInt( Event *ev )
 void CThread::PrintFloat( Event *ev )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+	// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 	//--------------------------------------------------------------
 	gi.Printf( "%.2f", ev->GetFloat( 1 ) );
 }
@@ -1628,7 +1628,7 @@ void CThread::PrintVector( Event *ev )
 	
 	vec = ev->GetVector( 1 );
 	//--------------------------------------------------------------
-	// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+	// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 	//--------------------------------------------------------------
 	gi.Printf( "(%.2f %.2f %.2f)", vec.x, vec.y, vec.z );
 }
@@ -1636,7 +1636,7 @@ void CThread::PrintVector( Event *ev )
 void CThread::NewLine( Event *ev )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+	// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 	//--------------------------------------------------------------
 	gi.Printf( "\n" );
 }
@@ -3015,7 +3015,7 @@ void CThread::SetFloatVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3041,7 +3041,7 @@ void CThread::SetVectorVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3067,7 +3067,7 @@ void CThread::SetStringVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3091,7 +3091,7 @@ void CThread::RemoveVariable( Event* ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3116,7 +3116,7 @@ void CThread::GetFloatVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3149,7 +3149,7 @@ void CThread::GetVectorVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3182,7 +3182,7 @@ void CThread::GetStringVar( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3215,7 +3215,7 @@ void CThread::doesVarExist( Event *ev )
 	else if ( strncmp( var_name.c_str(), "game.", 5 ) == 0 )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
+		// GAMEFIX - Fixed: using now +5 instead of +6 (the first letter got cut off) - chrissstrahl
 		//--------------------------------------------------------------
 		real_var_name = var_name.c_str() + 5;
 
@@ -3240,7 +3240,7 @@ void CThread::CenterPrint( Event *ev )
 		if ( other->inuse && other->client )
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - importance from normal to critical, to make sure the message is always shown - chrissstrahl
+			// GAMEFIX - Changed: importance from normal to critical, to make sure the message is always shown - chrissstrahl
 			//--------------------------------------------------------------
 			gi.centerprintf( other, CENTERPRINT_IMPORTANCE_CRITICAL, ev->GetString( 1 ) );
 		}
@@ -3294,7 +3294,7 @@ void CThread::SendClientCommand( Event *ev )
 	entity = ev->GetEntity( 1 );
 
 	//--------------------------------------------------------------
-	// GAMEFIX - crash if given entity does not exist - chrissstrahl
+	// GAMEFIX - Fixed: crash if given entity does not exist - chrissstrahl
 	//--------------------------------------------------------------
 	if (!entity) {
 		gi.Printf(_GFixEF2_WARN_EVENT_CTHREAD_sendClientCommand_FAILED);
@@ -3337,7 +3337,7 @@ void CThread::GetNumFreeReliableServerCommands( Event* ev )
 	entity = ev->GetEntity( 1 );
 
 	//--------------------------------------------------------------
-	// GAMEFIX - crash if given entity does not exist - chrissstrahl
+	// GAMEFIX - Fixed: crash if given entity does not exist - chrissstrahl
 	//--------------------------------------------------------------
 	if (!entity) {
 		gi.Printf(_GFixEF2_WARN_EVENT_CTHREAD_getNumFreeRelSVCmds_FAILED);

@@ -790,7 +790,7 @@ void SelectSpawnPoint( Vector &org, Vector &ang, str &thread )
 	if ( !spot )
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - changed error message to spell out the object type - chrissstrahl
+		// GAMEFIX - Changed: error message to spell out the object type - chrissstrahl
 		// Made error message less confusing if no name was given, which is usually the case
 		//--------------------------------------------------------------
 		if (level.spawnpoint.length()) {
@@ -2452,7 +2452,7 @@ void G_StartCinematic( void )
 	gi.cvar_set( "sv_cinematic", "1" );
 
 	//--------------------------------------------------------------
-	// GAMEFIX - cinematic accessing client 0 only and always - chrissstrahl
+	// GAMEFIX - Fixed: cinematic accessing client 0 only and always - chrissstrahl
 	//--------------------------------------------------------------
 	for (int i = 0; i < maxclients->integer;i++) {
 		entity = g_entities[i].entity;
@@ -2475,7 +2475,7 @@ void G_StopCinematic( void )
 	gi.cvar_set( "sv_cinematic", "0" );
 
 	//--------------------------------------------------------------
-	// GAMEFIX - cinematic accessing client 0 only and always - chrissstrahl
+	// GAMEFIX - Fixed: cinematic accessing client 0 only and always - chrissstrahl
 	//--------------------------------------------------------------
 	for (int i = 0; i < maxclients->integer; i++) {
 		entity = g_entities[i].entity;

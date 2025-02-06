@@ -45,7 +45,7 @@
 
 
 //--------------------------------------------------------------
-// GAMEFIX - error: '...' was not declared in this scope - chrissstrahl
+// GAMEFIX - Fixed: '...' was not declared in this scope - chrissstrahl
 //--------------------------------------------------------------
 extern void L_ShutdownEvents();
 extern void L_InitEvents();
@@ -154,7 +154,7 @@ extern "C" void G_ShutdownGame( void )
 	try
 	{
 		//--------------------------------------------------------------
-		// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+		// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 		//--------------------------------------------------------------
 		gi.Printf ("==== ShutdownGame ====\n");
 
@@ -206,12 +206,12 @@ only happens when a new game is begun
 extern "C" void G_InitGame( int startTime, int randomSeed )
 {
 	//--------------------------------------------------------------
-	// GAMEFIX - make sure to printed in windows and linux - chrissstrahl
+	// GAMEFIX - Changed: make sure to printed in windows and linux - chrissstrahl
 	//--------------------------------------------------------------
 	gi.Printf ("==== InitGame ====\n");
 
 	//--------------------------------------------------------------
-	// GAMEFIX - print identification string - chrissstrahl
+	// GAMEFIX - Added: print identification string - chrissstrahl
 	//--------------------------------------------------------------
 	str sLibrarayName = "gamex86.dll";	//WIN32
 #ifdef __linux__	
@@ -1300,7 +1300,7 @@ void G_BeginIntermission( const char *map )
 	level.nextmap = map;
 	
 	//--------------------------------------------------------------
-	// GAMEFIX - missing .c_str() - chrissstrahl
+	// GAMEFIX - Fixed: missing .c_str() - chrissstrahl
 	//--------------------------------------------------------------
 	if ( gi.areSublevels( level.mapname.c_str(), map) || !level._showIntermission)
 	{
@@ -1994,7 +1994,7 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 		// Setup the name
 
 		//--------------------------------------------------------------
-		// GAMEFIX - Stack Buffer Overflow - chrissstrahl
+		// GAMEFIX - Fixed: Stack Buffer Overflow - chrissstrahl
 		//--------------------------------------------------------------
 		strncpy(tempName, s, MAX_NETNAME - 1); // Prevent Overflow
 		tempName[MAX_NETNAME - 1] = '\0'; // Add zero termination
@@ -2005,7 +2005,7 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 		validName = false;
 
 		//--------------------------------------------------------------
-		// GAMEFIX - Prevent Overflow and Check for zero termination - chrissstrahl
+		// GAMEFIX - Fixed: Prevent Overflow and Check for zero termination - chrissstrahl
 		//--------------------------------------------------------------
 		for (int i = 0; i < MAX_NETNAME && tempName[i] != '\0'; i++)
 		{

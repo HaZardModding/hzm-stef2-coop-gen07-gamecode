@@ -1255,7 +1255,7 @@ void G_Physics_Toss( Entity *ent )
 		}
 	}
 	
-	// GAMEFIX - Is this necessary?
+	// GAMEFIX - Review: Is this necessary?
 	// move teamslaves
 	if ( ent->bind_info )
 	{

@@ -56,7 +56,7 @@ class UseData : public Class
 
 	public:
 		//--------------------------------------------------------------
-		// GAMEFIX - error : extra qualification 'UseData::' on member 'UseData'[-fpermissive]
+		// GAMEFIX - Fixed: extra qualification 'UseData::' on member 'UseData'[-fpermissive]
 		//--------------------------------------------------------------
 		UseData()
 			:_useAnim(""),

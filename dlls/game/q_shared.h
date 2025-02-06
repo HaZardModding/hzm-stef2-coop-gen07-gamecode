@@ -48,7 +48,7 @@
 
 
 //--------------------------------------------------------------
-// GAMEFIX - Deactivated: Suppression of warnings - Chrissstrahl
+// GAMEFIX - Disabled: Suppression of warnings - Chrissstrahl
 //--------------------------------------------------------------
 //#pragma warning(disable : 4018)     // signed/unsigned mismatch
 //#pragma warning(disable : 4201)     // nonstandard extension used : nameless struct/union

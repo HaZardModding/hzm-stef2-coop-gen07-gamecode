@@ -6780,7 +6780,7 @@ void Player::Kill( Event *ev )
 	}
 	
 	//--------------------------------------------------------------
-	// GAMEFIX - kill working during cinematic/spectator or if already dead - chrissstrahl
+	// GAMEFIX - Fixed: kill command working during cinematic/spectator or if already dead - chrissstrahl
 	//--------------------------------------------------------------
 	if (level.cinematic || health <= 0.0f || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this)) {
 		return;
@@ -9799,7 +9799,7 @@ void Player::StartFakePlayer( void )
 	}
 
 	//--------------------------------------------------------------
-	// GAMEFIX - crash in multiplayer - chrissstrahl
+	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->value != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");
@@ -9856,7 +9856,7 @@ void Player::FakePlayer( qboolean holster )
 	}
 
 	//--------------------------------------------------------------
-	// GAMEFIX - crash in multiplayer - chrissstrahl
+	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->value != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");
@@ -9894,7 +9894,7 @@ void Player::RemoveFakePlayer( void )
 	}
 
 	//--------------------------------------------------------------
-	// GAMEFIX - crash in multiplayer - chrissstrahl
+	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->value != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");

@@ -18,7 +18,7 @@
 Container<str> gameFixAPI_maplistContainer;
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if we are in Singleplayer - chrissstrahl
+// GAMEFIX - Added: Returns if we are in Singleplayer - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_inSingleplayer()
 {
@@ -26,7 +26,7 @@ bool gameFixAPI_inSingleplayer()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if we are in Multiplayer - chrissstrahl
+// GAMEFIX - Added: Returns if we are in Multiplayer - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_inMultiplayer()
 {
@@ -46,7 +46,7 @@ bool gameFixAPI_inMultiplayer()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if given entity(Player) is a spectator - chrissstrahl
+// GAMEFIX - Added: Returns if given entity(Player) is a spectator - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isSpectator_stef2(Entity* ent)
 {
@@ -67,7 +67,7 @@ bool gameFixAPI_isSpectator_stef2(Entity* ent)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if given entity(Sentient) is dead - chrissstrahl
+// GAMEFIX - Added: Returns if given entity(Sentient) is dead - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isDead(Entity* ent)
 {
@@ -78,7 +78,7 @@ bool gameFixAPI_isDead(Entity* ent)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if server is dedicated - chrissstrahl
+// GAMEFIX - Added: Returns if server is dedicated - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isDedicatedServer()
 {
@@ -86,7 +86,7 @@ bool gameFixAPI_isDedicatedServer()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if this is a Listen Server - chrissstrahl
+// GAMEFIX - Added: Returns if this is a Listen Server - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isListenServer()
 {
@@ -95,7 +95,7 @@ bool gameFixAPI_isListenServer()
 
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if server is running on Windows - chrissstrahl
+// GAMEFIX - Added: Returns if server is running on Windows - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isWindowsServer()
 {
@@ -115,7 +115,7 @@ bool gameFixAPI_isWindowsServer()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if server is running on Linux - chrissstrahl
+// GAMEFIX - Added: Returns if server is running on Linux - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isLinuxServer()
 {
@@ -127,7 +127,7 @@ bool gameFixAPI_isLinuxServer()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns if player is host - chrissstrahl
+// GAMEFIX - Added: Returns if player is host - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_isHost(Player *player)
 {
@@ -150,7 +150,7 @@ bool gameFixAPI_isHost(Player *player)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Prints Text to player hud/chat - chrissstrahl
+// GAMEFIX - Added: Prints Text to player hud/chat - chrissstrahl
 //--------------------------------------------------------------
 void gameFixAPI_hudPrint(Player* player, str sText)
 {
@@ -165,7 +165,7 @@ void gameFixAPI_hudPrint(Player* player, str sText)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns current maxclients - chrissstrahl
+// GAMEFIX - Added: Returns current maxclients - chrissstrahl
 //--------------------------------------------------------------
 int gameFixAPI_maxClients()
 {
@@ -259,7 +259,7 @@ void gameFixAPI_playerScore(Player* player)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Return Entity the Player is currently targeting - chrissstrahl
+// GAMEFIX - Added: Return Entity the Player is currently targeting - chrissstrahl
 //--------------------------------------------------------------
 Entity* gameFixAPI_getTargetedEntity(Player* player)
 {
@@ -276,7 +276,7 @@ Entity* gameFixAPI_getTargetedEntity(Player* player)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns CallvolumeTrigger Name this player is currently inside of - chrissstrahl
+// GAMEFIX - Added: Returns CallvolumeTrigger Name this player is currently inside of - chrissstrahl
 //--------------------------------------------------------------
 str gameFixAPI_getCurrentCallVolume(Player* player)
 {
@@ -291,7 +291,7 @@ str gameFixAPI_getCurrentCallVolume(Player* player)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Clears Archetype if no other player is targeting the given entity - chrissstrahl
+// GAMEFIX - Added: Clears Archetype if no other player is targeting the given entity - chrissstrahl
 //--------------------------------------------------------------
 void gameFixAPI_clearArchetypeInfoDisplay(Player* player, Entity* entity)
 {
@@ -305,7 +305,7 @@ void gameFixAPI_clearArchetypeInfoDisplay(Player* player, Entity* entity)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Returns closest player to given entity that also is inside a callvolume-trigger - chrissstrahl
+// GAMEFIX - Added: Returns closest player to given entity that also is inside a callvolume-trigger - chrissstrahl
 //--------------------------------------------------------------
 Player* gameFixAPI_getClosestPlayerInCallvolume(Entity* entity)
 {
@@ -380,7 +380,7 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Used to keep track of client commands - part of the replacements for sv_floodProtect- chrissstrahl
+// GAMEFIX - Added: Used to keep track of client commands - part of the replacements for sv_floodProtect- chrissstrahl
 //--------------------------------------------------------------
 bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd)
 {
@@ -430,7 +430,7 @@ bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Used to keep track of client chat - part of the replacements for sv_floodProtect- chrissstrahl
+// GAMEFIX - Added: Used to keep track of client chat - part of the replacements for sv_floodProtect- chrissstrahl
 //--------------------------------------------------------------
 bool gamefixAPI_chatUpdate(int clientNum, const str &text)
 {

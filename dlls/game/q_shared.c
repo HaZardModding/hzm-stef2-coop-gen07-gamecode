@@ -1393,7 +1393,7 @@ void Info_RemoveKey (char *s, const char *key)
 		if (!strcmp (key, pkey) )
 		{
 			//--------------------------------------------------------------
-			// GAMEFIX - strcpy-param-overlap - chrissstrahl
+			// GAMEFIX - Fixed: strcpy-param-overlap - chrissstrahl
 			//--------------------------------------------------------------
 			//strcpy (start, s);	// remove this part
 			memmove(start, s, strlen(s) + 1);
