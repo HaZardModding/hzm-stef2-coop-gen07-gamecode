@@ -13831,7 +13831,7 @@ void Actor::ArmorDamage( Event *ev )
 		
 		
 		//--------------------------------------------------------------
-		// GAMEFIX - Fixed: Warning C4996 stricmp: The POSIX name for this item is deprecated. Using Q_stricmp instead. - chrissstrahl
+		// GAMEFIX - Fixed: Actortypes Friend and Civilian getting aggressive or failing the Mission from splashdamage by player - chrissstrahl
 		//--------------------------------------------------------------
 		//if ( actortype == IS_TEAMMATE )
 		if ( actortype == IS_TEAMMATE || actortype == IS_CIVILIAN || actortype == IS_FRIEND )
