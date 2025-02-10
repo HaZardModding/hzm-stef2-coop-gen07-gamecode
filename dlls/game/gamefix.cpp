@@ -2299,11 +2299,45 @@ str gamefix_cleanMapName(const str& mapname)
 			cleanMapName.CapLength(filth);
 		}
 
+		//filter dot
+		filth = gamefix_findChar(mapname, '.');
+		if (filth != -1) {
+			cleanMapName.CapLength(filth);
+		}
+
 		//filter illegal potentially harfful char
 		filth = gamefix_findChar(mapname, '%');
 		if (filth != -1) {
 			cleanMapName.CapLength(filth);
-		}		
+		}
+	}			
+	return cleanMapName;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return cleaned up mapname inclusing parameters - chrissstrahl
+//--------------------------------------------------------------
+str gamefix_cleanMapKeepParameters(const str& mapname)
+{
+	str cleanMapName = mapname;
+
+	//clean leading slash, that might remained from a path
+	if (cleanMapName[0] == '/') {
+		cleanMapName = gamefix_getStringUntil(mapname, 1, mapname.length());
+	}
+
+	if (cleanMapName.length()) {
+		//filter dot
+		int filth = gamefix_findChar(mapname, '.');
+		if (filth != -1) {
+			cleanMapName.CapLength(filth);
+		}
+
+		//filter illegal potentially harfful char
+		filth = gamefix_findChar(mapname, '%');
+		if (filth != -1) {
+			cleanMapName.CapLength(filth);
+		}
 	}
 	return cleanMapName;
 }

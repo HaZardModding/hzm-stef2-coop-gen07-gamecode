@@ -201,6 +201,7 @@ str					gamefix_getLine(const str& sString, const unsigned int iStart);
 char*				gamefix_trimWhitespace(char* input, bool dontTrimNewLine);
 str					gamefix_trimWhitespace(const str& input, bool dontTrimNewLine);
 str					gamefix_cleanMapName(const str& mapname);
+str					gamefix_cleanMapKeepParameters(const str& mapname);
 str					gamefix_filterChars(const str filthy, str illegal);
 str					gamefix_stripDoubleChar(const str filthy, str illegal);
 
