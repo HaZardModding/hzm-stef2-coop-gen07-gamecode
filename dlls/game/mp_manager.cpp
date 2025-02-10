@@ -3895,10 +3895,11 @@ void MultiplayerManager::setNextMap( void )
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Clearing nextmap cvar to allow mp_mapList to take over if nextmap is not on server - chrissstrahl
+	// GAMEFIX - Changed: Now checking against cleaned mapname - chrissstrahl
 	//--------------------------------------------------------------
 	if (strlen( sv_nextmap->string ) != 0) {
 		nextMapName = sv_nextmap->string;
-		fullMapName = va("maps/%s.bsp", nextMapName.c_str());
+		fullMapName = va("maps/%s.bsp", gamefix_cleanMapName(nextMapName).c_str());
 		if (!gi.FS_Exists(fullMapName.c_str())) {
 			gi.Printf("nextmap: %s $$NotFoundOnServer$$\n", fullMapName.c_str());
 			gi.cvar_set("nextmap", "");
@@ -3913,9 +3914,10 @@ void MultiplayerManager::setNextMap( void )
 
 		//--------------------------------------------------------------
 		// GAMEFIX - Added: Skipping maps in mp_mapList that the server does not have - chrissstrahl
+		// GAMEFIX - Changed: Now checking against cleaned mapname - chrissstrahl
 		//--------------------------------------------------------------
 		int mapListTries = 0;
-		while ( !gi.FS_Exists(va("maps/%s.bsp", nextMapName.c_str())) ) {
+		while ( !gi.FS_Exists(va("maps/%s.bsp", gamefix_cleanMapName(nextMapName).c_str())) ) {
 			//give up after a few tries, if all the maps that follow do not exist, this limit is unlikley to ever be reached
 			mapListTries++;
 			if (mapListTries > 50) {

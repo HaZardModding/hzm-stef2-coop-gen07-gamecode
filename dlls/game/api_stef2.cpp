@@ -1094,7 +1094,7 @@ void gameFixAPI_mapList()
 		while (currentCharPos < maplistStrLength || addMap == true) {
 			if (addMap) {
 				if (strlen(mapname.c_str())) {
-					if (gi.FS_Exists(va("maps/%s.bsp", mapname.c_str()))) {
+					if (gi.FS_Exists(va("maps/%s.bsp", gamefix_cleanMapName(mapname).c_str()))) {
 						gameFixAPI_maplistContainer.AddObject(mapname);
 					}
 					else {

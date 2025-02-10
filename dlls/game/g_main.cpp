@@ -1430,8 +1430,9 @@ out: */
 		// level.nextmap should be set now, but if it isn't use the same map
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: crash in multiplayer if set nextmap does not exist - chrissstrahl
+		// GAMEFIX - Changed: Now checking against cleaned mapname - chrissstrahl
 		//--------------------------------------------------------------
-		if ( level.nextmap.length() == 0 || level.nextmap.length() && !gi.FS_Exists(va("maps/%s.bsp",level.nextmap.c_str())))
+		if ( level.nextmap.length() == 0 || level.nextmap.length() && !gi.FS_Exists(va("maps/%s.bsp", gamefix_cleanMapName(level.nextmap).c_str())))
 		{
 			// Stay on the same map since no nextmap was set
 			Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", level.mapname.c_str() );
