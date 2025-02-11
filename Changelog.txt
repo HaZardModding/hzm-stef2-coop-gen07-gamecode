@@ -28,6 +28,14 @@ Warning C6386: Buffer overflow while writing to objlist -> template< class Type 
 Warning C6385: Invalid data is being read from objlist-> template< class Type > void Container<Type>::Resize
 WARNING C6269: Potentially incorrect order of operations -> int BotAI(int client, float thinktime)
 
+Fixed: No damage in Multiplayer due to undeclared definition being used.
+projectile_rom-photonball.tik
+projectile_rom-photonball-boss.tik
+projectile-klingon-rig-arm.tik
+projectile-photonball-voyager.tik
+projectile_airstrike_photonball.tik
+projectile_photon_enterprise.tik
+
 Added: Function to return cleaned up mapname inclusing parameters - chrissstrahl
 str gamefix_cleanMapKeepParameters(const str& mapname)
 

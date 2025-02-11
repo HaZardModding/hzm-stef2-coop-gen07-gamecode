@@ -27,7 +27,8 @@ init
 		drunk 				1 3
 		surface all 			+nodraw
 		cache 				models/weapons/explosion-airstrike-photon.tik
-		multiplayer hitdamage 		$MP-PHOTON-DIRECT-DAMAGE$
+		//GAMEFIX - Fixed: No damage in Multiplayer due to undeclared definition being used.
+		//multiplayer hitdamage 		$MP-PHOTON-DIRECT-DAMAGE$
 		}
 
 	client

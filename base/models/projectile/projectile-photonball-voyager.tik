@@ -23,7 +23,8 @@ init
 		cache models/weapons/explosion-photon.tik
 		gravity 0
 		knockback 250
-		multiplayer hitdamage $MP-PHOTON-DIRECT-DAMAGE$
+		//GAMEFIX - Fixed: No damage in Multiplayer due to undecleared definition being used.
+		//multiplayer hitdamage $MP-PHOTON-DIRECT-DAMAGE$
 		}
 	client
 		{
