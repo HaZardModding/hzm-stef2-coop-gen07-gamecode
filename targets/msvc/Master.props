@@ -6,39 +6,42 @@
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>..\..\dlls\$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutDir>..\..\dlls\Debug\</OutDir>
+  <PropertyGroup Label="UserMacros">
+    <Checkered>false</Checkered>
+    <Checkered Condition="'$(Configuration)'=='Debug'">true</Checkered>
+    
+    <UnCheckered>true</UnCheckered>
+    <UnCheckered Condition="$(Checkered) == true">false</UnCheckered>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Checkered) == true">
     <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Intel Release'">
-    <OutDir>..\..\dlls\IntelRelease\</OutDir>
-    <IntDir>IntelRelease\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release CDROM'">
-    <OutDir>..\..\dlls\Release\</OutDir>
-    <IntDir>Release\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Demo Release'">
-    <OutDir>..\..\dlls\Demo_Release\</OutDir>
-    <IntDir>Demo_Release\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="$(Checkered) == true">MultiThreadedDebug</RuntimeLibrary>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>$(IntDir)\game.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>$(UnCheckered)</FunctionLevelLinking>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="$(Checkered) == true">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="$(Checkered) == false">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
-	    ..\..\Shared;
-	    ..\..\dlls\game\;
-	    ..\..\dlls;
-	    ..\..\Executable;
-	    %(AdditionalIncludeDirectories)
-	  </AdditionalIncludeDirectories>
+        ..\..\Shared;
+        ..\..\dlls\game\;
+        ..\..\dlls;
+        ..\..\Executable;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -46,6 +49,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TypeLibraryName>$(OutDir)\game.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
+      <PreprocessorDefinitions Condition="$(Checkered) == true">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="$(Checkered) == false">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -56,11 +61,15 @@
       <LinkDLL>true</LinkDLL>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>$(Checkered)</GenerateDebugInformation>
       <ImportLibrary>$(OutDir)\gamex86.lib</ImportLibrary>
       <ModuleDefinitionFile>..\..\dlls\game\game.def</ModuleDefinitionFile>
+      <OutputFile>..\..\Executable/$(Configuration)/gamex86.dll</OutputFile>
     </Link>
     <ResourceCompile>
       <Culture>0x0409</Culture>
+      <PreprocessorDefinitions Condition="$(Checkered) == true">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="$(Checkered) == false">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
 </Project>
