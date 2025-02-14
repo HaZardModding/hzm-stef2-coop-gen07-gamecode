@@ -14,7 +14,7 @@
 //
 // DESCRIPTION:
 
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 #include "float.h"
 
 // these routines will be handled as system calls

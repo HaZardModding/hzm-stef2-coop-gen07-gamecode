@@ -19,7 +19,7 @@
 #define __QFILES_H__
 
 #pragma warning( disable : 4201 )
-#include <game/q_shared.h>
+#include <qcommon/q_shared.h>
 
 //
 // qfiles.h: quake file formats

@@ -24,7 +24,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <game/q_shared.h>
+#include <qcommon/q_shared.h>
 
 /* 
 //--------------------------------------------------------------

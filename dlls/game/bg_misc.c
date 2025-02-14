@@ -17,7 +17,7 @@
 
 // included in both game dll and client
 
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 #include "bg_public.h"
 
 

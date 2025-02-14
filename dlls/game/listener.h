@@ -74,7 +74,7 @@ class Archiver;
 
 #elif defined ( UI_LIB )
 
-#include <game/q_shared.h>
+#include <qcommon/q_shared.h>
 #include "vector.h"
 #include "str.h"
 #include <qcommon/qcommon.h>
@@ -98,7 +98,7 @@ class Archiver;
 //
 // client specific defines
 //
-#include <game/q_shared.h>
+#include <qcommon/q_shared.h>
 #include "vector.h"
 #include "str.h"
 #include <qcommon/qcommon.h>

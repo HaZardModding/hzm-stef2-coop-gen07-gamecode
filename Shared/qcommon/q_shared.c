@@ -15,7 +15,7 @@
 // DESCRIPTION:
 // A mix of functions used by every part of the code
 
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 
 #ifdef _WIN32
 #pragma optimize( "", off )

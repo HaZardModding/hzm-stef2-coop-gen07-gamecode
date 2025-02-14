@@ -15,7 +15,7 @@
 // DESCRIPTION:
 // stateless support routines that are included in each code dll
 #include <qcommon/platform.h>
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 #include <math.h>
 #include "float.h"
 //intel addition

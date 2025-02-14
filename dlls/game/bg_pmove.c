@@ -14,7 +14,7 @@
 // DESCRIPTION:
 //
 
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 #include "bg_public.h"
 
 // all of the locals will be zeroed before each

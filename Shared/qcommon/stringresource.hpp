@@ -19,7 +19,7 @@
 #define STRING_RESOURCE_HPP
 
 
-#include <game/q_shared.h>
+#include <qcommon/q_shared.h>
 //#include "qcommon.h"
 #include <game/container.h>
 #include <game/str.h>

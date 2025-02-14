@@ -19,7 +19,7 @@
 #ifndef __G_LOCAL_H__
 #define __G_LOCAL_H__
 
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and gentity_t structures,

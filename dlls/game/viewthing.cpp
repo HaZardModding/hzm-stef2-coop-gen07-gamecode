@@ -20,7 +20,7 @@
 #include "entity.h"
 #include "viewthing.h"
 #include "player.h"
-#include "q_shared.h"
+#include <qcommon/q_shared.h>
 #include <qcommon/cm_public.h>
 
 // These command vars are used with the viewset and viewlist commands

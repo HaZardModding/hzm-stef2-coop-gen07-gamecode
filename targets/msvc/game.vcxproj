@@ -219,9 +219,6 @@
     <ClCompile Include="..\..\dlls\game\powerups.cpp" />
     <ClCompile Include="..\..\dlls\game\program.cpp" />
     <ClCompile Include="..\..\dlls\game\puzzleobject.cpp" />
-    <ClCompile Include="..\..\dlls\game\q_math.c" />
-    <ClCompile Include="..\..\dlls\game\q_mathsys.c" />
-    <ClCompile Include="..\..\dlls\game\q_shared.c" />
     <ClCompile Include="..\..\dlls\game\RageAI.cpp" />
     <ClCompile Include="..\..\dlls\game\rangedCombatWithWeapon.cpp" />
     <ClCompile Include="..\..\dlls\game\rotateToEntity.cpp" />
@@ -265,6 +262,9 @@
     <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp" />
     <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp" />
     <ClCompile Include="..\..\Shared\qcommon\output.cpp" />
+    <ClCompile Include="..\..\Shared\qcommon\q_math.c" />
+    <ClCompile Include="..\..\Shared\qcommon\q_mathsys.c" />
+    <ClCompile Include="..\..\Shared\qcommon\q_shared.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\dlls\game\_pch_cpp.h" />
@@ -400,7 +400,6 @@
     <ClInclude Include="..\..\dlls\game\powerups.h" />
     <ClInclude Include="..\..\dlls\game\program.h" />
     <ClInclude Include="..\..\dlls\game\puzzleobject.hpp" />
-    <ClInclude Include="..\..\dlls\game\q_shared.h" />
     <ClInclude Include="..\..\dlls\game\queue.h" />
     <ClInclude Include="..\..\dlls\game\RageAI.h" />
     <ClInclude Include="..\..\dlls\game\rangedCombatWithWeapon.hpp" />
@@ -445,11 +444,17 @@
     <ClInclude Include="..\..\dlls\game\weaputils.h" />
     <ClInclude Include="..\..\dlls\game\work.hpp" />
     <ClInclude Include="..\..\dlls\game\worldspawn.h" />
+    <ClInclude Include="..\..\Shared\qcommon\alias.h" />
+    <ClInclude Include="..\..\Shared\qcommon\cm_public.h" />
     <ClInclude Include="..\..\Shared\qcommon\gameplaydatabase.h" />
     <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h" />
     <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h" />
     <ClInclude Include="..\..\Shared\qcommon\output.h" />
+    <ClInclude Include="..\..\Shared\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\Shared\qcommon\qfiles.h" />
     <ClInclude Include="..\..\Shared\qcommon\quaternion.h" />
+    <ClInclude Include="..\..\Shared\qcommon\stringresource.hpp" />
+    <ClInclude Include="..\..\Shared\qcommon\tiki_script.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\dlls\game\game.def" />
