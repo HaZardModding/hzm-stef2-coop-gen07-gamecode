@@ -1,0 +1,11 @@
+
+game/Debug
+game/Release
+game/Obj
+Debug
+Release
+game/*.recipe
+game/*.ilk
+game/*.log
+game/vc.nativecodeanalysis.all.xml
+game/CodeAnalysisResultManifest.txt
