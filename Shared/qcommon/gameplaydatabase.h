@@ -29,7 +29,7 @@ class GameplayProperty;
 
 #include <game/class.h>
 #include <game/listener.h>
-#include <game/str.h>
+#include <utils/str.h>
 #include <game/container.h>
 #include <qcommon/tiki_script.h>
 

@@ -42,7 +42,7 @@
 #include "item.h"
 #include "PlayerStart.h"      // for PlayerDeathmatchStart
 #include "container.h"        // for Container
-#include "str.h"              // for str
+#include "utils/str.h"              // for str
 
 //-------------------------------------------------------------------
 // SimpleAmmoType -- Defines a type of ammo and a quantity.  Used for

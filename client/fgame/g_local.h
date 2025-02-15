@@ -96,7 +96,7 @@
 #include "g_public.h"
 #include "bg_public.h"
 #include "container.h"
-#include "str.h"
+#include "utils/str.h"
 
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"fakk2"

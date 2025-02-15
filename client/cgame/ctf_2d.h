@@ -33,7 +33,7 @@
 //only use these bits in c++
 //
 #ifdef __cplusplus
-	#include "str.h"
+	#include "utils/str.h"
 
 	namespace CTF{
 		void DrawHud();

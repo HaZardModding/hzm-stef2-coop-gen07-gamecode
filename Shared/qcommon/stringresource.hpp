@@ -22,7 +22,7 @@
 #include <qcommon/q_shared.h>
 //#include "qcommon.h"
 #include <game/container.h>
-#include <game/str.h>
+#include <utils/str.h>
 
 //#include <cgame/cg_local.h>
 //#include <cgame/cg_commands.h>

@@ -10,12 +10,6 @@
     <Filter Include="Client\fgame">
       <UniqueIdentifier>{f3ecb224-4140-49c3-9e1a-c0a9709c5591}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{0928c9f0-8aab-4b89-8d2b-a038cdab562b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="QCommon">
-      <UniqueIdentifier>{2222407e-1eb2-42a3-842b-b3677bc747e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Server">
       <UniqueIdentifier>{975601ac-c379-46cc-8707-4c4d8f2a3970}</UniqueIdentifier>
     </Filter>
@@ -55,6 +49,15 @@
     </Filter>
     <Filter Include="Server\Source Files\Multiplayer">
       <UniqueIdentifier>{36d6c82b-e97d-4aaf-87b0-a2f19cffb597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared">
+      <UniqueIdentifier>{0928c9f0-8aab-4b89-8d2b-a038cdab562b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared\QCommon">
+      <UniqueIdentifier>{2222407e-1eb2-42a3-842b-b3677bc747e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared\utils">
+      <UniqueIdentifier>{e7956262-790a-4ada-b58d-493e866947a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -146,9 +149,6 @@
       <Filter>Client\cgame</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\cgame\script.cpp">
-      <Filter>Client\cgame</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\client\cgame\str.cpp">
       <Filter>Client\cgame</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\fgame\actor.cpp">
@@ -410,9 +410,6 @@
       <Filter>Client\fgame</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\fgame\steering.cpp">
-      <Filter>Client\fgame</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\client\fgame\str.cpp">
       <Filter>Client\fgame</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\fgame\sword.cpp">
@@ -850,9 +847,6 @@
     <ClCompile Include="..\..\dlls\game\steering.cpp">
       <Filter>Server\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\dlls\game\str.cpp">
-      <Filter>Server\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\dlls\game\suppressionFireCombat.cpp">
       <Filter>Server\Source Files\Behaviors</Filter>
     </ClCompile>
@@ -914,7 +908,7 @@
       <Filter>Server\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\gameplaydatabase.cpp">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp">
       <Filter>Server\Source Files</Filter>
@@ -923,16 +917,19 @@
       <Filter>Server\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\output.cpp">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\q_math.c">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\q_mathsys.c">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\q_shared.c">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\utils\str.cpp">
+      <Filter>Shared\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -979,9 +976,6 @@
       <Filter>Client\cgame</Filter>
     </ClInclude>
     <ClInclude Include="..\..\client\cgame\script.h">
-      <Filter>Client\cgame</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\cgame\str.h">
       <Filter>Client\cgame</Filter>
     </ClInclude>
     <ClInclude Include="..\..\client\cgame\tr_types.h">
@@ -1264,9 +1258,6 @@
       <Filter>Client\fgame</Filter>
     </ClInclude>
     <ClInclude Include="..\..\client\fgame\steering.h">
-      <Filter>Client\fgame</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\fgame\str.h">
       <Filter>Client\fgame</Filter>
     </ClInclude>
     <ClInclude Include="..\..\client\fgame\surfaceflags.h">
@@ -1770,9 +1761,6 @@
     <ClInclude Include="..\..\dlls\game\steering.h">
       <Filter>Server\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\dlls\game\str.h">
-      <Filter>Server\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\dlls\game\suppressionFireCombat.hpp">
       <Filter>Server\Header Files\BehaviorHeaders</Filter>
     </ClInclude>
@@ -1843,37 +1831,40 @@
       <Filter>Server\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\alias.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\cm_public.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\gameplaydatabase.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\output.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\q_shared.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\qfiles.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\quaternion.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\stringresource.hpp">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\tiki_script.h">
-      <Filter>QCommon</Filter>
+      <Filter>Shared\QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\utils\str.h">
+      <Filter>Shared\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1883,24 +1874,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\client\cgame\cgame.def">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.dsp">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.plg">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.Tags.WW">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.vcxproj">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.vcxproj.filters">
-      <Filter>Client\cgame</Filter>
-    </None>
-    <None Include="..\..\client\cgame\cgame.vcxproj.user">
       <Filter>Client\cgame</Filter>
     </None>
     <None Include="..\..\client\cgame\mssccprj.scc">

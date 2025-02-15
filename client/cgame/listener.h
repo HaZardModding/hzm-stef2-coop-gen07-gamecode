@@ -194,7 +194,7 @@ class Archiver;
 //
 #include "cg_local.h"
 #include "vector.h"
-#include "str.h"
+#include "utils/str.h"
 #include "../qcommon/qcommon.h"
 
 #define EVENT_DebugPrintf cgi.DebugPrintf
@@ -210,7 +210,7 @@ class Archiver;
 
 #include "../fgame/q_shared.h"
 #include "vector.h"
-#include "str.h"
+#include "utils/str.h"
 #include "../qcommon/qcommon.h"
 #include "ui_local.h"
 
@@ -230,7 +230,7 @@ class Archiver;
 //
 #include "../fgame/q_shared.h"
 #include "vector.h"
-#include "str.h"
+#include "utils/str.h"
 #include "../qcommon/qcommon.h"
 
 #define EVENT_DebugPrintf Com_DebugPrintf

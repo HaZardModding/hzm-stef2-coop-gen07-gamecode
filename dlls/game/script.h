@@ -27,7 +27,7 @@
 
 #include "class.h"
 #include "vector.h"
-#include "str.h"
+#include "utils/str.h"
 
 #define	MAXTOKEN	256
 

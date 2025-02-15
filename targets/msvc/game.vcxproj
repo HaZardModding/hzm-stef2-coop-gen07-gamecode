@@ -618,7 +618,6 @@
     <ClCompile Include="..\..\dlls\game\stationaryFireCombatEX.cpp" />
     <ClCompile Include="..\..\dlls\game\stationaryvehicle.cpp" />
     <ClCompile Include="..\..\dlls\game\steering.cpp" />
-    <ClCompile Include="..\..\dlls\game\str.cpp" />
     <ClCompile Include="..\..\dlls\game\suppressionFireCombat.cpp" />
     <ClCompile Include="..\..\dlls\game\talk.cpp" />
     <ClCompile Include="..\..\dlls\game\teammateroster.cpp" />
@@ -646,6 +645,7 @@
     <ClCompile Include="..\..\Shared\qcommon\q_math.c" />
     <ClCompile Include="..\..\Shared\qcommon\q_mathsys.c" />
     <ClCompile Include="..\..\Shared\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\Shared\utils\str.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\cgame\cg_commands.h">
@@ -1170,7 +1170,6 @@
     <ClInclude Include="..\..\dlls\game\stationaryFireCombatEX.hpp" />
     <ClInclude Include="..\..\dlls\game\stationaryvehicle.hpp" />
     <ClInclude Include="..\..\dlls\game\steering.h" />
-    <ClInclude Include="..\..\dlls\game\str.h" />
     <ClInclude Include="..\..\dlls\game\suppressionFireCombat.hpp" />
     <ClInclude Include="..\..\dlls\game\surfaceflags.h" />
     <ClInclude Include="..\..\dlls\game\syn.h" />
@@ -1205,6 +1204,7 @@
     <ClInclude Include="..\..\Shared\qcommon\quaternion.h" />
     <ClInclude Include="..\..\Shared\qcommon\stringresource.hpp" />
     <ClInclude Include="..\..\Shared\qcommon\tiki_script.h" />
+    <ClInclude Include="..\..\Shared\utils\str.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\dlls\game\game.def" />

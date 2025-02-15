@@ -22,7 +22,7 @@
 #include "item.h"
 #include "PlayerStart.h"      // for PlayerDeathmatchStart
 #include "container.h"        // for Container
-#include "str.h"              // for str
+#include "utils/str.h"              // for str
 #include "mp_shared.hpp"
 #include "equipment.h"
 

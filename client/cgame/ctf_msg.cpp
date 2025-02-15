@@ -9,7 +9,7 @@
 #include "ctf_msg.h"
 #include "cg_local.h"
 #include "ctf_cg_drawtools.h"
-#include "str.h"
+#include "utils/str.h"
 
 #pragma warning(push, 1)
 #include <list>

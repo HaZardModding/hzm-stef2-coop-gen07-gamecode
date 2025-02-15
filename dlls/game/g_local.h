@@ -28,7 +28,7 @@
 #include "g_public.h"
 #include "bg_public.h"
 #include "container.h"
-#include "str.h"
+#include "utils/str.h"
 
 // times for posting events
 // Even though negative times technically don't make sense, the effect is to

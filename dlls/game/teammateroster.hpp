@@ -18,7 +18,7 @@
 
 #include "listener.h"
 #include "container.h"
-#include "str.h"
+#include "utils/str.h"
 
 const int MAX_TEAMMATES=4;
 

@@ -17,7 +17,7 @@
 #pragma warning(pop)
 
 #include "cg_local.h"
-#include "str.h"
+#include "utils/str.h"
 
 namespace CTF{
 

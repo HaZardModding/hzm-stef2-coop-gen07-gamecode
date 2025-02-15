@@ -13,7 +13,7 @@
 #endif // _MSC_VER > 1000
 
 #ifdef __cplusplus
-#include "str.h"
+#include "utils/str.h"
 
 extern float SCREEN_W;
 extern float SCREEN_H;

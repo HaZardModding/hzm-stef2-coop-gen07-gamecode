@@ -14,7 +14,7 @@
 
 
 #include "output.h"
-#include <game/str.h> // Was uilib/str.h
+#include <utils/str.h> // Was uilib/str.h
 
 //================================================================
 // Name:				DocFileOutput

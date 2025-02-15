@@ -434,7 +434,7 @@ void Container<Type>::Sort
 #if 0
 #if defined( GAME_DLL )
 
-#include "str.h"
+#include "utils/str.h"
 void Container<str>::Archive
 	(
    Archiver &arc

@@ -13,7 +13,7 @@
 #include <vector>
 #include <list>
 #include <algorithm>
-#include "str.h"
+#include "utils/str.h"
 #pragma warning(pop)
 
 #include "cg_local.h"

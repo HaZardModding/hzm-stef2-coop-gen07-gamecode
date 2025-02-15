@@ -19,7 +19,7 @@
 #ifndef __UMAP_H__
 #define __UMAP_H__
 
-#include "str.h"
+#include "utils/str.h"
 #include <stdlib.h>
 
 template< class Type >

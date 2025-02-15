@@ -521,7 +521,7 @@ Type& Container<Type>::operator[]( const int index ) const
 #if 0
 #if defined( GAME_DLL )
 
-#include "str.h"
+#include "utils/str.h"
 void Container<str>::Archive
 	(
    Archiver &arc
