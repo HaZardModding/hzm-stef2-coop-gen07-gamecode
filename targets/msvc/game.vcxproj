@@ -102,6 +102,387 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\client\cgame\cg_beam.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_commands.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_consolecmds.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ctf_view.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_drawtools.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ents.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_lightstyles.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_main.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_marks.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_modelanim.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_player.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_playerstate.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_predict.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_servercmds.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_snapshot.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_sound.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_specialfx.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_swipe.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_testemitter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ui.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_view.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\class.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_2d.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_cg_drawtools.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\CTF_ItemPickup.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_msg.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_reward.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_tech.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\listener.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\script.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\actor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ammo.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\animate.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\archive.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\armor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\beam.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\behavior.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bg_misc.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bg_pmove.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bspline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\camera.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\characterstate.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\class.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\clusterbomb.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\crossbow.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_DeadBody.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_flag.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_global.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_InventoryItem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_itemspawner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_manager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Obituary.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_player.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_PlayerStart.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_TargetGive.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_TargetLocation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Team.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Tech.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\debuglines.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\decals.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\dm_manager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\doors.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\earthquake.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\edenwater.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\entity.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\explosion.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\flamethrower.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\flashbang.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_main.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_phys.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_spawn.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_utils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\game.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamecmds.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamecvars.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamescript.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gibs.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\goo.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gravpath.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\health.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\hornofconjuring.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\inventoryitem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ipfilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\item.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ItemSpawner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\level.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\light.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\listener.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\misc.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\mover.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\nature.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\navigate.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\object.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\OtherVoteCommands.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\path.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player_combat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player_util.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\PlayerStart.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\portal.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\powerups.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_math.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_mathsys.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_shared.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\rope.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\script.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptmaster.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptslave.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptvariable.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\sentient.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\shield.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\soulsucker.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\soundman.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\spawners.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\specialfx.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\Spit.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\steering.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\sword.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\trigger.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\vehicle.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\viewthing.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\Vote.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\VoteCommand.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\VoteCommandFactory.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\weapon.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\weaputils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\worldspawn.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\dlls\game\_pch_cpp.cpp" />
     <ClCompile Include="..\..\dlls\game\actor.cpp" />
     <ClCompile Include="..\..\dlls\game\actor_combatsubsystem.cpp" />
@@ -267,6 +648,375 @@
     <ClCompile Include="..\..\Shared\qcommon\q_shared.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\client\cgame\cg_commands.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_ctf_view.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_local.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_public.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\class.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\container.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_2d.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_cg_drawtools.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\CTF_ItemPickup.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_msg.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_reward.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_tech.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\Linklist.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\listener.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\script.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\tr_types.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\vector.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\actor.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ammo.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\animate.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\archive.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\armor.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\beam.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\behavior.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bg_local.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bg_public.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bspline.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\camera.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\characterstate.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\class.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\clusterbomb.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\container.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\crossbow.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_DeadBody.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_flag.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_global.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_InventoryItem.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_itemspawner.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_manager.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Obituary.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_player.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_player_fwrd.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_PlayerStart.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_TargetGive.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_TargetLocation.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Team.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Tech.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_types.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\debuglines.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\decals.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\dm_manager.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\doors.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\earthquake.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\edenwater.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\entity.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\EntityClassIterator.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\explosion.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\flamethrower.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\flashbang.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_local.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_main.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_phys.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_public.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_spawn.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_utils.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\game.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamecmds.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamecvars.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamescript.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gibs.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\goo.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gravpath.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\health.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\hornofconjuring.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\inventoryitem.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ipfilter.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\item.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ItemSpawner.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\level.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\light.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Linklist.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\listener.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\misc.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\mover.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\nature.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\navigate.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\object.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\OtherVoteCommands.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\path.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\player.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\PlayerStart.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\portal.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\powerups.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\q_shared.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\queue.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\rope.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\script.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptmaster.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptslave.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptvariable.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\sentient.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\shield.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\soulsucker.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\soundman.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\spawners.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\specialfx.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Spit.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\stack.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\steering.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\surfaceflags.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\sword.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\TeamIterator.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\trigger.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\umap.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\vector.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\vehicle.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\viewthing.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Vote.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\VoteCommand.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\VoteCommandFactory.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\weapon.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\weaputils.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\worldspawn.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\dlls\game\_pch_cpp.h" />
     <ClInclude Include="..\..\dlls\game\actor.h" />
     <ClInclude Include="..\..\dlls\game\actor_combatsubsystem.h" />
@@ -458,6 +1208,50 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\dlls\game\game.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\client\cgame\cgame.def">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\cgame\mssccprj.scc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\cgame\vssver.scc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\cgame.def">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.dsp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.dsw">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.plg">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.Tags.WW">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj.filters">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj.user">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\game.def">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\mssccprj.scc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\client\fgame\vssver.scc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

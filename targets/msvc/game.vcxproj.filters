@@ -4,6 +4,15 @@
     <Filter Include="Client">
       <UniqueIdentifier>{a51cc0e8-cbcc-45b2-b80b-e5bc11fc7779}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Client\cgame">
+      <UniqueIdentifier>{3ae6cc6a-72a9-43a2-9b4f-3f2f99c5aae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\fgame">
+      <UniqueIdentifier>{f3ecb224-4140-49c3-9e1a-c0a9709c5591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{0928c9f0-8aab-4b89-8d2b-a038cdab562b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="QCommon">
       <UniqueIdentifier>{2222407e-1eb2-42a3-842b-b3677bc747e3}</UniqueIdentifier>
     </Filter>
@@ -49,6 +58,393 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\client\cgame\cg_beam.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_commands.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_consolecmds.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ctf_view.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_drawtools.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ents.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_lightstyles.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_main.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_marks.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_modelanim.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_player.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_playerstate.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_predict.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_servercmds.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_snapshot.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_sound.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_specialfx.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_swipe.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_testemitter.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_ui.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\cg_view.c">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\class.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_2d.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_cg_drawtools.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\CTF_ItemPickup.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_msg.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_reward.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\ctf_tech.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\listener.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\script.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\cgame\str.cpp">
+      <Filter>Client\cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\actor.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ammo.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\animate.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\archive.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\armor.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\beam.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\behavior.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bg_misc.c">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bg_pmove.c">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\bspline.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\camera.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\characterstate.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\class.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\clusterbomb.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\crossbow.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_DeadBody.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_flag.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_global.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_InventoryItem.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_itemspawner.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_manager.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Obituary.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ctf_player.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_PlayerStart.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_TargetGive.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_TargetLocation.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Team.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\CTF_Tech.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\debuglines.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\decals.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\dm_manager.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\doors.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\earthquake.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\edenwater.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\entity.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\explosion.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\flamethrower.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\flashbang.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_main.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_phys.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_spawn.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\g_utils.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\game.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamecmds.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamecvars.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gamescript.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gibs.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\goo.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\gravpath.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\health.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\hornofconjuring.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\inventoryitem.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ipfilter.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\item.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\ItemSpawner.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\level.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\light.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\listener.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\misc.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\mover.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\nature.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\navigate.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\object.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\OtherVoteCommands.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\path.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player_combat.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\player_util.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\PlayerStart.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\portal.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\powerups.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_math.c">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_mathsys.c">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\q_shared.c">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\rope.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\script.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptmaster.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptslave.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\scriptvariable.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\sentient.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\shield.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\soulsucker.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\soundman.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\spawners.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\specialfx.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\Spit.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\steering.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\str.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\sword.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\trigger.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\vehicle.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\viewthing.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\Vote.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\VoteCommand.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\VoteCommandFactory.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\weapon.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\weaputils.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\fgame\worldspawn.cpp">
+      <Filter>Client\fgame</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\dlls\game\_pch_cpp.cpp">
       <Filter>Server\Source Files</Filter>
     </ClCompile>
@@ -540,6 +936,381 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\client\cgame\cg_commands.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_ctf_view.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_local.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\cg_public.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\class.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\container.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_2d.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_cg_drawtools.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\CTF_ItemPickup.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_msg.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_reward.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\ctf_tech.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\Linklist.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\listener.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\script.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\str.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\tr_types.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\cgame\vector.h">
+      <Filter>Client\cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\actor.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ammo.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\animate.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\archive.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\armor.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\beam.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\behavior.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bg_local.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bg_public.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\bspline.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\camera.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\characterstate.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\class.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\clusterbomb.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\container.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\crossbow.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_DeadBody.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_flag.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_global.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_InventoryItem.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_itemspawner.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_manager.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Obituary.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_player.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_player_fwrd.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_PlayerStart.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_TargetGive.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_TargetLocation.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Team.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\CTF_Tech.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ctf_types.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\debuglines.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\decals.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\dm_manager.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\doors.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\earthquake.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\edenwater.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\entity.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\EntityClassIterator.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\explosion.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\flamethrower.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\flashbang.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_local.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_main.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_phys.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_public.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_spawn.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\g_utils.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\game.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamecmds.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamecvars.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gamescript.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gibs.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\goo.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\gravpath.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\health.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\hornofconjuring.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\inventoryitem.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ipfilter.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\item.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\ItemSpawner.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\level.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\light.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Linklist.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\listener.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\misc.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\mover.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\nature.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\navigate.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\object.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\OtherVoteCommands.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\path.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\player.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\PlayerStart.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\portal.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\powerups.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\q_shared.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\queue.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\rope.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\script.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptmaster.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptslave.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\scriptvariable.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\sentient.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\shield.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\soulsucker.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\soundman.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\spawners.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\specialfx.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Spit.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\stack.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\steering.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\str.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\surfaceflags.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\sword.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\TeamIterator.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\trigger.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\umap.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\vector.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\vehicle.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\viewthing.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\Vote.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\VoteCommand.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\VoteCommandFactory.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\weapon.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\weaputils.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\fgame\worldspawn.h">
+      <Filter>Client\fgame</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\dlls\game\_pch_cpp.h">
       <Filter>Server\Header Files</Filter>
     </ClInclude>
@@ -1109,5 +1880,67 @@
     <CustomBuild Include="..\..\dlls\game\game.def">
       <Filter>Server\Resource Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\client\cgame\cgame.def">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.dsp">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.plg">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.Tags.WW">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.vcxproj">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.vcxproj.filters">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\cgame.vcxproj.user">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\mssccprj.scc">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\cgame\vssver.scc">
+      <Filter>Client\cgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\cgame.def">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.dsp">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.dsw">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.plg">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.Tags.WW">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj.filters">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\fgame.vcxproj.user">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\game.def">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\mssccprj.scc">
+      <Filter>Client\fgame</Filter>
+    </None>
+    <None Include="..\..\client\fgame\vssver.scc">
+      <Filter>Client\fgame</Filter>
+    </None>
   </ItemGroup>
 </Project>
