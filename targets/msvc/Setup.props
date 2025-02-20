@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ProjectFileVersion>16.0.30804.86</_ProjectFileVersion>
+    <_PropertySheetDisplayName>Setup</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <!-- Global Master Property sheet -->
+    <Import Project="Toolset.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <!-- Paths -->
+    <RootDir>$(MSBuildThisFileDirectory)\..\..</RootDir>
+  </PropertyGroup>
+</Project>

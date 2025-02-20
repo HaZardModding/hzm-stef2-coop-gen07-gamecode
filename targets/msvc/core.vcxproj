@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Core</ProjectName>
+    <ProjectGuid>{6D819451-4536-4EF7-9F0B-7224E569101B}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <!-- Default setup -->
+    <Import Project="Setup.props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <!-- Master Property sheet -->
+    <Import Project="Master.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\core\class.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\listener.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\qcommon\q_math.c" />
+    <ClCompile Include="..\..\src\core\qcommon\q_mathsys.c" />
+    <ClCompile Include="..\..\src\core\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\src\core\utils\output.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\utils\str.cpp" />
+    <ClCompile Include="..\..\src\core\win_bounds.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\core\class.h" />
+    <ClInclude Include="..\..\src\core\container.h" />
+    <ClInclude Include="..\..\src\core\gamedefs.h" />
+    <ClInclude Include="..\..\src\core\listener.h" />
+    <ClInclude Include="..\..\src\core\qcommon\alias.h" />
+    <ClInclude Include="..\..\src\core\qcommon\cm_public.h" />
+    <ClInclude Include="..\..\src\core\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\src\core\qcommon\qcommon.h" />
+    <ClInclude Include="..\..\src\core\qcommon\qfiles.h" />
+    <ClInclude Include="..\..\src\core\qcommon\quaternion.h" />
+    <ClInclude Include="..\..\src\core\qcommon\stringresource.hpp" />
+    <ClInclude Include="..\..\src\core\qcommon\tiki_script.h" />
+    <ClInclude Include="..\..\src\core\surfaceflags.h" />
+    <ClInclude Include="..\..\src\core\utils\bit_vector.h" />
+    <ClInclude Include="..\..\src\core\utils\Linklist.h" />
+    <ClInclude Include="..\..\src\core\utils\output.h" />
+    <ClInclude Include="..\..\src\core\utils\queue.h" />
+    <ClInclude Include="..\..\src\core\utils\stack.h" />
+    <ClInclude Include="..\..\src\core\utils\str.h" />
+    <ClInclude Include="..\..\src\core\utils\umap.h" />
+    <ClInclude Include="..\..\src\core\utils\vector.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

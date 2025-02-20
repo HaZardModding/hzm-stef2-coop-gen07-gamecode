@@ -1,0 +1,36 @@
+# Auto generated files
+[Dd]ebug/
+[Rr]elease/
+build/*
+*.slo
+*.lo
+*.o
+*.obj
+*.suo
+*.tlog
+*.ilk
+*.log
+*.pdb
+*.idb
+*.iobj
+*.ipdb
+*.opensdf
+*.sdf
+*.ipch
+*.sbr
+*.lastbuildstate
+*.ncb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# KDevelop
+*.kdev4

@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Demo Release|Win32">
+      <Configuration>Demo Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Intel Release|Win32">
+      <Configuration>Intel Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release CDROM|Win32">
+      <Configuration>Release CDROM</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="VTune|Win32">
+      <Configuration>VTune</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Server</ProjectName>
+    <ProjectGuid>{FBA3FDFE-91F7-C103-8A19-685BD2ECF5BB}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <!-- Default setup -->
+    <Import Project="Setup.props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <!-- Master Property sheet -->
+    <Import Project="Master-Server.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\core\class.cpp" />
+    <ClCompile Include="..\..\src\core\listener.cpp" />
+    <ClCompile Include="..\..\src\core\utils\output.cpp" />
+    <ClCompile Include="..\..\src\core\win_bounds.cpp" />
+    <ClCompile Include="..\..\src\server\_pch_cpp.cpp" />
+    <ClCompile Include="..\..\src\server\actor.cpp" />
+    <ClCompile Include="..\..\src\server\actor_combatsubsystem.cpp" />
+    <ClCompile Include="..\..\src\server\actor_enemymanager.cpp" />
+    <ClCompile Include="..\..\src\server\actor_headwatcher.cpp" />
+    <ClCompile Include="..\..\src\server\actor_locomotion.cpp" />
+    <ClCompile Include="..\..\src\server\actor_posturecontroller.cpp" />
+    <ClCompile Include="..\..\src\server\actor_sensoryperception.cpp" />
+    <ClCompile Include="..\..\src\server\actorgamecomponents.cpp" />
+    <ClCompile Include="..\..\src\server\actorstrategies.cpp" />
+    <ClCompile Include="..\..\src\server\actorutil.cpp" />
+    <ClCompile Include="..\..\src\server\ai_chat.cpp" />
+    <ClCompile Include="..\..\src\server\ai_cmd.cpp" />
+    <ClCompile Include="..\..\src\server\ai_dmnet.cpp" />
+    <ClCompile Include="..\..\src\server\ai_dmq3.cpp" />
+    <ClCompile Include="..\..\src\server\ai_main.cpp" />
+    <ClCompile Include="..\..\src\server\ai_team.cpp" />
+    <ClCompile Include="..\..\src\server\ai_vcmd.cpp" />
+    <ClCompile Include="..\..\src\server\ammo.cpp" />
+    <ClCompile Include="..\..\src\server\animate.cpp" />
+    <ClCompile Include="..\..\src\server\api_stef2.cpp" />
+    <ClCompile Include="..\..\src\server\archive.cpp" />
+    <ClCompile Include="..\..\src\server\armor.cpp" />
+    <ClCompile Include="..\..\src\server\beam.cpp" />
+    <ClCompile Include="..\..\src\server\behavior.cpp" />
+    <ClCompile Include="..\..\src\server\behaviors_general.cpp" />
+    <ClCompile Include="..\..\src\server\behaviors_specific.cpp" />
+    <ClCompile Include="..\..\src\server\bg_misc.c" />
+    <ClCompile Include="..\..\src\server\bg_pmove.c" />
+    <ClCompile Include="..\..\src\server\body.cpp" />
+    <ClCompile Include="..\..\src\server\bspline.cpp" />
+    <ClCompile Include="..\..\src\server\camera.cpp" />
+    <ClCompile Include="..\..\src\server\CameraPath.cpp" />
+    <ClCompile Include="..\..\src\server\changePosture.cpp" />
+    <ClCompile Include="..\..\src\server\characterstate.cpp" />
+    <ClCompile Include="..\..\src\server\CinematicArmature.cpp" />
+    <ClCompile Include="..\..\src\server\closeInOnEnemy.cpp" />
+    <ClCompile Include="..\..\src\server\closeInOnEnemyWhileFiringWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\closeInOnPlayer.cpp" />
+    <ClCompile Include="..\..\src\server\compiler.cpp" />
+    <ClCompile Include="..\..\src\server\corridorCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\coverCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\DamageModification.cpp" />
+    <ClCompile Include="..\..\src\server\debuglines.cpp" />
+    <ClCompile Include="..\..\src\server\decals.cpp" />
+    <ClCompile Include="..\..\src\server\dispenser.cpp" />
+    <ClCompile Include="..\..\src\server\doAttack.cpp" />
+    <ClCompile Include="..\..\src\server\doors.cpp" />
+    <ClCompile Include="..\..\src\server\earthquake.cpp" />
+    <ClCompile Include="..\..\src\server\entity.cpp" />
+    <ClCompile Include="..\..\src\server\equipment.cpp" />
+    <ClCompile Include="..\..\src\server\explosion.cpp" />
+    <ClCompile Include="..\..\src\server\FollowPath.cpp" />
+    <ClCompile Include="..\..\src\server\FollowPathToEntity.cpp" />
+    <ClCompile Include="..\..\src\server\FollowPathToPoint.cpp" />
+    <ClCompile Include="..\..\src\server\g_bot.cpp" />
+    <ClCompile Include="..\..\src\server\g_main.cpp" />
+    <ClCompile Include="..\..\src\server\g_phys.cpp" />
+    <ClCompile Include="..\..\src\server\g_spawn.cpp" />
+    <ClCompile Include="..\..\src\server\g_utils.cpp" />
+    <ClCompile Include="..\..\src\server\game.cpp" />
+    <ClCompile Include="..\..\src\server\gamecmds.cpp" />
+    <ClCompile Include="..\..\src\server\gamecvars.cpp" />
+    <ClCompile Include="..\..\src\server\gamefix.cpp" />
+    <ClCompile Include="..\..\src\server\gameplay\gameplaydatabase.cpp" />
+    <ClCompile Include="..\..\src\server\gameplay\gameplayformulamanager.cpp" />
+    <ClCompile Include="..\..\src\server\gameplay\gameplaymanager.cpp" />
+    <ClCompile Include="..\..\src\server\gamescript.cpp" />
+    <ClCompile Include="..\..\src\server\generalCombatWithMeleeWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\generalCombatWithRangedWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\gibs.cpp" />
+    <ClCompile Include="..\..\src\server\globalcmd.cpp" />
+    <ClCompile Include="..\..\src\server\GoDirectlyToPoint.cpp" />
+    <ClCompile Include="..\..\src\server\goo.cpp" />
+    <ClCompile Include="..\..\src\server\gotoCurrentHelperNode.cpp" />
+    <ClCompile Include="..\..\src\server\gotoHelperNode.cpp" />
+    <ClCompile Include="..\..\src\server\gotoHelperNodeEX.cpp" />
+    <ClCompile Include="..\..\src\server\gotoHelperNodeNearestEnemy.cpp" />
+    <ClCompile Include="..\..\src\server\gravpath.cpp" />
+    <ClCompile Include="..\..\src\server\groupcoordinator.cpp" />
+    <ClCompile Include="..\..\src\server\healGroupMember.cpp" />
+    <ClCompile Include="..\..\src\server\health.cpp" />
+    <ClCompile Include="..\..\src\server\helper_node.cpp" />
+    <ClCompile Include="..\..\src\server\holdPosition.cpp" />
+    <ClCompile Include="..\..\src\server\interpreter.cpp" />
+    <ClCompile Include="..\..\src\server\inventoryitem.cpp" />
+    <ClCompile Include="..\..\src\server\ipfilter.cpp" />
+    <ClCompile Include="..\..\src\server\item.cpp" />
+    <ClCompile Include="..\..\src\server\level.cpp" />
+    <ClCompile Include="..\..\src\server\lexer.cpp" />
+    <ClCompile Include="..\..\src\server\light.cpp" />
+    <ClCompile Include="..\..\src\server\misc.cpp" />
+    <ClCompile Include="..\..\src\server\mover.cpp" />
+    <ClCompile Include="..\..\src\server\MoveRandomDirection.cpp" />
+    <ClCompile Include="..\..\src\server\mp_awardsystem.cpp" />
+    <ClCompile Include="..\..\src\server\mp_manager.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modeBase.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modeCtf.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modeDm.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modeTeamBase.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modeTeamDm.cpp" />
+    <ClCompile Include="..\..\src\server\mp_modifiers.cpp" />
+    <ClCompile Include="..\..\src\server\mp_team.cpp" />
+    <ClCompile Include="..\..\src\server\nature.cpp" />
+    <ClCompile Include="..\..\src\server\navigate.cpp" />
+    <ClCompile Include="..\..\src\server\object.cpp" />
+    <ClCompile Include="..\..\src\server\path.cpp" />
+    <ClCompile Include="..\..\src\server\patrol.cpp" />
+    <ClCompile Include="..\..\src\server\PlayAnim.cpp" />
+    <ClCompile Include="..\..\src\server\player.cpp" />
+    <ClCompile Include="..\..\src\server\player_combat.cpp" />
+    <ClCompile Include="..\..\src\server\player_util.cpp" />
+    <ClCompile Include="..\..\src\server\playerheuristics.cpp" />
+    <ClCompile Include="..\..\src\server\PlayerStart.cpp" />
+    <ClCompile Include="..\..\src\server\portal.cpp" />
+    <ClCompile Include="..\..\src\server\powerups.cpp" />
+    <ClCompile Include="..\..\src\server\program.cpp" />
+    <ClCompile Include="..\..\src\server\puzzleobject.cpp" />
+    <ClCompile Include="..\..\src\server\RageAI.cpp" />
+    <ClCompile Include="..\..\src\server\rangedCombatWithWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\rotateToEntity.cpp" />
+    <ClCompile Include="..\..\src\server\script.cpp" />
+    <ClCompile Include="..\..\src\server\scriptmaster.cpp" />
+    <ClCompile Include="..\..\src\server\scriptslave.cpp" />
+    <ClCompile Include="..\..\src\server\scriptvariable.cpp" />
+    <ClCompile Include="..\..\src\server\selectBestWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\sentient.cpp" />
+    <ClCompile Include="..\..\src\server\shrapnelbomb.cpp" />
+    <ClCompile Include="..\..\src\server\snipeEnemy.cpp" />
+    <ClCompile Include="..\..\src\server\soundman.cpp" />
+    <ClCompile Include="..\..\src\server\spawners.cpp" />
+    <ClCompile Include="..\..\src\server\specialfx.cpp" />
+    <ClCompile Include="..\..\src\server\stationaryFireCombat.cpp" />
+    <ClCompile Include="..\..\src\server\stationaryFireCombatEX.cpp" />
+    <ClCompile Include="..\..\src\server\stationaryvehicle.cpp" />
+    <ClCompile Include="..\..\src\server\steering.cpp" />
+    <ClCompile Include="..\..\src\server\suppressionFireCombat.cpp" />
+    <ClCompile Include="..\..\src\server\talk.cpp" />
+    <ClCompile Include="..\..\src\server\teammateroster.cpp" />
+    <ClCompile Include="..\..\src\server\teleportToEntity.cpp" />
+    <ClCompile Include="..\..\src\server\teleportToPosition.cpp" />
+    <ClCompile Include="..\..\src\server\torsoAimAndFireWeapon.cpp" />
+    <ClCompile Include="..\..\src\server\trigger.cpp" />
+    <ClCompile Include="..\..\src\server\useAlarm.cpp" />
+    <ClCompile Include="..\..\src\server\UseData.cpp" />
+    <ClCompile Include="..\..\src\server\vehicle.cpp" />
+    <ClCompile Include="..\..\src\server\viewthing.cpp" />
+    <ClCompile Include="..\..\src\server\watchEntity.cpp" />
+    <ClCompile Include="..\..\src\server\watchEntityEX.cpp" />
+    <ClCompile Include="..\..\src\server\waypoints.cpp" />
+    <ClCompile Include="..\..\src\server\weapon.cpp" />
+    <ClCompile Include="..\..\src\server\WeaponDualWield.cpp" />
+    <ClCompile Include="..\..\src\server\weaputils.cpp" />
+    <ClCompile Include="..\..\src\server\work.cpp" />
+    <ClCompile Include="..\..\src\server\worldspawn.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\server\_pch_cpp.h" />
+    <ClInclude Include="..\..\src\server\actor.h" />
+    <ClInclude Include="..\..\src\server\actor_combatsubsystem.h" />
+    <ClInclude Include="..\..\src\server\actor_enemymanager.h" />
+    <ClInclude Include="..\..\src\server\actor_headwatcher.h" />
+    <ClInclude Include="..\..\src\server\actor_locomotion.h" />
+    <ClInclude Include="..\..\src\server\actor_posturecontroller.hpp" />
+    <ClInclude Include="..\..\src\server\actor_sensoryperception.h" />
+    <ClInclude Include="..\..\src\server\actorgamecomponents.h" />
+    <ClInclude Include="..\..\src\server\actorincludes.h" />
+    <ClInclude Include="..\..\src\server\actorstrategies.h" />
+    <ClInclude Include="..\..\src\server\actorutil.h" />
+    <ClInclude Include="..\..\src\server\ai_chat.h" />
+    <ClInclude Include="..\..\src\server\ai_cmd.h" />
+    <ClInclude Include="..\..\src\server\ai_dmnet.h" />
+    <ClInclude Include="..\..\src\server\ai_dmq3.h" />
+    <ClInclude Include="..\..\src\server\ai_main.h" />
+    <ClInclude Include="..\..\src\server\ai_team.h" />
+    <ClInclude Include="..\..\src\server\ai_vcmd.h" />
+    <ClInclude Include="..\..\src\server\ammo.h" />
+    <ClInclude Include="..\..\src\server\animate.h" />
+    <ClInclude Include="..\..\src\server\archive.h" />
+    <ClInclude Include="..\..\src\server\armor.h" />
+    <ClInclude Include="..\..\src\server\be_aas.h" />
+    <ClInclude Include="..\..\src\server\be_ai_char.h" />
+    <ClInclude Include="..\..\src\server\be_ai_chat.h" />
+    <ClInclude Include="..\..\src\server\be_ai_gen.h" />
+    <ClInclude Include="..\..\src\server\be_ai_goal.h" />
+    <ClInclude Include="..\..\src\server\be_ai_move.h" />
+    <ClInclude Include="..\..\src\server\be_ai_weap.h" />
+    <ClInclude Include="..\..\src\server\be_ea.h" />
+    <ClInclude Include="..\..\src\server\beam.h" />
+    <ClInclude Include="..\..\src\server\behavior.h" />
+    <ClInclude Include="..\..\src\server\behaviors.h" />
+    <ClInclude Include="..\..\src\server\behaviors_general.h" />
+    <ClInclude Include="..\..\src\server\behaviors_specific.h" />
+    <ClInclude Include="..\..\src\server\bg_local.h" />
+    <ClInclude Include="..\..\src\server\bg_public.h" />
+    <ClInclude Include="..\..\src\server\body.h" />
+    <ClInclude Include="..\..\src\server\botlib.h" />
+    <ClInclude Include="..\..\src\server\botmenudef.h" />
+    <ClInclude Include="..\..\src\server\bspline.h" />
+    <ClInclude Include="..\..\src\server\camera.h" />
+    <ClInclude Include="..\..\src\server\CameraPath.h" />
+    <ClInclude Include="..\..\src\server\changePosture.hpp" />
+    <ClInclude Include="..\..\src\server\characterstate.h" />
+    <ClInclude Include="..\..\src\server\chars.h" />
+    <ClInclude Include="..\..\src\server\CinematicArmature.h" />
+    <ClInclude Include="..\..\src\server\closeInOnEnemy.hpp" />
+    <ClInclude Include="..\..\src\server\closeInOnEnemyWhileFiringWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\closeInOnPlayer.hpp" />
+    <ClInclude Include="..\..\src\server\compiler.h" />
+    <ClInclude Include="..\..\src\server\corridorCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\coverCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\DamageModification.hpp" />
+    <ClInclude Include="..\..\src\server\debuglines.h" />
+    <ClInclude Include="..\..\src\server\decals.h" />
+    <ClInclude Include="..\..\src\server\dispenser.hpp" />
+    <ClInclude Include="..\..\src\server\doAttack.hpp" />
+    <ClInclude Include="..\..\src\server\doors.h" />
+    <ClInclude Include="..\..\src\server\earthquake.h" />
+    <ClInclude Include="..\..\src\server\entity.h" />
+    <ClInclude Include="..\..\src\server\equipment.h" />
+    <ClInclude Include="..\..\src\server\explosion.h" />
+    <ClInclude Include="..\..\src\server\FollowPath.h" />
+    <ClInclude Include="..\..\src\server\FollowPathToEntity.h" />
+    <ClInclude Include="..\..\src\server\FollowPathToPoint.h" />
+    <ClInclude Include="..\..\src\server\g_local.h" />
+    <ClInclude Include="..\..\src\server\g_main.h" />
+    <ClInclude Include="..\..\src\server\g_phys.h" />
+    <ClInclude Include="..\..\src\server\g_public.h" />
+    <ClInclude Include="..\..\src\server\g_spawn.h" />
+    <ClInclude Include="..\..\src\server\g_utils.h" />
+    <ClInclude Include="..\..\src\server\game.h" />
+    <ClInclude Include="..\..\src\server\gamecmds.h" />
+    <ClInclude Include="..\..\src\server\gamecvars.h" />
+    <ClInclude Include="..\..\src\server\gameplay\gameplaydatabase.h" />
+    <ClInclude Include="..\..\src\server\gameplay\gameplayformulamanager.h" />
+    <ClInclude Include="..\..\src\server\gameplay\gameplaymanager.h" />
+    <ClInclude Include="..\..\src\server\gamescript.h" />
+    <ClInclude Include="..\..\src\server\generalCombatWithMeleeWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\generalCombatWithRangedWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\gibs.h" />
+    <ClInclude Include="..\..\src\server\globalcmd.h" />
+    <ClInclude Include="..\..\src\server\GoDirectlyToPoint.h" />
+    <ClInclude Include="..\..\src\server\goo.h" />
+    <ClInclude Include="..\..\src\server\gotoCurrentHelperNode.hpp" />
+    <ClInclude Include="..\..\src\server\gotoHelperNode.hpp" />
+    <ClInclude Include="..\..\src\server\gotoHelperNodeEX.hpp" />
+    <ClInclude Include="..\..\src\server\gotoHelperNodeNearestEnemy.hpp" />
+    <ClInclude Include="..\..\src\server\gravpath.h" />
+    <ClInclude Include="..\..\src\server\groupcoordinator.hpp" />
+    <ClInclude Include="..\..\src\server\healGroupMember.hpp" />
+    <ClInclude Include="..\..\src\server\health.h" />
+    <ClInclude Include="..\..\src\server\helper_node.h" />
+    <ClInclude Include="..\..\src\server\holdPosition.hpp" />
+    <ClInclude Include="..\..\src\server\interpreter.h" />
+    <ClInclude Include="..\..\src\server\inv.h" />
+    <ClInclude Include="..\..\src\server\inventoryitem.h" />
+    <ClInclude Include="..\..\src\server\ipfilter.h" />
+    <ClInclude Include="..\..\src\server\item.h" />
+    <ClInclude Include="..\..\src\server\level.h" />
+    <ClInclude Include="..\..\src\server\lexer.h" />
+    <ClInclude Include="..\..\src\server\light.h" />
+    <ClInclude Include="..\..\src\server\match.h" />
+    <ClInclude Include="..\..\src\server\misc.h" />
+    <ClInclude Include="..\..\src\server\mover.h" />
+    <ClInclude Include="..\..\src\server\MoveRandomDirection.hpp" />
+    <ClInclude Include="..\..\src\server\mp_awardsystem.hpp" />
+    <ClInclude Include="..\..\src\server\mp_manager.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modeBase.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modeCtf.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modeDm.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modeTeamBase.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modeTeamDm.hpp" />
+    <ClInclude Include="..\..\src\server\mp_modifiers.hpp" />
+    <ClInclude Include="..\..\src\server\mp_shared.hpp" />
+    <ClInclude Include="..\..\src\server\mp_team.hpp" />
+    <ClInclude Include="..\..\src\server\nature.h" />
+    <ClInclude Include="..\..\src\server\navigate.h" />
+    <ClInclude Include="..\..\src\server\object.h" />
+    <ClInclude Include="..\..\src\server\path.h" />
+    <ClInclude Include="..\..\src\server\patrol.hpp" />
+    <ClInclude Include="..\..\src\server\PlayAnim.hpp" />
+    <ClInclude Include="..\..\src\server\player.h" />
+    <ClInclude Include="..\..\src\server\playerheuristics.h" />
+    <ClInclude Include="..\..\src\server\PlayerStart.h" />
+    <ClInclude Include="..\..\src\server\portal.h" />
+    <ClInclude Include="..\..\src\server\powerups.h" />
+    <ClInclude Include="..\..\src\server\program.h" />
+    <ClInclude Include="..\..\src\server\puzzleobject.hpp" />
+    <ClInclude Include="..\..\src\server\RageAI.h" />
+    <ClInclude Include="..\..\src\server\rangedCombatWithWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\rotateToEntity.hpp" />
+    <ClInclude Include="..\..\src\server\script.h" />
+    <ClInclude Include="..\..\src\server\scriptmaster.h" />
+    <ClInclude Include="..\..\src\server\scriptslave.h" />
+    <ClInclude Include="..\..\src\server\scriptvariable.h" />
+    <ClInclude Include="..\..\src\server\selectBestWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\sentient.h" />
+    <ClInclude Include="..\..\src\server\shrapnelbomb.h" />
+    <ClInclude Include="..\..\src\server\snipeEnemy.hpp" />
+    <ClInclude Include="..\..\src\server\soundman.h" />
+    <ClInclude Include="..\..\src\server\spawners.h" />
+    <ClInclude Include="..\..\src\server\specialfx.h" />
+    <ClInclude Include="..\..\src\server\stationaryFireCombat.hpp" />
+    <ClInclude Include="..\..\src\server\stationaryFireCombatEX.hpp" />
+    <ClInclude Include="..\..\src\server\stationaryvehicle.hpp" />
+    <ClInclude Include="..\..\src\server\steering.h" />
+    <ClInclude Include="..\..\src\server\suppressionFireCombat.hpp" />
+    <ClInclude Include="..\..\src\server\syn.h" />
+    <ClInclude Include="..\..\src\server\talk.hpp" />
+    <ClInclude Include="..\..\src\server\teammateroster.hpp" />
+    <ClInclude Include="..\..\src\server\teleportToEntity.hpp" />
+    <ClInclude Include="..\..\src\server\teleportToPosition.hpp" />
+    <ClInclude Include="..\..\src\server\torsoAimAndFireWeapon.hpp" />
+    <ClInclude Include="..\..\src\server\trigger.h" />
+    <ClInclude Include="..\..\src\server\useAlarm.hpp" />
+    <ClInclude Include="..\..\src\server\UseData.h" />
+    <ClInclude Include="..\..\src\server\vehicle.h" />
+    <ClInclude Include="..\..\src\server\viewthing.h" />
+    <ClInclude Include="..\..\src\server\watchEntity.hpp" />
+    <ClInclude Include="..\..\src\server\watchEntityEX.hpp" />
+    <ClInclude Include="..\..\src\server\waypoints.h" />
+    <ClInclude Include="..\..\src\server\weapon.h" />
+    <ClInclude Include="..\..\src\server\WeaponDualWield.h" />
+    <ClInclude Include="..\..\src\server\weaputils.h" />
+    <ClInclude Include="..\..\src\server\work.hpp" />
+    <ClInclude Include="..\..\src\server\worldspawn.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\dlls\server.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="core.vcxproj">
+      <Project>{6d819451-4536-4ef7-9f0b-7224e569101b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
