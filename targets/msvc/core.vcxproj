@@ -35,6 +35,9 @@
     <ClCompile Include="..\..\src\core\class.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\src\core\listener.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\src\core\qcommon\q_math.c" />
     <ClCompile Include="..\..\src\core\qcommon\q_mathsys.c" />
     <ClCompile Include="..\..\src\core\qcommon\q_shared.c" />
@@ -48,7 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\core\class.h" />
+    <ClInclude Include="..\..\src\core\container.h" />
     <ClInclude Include="..\..\src\core\gamedefs.h" />
+    <ClInclude Include="..\..\src\core\listener.h" />
     <ClInclude Include="..\..\src\core\qcommon\alias.h" />
     <ClInclude Include="..\..\src\core\qcommon\cm_public.h" />
     <ClInclude Include="..\..\src\core\qcommon\q_shared.h" />

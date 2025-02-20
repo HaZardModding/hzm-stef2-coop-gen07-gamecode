@@ -21,7 +21,7 @@
 
 #include <qcommon/q_shared.h>
 //#include "qcommon.h"
-#include <server/container.h>
+#include <container.h>
 #include <utils/str.h>
 
 //#include <cgame/cg_local.h>

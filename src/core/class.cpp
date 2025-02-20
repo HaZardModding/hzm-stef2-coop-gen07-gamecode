@@ -30,12 +30,12 @@
 #if defined( GAME_DLL )
 
 #include "g_local.h"
-#include "server/listener.h"
+#include "listener.h"
 
 #elif defined ( CGAME_DLL )
 
 #include "cg_local.h"
-#include "client/listener.h"
+#include "listener.h"
 #include <qcommon/qcommon.h>
 
 #else

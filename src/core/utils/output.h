@@ -26,7 +26,7 @@ class DocFileOutput;
 // right order.
 #include <server/g_local.h>
 #else
-#include <server/listener.h>
+#include <listener.h>
 #include <class.h>
 #endif
 

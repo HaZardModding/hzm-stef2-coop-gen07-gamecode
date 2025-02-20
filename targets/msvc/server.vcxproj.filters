@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\src\core\class.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\core\listener.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\core\utils\output.cpp">
       <Filter>Core\utils</Filter>
     </ClCompile>
@@ -316,9 +319,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\server\light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\server\listener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\server\misc.cpp">
@@ -674,9 +674,6 @@
     <ClInclude Include="..\..\src\server\compiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\server\container.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\server\corridorCombatWithRangedWeapon.hpp">
       <Filter>Behaviors</Filter>
     </ClInclude>
@@ -831,9 +828,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\server\light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\server\listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\server\match.h">

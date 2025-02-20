@@ -29,7 +29,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\core\class.h" />
+    <ClInclude Include="..\..\src\core\container.h" />
     <ClInclude Include="..\..\src\core\gamedefs.h" />
+    <ClInclude Include="..\..\src\core\listener.h" />
     <ClInclude Include="..\..\src\core\qcommon\alias.h">
       <Filter>QCommon</Filter>
     </ClInclude>

@@ -47,6 +47,7 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\core\class.cpp" />
+    <ClCompile Include="..\..\src\core\listener.cpp" />
     <ClCompile Include="..\..\src\core\utils\output.cpp" />
     <ClCompile Include="..\..\src\core\win_bounds.cpp" />
     <ClCompile Include="..\..\src\server\_pch_cpp.cpp" />
@@ -140,7 +141,6 @@
     <ClCompile Include="..\..\src\server\level.cpp" />
     <ClCompile Include="..\..\src\server\lexer.cpp" />
     <ClCompile Include="..\..\src\server\light.cpp" />
-    <ClCompile Include="..\..\src\server\listener.cpp" />
     <ClCompile Include="..\..\src\server\misc.cpp" />
     <ClCompile Include="..\..\src\server\mover.cpp" />
     <ClCompile Include="..\..\src\server\MoveRandomDirection.cpp" />
@@ -260,7 +260,6 @@
     <ClInclude Include="..\..\src\server\closeInOnEnemyWhileFiringWeapon.hpp" />
     <ClInclude Include="..\..\src\server\closeInOnPlayer.hpp" />
     <ClInclude Include="..\..\src\server\compiler.h" />
-    <ClInclude Include="..\..\src\server\container.h" />
     <ClInclude Include="..\..\src\server\corridorCombatWithRangedWeapon.hpp" />
     <ClInclude Include="..\..\src\server\coverCombatWithRangedWeapon.hpp" />
     <ClInclude Include="..\..\src\server\DamageModification.hpp" />
@@ -313,7 +312,6 @@
     <ClInclude Include="..\..\src\server\level.h" />
     <ClInclude Include="..\..\src\server\lexer.h" />
     <ClInclude Include="..\..\src\server\light.h" />
-    <ClInclude Include="..\..\src\server\listener.h" />
     <ClInclude Include="..\..\src\server\match.h" />
     <ClInclude Include="..\..\src\server\misc.h" />
     <ClInclude Include="..\..\src\server\mover.h" />

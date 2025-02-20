@@ -134,6 +134,8 @@
 #ifndef __CG_PUBLIC_H__
 #define __CG_PUBLIC_H__
 
+#include "tr_types.h"
+
 #ifdef __cplusplus
 extern "C"
    {
@@ -204,6 +206,8 @@ typedef struct
 	// print message on the local console
 	void	         (*Printf)( const char *fmt, ...);
 	void	         (*DPrintf)( const char *fmt, ...);
+	void	         (*WPrintf)( const char *fmt, ... );
+   void           (*WDPrintf)( const char *fmt, ... );
 	void	         (*DebugPrintf)( const char *fmt, ...);
 
 	// managed memory allocation

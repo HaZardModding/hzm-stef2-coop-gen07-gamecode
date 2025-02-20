@@ -256,7 +256,6 @@
 
 
 #include "qcommon/q_shared.h"
-#include "tr_types.h"
 #include "server/bg_public.h"
 #include "qcommon/cm_public.h"
 #include "cg_public.h"

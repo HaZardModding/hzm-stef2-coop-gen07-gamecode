@@ -1682,7 +1682,11 @@ Event::Event( int num )
 	// GAMEFIX - Fixed: Warning: C6011 Dereferencing NULL-Pointer. - chrissstrahl
 	//--------------------------------------------------------------
 	if (!commandList) {
+#if defined( GAME_DLL )
 		gi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#elif defined( CGAME_DLL )
+		cgi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#endif
 		return;
 	}
 	
@@ -1800,7 +1804,11 @@ Event::Event( const char *command, int flags, const char *theFormatspec, const c
 	// GAMEFIX - Fixed: Warning: C6011 Dereferencing NULL-Pointer. - chrissstrahl
 	//--------------------------------------------------------------
 	if (!commandList) {
+#if defined(GAME_DLL)
 		gi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#elif defined(CGAME_DLL)
+		cgi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#endif
 		return;
 	}
 
@@ -1882,7 +1890,11 @@ Event::Event( const char *command )
 	// GAMEFIX - Fixed: Warning: C6011 Dereferencing NULL-Pointer. - chrissstrahl
 	//--------------------------------------------------------------
 	if (!commandList) {
+#if defined(GAME_DLL)
 		gi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#elif defined(CGAME_DLL)
+		cgi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#endif
 		return;
 	}
 
@@ -1922,7 +1934,11 @@ Event::Event( const str &command )
 	// GAMEFIX - Fixed: Warning: C6011 Dereferencing NULL-Pointer. - chrissstrahl
 	//--------------------------------------------------------------
 	if (!commandList) {
+#if defined(GAME_DLL)
 		gi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#elif defined(CGAME_DLL)
+		cgi.Error(ERR_DROP, "Event::Event( int num ) - commandList was not init");
+#endif
 		return;
 	}
 

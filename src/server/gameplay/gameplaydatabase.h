@@ -28,9 +28,9 @@ class GameplayProperty;
 #define HASH_SIZE 256
 
 #include <class.h>
-#include <server/listener.h>
+#include <listener.h>
 #include <utils/str.h>
-#include <server/container.h>
+#include <container.h>
 #include <qcommon/tiki_script.h>
 
 

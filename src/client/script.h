@@ -39,7 +39,7 @@
 #ifndef __SCRIPT_H__
 #define __SCRIPT_H__
 
-#include "shared/class.h"
+#include "class.h"
 #include "utils/vector.h"
 #include "utils/str.h"
 

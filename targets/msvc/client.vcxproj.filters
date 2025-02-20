@@ -81,9 +81,6 @@
     <ClCompile Include="..\..\src\client\cg_view.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\client\class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\client\ctf_2d.cpp">
       <Filter>CTF</Filter>
     </ClCompile>
@@ -102,13 +99,13 @@
     <ClCompile Include="..\..\src\client\ctf_tech.cpp">
       <Filter>CTF</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\client\listener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\client\script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\core\class.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\listener.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\core\utils\output.cpp">
@@ -135,9 +132,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\client\cg_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\client\container.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\client\ctf_2d.h">
