@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{72f963c6-4bc2-4910-9374-c6e1c9c1b60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\utils">
+      <UniqueIdentifier>{0acdfc2f-2b23-4229-be0e-14cdea8c3f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CTF">
+      <UniqueIdentifier>{9b4f8bdc-3984-459f-a13c-a3d284fe00cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{c0b9abc2-5290-488c-9931-c600bd07f680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b1f5f91b-8b1f-48c3-bc12-ae76b0d12b86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\client\cg_beam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_commands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_consolecmds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_ctf_view.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_drawtools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_ents.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_lightstyles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_marks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_modelanim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_playerstate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_predict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_servercmds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_snapshot.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_specialfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_swipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_testemitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\cg_view.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_2d.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_cg_drawtools.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\CTF_ItemPickup.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_msg.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_reward.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_tech.cpp">
+      <Filter>CTF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\listener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\class.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\utils\output.cpp">
+      <Filter>Core\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\win_bounds.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\server\bg_misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\server\bg_pmove.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\client\cg_commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\cg_ctf_view.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\cg_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\cg_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\container.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\ctf_2d.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\ctf_cg_drawtools.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\CTF_ItemPickup.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\ctf_msg.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\ctf_reward.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\ctf_tech.h">
+      <Filter>CTF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\script.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\client\tr_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\server\bg_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\dlls\client.def" />
+  </ItemGroup>
+</Project>

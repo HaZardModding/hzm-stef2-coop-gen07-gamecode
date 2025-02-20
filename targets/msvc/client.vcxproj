@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="15.0">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Demo Release|Win32">
+      <Configuration>Demo Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Client</ProjectName>
+    <ProjectGuid>{747A5D79-BB16-47BE-A569-2B01AE73C8E4}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <!-- Default setup -->
+    <Import Project="Setup.props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <!-- Master Property sheet -->
+    <Import Project="Master-Client.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\client\cg_beam.cpp" />
+    <ClCompile Include="..\..\src\client\cg_commands.cpp" />
+    <ClCompile Include="..\..\src\client\cg_consolecmds.c" />
+    <ClCompile Include="..\..\src\client\cg_ctf_view.cpp" />
+    <ClCompile Include="..\..\src\client\cg_drawtools.cpp" />
+    <ClCompile Include="..\..\src\client\cg_ents.c" />
+    <ClCompile Include="..\..\src\client\cg_lightstyles.cpp" />
+    <ClCompile Include="..\..\src\client\cg_main.c" />
+    <ClCompile Include="..\..\src\client\cg_marks.c" />
+    <ClCompile Include="..\..\src\client\cg_modelanim.c" />
+    <ClCompile Include="..\..\src\client\cg_player.cpp" />
+    <ClCompile Include="..\..\src\client\cg_playerstate.c" />
+    <ClCompile Include="..\..\src\client\cg_predict.c" />
+    <ClCompile Include="..\..\src\client\cg_servercmds.c" />
+    <ClCompile Include="..\..\src\client\cg_snapshot.c" />
+    <ClCompile Include="..\..\src\client\cg_sound.cpp" />
+    <ClCompile Include="..\..\src\client\cg_specialfx.cpp" />
+    <ClCompile Include="..\..\src\client\cg_swipe.cpp" />
+    <ClCompile Include="..\..\src\client\cg_testemitter.cpp" />
+    <ClCompile Include="..\..\src\client\cg_ui.cpp" />
+    <ClCompile Include="..\..\src\client\cg_view.c" />
+    <ClCompile Include="..\..\src\client\class.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\client\ctf_2d.cpp" />
+    <ClCompile Include="..\..\src\client\ctf_cg_drawtools.cpp" />
+    <ClCompile Include="..\..\src\client\CTF_ItemPickup.cpp" />
+    <ClCompile Include="..\..\src\client\ctf_msg.cpp" />
+    <ClCompile Include="..\..\src\client\ctf_reward.cpp" />
+    <ClCompile Include="..\..\src\client\ctf_tech.cpp" />
+    <ClCompile Include="..\..\src\client\listener.cpp" />
+    <ClCompile Include="..\..\src\client\script.cpp" />
+    <ClCompile Include="..\..\src\core\class.cpp" />
+    <ClCompile Include="..\..\src\core\utils\output.cpp" />
+    <ClCompile Include="..\..\src\core\win_bounds.cpp" />
+    <ClCompile Include="..\..\src\server\bg_misc.c" />
+    <ClCompile Include="..\..\src\server\bg_pmove.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\client\cg_commands.h" />
+    <ClInclude Include="..\..\src\client\cg_ctf_view.h" />
+    <ClInclude Include="..\..\src\client\cg_local.h" />
+    <ClInclude Include="..\..\src\client\cg_public.h" />
+    <ClInclude Include="..\..\src\client\container.h" />
+    <ClInclude Include="..\..\src\client\ctf_2d.h" />
+    <ClInclude Include="..\..\src\client\ctf_cg_drawtools.h" />
+    <ClInclude Include="..\..\src\client\CTF_ItemPickup.h" />
+    <ClInclude Include="..\..\src\client\ctf_msg.h" />
+    <ClInclude Include="..\..\src\client\ctf_reward.h" />
+    <ClInclude Include="..\..\src\client\ctf_tech.h" />
+    <ClInclude Include="..\..\src\client\script.h" />
+    <ClInclude Include="..\..\src\client\tr_types.h" />
+    <ClInclude Include="..\..\src\server\bg_local.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\dlls\client.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="core.vcxproj">
+      <Project>{6d819451-4536-4ef7-9f0b-7224e569101b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

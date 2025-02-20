@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="QCommon">
+      <UniqueIdentifier>{2222407e-1eb2-42a3-842b-b3677bc747e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{e7956262-790a-4ada-b58d-493e866947a9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\core\class.cpp" />
+    <ClCompile Include="..\..\src\core\qcommon\q_math.c">
+      <Filter>QCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\qcommon\q_mathsys.c">
+      <Filter>QCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\qcommon\q_shared.c">
+      <Filter>QCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\utils\output.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\utils\str.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\core\win_bounds.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\core\class.h" />
+    <ClInclude Include="..\..\src\core\gamedefs.h" />
+    <ClInclude Include="..\..\src\core\qcommon\alias.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\cm_public.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\q_shared.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\qcommon.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\qfiles.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\quaternion.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\stringresource.hpp">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\qcommon\tiki_script.h">
+      <Filter>QCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\surfaceflags.h" />
+    <ClInclude Include="..\..\src\core\utils\Linklist.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\output.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\stack.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\str.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\umap.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\vector.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
