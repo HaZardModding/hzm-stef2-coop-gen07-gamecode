@@ -187,9 +187,9 @@ void DrawFlags()
 	//
 
 	//get highest team score
-	int score = cg.snap->ps.stats[STAT_REDSCORE];
-	if(cg.snap->ps.stats[STAT_BLUESCORE] > score)
-		score = cg.snap->ps.stats[STAT_BLUESCORE];
+	int score = cg.snap->ps.stats[STAT_RED_TEAM_SCORE];
+	if(cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE] > score)
+		score = cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE];
 
 	if(score > 99) //ie if score is 3 digits or more
 	{
@@ -213,7 +213,7 @@ void DrawFlags()
 	DrawBox(x, y+FLAG_ICON_HEIGHT, width, FLAG_ICON_HEIGHT);
 
 	char num[16];
-	itoa(cg.snap->ps.stats[STAT_BLUESCORE], num, 10);
+	itoa(cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE], num, 10);
 	SetColor(colorWhite);
 
 	DrawString(num,
@@ -235,7 +235,7 @@ void DrawFlags()
 	DrawBox(x, y+FLAG_ICON_HEIGHT, width, FLAG_ICON_HEIGHT);
 
 	SetColor(colorWhite);
-	itoa(cg.snap->ps.stats[STAT_REDSCORE], num, 10);
+	itoa(cg.snap->ps.stats[STAT_RED_TEAM_SCORE], num, 10);
 	DrawString(num,
 		x + width/2.0f - strlen(num)*FONT_WIDTH/2.0f,
 		y + FLAG_ICON_HEIGHT + FLAG_ICON_HEIGHT/2.0f - FONT_HEIGHT/2.0f,
@@ -462,11 +462,11 @@ bool DrawScoreboard(bool forceDraw = false)
 	//draw red & blue scores
 	//
 	CTF::SetColor(colorRed);
-	DrawAlignedString(va("Score: %d", cg.snap->ps.stats[STAT_REDSCORE]), 0, y, 
+	DrawAlignedString(va("Score: %d", cg.snap->ps.stats[STAT_RED_TEAM_SCORE]), 0, y, 
 		0.8f, true, 1.0f, ALIGN_NONE, ALIGN_NONE);
 
 	CTF::SetColor(0.3f, 0.3f, 1.0f, 1.0f);
-	DrawAlignedString(va("Score: %d", cg.snap->ps.stats[STAT_BLUESCORE]), 0, y, 
+	DrawAlignedString(va("Score: %d", cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE]), 0, y, 
 		0.8f, true, 1.0f, ALIGN_RIGHT, ALIGN_NONE);
 	
 	//
@@ -474,21 +474,21 @@ bool DrawScoreboard(bool forceDraw = false)
 	//
 	char teamstatus[128];
 
-	if(cg.snap->ps.stats[STAT_BLUESCORE] == cg.snap->ps.stats[STAT_REDSCORE])
+	if(cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE] == cg.snap->ps.stats[STAT_RED_TEAM_SCORE])
 	{
 		sprintf(teamstatus, "Teams are Tied at %d", 
-			cg.snap->ps.stats[STAT_BLUESCORE]);
+			cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE]);
 
 		SetColor(colorLtGrey);
 	}
-	else if(cg.snap->ps.stats[STAT_BLUESCORE] > cg.snap->ps.stats[STAT_REDSCORE])
+	else if(cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE] > cg.snap->ps.stats[STAT_RED_TEAM_SCORE])
 	{
-		sprintf(teamstatus, "Blue leads %d to %d", cg.snap->ps.stats[STAT_BLUESCORE], cg.snap->ps.stats[STAT_REDSCORE]);
+		sprintf(teamstatus, "Blue leads %d to %d", cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE], cg.snap->ps.stats[STAT_RED_TEAM_SCORE]);
 		SetColor(0.3f, 0.3f, 1.0f, 1.0f); //dont use colorBlue, it's too dark
 	}
 	else
 	{
-		sprintf(teamstatus, "Red leads %d to %d", cg.snap->ps.stats[STAT_REDSCORE], cg.snap->ps.stats[STAT_BLUESCORE]);
+		sprintf(teamstatus, "Red leads %d to %d", cg.snap->ps.stats[STAT_RED_TEAM_SCORE], cg.snap->ps.stats[STAT_BLUE_TEAM_SCORE]);
 		SetColor(colorRed);
 	}
 
