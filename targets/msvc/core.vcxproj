@@ -63,8 +63,10 @@
     <ClInclude Include="..\..\src\core\qcommon\stringresource.hpp" />
     <ClInclude Include="..\..\src\core\qcommon\tiki_script.h" />
     <ClInclude Include="..\..\src\core\surfaceflags.h" />
+    <ClInclude Include="..\..\src\core\utils\bit_vector.h" />
     <ClInclude Include="..\..\src\core\utils\Linklist.h" />
     <ClInclude Include="..\..\src\core\utils\output.h" />
+    <ClInclude Include="..\..\src\core\utils\queue.h" />
     <ClInclude Include="..\..\src\core\utils\stack.h" />
     <ClInclude Include="..\..\src\core\utils\str.h" />
     <ClInclude Include="..\..\src\core\utils\umap.h" />

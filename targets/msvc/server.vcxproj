@@ -245,7 +245,6 @@
     <ClInclude Include="..\..\src\server\behaviors_specific.h" />
     <ClInclude Include="..\..\src\server\bg_local.h" />
     <ClInclude Include="..\..\src\server\bg_public.h" />
-    <ClInclude Include="..\..\src\server\bit_vector.h" />
     <ClInclude Include="..\..\src\server\body.h" />
     <ClInclude Include="..\..\src\server\botlib.h" />
     <ClInclude Include="..\..\src\server\botmenudef.h" />
@@ -339,7 +338,6 @@
     <ClInclude Include="..\..\src\server\powerups.h" />
     <ClInclude Include="..\..\src\server\program.h" />
     <ClInclude Include="..\..\src\server\puzzleobject.hpp" />
-    <ClInclude Include="..\..\src\server\queue.h" />
     <ClInclude Include="..\..\src\server\RageAI.h" />
     <ClInclude Include="..\..\src\server\rangedCombatWithWeapon.hpp" />
     <ClInclude Include="..\..\src\server\rotateToEntity.hpp" />

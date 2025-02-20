@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\core\class.cpp" />
+    <ClCompile Include="..\..\src\core\listener.cpp" />
     <ClCompile Include="..\..\src\core\qcommon\q_math.c">
       <Filter>QCommon</Filter>
     </ClCompile>
@@ -57,10 +58,16 @@
       <Filter>QCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\core\surfaceflags.h" />
+    <ClInclude Include="..\..\src\core\utils\bit_vector.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\core\utils\Linklist.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\core\utils\output.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\core\utils\queue.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\core\utils\stack.h">

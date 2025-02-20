@@ -629,9 +629,6 @@
     <ClInclude Include="..\..\src\server\bg_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\server\bit_vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\server\body.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -911,9 +908,6 @@
     <ClInclude Include="..\..\src\server\puzzleobject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\server\queue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\server\RageAI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1030,8 +1024,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\dlls\server.def">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
+    <CustomBuild Include="..\..\dlls\server.def" />
   </ItemGroup>
 </Project>
