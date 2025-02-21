@@ -9801,7 +9801,7 @@ void Player::StartFakePlayer( void )
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
-	if (g_gametype->value != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");
 		return;
 	}
@@ -9858,7 +9858,7 @@ void Player::FakePlayer( qboolean holster )
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
-	if (g_gametype->value != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");
 		return;
 	}
@@ -9896,7 +9896,7 @@ void Player::RemoveFakePlayer( void )
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: crash in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
-	if (g_gametype->value != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		gi.Printf("WARNING: fakeplayer script command can only be used in Singleplayer\n");
 		return;
 	}

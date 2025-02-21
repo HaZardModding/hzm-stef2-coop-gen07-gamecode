@@ -2015,7 +2015,7 @@ void CThread::FakePlayer( Event *ev )
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: crash when using fakeplayer script command in multiplayer  - chrissstrahl
 	//--------------------------------------------------------------
-	if (g_gametype->value != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		gi.Printf(_GFixEF2_WARN_EVENT_CTHREAD_fakePlayer_ONLYSP);
 		return;
 	}
@@ -2034,7 +2034,7 @@ void CThread::RemoveFakePlayer( Event *ev )
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: crash when using fakeplayer script command in multiplayer - chrissstrahl
 	//--------------------------------------------------------------
-	if (g_gametype->value != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		gi.Printf(_GFixEF2_WARN_EVENT_CTHREAD_fakePlayer_ONLYSP);
 		return;
 	}
