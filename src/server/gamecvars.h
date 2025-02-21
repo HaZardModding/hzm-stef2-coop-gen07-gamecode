@@ -19,6 +19,10 @@
 
 #include "g_local.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern	cvar_t	*developer;
 extern	cvar_t	*skill;
 extern	cvar_t	*password;
@@ -166,5 +170,9 @@ extern	cvar_t* local_language;
 
 
 void CVAR_Init( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !__GAMECVARS_H__ */
