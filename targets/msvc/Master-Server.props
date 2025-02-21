@@ -14,7 +14,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <InlineFunctionExpansion Condition="$(Checkered)">Default</InlineFunctionExpansion>
-      <InlineFunctionExpansion Condition="$(UnCheckered)">OnlyExplicitInline</InlineFunctionExpansion>
+      <InlineFunctionExpansion Condition="!$(Checkered)">OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>_USRDLL;FGAME_EXPORTS;GAME_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 	  <PreprocessorDefinitions Condition="!$(Demo)">MISSIONPACK;ENABLE_ALTROUTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>

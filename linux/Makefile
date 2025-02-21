@@ -26,13 +26,16 @@ MOUNT_DIR=..
 ## You shouldn't have to touch anything below here
 ##
 #############################################################################
-BD=debug$(ARCH)$(GLIBC)
-BR=release$(ARCH)$(GLIBC)
-CMDIR=$(MOUNT_DIR)/Shared/qcommon
-GDIR=$(MOUNT_DIR)/dlls/game
-DLLINC = $(MOUNT_DIR)/DLLs
-SHAREINC = $(MOUNT_DIR)/Shared
-EXECINC  = $(MOUNT_DIR)/Executable
+BD       = debug$(ARCH)$(GLIBC)
+BR       = release$(ARCH)$(GLIBC)
+SRCDIR   = $(MOUNT_DIR)/src
+COREDIR  = $(SRCDIR)/core
+CMDIR    = $(COREDIR)/qcommon
+UTILSDIR = $(COREDIR)/utils
+GDIR     = $(SRCDIR)/server
+SRCINC   = $(SRCDIR)
+COREINC  = $(SRCDIR)/core
+SERVINC  = $(SRCDIR)/server
 LIBINC   = $(MOUNT_DIR)/Libs
 
 #############################################################################
@@ -116,8 +119,8 @@ TARGETS=\
 
 endif #Linux
 
-DO_GAME_SHLIB_CC=$(CC) -DGAME_DLL -DDEDICATED -DMISSIONPACK -DLINUX $(CFLAGS) $(SHLIBCFLAGS) -I$(DLLINC) -I$(SHAREINC) -I$(EXECINC) -I$(CMDIR) -I$(LIBINC) -o $@ -c $<
-DO_GAME_SHLIB_GC=$(GC) -DGAME_DLL -DDEDICATED -DMISSIONPACK -DLINUX $(CFLAGS) $(SHLIBCFLAGS) -I$(DLLINC) -I$(SHAREINC) -I$(EXECINC) -I$(CMDIR) -I$(LIBINC) -o $@ -c $<
+DO_GAME_SHLIB_CC=$(CC) -DGAME_DLL -DDEDICATED -DMISSIONPACK -DLINUX $(CFLAGS) $(SHLIBCFLAGS) -I$(SRCINC) -I$(COREINC) -I$(SERVINC) -I$(CMDIR) -I$(LIBINC) -o $@ -c $<
+DO_GAME_SHLIB_GC=$(GC) -DGAME_DLL -DDEDICATED -DMISSIONPACK -DLINUX $(CFLAGS) $(SHLIBCFLAGS) -I$(SRCINC) -I$(COREINC) -I$(SERVINC) -I$(CMDIR) -I$(LIBINC) -o $@ -c $<
 
 #### DEFAULT TARGET
 # default:build_release
@@ -393,7 +396,7 @@ $(B)/game/camera.o : $(GDIR)/camera.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/CameraPath.o : $(GDIR)/CameraPath.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/characterstate.o : $(GDIR)/characterstate.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/CinematicArmature.o : $(GDIR)/CinematicArmature.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/class.o : $(GDIR)/class.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/class.o : $(COREDIR)/class.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/compiler.o : $(GDIR)/compiler.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/DamageModification.o : $(GDIR)/DamageModification.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/debuglines.o : $(GDIR)/debuglines.cpp; $(DO_GAME_SHLIB_CC)
@@ -414,9 +417,9 @@ $(B)/game/g_utils.o : $(GDIR)/g_utils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/game.o : $(GDIR)/game.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/gamecmds.o : $(GDIR)/gamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/gamecvars.o : $(GDIR)/gamecvars.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/gameplaydatabase.o : $(CMDIR)/gameplaydatabase.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/gameplayformulamanager.o : $(CMDIR)/gameplayformulamanager.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/gameplaymanager.o : $(CMDIR)/gameplaymanager.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/gameplaydatabase.o : $(GDIR)/gameplay/gameplaydatabase.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/gameplayformulamanager.o : $(GDIR)/gameplay/gameplayformulamanager.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/gameplaymanager.o : $(GDIR)/gameplay/gameplaymanager.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/gamescript.o : $(GDIR)/gamescript.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/gibs.o : $(GDIR)/gibs.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/globalcmd.o : $(GDIR)/globalcmd.cpp; $(DO_GAME_SHLIB_CC)
@@ -433,13 +436,13 @@ $(B)/game/item.o : $(GDIR)/item.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/level.o : $(GDIR)/level.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/lexer.o : $(GDIR)/lexer.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/light.o : $(GDIR)/light.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/listener.o : $(GDIR)/listener.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/listener.o : $(COREDIR)/listener.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/misc.o : $(GDIR)/misc.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/mover.o : $(GDIR)/mover.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/nature.o : $(GDIR)/nature.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/navigate.o : $(GDIR)/navigate.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/object.o : $(GDIR)/object.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/output.o : $(CMDIR)/output.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/output.o : $(UTILSDIR)/output.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/path.o : $(GDIR)/path.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/player.o : $(GDIR)/player.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/player_combat.o : $(GDIR)/player_combat.cpp; $(DO_GAME_SHLIB_CC)
@@ -450,9 +453,9 @@ $(B)/game/portal.o : $(GDIR)/portal.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/powerups.o : $(GDIR)/powerups.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/program.o : $(GDIR)/program.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/puzzleobject.o : $(GDIR)/puzzleobject.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/q_math.o : $(GDIR)/q_math.c; $(DO_GAME_SHLIB_GC)
-$(B)/game/q_mathsys.o : $(GDIR)/q_mathsys.c; $(DO_GAME_SHLIB_GC)
-$(B)/game/q_shared.o : $(GDIR)/q_shared.c; $(DO_GAME_SHLIB_GC)
+$(B)/game/q_math.o : $(CMDIR)/q_math.c; $(DO_GAME_SHLIB_GC)
+$(B)/game/q_mathsys.o : $(CMDIR)/q_mathsys.c; $(DO_GAME_SHLIB_GC)
+$(B)/game/q_shared.o : $(CMDIR)/q_shared.c; $(DO_GAME_SHLIB_GC)
 $(B)/game/RageAI.o : $(GDIR)/RageAI.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/script.o : $(GDIR)/script.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/scriptmaster.o : $(GDIR)/scriptmaster.cpp; $(DO_GAME_SHLIB_CC)
@@ -465,7 +468,7 @@ $(B)/game/spawners.o : $(GDIR)/spawners.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/specialfx.o : $(GDIR)/specialfx.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/stationaryvehicle.o : $(GDIR)/stationaryvehicle.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/steering.o : $(GDIR)/steering.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/str.o : $(GDIR)/str.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/str.o : $(UTILSDIR)/str.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/teammateroster.o : $(GDIR)/teammateroster.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/trigger.o : $(GDIR)/trigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/UseData.o : $(GDIR)/UseData.cpp; $(DO_GAME_SHLIB_CC)

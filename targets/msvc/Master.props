@@ -11,41 +11,36 @@
   <PropertyGroup Label="UserMacros">
     <Checkered>false</Checkered>
     <Checkered Condition="'$(Configuration)'=='Debug'">true</Checkered>
-    <UnCheckered>true</UnCheckered>
-    <UnCheckered Condition="$(Checkered)">false</UnCheckered>
+	
     <Demo>false</Demo>
     <Demo Condition="$(Configuration.Contains('Demo'))">true</Demo>
   </PropertyGroup>
   <PropertyGroup>
     <IntDir>obj\$(Configuration)\$(ProjectName)\</IntDir>
-    <LinkIncremental>$(UnCheckered)</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Checkered)">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <RuntimeLibrary Condition="$(UnCheckered)">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="!$(Checkered)">MultiThreaded</RuntimeLibrary>
       <RuntimeLibrary Condition="$(Checkered)">MultiThreadedDebug</RuntimeLibrary>
-      <Optimization Condition="$(UnCheckered)">Disabled</Optimization>
-      <Optimization Condition="$(Checkered)">MaxSpeed</Optimization>
+      <Optimization Condition="$(Checkered)">Disabled</Optimization>
+      <Optimization Condition="!$(Checkered)">MaxSpeed</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <WarningLevel>Level3</WarningLevel>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>$(Checkered)</MinimalRebuild>
       <DebugInformationFormat Condition="$(Checkered)">ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks Condition="$(Checkered)">EnableFastChecks</BasicRuntimeChecks>
-      <FunctionLevelLinking>$(UnCheckered)</FunctionLevelLinking>
+      <FunctionLevelLinking>!$(Checkered)</FunctionLevelLinking>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <PreprocessorDefinitions>_WINDOWS;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="$(Demo)">PRE_RELEASE_DEMO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="$(Checkered)">__STL_DEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="$(UnCheckered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="!$(Checkered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         ..\..\src\;
         ..\..\src\core\;
@@ -59,7 +54,7 @@
       <TypeLibraryName>$(OutDir)\client.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <PreprocessorDefinitions Condition="$(Checkered)">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="$(UnCheckered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="!$(Checkered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -72,7 +67,7 @@
     <ResourceCompile>
       <Culture>0x0409</Culture>
       <PreprocessorDefinitions Condition="$(Checkered)">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="$(UnCheckered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="!$(Checkered)">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
 </Project>
