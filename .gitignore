@@ -15,6 +15,7 @@
 *.pdb
 *.o
 *.so
+*.dll
 *.tlog
 Browse.VC.*
 linux/debugi386
