@@ -37,6 +37,9 @@
     <Filter Include="_qCommon_">
       <UniqueIdentifier>{ca9a85fc-8055-4760-b499-18ed9657db77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Coop Files">
+      <UniqueIdentifier>{36d7a832-20bd-4831-a31e-e8e998715d72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="changePosture.cpp">
@@ -527,6 +530,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
       <Filter>_qCommon_</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_game.cpp">
+      <Filter>Coop Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1108,6 +1114,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\tiki_script.h">
       <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_game.hpp">
+      <Filter>Coop Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

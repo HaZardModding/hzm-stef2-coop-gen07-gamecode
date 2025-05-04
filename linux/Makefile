@@ -58,7 +58,7 @@ RPMARCH=i386
 VENDOR=unknown
 endif #alpha test
 
-BASE_CFLAGS=-Dstricmp=strcasecmp -Dstrcmpi=strcasecmp -Dstrnicmp=strncasecmp -pipe -I../dlls
+BASE_CFLAGS=-DENABLE_COOP -Dstricmp=strcasecmp -Dstrcmpi=strcasecmp -Dstrnicmp=strncasecmp -pipe -I../dlls
 ifeq ($(PLATFORM_ARCH),x86_64)
 BASE_CFLAGS+=-m32
 endif
