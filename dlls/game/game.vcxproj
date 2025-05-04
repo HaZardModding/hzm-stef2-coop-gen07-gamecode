@@ -1579,9 +1579,6 @@
   <ItemGroup>
     <CustomBuild Include="game.def" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="api_stef2.sbr" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

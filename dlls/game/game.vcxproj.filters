@@ -1098,9 +1098,4 @@
       <Filter>Source Files</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="api_stef2.sbr">
-      <Filter>Gamefix Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>
