@@ -37,3 +37,5 @@ dlls/game/game.log
 dlls/game/vc.nativecodeanalysis.all.xml
 dlls/game/CodeAnalysisResultManifest.txt
 __cleanup_delete.log
+game.vcxproj.user
+coop_local.props
