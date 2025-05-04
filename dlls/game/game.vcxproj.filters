@@ -1080,16 +1080,16 @@
     <ClInclude Include="worldspawn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gamefix.hpp">
+    <ClInclude Include="gamefix_strings.hpp">
       <Filter>Gamefix Files</Filter>
     </ClInclude>
-    <ClInclude Include="api_stef2.hpp">
+    <ClInclude Include="gamefix.hpp">
       <Filter>Gamefix Files</Filter>
     </ClInclude>
     <ClInclude Include="api_stef2_strings.hpp">
       <Filter>Gamefix Files</Filter>
     </ClInclude>
-    <ClInclude Include="gamefix_strings.hpp">
+    <ClInclude Include="api_stef2.hpp">
       <Filter>Gamefix Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1097,5 +1097,10 @@
     <CustomBuild Include="game.def">
       <Filter>Source Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="api_stef2.sbr">
+      <Filter>Gamefix Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
