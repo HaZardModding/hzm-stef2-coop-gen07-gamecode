@@ -31,12 +31,11 @@
       <UniqueIdentifier>{4bd10b28-04c4-4969-8195-2aa60abf965c}</UniqueIdentifier>
       <Extensions>.h</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{3ed57cc9-f828-4ec4-afd3-e268ec7ca41d}</UniqueIdentifier>
-      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
-    </Filter>
     <Filter Include="Gamefix Files">
       <UniqueIdentifier>{d3bbd3c1-1b48-410b-8520-55eb819e9dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_qCommon_">
+      <UniqueIdentifier>{ca9a85fc-8055-4760-b499-18ed9657db77}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -334,15 +333,6 @@
     <ClCompile Include="gamecvars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Shared\qcommon\gameplaydatabase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gamescript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -407,9 +397,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Shared\qcommon\output.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="path.cpp">
@@ -528,6 +515,18 @@
     </ClCompile>
     <ClCompile Include="api_stef2.cpp">
       <Filter>Gamefix Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\output.cpp">
+      <Filter>_qCommon_</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplaydatabase.cpp">
+      <Filter>_qCommon_</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplayformulamanager.cpp">
+      <Filter>_qCommon_</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
+      <Filter>_qCommon_</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -888,12 +887,6 @@
     <ClInclude Include="..\..\Shared\qcommon\gameplaydatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gamescript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -963,9 +956,6 @@
     <ClInclude Include="object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Shared\qcommon\output.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -991,9 +981,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="q_shared.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Shared\qcommon\quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="queue.h">
@@ -1091,6 +1078,36 @@
     </ClInclude>
     <ClInclude Include="api_stef2.hpp">
       <Filter>Gamefix Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\cm_public.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\alias.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\gameplayformulamanager.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\gameplaymanager.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\output.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\platform.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\qfiles.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\quaternion.h">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\stringresource.hpp">
+      <Filter>_qCommon_</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shared\qcommon\tiki_script.h">
+      <Filter>_qCommon_</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

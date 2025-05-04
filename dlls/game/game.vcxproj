@@ -1388,6 +1388,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Shared\qcommon\alias.h" />
+    <ClInclude Include="..\..\Shared\qcommon\cm_public.h" />
+    <ClInclude Include="..\..\Shared\qcommon\platform.h" />
+    <ClInclude Include="..\..\Shared\qcommon\qfiles.h" />
+    <ClInclude Include="..\..\Shared\qcommon\stringresource.hpp" />
+    <ClInclude Include="..\..\Shared\qcommon\tiki_script.h" />
     <ClInclude Include="api_stef2.hpp" />
     <ClInclude Include="api_stef2_strings.hpp" />
     <ClInclude Include="be_ea.h" />
