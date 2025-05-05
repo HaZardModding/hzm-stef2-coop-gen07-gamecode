@@ -1118,6 +1118,9 @@
     <ClInclude Include="..\..\coop\code\coop_game.hpp">
       <Filter>Coop Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp">
+      <Filter>Coop Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="game.def">
