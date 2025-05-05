@@ -1324,7 +1324,7 @@ bool gameFixAPI_mapForMultiplayer(const str& name)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Added: Function to check if a map is listed as Multiplayer - chrissstrahl
+// GAMEFIX - Added: Function to check if a map has given gamemode - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_mapHasGameMode(const str& name,const str& gamemode)
 {
