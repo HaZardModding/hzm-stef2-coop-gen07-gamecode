@@ -39,3 +39,4 @@ dlls/game/CodeAnalysisResultManifest.txt
 __cleanup_delete.log
 game.vcxproj.user
 coop_local.props
+botlib.log
