@@ -1948,13 +1948,15 @@ str gamefix_iniKeyGet(const str& file, const str& section_contents, const str& k
 
 	//remove trailing " or '
 	int trailing = valueLines.length() - 1;
-	if (valueLines[trailing] == '"' || valueLines[trailing] == '\'') {
-		valueLines = gamefix_getStringUntil(valueLines, 0, trailing);
-	}
+	if (trailing > 0) {
+		if (valueLines[trailing] == '"' || valueLines[trailing] == '\'') {
+			valueLines = gamefix_getStringUntil(valueLines, 0, trailing);
+		}
 
-	if (valueLines.length() > 256) {
-		valueLines = gamefix_getStringUntil(valueLines, 0, 255);
-		gi.Printf("Value exceeded 256 length for key: %s\n", key.c_str());
+		if (valueLines.length() > 256) {
+			valueLines = gamefix_getStringUntil(valueLines, 0, 255);
+			gi.Printf("Value exceeded 256 length for key: %s\n", key.c_str());
+		}
 	}
 	return valueLines;
 }
