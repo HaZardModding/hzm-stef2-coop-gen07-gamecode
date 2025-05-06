@@ -2248,7 +2248,7 @@ float BulletAttack(
 		trackedLastWeaponHit				= gamefix_client_persistant_t[player->entnum].heuristicsHit;
 		str weaponName;
 		player->getActiveWeaponName(WEAPON_ANY, weaponName);
-		Weapon* curWeap = player->GetActiveWeapon(WEAPON_ANY);
+		//Weapon* curWeap = player->GetActiveWeapon(WEAPON_ANY);
 		if (weaponName == "Phaser" || weaponName == "Phaser-stx") {
 			if (trackedLastWeapon != weap || !trackedShotsForWeapon) {
 				player->shotFired();
