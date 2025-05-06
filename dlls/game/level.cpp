@@ -36,6 +36,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_game.hpp"
+#endif
+
+
 Level level;
 
 //--------------------------------------------------------------
@@ -614,6 +622,20 @@ void Level::SpawnEntities( const char *themapname, const char *entities, int lev
 	
 	if ( !world )
 		Com_Error( ERR_FATAL, "No world\n" );
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Init LEVEL Code - chrissstrahl
+	// As far as I can tell this is the earliest position in the code
+	// where we can put this.
+	// - We need to know the mapname
+	// - We need to have world enity established
+	// - We need this to be executed before any multiplayerManager gamemode related handeling
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopGame::InitWorld();
+#endif
+
 	
 	if ( g_gametype->integer == GT_MULTIPLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER )
 	{
