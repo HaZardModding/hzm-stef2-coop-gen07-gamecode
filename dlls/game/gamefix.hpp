@@ -173,6 +173,8 @@ str					gamefix_iniSectionDelete(const str& file, const str& file_contents, cons
 str					gamefix_iniKeyGet(const str& file, const str& section_contents, const str& key, const str& altVal);
 str					gamefix_iniKeySet(const str& file, const str& section_contents, const str& key, const str& value);
 str					gamefix_iniKeyDelete(const str& file, const str& section_contents, const str& key);
+str					gamefix_iniFindSectionByKey(const str& file, const str& file_contents, const str& key);
+str					gamefix_iniFindSectionByValue(const str& file, const str& file_contents, const str& value);
 
 bool				gamefix_containsNonANSI(const unsigned char* buffer, size_t length);
 char*				gamefix_convertUtf8UmlautsToAnsi(const char* utf8_str);
