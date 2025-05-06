@@ -45,6 +45,14 @@
 
 
 //--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_game.hpp"
+#endif
+
+
+//--------------------------------------------------------------
 // GAMEFIX - Fixed: '...' was not declared in this scope - chrissstrahl
 //--------------------------------------------------------------
 extern void L_ShutdownEvents();
@@ -225,6 +233,13 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 	//--------------------------------------------------------------
 	gamefix_initGame();
 
+	
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Init Code - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopGame::Init();
+#endif
 	
 	// Install our own error handler, since we can't
 	// call the EXE's handler from within a C++ class
