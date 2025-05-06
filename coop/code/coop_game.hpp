@@ -1,4 +1,8 @@
 #pragma once
+#include "../../dlls/game/_pch_cpp.h"
+#include "coop_generalstrings.hpp"
+#include "coop_config.hpp"
+
 
 //current map info
 struct coop_MapFlags_s {
@@ -14,8 +18,6 @@ struct coop_MapFlags_s {
 };
 static coop_MapFlags_s coop_MapFlags;
 
-#include "../../dlls/game/_pch_cpp.h"
-#include "coop_generalstrings.hpp"
 
 namespace CoopGame {
     //define coop release number

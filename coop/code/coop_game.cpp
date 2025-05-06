@@ -62,15 +62,15 @@ namespace CoopGame {
         else if (mapNameClean.icmpn("rpg_", 4))     coop_MapFlags.rpgMap = true;
 
         str fileContents;
-        if (!gamefix_getFileContents(_COOP_MAPLIST_file, fileContents, true)) {
+        if (!gamefix_getFileContents(_COOP_FILE_maplist, fileContents, true)) {
             //Print maplist file warning
             ///////////////////////////////////////////////////
-            gi.Printf(va(_COOP_WARNING_FILE_FAILD_maplistini, _COOP_MAPLIST_file));
+            gi.Printf(va(_COOP_WARNING_FILE_failed, _COOP_FILE_maplist));
             return;
         }
 
         //Get name of the section the map is listed in
-        str sectionOfCurrentMap = gamefix_iniFindSectionByValue(_COOP_MAPLIST_file, fileContents, level.mapname.c_str());
+        str sectionOfCurrentMap = gamefix_iniFindSectionByValue(_COOP_FILE_maplist, fileContents, level.mapname.c_str());
         if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_included)          { coop_MapFlags.coopIncluded = true; coop_MapFlags.coopMap = true; }
         if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpMission)     { coop_MapFlags.coopSpMission = true; coop_MapFlags.coopMap = true; }
         if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpIgm)         { coop_MapFlags.coopSpIgm = true; coop_MapFlags.coopMap = true; }
@@ -79,8 +79,8 @@ namespace CoopGame {
         if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_singleplayerOnly)  { coop_MapFlags.singleplayerOnly = true; }
 
         if (coop_MapFlags.coopMap == false && coop_MapFlags.multiplayerOnly == false && coop_MapFlags.singleplayerOnly == false) {
-            str sectionContents = gamefix_iniSectionGet(_COOP_MAPLIST_file, fileContents, _COOP_MAPLIST_CAT_coopcompatible);
-            str CoopCompatible  = gamefix_iniKeyGet(_COOP_MAPLIST_file, sectionContents, sectionOfCurrentMap, "");
+            str sectionContents = gamefix_iniSectionGet(_COOP_FILE_maplist, fileContents, _COOP_MAPLIST_CAT_coopcompatible);
+            str CoopCompatible  = gamefix_iniKeyGet(_COOP_FILE_maplist, sectionContents, sectionOfCurrentMap, "");
 
             if (CoopCompatible.length() && CoopCompatible == "true") {
                 coop_MapFlags.coopMap = true;
