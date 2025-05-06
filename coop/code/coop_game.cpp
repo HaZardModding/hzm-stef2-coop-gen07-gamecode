@@ -12,9 +12,15 @@ namespace CoopGame {
     bool         COOP_CONFIG_COOP_ALLOWED = true;
 
     void Init() {
-        //Print Init Status Info
-        ///////////////////////////////////////////////////
-        gi.Printf(_COOP_INFO_INIT_game);
+        try {
+            //Print Init Status Info
+            ///////////////////////////////////////////////////
+            gi.Printf(_COOP_INFO_INIT_game);
+        }
+        catch (const char* error) {
+            gi.Printf(_COOP_ERROR_fatal,error);
+            G_ExitWithError(error);
+        }
     }
 
 
@@ -26,20 +32,26 @@ namespace CoopGame {
 
 
     void InitWorld() {
-        //Print Init WORLD Status Info
-        ///////////////////////////////////////////////////
-        gi.Printf(_COOP_INFO_INIT_world,level.mapname.c_str());
+        try {
+            //Print Init WORLD Status Info
+            ///////////////////////////////////////////////////
+            gi.Printf(_COOP_INFO_INIT_world,level.mapname.c_str());
 
-        DetectMapType();
+            DetectMapType();
         
-        str coopStatus;
-        //allow to play singleplayer maps with gamefix in place ?
-        if (coop_MapFlags.coopMap)  { gi.cvar_set("gfix_allowSpMaps", "1");   coopStatus = "ACTIVE"; }
-        else                        { gi.cvar_set("gfix_allowSpMaps", "0");   coopStatus = "inactive"; }
+            str coopStatus;
+            //allow to play singleplayer maps with gamefix in place ?
+            if (coop_MapFlags.coopMap)  { gi.cvar_set("gfix_allowSpMaps", "1");   coopStatus = "ACTIVE"; }
+            else                        { gi.cvar_set("gfix_allowSpMaps", "0");   coopStatus = "inactive"; }
 
-        //Print TEST Status Info
-        ///////////////////////////////////////////////////
-        gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
+            //Print TEST Status Info
+            ///////////////////////////////////////////////////
+            gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
+        }
+        catch (const char* error) {
+            gi.Printf(_COOP_ERROR_fatal, error);
+            G_ExitWithError(error);
+        }
     }
 
     void DetectMapType() {
