@@ -1,0 +1,51 @@
+THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
+
+Notice: Coop Mod operating in namespace CoopGame.
+Notice: Coop Mod execution logic:
+	//Executed exclusively only once upon first load of game dll
+	extern "C" void G_InitGame( int startTime, int randomSeed )
+		void Init()
+		
+	//Executed each time a level is loaded
+	void Level::SpawnEntities( const char *themapname, const char *entities, int levelTime )
+		void InitWorld()
+			void DetectMapType()
+
+
+Added File: Coop_Changelog.txt
+Added File: coop_game.cpp
+Added File: coop_game.hpp
+Added File: coop_generalstrings.hpp
+
+Changes to stock files
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+dlls\game\g_main.cpp
+	extern "C" void G_InitGame
+		Added: CoopGame::Init();
+		
+		
+dlls\game\level.cpp
+	void Level::SpawnEntities
+		Added: CoopGame::InitWorld();
+		
+
+Changes to Coop Mod files
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+coop_game.hpp
+	Added: coop_MapFlags struct for detailed map infomations
+
+coop_game.cpp
+	Added: void Init() - Executed exclusively only once upon first load of game dll
+	Added: void InitWorld() - Executed each time a level is loaded
+	Added: void DetectMapType() - Executed once upon each level load - populates: coop_MapFlags struct
+	Added: void Allowed() - Sets Coop to being allowed
+	Added: void AllowedNot() - Sets Coop to NOT being allowed
+	Added: bool IsAllowed() - Returns status whether Coop is allowed
+    Added: bool IsSupported() - Returns whether Coop is supported on teh current level or not
+	
+coop_generalstrings.hpp
+	Added: various coop specific constexpr auto
