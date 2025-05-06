@@ -40,6 +40,9 @@
     <Filter Include="Coop Files">
       <UniqueIdentifier>{36d7a832-20bd-4831-a31e-e8e998715d72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Coop Files\Header Files">
+      <UniqueIdentifier>{d91cb1cc-c1be-4c2e-9853-669b325720ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="changePosture.cpp">
@@ -532,6 +535,9 @@
       <Filter>_qCommon_</Filter>
     </ClCompile>
     <ClCompile Include="..\..\coop\code\coop_game.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_config.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1116,10 +1122,16 @@
       <Filter>_qCommon_</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_game.hpp">
-      <Filter>Coop Files</Filter>
+      <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp">
-      <Filter>Coop Files</Filter>
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_manager.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_config.hpp">
+      <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
