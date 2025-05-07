@@ -40,7 +40,7 @@
 // COOP Generation 7.000 - Added Include - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-#include "../../coop/code/coop_game.hpp"
+#include "../../coop/code/coop_manager.hpp"
 #endif
 
 
@@ -633,7 +633,7 @@ void Level::SpawnEntities( const char *themapname, const char *entities, int lev
 	// - We need this to be executed before any multiplayerManager gamemode related handeling
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	CoopGame::InitWorld();
+	CoopManager::Get().InitWorld();
 #endif
 
 	

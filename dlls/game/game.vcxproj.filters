@@ -534,10 +534,10 @@
     <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
       <Filter>_qCommon_</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\coop\code\coop_game.cpp">
+    <ClCompile Include="..\..\coop\code\coop_config.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\coop\code\coop_config.cpp">
+    <ClCompile Include="..\..\coop\code\coop_manager.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1120,9 +1120,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Shared\qcommon\tiki_script.h">
       <Filter>_qCommon_</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\coop\code\coop_game.hpp">
-      <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp">
       <Filter>Coop Files\Header Files</Filter>

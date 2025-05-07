@@ -48,7 +48,7 @@
 // COOP Generation 7.000 - Added Include - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-#include "../../coop/code/coop_game.hpp"
+#include "../../coop/code/coop_manager.hpp"
 #endif
 
 
@@ -238,7 +238,7 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 	// COOP Generation 7.000 - Added: Init Code - chrissstrahl
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	CoopGame::Init();
+	CoopManager::Get().Init();
 #endif
 	
 	// Install our own error handler, since we can't
