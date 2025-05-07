@@ -9,6 +9,7 @@ constexpr auto _COOP_INFO_TEST_maptype = "TEST HZM Coop Gen7 - Current map type 
 constexpr auto _COOP_INFO_TEST_maptypedetect = "TEST HZM Coop Gen7 - Detected category %s\n";
 
 constexpr auto _COOP_INFO_INIT_game = "==== HaZardModding Coop Mod Gen7 GAME - initialising ====\n";
+constexpr auto _COOP_INFO_INIT_gamedone = "==== HaZardModding Coop Mod Gen7 GAME - init complete ====\n";
 constexpr auto _COOP_INFO_INIT_world = "==== HaZardModding Coop Mod Gen7 WORLD - %s ====\n";
 constexpr auto _COOP_INFO_INIT_status = "==== HaZardModding Coop Mod Gen7 STAUS - %s ====\n";
 
