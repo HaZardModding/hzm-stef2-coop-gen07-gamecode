@@ -28,6 +28,15 @@ Warning C6386: Buffer overflow while writing to objlist -> template< class Type 
 Warning C6385: Invalid data is being read from objlist-> template< class Type > void Container<Type>::Resize
 WARNING C6269: Potentially incorrect order of operations -> int BotAI(int client, float thinktime)
 
+Fixed: Huds not initializing correctly on listen server for host
+void gamefix_playerClientThink(Player* player)
+void gameFixAPI_playerClientThink(Player* player)
+void gamefix_playerSetupUi(Player* player)
+void gameFixAPI_playerSetupUi(Player* player)
+
+Upgraded: Support for Delayed serverCommands for players - parameter for intentional delay
+void gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds)
+
 Fixed: No damage in Multiplayer due to undeclared definition being used.
 projectile_rom-photonball.tik
 projectile_rom-photonball-boss.tik
@@ -205,7 +214,7 @@ void gameFixAPI_callvoteIniHudPrintSectionNames(Player* player, Container<str>& 
 Added: Support for Delayed serverCommands for players
 void gamefix_playerClearDelayedServerCommand(int entNum)
 void gamefix_playerHandleDelayedServerCommand(void)
-void gamefix_playerDelayedServerCommand(int entNum, const char* commandText)
+void gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds)
 void gamefix_runFrame(int levelTime, int frameTime)
 extern "C" void G_RunFrame( int levelTime, int frameTime )
 

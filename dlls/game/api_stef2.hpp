@@ -51,6 +51,8 @@ void gameFixAPI_playerChangeTeam(Player* player,const str &realTeamName);
 void gameFixAPI_playerSpectator(Player* player);
 void gameFixAPI_playerModelChanged(Player* player);
 void gameFixAPI_playerScore(Player* player);
+void gameFixAPI_playerSetupUi(Player* player);
+void gameFixAPI_playerClientThink(Player* player);
 
 void gameFixAPI_clearArchetypeInfoDisplay(Player* player, Entity* entity);
 Entity* gameFixAPI_getTargetedEntity(Player* player);

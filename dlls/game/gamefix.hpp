@@ -41,6 +41,7 @@ extern Container<str> gamefix_fileContentTokenized;
 typedef struct gamefix_pendingServerCommand_s
 {
 	char* command;
+	float executeTime;
 	gamefix_pendingServerCommand_s* next;
 } gamefix_pendingServerCommand;
 extern gamefix_pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
@@ -71,6 +72,8 @@ struct gamefix_client_persistant_s
 	float			chatsLast = 0.0f;
 	str				currentModel = "models/char/munro.tik";
 	str				currentTeam = "none";
+	bool			hudsAdded = false;
+	float			hudsAddedLastCheck = 0.0f;
 
 
 	//--------------------------------------------------------------
@@ -127,10 +130,13 @@ void				gamefix_playerModelChanged(Player* player);
 void				gamefix_playerUseItem(Player* player, const char* name);
 void				gamefix_playerScore(Player* player);
 void				gamefix_playerClientBegin(gentity_t* ent);
+void				gamefix_playerClientThink(Player* player);
 void				gamefix_dialogSetupPlayers(Actor* speaker, char *localizedDialogName, bool headDisplay);
 void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText);
+void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds);
 void				gamefix_playerHandleDelayedServerCommand(void);
 void				gamefix_playerClearDelayedServerCommand(int entNum);
+void				gamefix_playerSetupUi(Player* player);
 
 void				gamefix_aiTurnOff();
 void				gamefix_aiTurnOn();

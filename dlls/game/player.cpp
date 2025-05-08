@@ -5742,6 +5742,14 @@ void Player::ClientThink( Event *ev )
 		if ( !incomingMeleeAttack )
 			meleeAttackerList.ClearObjectList();
 	}
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Easy accsess to ClientThink - chrissstrahl
+	// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
+	// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+	//--------------------------------------------------------------
+	gamefix_playerClientThink(this);
 }
 
 // This function returns the endpoint of where the crosshair is located on the
