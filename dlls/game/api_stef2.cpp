@@ -257,6 +257,76 @@ void gameFixAPI_playerModelChanged(Player* player)
 void gameFixAPI_playerScore(Player* player)
 {
 }
+void gameFixAPI_playerClientThink(Player* player)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
+		// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+		//--------------------------------------------------------------
+		if (dedicated->integer == 0) {
+			if (gameFixAPI_isWindowsServer()){
+				if (!gamefix_client_persistant_t[player->entnum].hudsAdded) {
+					if (gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck < level.time) {
+						if (!gameFixAPI_isHost(player)) {
+							gamefix_client_persistant_t[player->entnum].hudsAdded = true;
+							return;
+						}
+						gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck = (level.time + 0.2);
+						if (gamefix_getCvar("loadingstatus") == "$$LoadingMedia$$") {
+							gamefix_client_persistant_t[player->entnum].hudsAdded = true;
+							gameFixAPI_playerSetupUi(player);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
+// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+//--------------------------------------------------------------
+void gameFixAPI_playerSetupUi(Player* player)
+{
+	gi.SendServerCommand(player->entnum, "stufftext \"ui_removehuds all\"\n");
+
+	str teamHud = "";
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team = multiplayerManager.getPlayersTeam(player);
+		if (!team) {
+			if (multiplayerManager.isPlayerSpectator(player)) {
+				teamHud = "mp_teamspec";
+			}
+		}
+		else {
+			str teamColor;
+			teamColor = team->getName();
+			teamColor = teamColor.tolower();
+			if (multiplayerManager.isPlayerSpectator(player)) {
+				teamHud = va("mp_team%sspec", teamColor.c_str());
+			}
+			else {
+				teamHud = va("mp_team%s", teamColor.c_str());
+			}
+		}
+	}
+
+	if (teamHud.length()) {
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", teamHud));
+	}
+
+	gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_console");
+	gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_teamhud");
+
+	if (mp_timelimit->integer) {
+		gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer enable");
+	}
+	else {
+		gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
+	}
+}
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Return Entity the Player is currently targeting - chrissstrahl
@@ -377,6 +447,8 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 	gamefix_client_persistant_t[clientNum].chatsLast = -90118.0f;
 	gamefix_client_persistant_t[clientNum].currentModel = "";
 	gamefix_client_persistant_t[clientNum].currentTeam = "none";
+	gamefix_client_persistant_t[clientNum].hudsAdded = false;
+	gamefix_client_persistant_t[clientNum].hudsAddedLastCheck = 0;
 }
 
 //--------------------------------------------------------------

@@ -718,6 +718,18 @@ void gamefix_playerClientBegin(gentity_t* ent)
 	//--------------------------------------------------------------
 	gamefix_vstrLocalLanguage(ent);
 }
+void gamefix_playerClientThink(Player* player)
+{
+	gameFixAPI_playerClientThink(player);
+}
+//--------------------------------------------------------------
+// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
+// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+//--------------------------------------------------------------
+void gamefix_playerSetupUi(Player* player)
+{
+	gameFixAPI_playerSetupUi(player);
+}
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function handling Dialog in Multiplayer - chrissstrahl
@@ -1164,51 +1176,46 @@ void gamefix_kickBots()
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Support for Delayed serverCommands for players - This adds a serverCommand to a player's list of delayed commands - daggolin
+// GAMEFIX - Added: Paramater to allow timed or intentionally delayed commands - chrissstrahl
 //--------------------------------------------------------------
-void gamefix_playerDelayedServerCommand(int entNum, const char* commandText)
+void gamefix_playerDelayedServerCommand(int entNum, const char* commandText) {
+	gamefix_playerDelayedServerCommand(entNum, commandText, 0.0f);
+}
+void gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds = 0.0f)
 {
-	if (entNum < 0 || entNum >= game.maxclients) {
-		return;
-	}
+	if (entNum < 0 || entNum >= game.maxclients) return;
 
 	gentity_t* edict = &g_entities[entNum];
-	if (!edict || !edict->inuse || !edict->client) {
-		return;
-	}
+	if (!edict || !edict->inuse || !edict->client) return;
 
 	Player* player = (Player*)edict->entity;
-	if (!player) {
-		return;
-	}
+	if (!player) return;
 
 	gamefix_pendingServerCommand* command = (gamefix_pendingServerCommand*)malloc(sizeof(gamefix_pendingServerCommand));
-	if (command == NULL) {
-		gi.Printf("gamefix_playerDelayedServerCommand: Couldn't allocate memory for new pendingServerCommand -> Dropping command.\n");
+	if (!command) {
+		gi.Printf("gamefix_playerDelayedServerCommand: Failed to allocate command struct -> Dropping command.\n");
 		return;
 	}
 	// Ensuring initialization - to stop MS-VS from nagging - chrissstrahl
 	command->command = NULL;
-	command->next = NULL; 
-
+	command->next = NULL;
 	int commandLength = strlen(commandText) + 1;
 	command->command = (char*)malloc(commandLength * sizeof(char));
-	if (command->command == NULL) {
-		gi.Printf("gamefix_playerDelayedServerCommand: Couldn't allocate memory for new pendingServerCommandText -> Dropping command.\n");
+	if (!command->command) {
+		gi.Printf("gamefix_playerDelayedServerCommand: Failed to allocate command text -> Dropping command.\n");
 		free(command);
 		return;
 	}
 
 	Q_strncpyz(command->command, commandText, commandLength);
-	command->next = NULL;
+	command->executeTime = level.time + delayInSeconds;  // Assumes level.time is in seconds
 
 	gamefix_pendingServerCommand* temp = pendingServerCommandList[entNum];
-	if (temp == NULL) {
+	if (!temp) {
 		pendingServerCommandList[entNum] = command;
 	}
 	else {
-		while (temp->next) {
-			temp = temp->next;
-		}
+		while (temp->next) temp = temp->next;
 		//gi.Printf("gamefix_playerDelayedServerCommand (%s): %s\n", player->client->pers.netname, command->command);
 		temp->next = command;
 	}
@@ -1228,6 +1235,11 @@ void gamefix_playerHandleDelayedServerCommand(void)
 
 		gamefix_pendingServerCommand* pendingCommand = pendingServerCommandList[i];
 		while (pendingCommand) {
+			if (level.time < pendingCommand->executeTime) {
+				pendingCommand = pendingCommand->next;
+				continue;
+			}
+
 			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 90) {
 				str sCmd;
 				str sNewText = "";
