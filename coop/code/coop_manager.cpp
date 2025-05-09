@@ -50,9 +50,6 @@ void CoopManager::InitWorld() {
             OverrideMultiplayer();
         }
 
-        // focus next on //
-        void MultiplayerManager::initMultiplayerGame(void)
-
         //Print TEST Status Info
         ///////////////////////////////////////////////////
         gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
