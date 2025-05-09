@@ -30,6 +30,15 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#endif
+
+
 MultiplayerManager multiplayerManager;
 
 str playersLastTeam[ MAX_CLIENTS ];
@@ -441,6 +450,24 @@ void MultiplayerManager::initMultiplayerGame( void )
 
 	gi.cvar_set( "mp_modifier_diffusion", "0" );
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added ModeCoop replacing ModeTeamDeathmatch on Coop maps - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (CoopManager::Get().IsCoopEnabled()) {
+		try{
+			_multiplayerGame = new ModeCoop();
+			gametype = GT_TEAM; // Or define GT_COOP if needed
+		}
+		catch (const char* error) {
+			gi.Printf(_COOP_ERROR_fatal, error);
+			G_ExitWithError(error);
+		}
+	}
+#else
+
+
 	// Create the correct game type
 
 	switch ( mp_gametype->integer ) // Todo : switch off of a something better than a hardcoded index
@@ -476,6 +503,7 @@ void MultiplayerManager::initMultiplayerGame( void )
 			gametype = GT_FFA;
 			break ;
 	}
+#endif
 
 	// Setup some stuff for bots
 
