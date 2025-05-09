@@ -1,21 +1,119 @@
 THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 
-Notice: Coop Mod operating in namespace CoopGame.
-Notice: Coop Mod execution logic:
-	//Executed exclusively only once upon first load of game dll
+
+Coop Mod execution logic:
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+//Executed upon creation of - class CoopSettings
+	CoopSettings::LoadSettingsFromFile
+	
+//Executed exclusively only once upon first load of game dll
 	extern "C" void G_InitGame( int startTime, int randomSeed )
-		void Init()
+		CoopManager::Init()
 		
-	//Executed each time a level is loaded
+		
+//Executed each time a level is loaded
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				MultiplayerManager::initMultiplayerGame()
+					ModeCoop::init
+
+
+//Executed each time a level is loaded
 	void Level::SpawnEntities( const char *themapname, const char *entities, int levelTime )
-		void InitWorld()
-			void DetectMapType()
+		CoopManager::InitWorld()
+			CoopManager::DetectMapType()
+		MultiplayerManager::initMultiplayerGame( void )
+
+
+//Executed continuously
+ 	G_RunFrame(int levelTime, int frameTime)
+	 	MultiplayerManager::update(float frameTime)
+			MultiplayerModeBase::update(float frameTime)
+				//if the match has started
+				ModeCoop::isEndOfMatch()
+				//during warmup time only
+				MultiplayerModeBase::shouldStartMatch()	
+					ModeCoop::isEndOfMatch()
+
+
+//Executed continuously	
+ 	Player::EndFrame(Event * ev)
+	 	Player::UpdateStats()
+			MultiplayerManager::getInfoIcon(Player * player, int buttons)
+				ModeCoop::getInfoIcon(Player * player)
+
+
+//Executed on Listen server
+ 	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				Player::Player()
+					Player::Init()
+						MultiplayerManager::addPlayer(Player * player)
+							ModeTeamBase::AddPlayer(Player * player)
+								MultiplayerModeBase::AddPlayer(Player * player)
+									ModeCoop::setupMultiplayerUI(Player* player)
+
+
+//Player killed
+	Player::Killed(Event * ev)
+		MultiplayerManager::playerKilled(Player * killedPlayer, Player * attackingPlayer, Entity * inflictor, int meansOfDeath)
+			ModeCoop::playerKilled(Player * killedPlayer, Player * attackingPlayer, Entity * inflictor, int meansOfDeath)
+			
+
+//Player Model Changed - changing model
+ 	G_ClientUserinfoChanged(gentity_s * ent, const char * userinfo)
+		MultiplayerManager::changePlayerModel(Player * player, const char * modelName, bool force)
+			ModeCoop::playerChangedModel
+				ModeCoop::updatePlayerSkin
+				
+//Player Model Changed - Entering the game
+ 	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				Player::Player()
+					Player::Init()
+						MultiplayerManager::addPlayer(Player * player)
+							ModeTeamBase::AddPlayer(Player * player)
+								ModeCoop::addPlayerToTeam(Player * player, Team * team)
+									ModeCoop::updatePlayerSkin(Player * player)
+
+
+//Player join team
+ 	Player::joinTeam(Event * ev)
+		MultiplayerManager::joinTeam(Player * player, const str & teamName)
+			ModeTeamBase::joinTeam(Player * player, const str & teamName)
+				ModeTeamBase::changeTeams(Player * player, Team * team)
+					ModeCoop::addPlayerToTeam(Player * player, Team * team)
+
+//Player score - pressing tab or getting killed
+ 	Player::Score(Event * ev)
+		MultiplayerManager::score(Player * player)
+			ModeCoop::score(const Player * player)
+
+
+//Player joining team
+ 	Player::joinTeam(Event * ev)
+		MultiplayerManager::joinTeam(Player * player, const str & teamName)
+			ModeCoop::canJoinTeam(Player * player, const str & teamName)
+
 
 
 Added File: Coop_Changelog.txt
-Added File: coop_game.cpp
-Added File: coop_game.hpp
-Added File: coop_generalstrings.hpp
+Added File: base/coop/config/settings.ini
+Added File: base/coop/config/maplist.ini
+Added File: base/coop/config/spawninventory.cfg
+
+Added: spawninventory.cfg is used in	@ModeCoop::init
+Disabled: Team Skin Color				@ModeCoop::updatePlayerSkin
+Disabled: Team indicator arrow			@ModeCoop::getInfoIcon		
+Disabled: mp_pointlimit during init		@ModeCoop::init
+Disabled: mp_timelimit during init		@ModeCoop::init
+
+
 
 Changes to stock files
 /////////////////////////////////////////
@@ -23,29 +121,30 @@ Changes to stock files
 /////////////////////////////////////////
 dlls\game\g_main.cpp
 	extern "C" void G_InitGame
-		Added: CoopGame::Init();
-		
+		Added: CoopGame::Init();		
 		
 dlls\game\level.cpp
 	void Level::SpawnEntities
 		Added: CoopGame::InitWorld();
+		
+dlls\game\mp_manager.cpp
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	void MultiplayerManager::initMultiplayerGame( void )
+		Added: Execution of @ModeCoop::ModeCoop() replacing ModeTeamDeathmatch on Coop maps
 		
 
 Changes to Coop Mod files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
-coop_game.hpp
-	Added: coop_MapFlags struct for detailed map infomations
-
-coop_game.cpp
+coop_manager.cpp
 	Added: void Init() - Executed exclusively only once upon first load of game dll
 	Added: void InitWorld() - Executed each time a level is loaded
 	Added: void DetectMapType() - Executed once upon each level load - populates: coop_MapFlags struct
-	Added: void Allowed() - Sets Coop to being allowed
-	Added: void AllowedNot() - Sets Coop to NOT being allowed
-	Added: bool IsAllowed() - Returns status whether Coop is allowed
-    Added: bool IsSupported() - Returns whether Coop is supported on teh current level or not
+
+coop_config.cpp
+	Added: CoopSettings::LoadSettingsFromFile
 	
 coop_generalstrings.hpp
-	Added: various coop specific constexpr auto
+	
