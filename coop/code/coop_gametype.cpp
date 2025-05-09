@@ -192,7 +192,7 @@ void ModeCoop::addPlayerToTeam(Player* player, Team* team)
 
 	if (oldTeam)
 	{
-		_playerGameData[player->entnum]._currentTeam = NULL;
+		_playerGameData[player->entnum]._currentTeam = nullptr;
 
 		player->SurfaceCommand("all", "-skin1");
 		player->SurfaceCommand("all", "-skin2");
