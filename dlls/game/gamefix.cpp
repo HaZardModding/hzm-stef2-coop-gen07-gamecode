@@ -793,7 +793,7 @@ void gamefix_replaceSubstring(char* str, const char* find, const char* replace)
 	// Temporary pointer for non-destructive scanning
 	char* current = str;
 
-	while ((pos = strstr(current, find)) != NULL) {
+	while ((pos = strstr(current, find)) != nullptr) {
 		// Calculate the length of the initial segment
 		size_t len = pos - current;
 
@@ -1197,8 +1197,8 @@ void gamefix_playerDelayedServerCommand(int entNum, const char* commandText, flo
 		return;
 	}
 	// Ensuring initialization - to stop MS-VS from nagging - chrissstrahl
-	command->command = NULL;
-	command->next = NULL;
+	command->command = nullptr;
+	command->next = nullptr;
 	int commandLength = strlen(commandText) + 1;
 	command->command = (char*)malloc(commandLength * sizeof(char));
 	if (!command->command) {
@@ -1287,13 +1287,13 @@ void gamefix_playerHandleDelayedServerCommand(void)
 void gamefix_playerClearDelayedServerCommand(int entNum)
 {
     gamefix_pendingServerCommand* current = pendingServerCommandList[entNum];
-    while (current != NULL) {
+    while (current != nullptr) {
         gamefix_pendingServerCommand* temp = current;
         current = current->next;
 		free(temp->command);
         free(temp);
     }
-    pendingServerCommandList[entNum] = NULL;
+    pendingServerCommandList[entNum] = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -1311,7 +1311,7 @@ bool gamefix_getFileContents(str sFile, str& contents, bool tokenize) {
 	Script bufferInternal;
 	bufferInternal.LoadFile(sFile.c_str());
 
-	if (bufferInternal.buffer == NULL || !strlen(bufferInternal.buffer)) {
+	if (bufferInternal.buffer == nullptr || !strlen(bufferInternal.buffer)) {
 		bufferInternal.Close();
 		return false;
 	}
@@ -1418,7 +1418,7 @@ char* gamefix_convertUtf8UmlautsToAnsi(const char* utf8_str)
 	char* ansi_str = (char*)malloc(ansi_size);
 	if (!ansi_str) {
 		gi.Printf("Error: malloc");
-		return NULL;
+		return nullptr;
 	}
 
 	unsigned char* dst = (unsigned char*)ansi_str;
@@ -1653,7 +1653,7 @@ gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* da
 	gamefix_iniFileSection* sections = (gamefix_iniFileSection*)malloc(MAX_SECTIONS * sizeof(gamefix_iniFileSection));
 	if (!sections) {
 		gi.Error(ERR_DROP, "Failed to allocate memory for: %s!\n", file.c_str());
-		return NULL;
+		return nullptr;
 	}
 
 	for (int i = 0; i < MAX_SECTIONS; ++i) {
@@ -1664,17 +1664,17 @@ gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* da
 	if (!modifiable_data) {
 		gi.Error(ERR_DROP, "Failed to dublicate string for: %s!\n", file.c_str());
 		free(sections);
-		return NULL;
+		return nullptr;
 	}
 
 	char* line = strtok(modifiable_data, "\n");
-	gamefix_iniFileSection* current_section = NULL;
+	gamefix_iniFileSection* current_section = nullptr;
 
-	while (line != NULL) {
+	while (line != nullptr) {
 		char* trimmed_line = gamefix_trimWhitespace(line,true);
 
 		if (trimmed_line[0] == '\0' || trimmed_line[0] == ';' || trimmed_line[0] == '#') {
-			line = strtok(NULL, "\n");
+			line = strtok(nullptr, "\n");
 			continue;
 		}
 
@@ -1718,7 +1718,7 @@ gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* da
 			current_section->lines[current_section->line_count - 1][MAX_LINE_LENGTH - 1] = '\0';
 		}
 
-		line = strtok(NULL, "\n");
+		line = strtok(nullptr, "\n");
 	}
 
 	free(modifiable_data);

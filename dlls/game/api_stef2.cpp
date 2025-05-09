@@ -757,7 +757,7 @@ Entity* gameFixAPI_getEntity(str &name)
 #endif //GAME_STAR_TREK_ELITE_FORCE_2
 
 	if (tlist){
-		return tlist->GetNextEntity(NULL);
+		return tlist->GetNextEntity(nullptr);
 	}
 
 	return nullptr;
@@ -801,7 +801,7 @@ void gameFixAPI_maxLevelitems_ctf_grey()
 	int maxLevelitems = (cvar ? cvar->integer : 0);
 	if (maxLevelitems < 384) {
 		gi.cvar_set("max_levelitems", "384");
-		gi.SendServerCommand((int)NULL, "map ctf_grey");
+		gi.SendServerCommand((int)nullptr, "map ctf_grey");
 		gi.Printf(_GFix_INFO_MapError,_GFixEF2_INFO_GAMEFIX_maxLevelitems_ctf_grey);
 	}
 }
@@ -1209,7 +1209,7 @@ void gameFixAPI_mapList()
 void gameFixAPI_dialogSetupPlayers(Actor* speaker, char *localizedDialogName, bool headDisplay)
 {
 	Player* player = nullptr;
-	Actor* eActor = NULL;
+	Actor* eActor = nullptr;
 
 #ifdef GAME_STAR_TREK_ELITE_FORCE_2
 	if (headDisplay && speaker) {

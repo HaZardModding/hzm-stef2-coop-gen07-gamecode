@@ -174,6 +174,7 @@ bool				gamefix_setFileContents(str sFile, str& contents);
 gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* data, int* section_count);
 void				gamefix_iniSectionsNamesGet(const str& file, Container<str>& sectionList, const str& contents);
 str					gamefix_iniSectionGet(const str& file, const str& data, const char* section_name);
+str					gamefix_iniSectionGet(const str& file, const str& data, const char* section_name);
 str					gamefix_iniSectionSet(const str& file, const str& file_contents, const str& section_name, const str& new_section_contents);
 str					gamefix_iniSectionDelete(const str& file, const str& file_contents, const str& section_name);
 str					gamefix_iniKeyGet(const str& file, const str& section_contents, const str& key, const str& altVal);
