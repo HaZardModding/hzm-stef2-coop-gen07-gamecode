@@ -136,10 +136,13 @@ extern "C" void G_CleanupGame( qboolean restart )
 {
 	try
 	{
-
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Function to manage game shutdown - chrissstrahl
+		// Executed if level is exited/changed/restarted - but not on first load/game start
+		//--------------------------------------------------------------
 		gamefix_cleanupGame( restart );
 
-		
+
 		level.CleanUp( restart );
 	}
 	
