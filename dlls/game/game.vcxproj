@@ -394,6 +394,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\coop\code\coop_config.cpp" />
     <ClCompile Include="..\..\coop\code\coop_manager.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_gametype.cpp" />
+    <ClCompile Include="..\..\coop\code\rpg_gametype.cpp" />
     <ClCompile Include="api_stef2.cpp" />
     <ClCompile Include="changePosture.cpp" />
     <ClCompile Include="closeInOnEnemy.cpp" />
@@ -1397,6 +1399,8 @@
     <ClInclude Include="..\..\coop\code\coop_config.hpp" />
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp" />
     <ClInclude Include="..\..\coop\code\coop_manager.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_gametype.hpp" />
+    <ClInclude Include="..\..\coop\code\rpg_gametype.hpp" />
     <ClInclude Include="..\..\Shared\qcommon\alias.h" />
     <ClInclude Include="..\..\Shared\qcommon\cm_public.h" />
     <ClInclude Include="..\..\Shared\qcommon\platform.h" />

@@ -540,6 +540,12 @@
     <ClCompile Include="..\..\coop\code\coop_manager.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_gametype.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\rpg_gametype.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1128,6 +1134,12 @@
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_config.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\rpg_gametype.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_gametype.hpp">
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
