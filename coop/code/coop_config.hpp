@@ -23,6 +23,9 @@ constexpr auto _COOP_SETTINGS_CAT_gameplay = "gameplay";
 constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
 
+constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
+
+
 class CoopSettings {
 public:
 	bool coopEnabled;
