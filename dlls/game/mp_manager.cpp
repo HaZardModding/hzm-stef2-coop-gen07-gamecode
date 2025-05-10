@@ -575,6 +575,19 @@ void MultiplayerManager::initItems( void )
 
 	_multiplayerGame->initItems();
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Handle Items for Coop - chrissstrahl
+	// See ModeCoop::initItems started above from _multiplayerGame->initItems();
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		_awardSystem->initItems();
+		return;
+	}
+#endif
+
+
 	// Tell all of the modifiers to initialize items
 
 	for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )

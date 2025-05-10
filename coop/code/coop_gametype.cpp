@@ -31,6 +31,8 @@ ModeCoop::~ModeCoop()
 {
 }
 
+//Executed each level load in multiplayer
+//Executed from: MultiplayerManager::initMultiplayerGame()
 void ModeCoop::init(int maxPlayers)
 {
 	//we don't want any time or point limit for now
@@ -39,6 +41,26 @@ void ModeCoop::init(int maxPlayers)
 
 	ModeTeamBase::init(maxPlayers);
 	readMultiplayerConfig("coop/config/spawninventory.cfg");
+
+	//allow 3rd person aiming
+	gi.cvar_set("g_aimviewangles", "1");
+}
+
+//Executed from: MultiplayerManager::initItems - only if gamemode is coop
+//Related: AwardSystem::initItems
+void ModeCoop::initItems(void)
+{
+	// Setup spawn points
+	getSpawnpoints();
+	resetSpawnpoints();
+
+	// Setup the start time
+	_matchStartTime = multiplayerManager.getTime();
+	_gameStartTime = multiplayerManager.getTime();
+
+	_played5MinWarning = false;
+	_played2MinWarning = false;
+	_played1MinWarning = false;
 }
 
 bool ModeCoop::isEndOfMatch(void)

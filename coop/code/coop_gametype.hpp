@@ -23,6 +23,7 @@ public:
 	~ModeCoop();
 
 	/* virtual */ void					init(int maxPlayers);
+	/* virtual */ void					initItems(void);
 	/* virtual */ int					getInfoIcon(Player* player);
 	/* virtual */ void					playerChangedModel(Player* player);
 	/* virtual */ void					updatePlayerSkin(Player* player);
