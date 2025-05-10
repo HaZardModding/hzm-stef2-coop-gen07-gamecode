@@ -567,6 +567,16 @@ World::World()
 	sky_portal = true;
 	UpdateSky();
 
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Upgraded: Moved up inside the function to prevent it overwriting settings loaded from else where - chrissstrahl
+	//--------------------------------------------------------------
+	// Initialize movement info
+	for (i = 0; i < WORLD_PHYSICS_TOTAL_NUMBER; i++){
+		_physicsInfo[i] = -1.0f;
+	}
+
+
 	//
 	// see if this is a cinematic level
 	//
@@ -629,13 +639,6 @@ World::World()
 	SetTargetName( "world" );
 
 	groupcoordinator = new GroupCoordinator;
-
-	// Initialize movement info
-
-	for ( i = 0 ; i < WORLD_PHYSICS_TOTAL_NUMBER ; i++ )
-	{
-		_physicsInfo[ i ] = -1.0f;
-	}
 
 	_canShakeCamera = false;
 }

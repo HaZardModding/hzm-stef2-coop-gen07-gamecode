@@ -28,6 +28,9 @@ Warning C6386: Buffer overflow while writing to objlist -> template< class Type 
 Warning C6385: Invalid data is being read from objlist-> template< class Type > void Container<Type>::Resize
 WARNING C6269: Potentially incorrect order of operations -> int BotAI(int client, float thinktime)
 
+Upgraded: Moved up inside the function to prevent it overwriting settings loaded from else where - _physicsInfo
+World::World() 
+
 Fixed: Huds not initializing correctly on listen server for host
 void gamefix_playerClientThink(Player* player)
 void gameFixAPI_playerClientThink(Player* player)
