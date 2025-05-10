@@ -24,6 +24,7 @@ public:
 
 	/* virtual */ void					init(int maxPlayers);
 	/* virtual */ void					initItems(void);
+	/* virtual */ void					_giveInitialConditions(Player* player);
 	/* virtual */ int					getInfoIcon(Player* player);
 	/* virtual */ void					playerChangedModel(Player* player);
 	/* virtual */ void					updatePlayerSkin(Player* player);

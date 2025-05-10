@@ -80,6 +80,11 @@ bool ModeCoop::isEndOfMatch(void)
 	return false;
 }
 
+void ModeCoop::_giveInitialConditions(Player* player)
+{
+	str s;
+}
+
 void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath)
 {
 	Team* team;
