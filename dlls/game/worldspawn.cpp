@@ -37,6 +37,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 WorldPtr  world;
 
 #define DEFAULT_ENTITY_FADE_DIST  3000
@@ -590,6 +598,15 @@ World::World()
 	level.nextmap = "";
 	level.level_name = level.mapname;
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - We have our own script handle - chrissstrahl
+// - Allow scripts to use .scr and .script, prefer .script
+// - Load Scripts for coop from base/coop/maps/ first, if that fails try base/maps/
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopManager::Get().LoadLevelScript(level.mapname);
+#else
 	// Set up the mapname as the default script
 	mapname = "maps/";
 	mapname += level.mapname;
@@ -617,6 +634,8 @@ World::World()
 	{
 		level.SetGameScript( "" );
 	}
+#endif
+
 
 	level.consoleThread = Director.CreateThread();
 
@@ -1059,11 +1078,21 @@ void World::SetScript( Event *ev )
 
 	text = ev->GetString( 1 );
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - We have our own script handle - chrissstrahl
+// - Allow scripts to use .scr and .script, prefer .script
+// - Load Scripts for coop from base/coop/maps/ first, if that fails try base/maps/
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopManager::Get().LoadLevelScript(text);
+#else
 	gi.DPrintf( "Adding script: '%s'\n", text.c_str() );
 	scriptname = "maps/" + text;
 
 	// just set the script, we will start it in G_Spawn
 	level.SetGameScript( scriptname.c_str() );
+#endif
 }
 
 void World::SetWaterColor( Event *ev )

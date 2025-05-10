@@ -175,7 +175,16 @@ extern "C" void G_ShutdownGame( void )
 		//--------------------------------------------------------------
 		gamefix_shutdownGame();
 
-		
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Game Shutdown - chrissstrahl
+		// Executed if game is exited/shutdown
+		//--------------------------------------------------------------
+		CoopManager::Get().Shutdown();
+#endif
+
+
 		// close the player log file if necessary
 		ClosePlayerLogFile();
 		

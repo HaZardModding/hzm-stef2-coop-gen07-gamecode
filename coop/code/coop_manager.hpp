@@ -21,21 +21,14 @@ public:
 
 public:
     static CoopManager& Get();
-
-
-    void Init();               // Called during game startup
-    void InitWorld();          // Called when a map is spawned
+    
+    void Init();
+    void InitWorld();
     void DetectMapType();      
-
-
-
-
-    void Shutdown();           // Optional cleanup
-    void StartMap();           // Called when a new map starts
-    void EndMap();             // Called when a map ends
-
-    void OverrideMultiplayer();   // Disable/override default MP logic
-
+    void LoadLevelScript(str mapname);
+    void Shutdown();
+    void LevelStart(CThread* gamescript);
+    void LevelEndCleanup(qboolean temp_restart);
     bool IsCoopEnabled() const;
     bool IsRpgEnabled() const;
 
@@ -48,7 +41,7 @@ public:
 private:
     CoopManager() = default;
 
-    void LoadSettingsFromINI(); // Load point values, damage flags, etc.
+    void LoadSettingsFromINI();
 
     MapFlags mapFlags;
 

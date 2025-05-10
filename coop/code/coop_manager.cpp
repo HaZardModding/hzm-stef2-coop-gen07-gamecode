@@ -2,21 +2,24 @@
 #include "../../dlls/game/gamefix.hpp"
 #include "coop_manager.hpp"
 
+
 CoopManager& CoopManager::Get() {
     static CoopManager instance;
     return instance;
 }
 
+bool CoopManager::IsCoopEnabled() const {
+    return coopEnabled;
+}
+
+//executed once, only on game server start/load
+//executed before world and other entities exist
 void CoopManager::Init() {
     try {
-        //Print Init Status Info
-        ///////////////////////////////////////////////////
         gi.Printf(_COOP_INFO_INIT_game);
 
         LoadSettingsFromINI();
 
-        //Print Init Status Info
-        ///////////////////////////////////////////////////
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
     catch (const char* error) {
@@ -25,10 +28,23 @@ void CoopManager::Init() {
     }
 }
 
+//executed once, only on game server start/load
+//loads coop settings from ini
+void CoopManager::LoadSettingsFromINI() {
+    str contents;
+    if (gamefix_getFileContents(_COOP_FILE_settings, contents, true)) {
+        enemyKillPoints = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "enemyKillPoints", "0"));
+        playerKillPenalty = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "playerKillPenalty", "0"));
+        friendlyFire = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "friendlyFire", "false") == "true";
+        giveSpawnItems = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "giveSpawnItems", "false") == "true";
+    }
+}
+
+//executed each level load - always
+//requires the world to be already spawned
+//Other: CoopManager::LevelStart()
 void CoopManager::InitWorld() {
     try {
-        //Print Init WORLD Status Info
-        ///////////////////////////////////////////////////
         gi.Printf(_COOP_INFO_INIT_world, level.mapname.c_str());
 
         DetectMapType();
@@ -36,8 +52,6 @@ void CoopManager::InitWorld() {
         str coopStatus = "inactive";
         str sAllowSpMaps = "0";
 
-        //Decide if we want to enable Coop
-        ///////////////////////////////////////////////////
         //this early we can't use API - multiplayer manager has not been started yet
         if (mapFlags.coopMap && g_gametype->integer == GT_MULTIPLAYER) { 
             sAllowSpMaps = "1";
@@ -46,12 +60,14 @@ void CoopManager::InitWorld() {
         }
         gi.cvar_set("gfix_allowSpMaps", sAllowSpMaps);
 
-        if (IsCoopEnabled() || IsRpgEnabled()) {
-            OverrideMultiplayer();
-        }
+        //notify scripts - is a coop level
+        levelVars.SetVariable("isCoopLevel",float(int(coopEnabled)));
 
-        //Print TEST Status Info
-        ///////////////////////////////////////////////////
+        //coop only
+        if (coopEnabled) {
+            //...
+        }
+        
         gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
     }
     catch (const char* error) {
@@ -60,6 +76,8 @@ void CoopManager::InitWorld() {
     }
 }
 
+//detects what kind of gametype the level
+//support and sets related parameters
 void CoopManager::DetectMapType() {
     mapFlags.rpgMap = false;
     mapFlags.coopMap = false;
@@ -106,51 +124,89 @@ void CoopManager::DetectMapType() {
     }
 }
 
+//Executes the level script
+//prefers coop/maps/ over maps/ , prefers .script over .scr
+void CoopManager::LoadLevelScript(str mapname) {
+    mapname = gamefix_cleanMapName(mapname);
+    
+    Container<str> scriptFileExt;
+    scriptFileExt.AddObject("script");
+    scriptFileExt.AddObject("scr");
+    int scriptFileExtensions = scriptFileExt.NumObjects();
+
+    Container<str> scriptFileDir;
+    scriptFileDir.AddObject("coop/maps/");
+    scriptFileDir.AddObject("maps/");
+    int scriptFileDirectories = scriptFileDir.NumObjects();
+    
+    str dir,ext;
+    for (int j = 1; j <= scriptFileDirectories; j++) {
+        dir = scriptFileDir.ObjectAt(j);
+        for (int i = 1; i <= scriptFileExtensions; i++) {
+            ext = scriptFileExt.ObjectAt(i);
+            //construct directory mapname and file extension
+            str sFile = va("%s%s.%s", dir.c_str(), mapname.c_str(), ext.c_str());
+            if (gi.FS_ReadFile(sFile.c_str(), NULL, true) != -1) {
+                gi.Printf("Adding script: '%s'\n", sFile.c_str());
+                // just set the script, we will start it in G_Spawn
+                level.SetGameScript(sFile.c_str());
+                return;
+            }
+        }
+    }
+
+    gi.Printf("Level *.scr or *.script file not found in coop/maps or maps: '%s'\n", mapname.c_str());
+    level.SetGameScript("");
+}
+
+//Executed if game is shut down
+//Cleans up stuff while world and entities still exist
+//Executed ONLY on game shutdown
 void CoopManager::Shutdown() {
-    // Clean up anything coop-related if needed
+    //coop only
+    if (coopEnabled) {
+        //...
+    }
 }
 
-void CoopManager::EndMap() {
-    // Cleanup or save state
+//Executed if level is exited/changed/restarted - but not on first load/game start
+//Cleans up stuff while world and entities still exist - Not executed if game server is quit
+void CoopManager::LevelEndCleanup(qboolean temp_restart) {
+    //coop only
+    if (coopEnabled) {
+        //...
+    }
 }
 
-bool CoopManager::IsCoopEnabled() const {
-    return coopEnabled;
+//Executed each time a level is starting - scripts are started
+//Executed from: Level::Start - always
+//Other: CoopManager::InitWorld
+void CoopManager::LevelStart(CThread* gamescript) {
+    if (coopEnabled) {
+        //start coop main function automatically
+        if (gamescript && gamescript->labelExists(_COOP_SCRIPT_main)) {
+            CThread* coopMain = Director.CreateThread(_COOP_SCRIPT_main);
+            if (coopMain) {
+                coopMain->DelayedStart(0.0f);
+            }
+        }
+    }
 }
 
+
+//not yet in use
 bool CoopManager::IsRpgEnabled() const {
     return rpgEnabled;
 }
-
-void CoopManager::OverrideMultiplayer() {
-    if (!coopEnabled && !rpgEnabled)
-        return;
-
-    // TODO: Hook or disable multiplayerManager behavior as needed
-}
-
 bool CoopManager::ShouldGiveSpawnItems() const {
     return giveSpawnItems;
 }
-
 bool CoopManager::IsFriendlyFireEnabled() const {
     return friendlyFire;
 }
-
 int CoopManager::GetPointsForEnemyKill() const {
     return enemyKillPoints;
 }
-
 int CoopManager::GetPenaltyForPlayerKill() const {
     return playerKillPenalty;
-}
-
-void CoopManager::LoadSettingsFromINI() {
-    str contents;
-    if (gamefix_getFileContents(_COOP_FILE_settings, contents, true)) {
-        enemyKillPoints     = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "enemyKillPoints", "0"));
-        playerKillPenalty   = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "playerKillPenalty", "0"));
-        friendlyFire        = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "friendlyFire", "false") == "true";
-        giveSpawnItems      = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "giveSpawnItems", "false") == "true";
-    }
 }
