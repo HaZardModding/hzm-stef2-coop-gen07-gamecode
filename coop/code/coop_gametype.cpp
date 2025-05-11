@@ -82,7 +82,27 @@ bool ModeCoop::isEndOfMatch(void)
 
 void ModeCoop::_giveInitialConditions(Player* player)
 {
-	str s;
+	//_weaponList - was  
+	int idx;
+	// Give all the weapons to the player
+	for (idx = 1; idx <= _weaponList.NumObjects(); idx++){
+		multiplayerManager.givePlayerItem(player->entnum, _weaponList.ObjectAt(idx));
+	}
+
+	// Give all the ammo to the player
+	for (idx = 1; idx <= _ammoList.NumObjects(); idx++){
+		Event* ev = new Event("ammo");
+		ev->AddString(_ammoList.ObjectAt(idx)->type);
+		ev->AddInteger(_ammoList.ObjectAt(idx)->amount);
+		player->ProcessEvent(ev); // deletes the created Event
+	}
+
+	// Start the player with the appropriate weapon
+	if (_startingWeaponName.length()){
+		Event* ev = new Event("use");
+		ev->AddString(_startingWeaponName);
+		player->ProcessEvent(ev); // deletes the created Event
+	}
 }
 
 void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath)
@@ -174,6 +194,7 @@ int ModeCoop::getInfoIcon(Player* player)
 
 void ModeCoop::playerChangedModel(Player* player)
 {
+	CoopManager::Get().playerChangedModel(player);
 	updatePlayerSkin(player);
 }
 

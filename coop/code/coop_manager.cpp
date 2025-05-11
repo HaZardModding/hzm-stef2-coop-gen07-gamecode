@@ -193,6 +193,54 @@ void CoopManager::LevelStart(CThread* gamescript) {
     }
 }
 
+//Executed upon entering server - Always (Multiplayer + Singleplayer)
+void CoopManager::playerEntered(gentity_t* ent){
+    if (ent && ent->entity) {
+        ExecuteThread("coop_justEntered", true, ent->entity);
+    }
+}
+//Executed on death - Always (Multiplayer + Singleplayer)
+void CoopManager::playerLeft(Player* player) {
+    if (player) {
+        ExecuteThread("coop_justLeft", true, player);
+    }
+}
+//Executed on death - Always (Multiplayer + Singleplayer)
+void CoopManager::playerDied(Player *player){
+    if (player) {
+        ExecuteThread("coop_justDied", true, player);
+    }
+}
+//Executed on death - Always (Multiplayer + Singleplayer)
+void CoopManager::playerTransported(Entity *entity){
+    if (entity && entity->isSubclassOf(Player)) {
+        ExecuteThread("coop_justTransported", true, (Player*)entity);
+    }
+}
+//Executed on spawn - Multiplayer
+void CoopManager::playerSpawned(Player* player) {
+    if (player) {
+        ExecuteThread("coop_justSpawned", true, player);
+    }
+}
+//Executed on death - Multiplayer
+void CoopManager::playerBecameSpectator(Player *player){
+    if (player) {
+        ExecuteThread("coop_justBecameSpectator", true, player);
+    }
+}
+//Executed on death - Multiplayer
+void CoopManager::playerChangedModel(Player *player){
+    if (player) {
+        ExecuteThread("coop_justChangedModel", true, player);
+    }
+}
+//Executed on death - Multiplayer
+void CoopManager::playerChangedClass(Player* player) {
+    if (player) {
+        ExecuteThread("coop_justChangedClass", true, player);
+    }
+}
 
 //not yet in use
 bool CoopManager::IsRpgEnabled() const {

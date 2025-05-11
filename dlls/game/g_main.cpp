@@ -1918,6 +1918,14 @@ extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 			GameplayManager::getTheGameplayManager()->processPendingMessages();
 			G_SentInitialMessages( );
 		}
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerEntered(ent);
+#endif
 	}
 	
 	catch( const char *error )

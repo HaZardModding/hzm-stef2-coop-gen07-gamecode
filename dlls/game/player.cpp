@@ -49,6 +49,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 //Forward
 //Back
 //TurnRight
@@ -3388,7 +3396,15 @@ Player::Player()
 }
 
 Player::~Player()
-{	
+{
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerLeft(this);
+#endif
+
+
 	if ( p_heuristics )
 	{
 		p_heuristics->SaveHeuristics( this );	
@@ -3918,6 +3934,14 @@ void Player::Killed( Event *ev )
 	// GAMEFIX - Added: Function handling player game event - chrissstrahl
 	//--------------------------------------------------------------
 	gamefix_playerKilled(this);
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerDied(this);
+#endif
 
 	
 	if ( multiplayerManager.inMultiplayer() )

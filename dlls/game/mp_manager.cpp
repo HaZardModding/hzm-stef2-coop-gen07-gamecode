@@ -3019,6 +3019,14 @@ void MultiplayerManager::makePlayerSpectator( Player *player, SpectatorTypes spe
 		// GAMEFIX - Added: Function handling player game event - chrissstrahl
 		//--------------------------------------------------------------
 		gamefix_playerSpectator(player);
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerBecameSpectator(player);
+#endif
 	}
 }
 
@@ -3201,6 +3209,14 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	if (level.cinematic == 1 && multiplayerManager.gamefixEF2_currentCamera) {
 		player->SetCamera(multiplayerManager.gamefixEF2_currentCamera, 0);
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerSpawned(player);
+#endif
 }
 
 void MultiplayerManager::playerSpawned( Player *player )

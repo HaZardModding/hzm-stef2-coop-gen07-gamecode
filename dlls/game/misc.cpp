@@ -33,6 +33,15 @@
 #include <qcommon/gameplaymanager.h>
 #include "mp_manager.hpp"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 /*****************************************************************************/
 /*QUAKED detail (0.5 0 1.0) ?
 
@@ -969,6 +978,15 @@ void Teleporter::StopTeleport( Event *ev )
 			other->showModel();
 		}
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerTransported(other);
+#endif
+
 	
 	//if ( !( spawnflags & NO_EFFECTS ) )
 	//	other->Sound( "snd_teleport" );

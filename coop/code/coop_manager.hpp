@@ -32,6 +32,16 @@ public:
     bool IsCoopEnabled() const;
     bool IsRpgEnabled() const;
 
+
+    void playerEntered(gentity_t* ent);
+    void playerSpawned(Player* player);
+    void playerDied(Player* player);
+    void playerLeft(Player* player);
+    void playerTransported(Entity* entity);
+    void playerChangedClass(Player* player);
+    void playerChangedModel(Player* player);
+    void playerBecameSpectator(Player* player);
+
     // Configurable systems
     bool ShouldGiveSpawnItems() const;
     bool IsFriendlyFireEnabled() const;
