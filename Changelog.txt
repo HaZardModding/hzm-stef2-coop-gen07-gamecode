@@ -152,6 +152,9 @@ char* gamefix_duplicateString(const char* source)
 Added: Printouts for various missing mp_flags
 void MultiplayerManager::checkModifiedCvars( bool informPlayers )
 
+Fixed: mp_warmUpTime allowed to be under 2 sec, creating issues on listen servers
+void MultiplayerManager::checkModifiedCvars( bool informPlayers )
+
 Added: Function to manage game startup / shutdown / level-change
 void gamefix_shutdownGame()
 void gameFixAPI_initGame()
