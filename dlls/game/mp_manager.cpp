@@ -145,19 +145,7 @@ void MultiplayerManager::cleanup( qboolean restart )
 	}
 
 	// Clean up the game
-
-
-//--------------------------------------------------------------
-// COOP Generation 7.000 - Make sure we don't run into a problem here when deleting - chrissstrahl
-// I am not sure if there is a better way to handle all this
-//--------------------------------------------------------------
-#ifdef ENABLE_COOP
-	if (_multiplayerGame != &ModeCoop::Get()) {
-		delete _multiplayerGame;
-	}
-#else
 	delete _multiplayerGame;
-#endif
 	_multiplayerGame = nullptr;
 
 
@@ -469,8 +457,12 @@ void MultiplayerManager::initMultiplayerGame( void )
 #ifdef ENABLE_COOP
 	if (CoopManager::Get().IsCoopEnabled()) {
 		try {
-			_multiplayerGame = &ModeCoop::Get();
-			//_multiplayerGame = new ModeCoop();
+			if (_multiplayerGame){
+				delete _multiplayerGame;
+				_multiplayerGame = nullptr;
+			}
+
+			_multiplayerGame = new ModeCoop();
 			
 			//activate coop only if this is a coop level
 			if (CoopManager::Get().IsCoopLevel()) {
@@ -479,10 +471,8 @@ void MultiplayerManager::initMultiplayerGame( void )
 			else {
 				if (_multiplayerGame) {
 					CoopManager::Get().DisableCoop();
-					if ( _multiplayerGame == &ModeCoop::Get() ) {
-						//delete _multiplayerGame;
-						_multiplayerGame = nullptr;
-					}
+					delete _multiplayerGame;
+					_multiplayerGame = nullptr;
 				}
 			}
 		}
