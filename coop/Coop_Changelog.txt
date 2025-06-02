@@ -64,7 +64,7 @@ ModeCoop::_giveInitialConditions(Player * player) Zeile 85	C++
 				//if the match has started
 				ModeCoop::isEndOfMatch()
 				//during warmup time only
-				ModeCoop::shouldStartMatch()
+				MultiplayerModeBase::shouldStartMatch()
 					ModeCoop::isEndOfMatch()
 
 //Executed continuously	
@@ -176,6 +176,16 @@ Changes to stock files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
+dlls\game\program.cpp
+    Added: def_t* getDefForVarname(const char* varname);
+    Added: const char* getVariableValueAsString(const char* varname);
+    Added: Vector getVectorVariableValue(const char* varname);
+    Added: float getFloatVariableValue(const char* varname);
+    Added: str getStringVariableValue(const char* varname);
+    Added: void setVectorVariableValue(const char* varname, Vector vSet);
+    Added: void setFloatVariableValue(const char* varname, float fSet);
+    Added: void setStringVariableValue(const char* varname, char const* sSet);
+	
 dlls\game\player.cpp
 	Added: #include coop_manager.hpp
 	Added: #include coop_gametype.hpp
@@ -202,7 +212,6 @@ dlls\game\mp_modeBase.cpp
 	Added: #include coop_manager.hpp
 	Added: #include coop_gametype.hpp
 	bool MultiplayerModeBase::shouldStartMatch( void )
-		ModeCoop::shouldStartMatch
 		
 
 Changes to Coop Mod files

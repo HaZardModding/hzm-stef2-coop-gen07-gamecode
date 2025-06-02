@@ -242,6 +242,21 @@ class Program : public Class
 		int				AllocString();
 		void				FreeString( int idx );
 		int				CountUsedStrings();
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Add Coop Specific Features - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+   public:
+        def_t* getDefForVarname(const char* varname);
+        const char* getVariableValueAsString(const char* varname);
+        Vector getVectorVariableValue(const char* varname);
+        float getFloatVariableValue(const char* varname);
+        str getStringVariableValue(const char* varname);
+        void setVectorVariableValue(const char* varname, Vector vSet);
+        void setFloatVariableValue(const char* varname, float fSet);
+        void setStringVariableValue(const char* varname, char const* sSet);
+#endif
    };
 /*
 inline float Program::getFloat

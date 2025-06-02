@@ -1148,3 +1148,119 @@ const char *Program::GetFilename( int num )
 {
 	return filenames.ObjectAt( num );
 }
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Add Coop Specific Features - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+def_t* Program::getDefForVarname(const char* varname)
+{
+	def_t* def;
+
+	for (def = program.def_head.next; def; def = def->next)
+	{
+		if (!strcmp(def->name, varname)) {
+			return def;
+		}
+	}
+
+	return NULL;
+}
+
+const char* Program::getVariableValueAsString(const char* varname)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) return "<NULL>";
+	else
+	{
+		if (var->type == &type_string) return getString(var->ofs);
+		else if (var->type == &type_float) return va("%f", getFloat(var->ofs));
+		else if (var->type == &type_vector) return va("%f %f %f", getVector(var->ofs)[0], getVector(var->ofs)[1], getVector(var->ofs)[2]);
+		else return "*** UNSUPPORTED TYPE ***";
+	}
+}
+
+Vector Program::getVectorVariableValue(const char* varname)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) return Vector(0, 0, 0);
+	else
+	{
+		if (var->type == &type_vector) return getVector(var->ofs);
+		else return Vector(0, 0, 0);
+	}
+}
+
+float Program::getFloatVariableValue(const char* varname)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) return 0.0f;
+	else
+	{
+		if (var->type == &type_float) return getFloat(var->ofs);
+		else return 0.0f;
+	}
+}
+
+str Program::getStringVariableValue(const char* varname)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) return "";
+	else
+	{
+		if (var->type == &type_string) return getString(var->ofs);
+		else return "";
+	}
+}
+
+//hzm gameupdate chrissstrahl - allow us to set variables by name
+void Program::setVectorVariableValue(const char* varname, Vector vSet)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) {
+		gi.Error(ERR_DROP, va("Vector variable '%s' does not exist.\n", varname));
+		return;
+	}
+	if (var->type != &type_vector) {
+		gi.Error(ERR_DROP, va("Variable '%s' is not of type Vector.\n", varname));
+		return;
+	}
+
+	setVector(var->ofs, vSet);
+}
+void Program::setFloatVariableValue(const char* varname, float fSet)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) {
+		gi.Error(ERR_DROP, va("setFloatVariableValue - Float variable '%s' does not exist.\n", varname));
+		return;
+	}
+	if (var->type != &type_float) {
+		gi.Error(ERR_DROP, va("Variable '%s' is not of type Float.\n", varname));
+		return;
+	}
+
+	setFloat(var->ofs, fSet);
+}
+void Program::setStringVariableValue(const char* varname, char const* sSet)
+{
+	def_t* var = getDefForVarname(varname);
+
+	if (var == NULL) {
+		gi.Error(ERR_DROP, va("String variable '%s' does not exist.\n", varname));
+		return;
+	}
+	if (var->type != &type_string) {
+		gi.Error(ERR_DROP, va("Variable '%s' is not of type String.\n", varname));
+		return;
+	}
+
+	setString(var->ofs, sSet);
+}
+#endif

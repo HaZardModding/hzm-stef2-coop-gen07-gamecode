@@ -314,14 +314,36 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 {
 	Entity* spawnPoint = nullptr;
 
+	str s = va("coop_vector_spawnOrigin%i", (1 + player->entnum));
+	Vector vSpawn = program.getVectorVariableValue(s.c_str());
+	if (vSpawn.length() > 0) {
+		Entity* ent;
+		ent = G_FindClass(NULL, "info_player_start");
+		Vector vOld = ent->origin;
+		if (ent) {
+			s = va("coop_float_spawnAngle%i", (1 + player->entnum));
+			Vector vAngle = Vector(0.0f, 0.0f, 0.0f);
+			vAngle[1] = program.getFloatVariableValue(s.c_str());
+			//no player specific angle, get general angle
+			if (vAngle[1] == 0.0f) {
+				vAngle[1] = program.getFloatVariableValue("coop_float_spawnAngle0");
+			}
+
+			//ent->origin = vSpawn;
+			ent->setAngles(vAngle);
+			ent->setOrigin(vSpawn);
+			ent->NoLerpThisFrame();
+			return ent;
+		}
+	}
+
 	//Return coop mod targetnamed spawnpoint (ipd1, ipd2, ..., ipd8)
-	Entity* ent;
 	TargetList* tlist;
 	tlist = world->GetTargetList(va("ipd%i", (1 + player->entnum)), false);
 	if (tlist) {
-		ent = tlist->GetNextEntity(NULL);
-		if (ent) {
-			return ent;
+		spawnPoint = tlist->GetNextEntity(NULL);
+		if (spawnPoint) {
+			return spawnPoint;
 		}
 	}
 
