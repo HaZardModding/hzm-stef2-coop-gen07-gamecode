@@ -15,12 +15,6 @@ CLASS_DECLARATION(ModeTeamDeathmatch, ModeCoop, NULL)
 	{ NULL, NULL }
 };
 
-// I am not sure if there is a better way to handle all this - Chrissstrahl
-ModeCoop& ModeCoop::Get() {
-	static ModeCoop instance;
-	return instance;
-}
-
 ModeCoop::ModeCoop()
 {
 	//_redTeam = AddTeam("Red");
@@ -81,41 +75,6 @@ bool ModeCoop::isEndOfMatch(void)
 		return true;
 
 	return false;
-}
-
-bool ModeCoop::shouldStartMatch(void)
-{
-	int timeRemaining = (int)(_matchStartTime + mp_warmUpTime->value - multiplayerManager.getTime() + 1.0f);
-	int numPlayers;
-	if ((timeRemaining > 0) && (timeRemaining < 6) && (timeRemaining != _lastTimeRemaining)){
-		_lastTimeRemaining = timeRemaining;
-
-		multiplayerManager.centerPrintAllClients(va("%d", _lastTimeRemaining), CENTERPRINT_IMPORTANCE_NORMAL);
-	}
-
-	// Make sure we have done our warm up already
-	if (multiplayerManager.getTime() < _matchStartTime + mp_warmUpTime->value)
-		return false;
-
-
-	// Make sure we have enough players
-	numPlayers = 0;
-
-	for (unsigned int i = 0; i < _maxPlayers; i++){
-		if (_playerGameData[i]._playing){
-			numPlayers++;
-		}
-	}
-
-
-	if (numPlayers < mp_minPlayers->integer)
-		return false;
-
-	return true;
-}
-
-void ModeCoop::clientThink(Player* player)
-{
 }
 
 void ModeCoop::_giveInitialConditions(Player* player)

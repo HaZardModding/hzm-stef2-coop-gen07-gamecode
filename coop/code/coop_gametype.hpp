@@ -17,9 +17,6 @@ protected:
 public:
 	CLASS_PROTOTYPE(ModeCoop);
 
-	static ModeCoop& Get();
-
-private:
 	ModeCoop();
 	~ModeCoop();
 
@@ -27,7 +24,6 @@ public:
 
 	/* virtual */ void					init(int maxPlayers);
 	/* virtual */ void					initItems(void);
-	/* virtual */ void					clientThink(Player* player);
 	/* virtual */ void					_giveInitialConditions(Player* player);
 	/* virtual */ int					getInfoIcon(Player* player);
 	/* virtual */ void					playerChangedModel(Player* player);
@@ -37,8 +33,6 @@ public:
 	/* virtual */ bool					canJoinTeam(Player* player, const str& teamName);
 	/* virtual */ void					joinTeam(Player* player, const str& teamName);
 	/* virtual */ Entity*				getSpawnPoint(Player* player);
-
-	/* virtual */ bool					shouldStartMatch(void);
 
 	/* virtual */ void					playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
 	/* virtual */ bool					isEndOfMatch(void);
