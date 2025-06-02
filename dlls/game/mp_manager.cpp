@@ -146,8 +146,20 @@ void MultiplayerManager::cleanup( qboolean restart )
 
 	// Clean up the game
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Make sure we don't run into a problem here when deleting - chrissstrahl
+// I am not sure if there is a better way to handle all this
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (_multiplayerGame != &ModeCoop::Get()) {
+		delete _multiplayerGame;
+	}
+#else
 	delete _multiplayerGame;
-	_multiplayerGame = NULL;
+#endif
+	_multiplayerGame = nullptr;
+
 
 	// Clean up the player data
 
@@ -451,59 +463,71 @@ void MultiplayerManager::initMultiplayerGame( void )
 	gi.cvar_set( "mp_modifier_diffusion", "0" );
 
 
-//--------------------------------------------------------------
-// COOP Generation 7.000 - Added ModeCoop replacing ModeTeamDeathmatch on Coop maps - chrissstrahl
-//--------------------------------------------------------------
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added ModeCoop replacing ModeTeamDeathmatch on Coop maps - chrissstrahl
+	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
 	if (CoopManager::Get().IsCoopEnabled()) {
-		try{
-			_multiplayerGame = new ModeCoop();
-			gametype = GT_TEAM; // Or define GT_COOP if needed
+		try {
+			_multiplayerGame = &ModeCoop::Get();
+			//_multiplayerGame = new ModeCoop();
+			
+			//activate coop only if this is a coop level
+			if (CoopManager::Get().IsCoopLevel()) {
+				gametype = GT_TEAM; // Or define GT_COOP if needed
+			}
+			else {
+				if (_multiplayerGame) {
+					CoopManager::Get().DisableCoop();
+					if ( _multiplayerGame == &ModeCoop::Get() ) {
+						//delete _multiplayerGame;
+						_multiplayerGame = nullptr;
+					}
+				}
+			}
 		}
 		catch (const char* error) {
 			gi.Printf(_COOP_ERROR_fatal, error);
 			G_ExitWithError(error);
 		}
 	}
-#else
-
-
-	// Create the correct game type
-
-	switch ( mp_gametype->integer ) // Todo : switch off of a something better than a hardcoded index
-	{
-		case 0 : 
-			_multiplayerGame = new ModeDeathmatch(); 
+#endif
+	if(!_multiplayerGame) {
+		// Create the correct game type
+		switch (mp_gametype->integer) // Todo : switch off of a something better than a hardcoded index
+		{
+		case 0:
+			_multiplayerGame = new ModeDeathmatch();
 			gametype = GT_FFA;
 			break;
-		case 1 :  
-			_multiplayerGame = new ModeTeamDeathmatch(); 
+		case 1:
+			_multiplayerGame = new ModeTeamDeathmatch();
 			gametype = GT_TEAM;
 			break;
-		case 2 :  
-			_multiplayerGame = new ModeCaptureTheFlag(); 
+		case 2:
+			_multiplayerGame = new ModeCaptureTheFlag();
 			gametype = GT_CTF;
-			break ;
-		case 3 :  
+			break;
+		case 3:
 			// This is bomb diffusion mode
 
-			_multiplayerGame = new ModeTeamDeathmatch(); 
+			_multiplayerGame = new ModeTeamDeathmatch();
 
-			gi.cvar_set( "mp_modifier_diffusion", "1" );
+			gi.cvar_set("mp_modifier_diffusion", "1");
 			/* gi.cvar_set( "mp_modifier_specialties", "1" );
 			gi.cvar_set( "mp_modifier_elimination", "1" ); */
 
 			//gi.cvar_set( "mp_gametype", "1" );
 
 			gametype = GT_TEAM;
-			break ;
+			break;
 
-		default: 
-			_multiplayerGame = new ModeDeathmatch(); 
+		default:
+			_multiplayerGame = new ModeDeathmatch();
 			gametype = GT_FFA;
-			break ;
+			break;
+		}
 	}
-#endif
 
 	// Setup some stuff for bots
 
