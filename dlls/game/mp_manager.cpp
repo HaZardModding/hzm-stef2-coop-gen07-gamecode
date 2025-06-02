@@ -4145,7 +4145,19 @@ void MultiplayerManager::checkModifiedCvars( bool informPlayers )
 		checkCvar( mp_damageMultiplier, "$$DamageMultiplier$$", MP_CVAR_TYPE_FLOAT );
 		checkCvar( mp_respawnInvincibilityTime, "$$RespawnInvincibilityTime$$", MP_CVAR_TYPE_FLOAT );
 
+		
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Prevent mp_warmuptime to get under 2 sec, because it can break things on listen server - chrissstrahl
+		//--------------------------------------------------------------
+		if (mp_warmUpTime->modified) {
+			if (mp_warmUpTime->integer < 2) {
+				gi.cvar_set("mp_warmUpTime", "2");
+				mp_warmUpTime->integer = 2;
+			}
+		}
 		checkCvar( mp_warmUpTime, "$$WarmUpTime$$", MP_CVAR_TYPE_INTEGER );
+
 
 		checkCvar( sv_maxspeed, "$$PlayerSpeed$$", MP_CVAR_TYPE_INTEGER );
 
