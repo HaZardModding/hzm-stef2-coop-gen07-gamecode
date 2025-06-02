@@ -16,6 +16,10 @@ void CoopManager::DisableCoop() {
     coopEnabled = false;
 }
 
+void CoopManager::ClientThink(Player *player) {
+    
+}
+
 //executed once, only on game server start/load
 //executed before world and other entities exist
 void CoopManager::Init() {

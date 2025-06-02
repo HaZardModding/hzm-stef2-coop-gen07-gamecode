@@ -5783,7 +5783,7 @@ void Player::ClientThink( Event *ev )
 #ifdef ENABLE_COOP
 	if (CoopManager::Get().IsCoopEnabled()) {
 		if (CoopManager::Get().IsCoopLevel()) {
-			ModeCoop::Get().clientThink(this);
+			CoopManager::Get().ClientThink(this);
 		}
 	}
 #endif

@@ -66,6 +66,9 @@ public:
     bool IsRpgEnabled() const;
 
 
+    void ClientThink(Player* player);
+
+
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
     void playerDied(Player* player);
