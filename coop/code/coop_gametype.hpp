@@ -36,6 +36,7 @@ public:
 	/* virtual */ void					addPlayerToTeam(Player* player, Team* team);
 	/* virtual */ bool					canJoinTeam(Player* player, const str& teamName);
 	/* virtual */ void					joinTeam(Player* player, const str& teamName);
+	/* virtual */ Entity*				getSpawnPoint(Player* player);
 
 	/* virtual */ bool					shouldStartMatch(void);
 

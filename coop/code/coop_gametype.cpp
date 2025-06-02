@@ -351,6 +351,100 @@ void ModeCoop::addPlayerToTeam(Player* player, Team* team)
 	}
 }
 
+Entity* ModeCoop::getSpawnPoint(Player* player)
+{
+	Entity* spawnPoint = nullptr;
+
+	//Return coop mod targetnamed spawnpoint (ipd1, ipd2, ..., ipd8)
+	Entity* ent;
+	TargetList* tlist;
+	tlist = world->GetTargetList(va("ipd%i", (1 + player->entnum)), false);
+	if (tlist) {
+		ent = tlist->GetNextEntity(NULL);
+		if (ent) {
+			return ent;
+		}
+	}
+
+	DEBUG_LOG("Coop Targetnamed ipd%i spawn avialable in level\n", (1 + player->entnum));
+
+	int randomStartingSpot;
+	int i;
+	int spawnPointIndex;
+	int numSpawnPoints;
+	bool useAnySpawnPoint;
+
+	numSpawnPoints = getNumNamedSpawnpoints("");
+
+	if (numSpawnPoints == 0){
+		useAnySpawnPoint = true;
+
+		numSpawnPoints = getNumSpawnpoints();
+	}
+	else{
+		useAnySpawnPoint = false;
+	}
+
+	randomStartingSpot = ((int)(G_Random() * numSpawnPoints));
+
+	for (i = 0; i < numSpawnPoints; i++){
+		spawnPointIndex = (randomStartingSpot + i) % numSpawnPoints;
+
+		if (useAnySpawnPoint)
+			spawnPoint = getSpawnpointbyIndex(spawnPointIndex);
+		else
+			spawnPoint = getNamedSpawnpointbyIndex("", spawnPointIndex);
+
+		if (spawnPoint){
+			int j;
+			int num;
+			int touch[MAX_GENTITIES];
+			gentity_t* hit;
+			Vector min;
+			Vector max;
+			bool badSpot;
+
+			min = spawnPoint->origin + player->mins + Vector(0, 0, 1);
+			max = spawnPoint->origin + player->maxs + Vector(0, 0, 1);
+
+			num = gi.AreaEntities(min, max, touch, MAX_GENTITIES, qfalse);
+
+			badSpot = false;
+
+			for (j = 0; j < num; j++){
+				hit = &g_entities[touch[j]];
+
+				if (!hit->inuse || (hit->entity == player) || !hit->entity || (hit->entity == world) || (!hit->entity->edict->solid)){
+					continue;
+				}
+
+				if (hit->entity->isSubclassOf(Player)){
+					Player* hitPlayer;
+
+					hitPlayer = (Player*)hit->entity;
+
+					badSpot = true;
+					break;
+				}
+			}
+
+			if (!badSpot){
+				break;
+			}
+		}
+
+	}
+
+	if (spawnPoint) {
+		if (spawnPoint->origin == Vector(0.0f, 0.0f, 0.0f)) {
+			gi.Printf(_GFix_INFO_MapError, va(_GFixEF2_ERR_LEVEL_InfoPlayerDeathmatch_AT_ZERO, spawnPoint->targetname.c_str()));
+			spawnPoint = nullptr;
+		}
+	}
+
+	return spawnPoint;
+}
+
 void ModeCoop::score(const Player* player)
 {
 	char		   string[1400];
