@@ -54,6 +54,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
 #endif
 
 
@@ -5774,6 +5775,18 @@ void Player::ClientThink( Event *ev )
 	// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
 	//--------------------------------------------------------------
 	gamefix_playerClientThink(this);
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Allow access to ClientThink - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (CoopManager::Get().IsCoopEnabled()) {
+		if (CoopManager::Get().IsCoopLevel()) {
+			ModeCoop::Get().clientThink(this);
+		}
+	}
+#endif
 }
 
 // This function returns the endpoint of where the crosshair is located on the
