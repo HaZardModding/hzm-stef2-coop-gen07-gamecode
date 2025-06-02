@@ -12,6 +12,10 @@ bool CoopManager::IsCoopEnabled() const {
     return coopEnabled;
 }
 
+void CoopManager::DisableCoop() {
+    coopEnabled = false;
+}
+
 //executed once, only on game server start/load
 //executed before world and other entities exist
 void CoopManager::Init() {
@@ -19,12 +23,37 @@ void CoopManager::Init() {
         gi.Printf(_COOP_INFO_INIT_game);
 
         LoadSettingsFromINI();
+        LoadMapListFromINI();
+        LoadPlayerModelsFromINI();
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
     catch (const char* error) {
         gi.Printf(_COOP_ERROR_fatal, error);
         G_ExitWithError(error);
+    }
+}
+
+//executed once, only on game server start/load
+//loads coop valid model list for players from ini
+void CoopManager::LoadPlayerModelsFromINI() {
+    str contents;
+    if (gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
+        str sectionContents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
+        
+        //default fallback hardcoded model
+        str skinName = "models/char/munro.tik";
+        coopManager_validPlayerModels.AddUniqueObject(skinName);
+        //get models by number, starting with 1
+        int i = 1;
+        while (skinName.length()) {
+            skinName = gamefix_iniKeyGet(_COOP_FILE_validPlayerModels, sectionContents,va("%d",i), "");
+            if (skinName.length()) {
+                coopManager_validPlayerModels.AddUniqueObject(skinName);
+                DEBUG_LOG("%s\n",skinName.c_str());
+            }
+            i++;
+        }
     }
 }
 
@@ -40,6 +69,17 @@ void CoopManager::LoadSettingsFromINI() {
     }
 }
 
+//executed once, only on game server start/load
+//loads coop settings from ini
+void CoopManager::LoadMapListFromINI() {
+    if (!gamefix_getFileContents(_COOP_FILE_maplist, coopManager_maplist_contents, true)) {
+        //Print maplist file warning
+        ///////////////////////////////////////////////////
+        gi.Printf(va(_COOP_WARNING_FILE_failed, _COOP_FILE_maplist));
+        return;
+    }
+}
+
 //executed each level load - always
 //requires the world to be already spawned
 //Other: CoopManager::LevelStart()
@@ -47,7 +87,7 @@ void CoopManager::InitWorld() {
     try {
         gi.Printf(_COOP_INFO_INIT_world, level.mapname.c_str());
 
-        DetectMapType();
+        SetMapType();
 
         str coopStatus = "inactive";
         str sAllowSpMaps = "0";
@@ -65,10 +105,12 @@ void CoopManager::InitWorld() {
 
         //coop only
         if (coopEnabled) {
-            //...
+            gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
         }
-        
-        gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
+        else {
+            assert(!coopEnabled);
+            gi.Printf("NOT A CO-OP LEVEL but coop is active!!?\n");
+        }
     }
     catch (const char* error) {
         gi.Printf(_COOP_ERROR_fatal, error);
@@ -76,52 +118,67 @@ void CoopManager::InitWorld() {
     }
 }
 
+bool CoopManager::IsCoopLevel() {
+    return mapFlags.coopMap;
+}
+
 //detects what kind of gametype the level
 //support and sets related parameters
-void CoopManager::DetectMapType() {
-    mapFlags.rpgMap = false;
-    mapFlags.coopMap = false;
-    mapFlags.coopIncluded = false;
-    mapFlags.coopSpMission = false;
-    mapFlags.coopSpIgm = false;
-    mapFlags.coopSpSecret = false;
-    mapFlags.multiplayerOnly = false;
-    mapFlags.singleplayerOnly = false;
-    mapFlags.stockMap = false;
+coopManager_mapSettings_s CoopManager::DetectMapType(str mapName) {
 
-    str mapNameClean = gamefix_cleanMapName(level.mapname);
+    str mapNameClean = gamefix_cleanMapName(mapName);
+
+    coopManager_mapSettings_s struct_currentMap;
+    struct_currentMap.cleanName = mapNameClean;
 
     //remember if it is a standard map - do this always
     //check if it is a coop or rpg map
-    if (gameFixAPI_mapIsStock(mapNameClean))         mapFlags.stockMap = true;
-    if (mapNameClean.icmpn("coop_", 5) == 0)         mapFlags.coopMap = true;
-    else if (mapNameClean.icmpn("rpg_", 4) == 0)     mapFlags.rpgMap = true;
+    if (gameFixAPI_mapIsStock(mapNameClean))         struct_currentMap.stockMap = true;
+    if (mapNameClean.icmpn("coop_", 5) == 0)         struct_currentMap.coopMap = true;
+    else if (mapNameClean.icmpn("rpg_", 4) == 0)     struct_currentMap.rpgMap = true;
 
-    str fileContents;
-    if (!gamefix_getFileContents(_COOP_FILE_maplist, fileContents, true)) {
-        //Print maplist file warning
-        ///////////////////////////////////////////////////
-        gi.Printf(va(_COOP_WARNING_FILE_failed, _COOP_FILE_maplist));
-        return;
+    struct_currentMap.checkPoint = "";
+
+    if (!coopManager_maplist_contents.length()) {
+        return struct_currentMap;
     }
+    const str fileContents = coopManager_maplist_contents;
+
 
     //Get name of the section the map is listed in
-    str sectionOfCurrentMap = gamefix_iniFindSectionByValue(_COOP_FILE_maplist, fileContents, level.mapname.c_str());
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_included) { mapFlags.coopIncluded = true; mapFlags.coopMap = true; }
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpMission) { mapFlags.coopSpMission = true; mapFlags.coopMap = true; }
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpIgm) { mapFlags.coopSpIgm = true; mapFlags.coopMap = true; }
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpSecret) { mapFlags.coopSpSecret = true; mapFlags.coopMap = true; }
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_multiplayerOnly) { mapFlags.multiplayerOnly = true; }
-    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_singleplayerOnly) { mapFlags.singleplayerOnly = true; }
+    str sectionOfCurrentMap = gamefix_iniFindSectionByValue(_COOP_FILE_maplist, fileContents, mapNameClean.c_str());
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_included) { struct_currentMap.coopIncluded = true; struct_currentMap.coopMap = true; }
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpMission) { struct_currentMap.coopSpMission = true; struct_currentMap.coopMap = true; }
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpIgm) { struct_currentMap.coopSpIgm = true; struct_currentMap.coopMap = true; }
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_coopSpSecret) { struct_currentMap.coopSpSecret = true; struct_currentMap.coopMap = true; }
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_multiplayerOnly) { struct_currentMap.multiplayerOnly = true; }
+    if (sectionOfCurrentMap == _COOP_MAPLIST_CAT_singleplayerOnly) { struct_currentMap.singleplayerOnly = true; }
 
-    if (mapFlags.coopMap == false && mapFlags.multiplayerOnly == false && mapFlags.singleplayerOnly == false) {
+    if (struct_currentMap.coopMap == false && struct_currentMap.multiplayerOnly == false && struct_currentMap.singleplayerOnly == false) {
         str sectionContents = gamefix_iniSectionGet(_COOP_FILE_maplist, fileContents, _COOP_MAPLIST_CAT_coopcompatible);
         str CoopCompatible = gamefix_iniKeyGet(_COOP_FILE_maplist, sectionContents, sectionOfCurrentMap, "");
 
         if (CoopCompatible.length() && CoopCompatible == "true") {
-            mapFlags.coopMap = true;
+            struct_currentMap.coopMap = true;
         }
     }
+    return struct_currentMap;
+}
+
+//detects what kind of gametype the level
+//support and sets related parameters
+void CoopManager::SetMapType() {
+    coopManager_mapSettings_s struct_currentMap = DetectMapType(level.mapname);
+
+    mapFlags.rpgMap = struct_currentMap.rpgMap;
+    mapFlags.coopMap = struct_currentMap.coopMap;
+    mapFlags.coopIncluded = struct_currentMap.coopIncluded;
+    mapFlags.coopSpMission = struct_currentMap.coopSpMission;
+    mapFlags.coopSpIgm = struct_currentMap.coopSpIgm;
+    mapFlags.coopSpSecret = struct_currentMap.coopSpSecret;
+    mapFlags.multiplayerOnly = struct_currentMap.multiplayerOnly;
+    mapFlags.singleplayerOnly = struct_currentMap.singleplayerOnly;
+    mapFlags.stockMap = struct_currentMap.stockMap;
 }
 
 //Executes the level script
@@ -167,6 +224,8 @@ void CoopManager::Shutdown() {
     if (coopEnabled) {
         //...
     }
+
+    coopManager_validPlayerModels.FreeObjectList();
 }
 
 //Executed if level is exited/changed/restarted - but not on first load/game start
@@ -232,6 +291,14 @@ void CoopManager::playerBecameSpectator(Player *player){
 //Executed on death - Multiplayer
 void CoopManager::playerChangedModel(Player *player){
     if (player) {
+        //not a valid model, handle
+        str sModel = player->model.c_str();
+        if (coopManager_validPlayerModels.IndexOfObject(sModel.tolower()) == 0) {
+            DEBUG_LOG("NOT ALLOWED: %s\n", player->model.c_str());
+            sModel = multiplayerManager.getDefaultPlayerModel(player);
+            multiplayerManager.changePlayerModel(player, va("%s", sModel.c_str()), true);
+            return;
+        }
         ExecuteThread("coop_justChangedModel", true, player);
     }
 }
