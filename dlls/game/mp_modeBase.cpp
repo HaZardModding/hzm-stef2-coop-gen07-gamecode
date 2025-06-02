@@ -971,45 +971,73 @@ bool MultiplayerModeBase::shouldStartMatch( void )
 
 
 //--------------------------------------------------------------
-// COOP Generation 7.000 - Run coop ModeCoop::shouldStartMatch - chrissstrahl
+// COOP Generation 7.000 - Don't play count down in coop - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	if (CoopManager::Get().IsCoopEnabled()) {
-		return ModeCoop::Get().shouldStartMatch();
-	}
-#endif
-
-
-	if ( ( timeRemaining > 0 ) && ( timeRemaining < 6 ) && ( timeRemaining != _lastTimeRemaining ) )
-	{
+	if ( ( timeRemaining > 0 ) && ( timeRemaining < 6 ) && ( timeRemaining != _lastTimeRemaining ) ){
 		_lastTimeRemaining = timeRemaining;
 
 		multiplayerManager.centerPrintAllClients( va( "%d", _lastTimeRemaining ), CENTERPRINT_IMPORTANCE_NORMAL );
 
-		switch( timeRemaining )
+		if (!CoopManager::Get().IsCoopEnabled()) {
+			switch( timeRemaining )
+			{
+			case 1 :
+				multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_1.mp3", CHAN_AUTO, DEFAULT_VOL, 
+						DEFAULT_MIN_DIST, NULL, 0.5f  );
+				break;
+			case 2 :
+				multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_2.mp3", CHAN_AUTO, DEFAULT_VOL, 
+						DEFAULT_MIN_DIST, NULL, 0.5f  );
+				break;
+			case 3 :
+				multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_3.mp3", CHAN_AUTO, DEFAULT_VOL, 
+						DEFAULT_MIN_DIST, NULL, 0.5f  );
+				break;
+			case 4 :
+				multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_4.mp3", CHAN_AUTO, DEFAULT_VOL, 
+						DEFAULT_MIN_DIST, NULL, 0.5f  );
+				break;
+			case 5 :
+				multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_5.mp3", CHAN_AUTO, DEFAULT_VOL, 
+						DEFAULT_MIN_DIST, NULL, 0.5f  );
+				break;
+			}
+		}
+	}
+#else
+	if ((timeRemaining > 0) && (timeRemaining < 6) && (timeRemaining != _lastTimeRemaining))
+	{
+		_lastTimeRemaining = timeRemaining;
+
+		multiplayerManager.centerPrintAllClients(va("%d", _lastTimeRemaining), CENTERPRINT_IMPORTANCE_NORMAL);
+
+		switch (timeRemaining)
 		{
-		case 1 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_1.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
+		case 1:
+			multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_1.mp3", CHAN_AUTO, DEFAULT_VOL,
+				DEFAULT_MIN_DIST, NULL, 0.5f);
 			break;
-		case 2 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_2.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
+		case 2:
+			multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_2.mp3", CHAN_AUTO, DEFAULT_VOL,
+				DEFAULT_MIN_DIST, NULL, 0.5f);
 			break;
-		case 3 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_3.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
+		case 3:
+			multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_3.mp3", CHAN_AUTO, DEFAULT_VOL,
+				DEFAULT_MIN_DIST, NULL, 0.5f);
 			break;
-		case 4 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_4.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
+		case 4:
+			multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_4.mp3", CHAN_AUTO, DEFAULT_VOL,
+				DEFAULT_MIN_DIST, NULL, 0.5f);
 			break;
-		case 5 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_5.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
+		case 5:
+			multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_5.mp3", CHAN_AUTO, DEFAULT_VOL,
+				DEFAULT_MIN_DIST, NULL, 0.5f);
 			break;
 		}
 	}
+#endif
+
 
 	// Make sure we have done our warm up already
 
