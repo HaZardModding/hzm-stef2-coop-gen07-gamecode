@@ -15,6 +15,7 @@ CLASS_DECLARATION(ModeTeamDeathmatch, ModeCoop, NULL)
 	{ NULL, NULL }
 };
 
+// I am not sure if there is a better way to handle all this - Chrissstrahl
 ModeCoop& ModeCoop::Get() {
 	static ModeCoop instance;
 	return instance;
@@ -22,9 +23,9 @@ ModeCoop& ModeCoop::Get() {
 
 ModeCoop::ModeCoop()
 {
-	_redTeam = AddTeam("Red");
+	//_redTeam = AddTeam("Red");
 	_blueTeam = AddTeam("Blue");
-	gi.Printf("ModeCoop: Coop gametype initialized.\n");
+	//_useTeamSpawnpoints = false;
 }
 
 ModeCoop::~ModeCoop()
@@ -40,10 +41,12 @@ void ModeCoop::init(int maxPlayers)
 	mp_timelimit->integer = 0;
 
 	ModeTeamBase::init(maxPlayers);
-	readMultiplayerConfig("coop/config/spawninventory.cfg");
+	readMultiplayerConfig(_COOP_FILE_spawninventory);
 
 	//allow 3rd person aiming
 	gi.cvar_set("g_aimviewangles", "1");
+
+	gi.Printf("ModeCoop: Coop gametype initialized.\n");
 }
 
 //Executed from: MultiplayerManager::initItems - only if gamemode is coop
@@ -78,6 +81,41 @@ bool ModeCoop::isEndOfMatch(void)
 		return true;
 
 	return false;
+}
+
+bool ModeCoop::shouldStartMatch(void)
+{
+	int timeRemaining = (int)(_matchStartTime + mp_warmUpTime->value - multiplayerManager.getTime() + 1.0f);
+	int numPlayers;
+	if ((timeRemaining > 0) && (timeRemaining < 6) && (timeRemaining != _lastTimeRemaining)){
+		_lastTimeRemaining = timeRemaining;
+
+		multiplayerManager.centerPrintAllClients(va("%d", _lastTimeRemaining), CENTERPRINT_IMPORTANCE_NORMAL);
+	}
+
+	// Make sure we have done our warm up already
+	if (multiplayerManager.getTime() < _matchStartTime + mp_warmUpTime->value)
+		return false;
+
+
+	// Make sure we have enough players
+	numPlayers = 0;
+
+	for (unsigned int i = 0; i < _maxPlayers; i++){
+		if (_playerGameData[i]._playing){
+			numPlayers++;
+		}
+	}
+
+
+	if (numPlayers < mp_minPlayers->integer)
+		return false;
+
+	return true;
+}
+
+void ModeCoop::clientThink(Player* player)
+{
 }
 
 void ModeCoop::_giveInitialConditions(Player* player)
@@ -164,24 +202,6 @@ void ModeCoop::setupMultiplayerUI(Player* player)
 	gamefix_playerSetupUi(player);
 }
 
-bool ModeCoop::canJoinTeam(Player* player, const str& teamName)
-{
-	if (!multiplayerManager.checkRule("respawnPlayer", true, player)){
-		return false;
-	}
-
-	if (teamName == "Red") {
-		multiplayerManager.centerPrint(player->entnum, "Coop Mod allowes only blue team.", CENTERPRINT_IMPORTANCE_HIGH);
-		return false;
-	}
-
-	Team* team = _findTeamByName(teamName);
-	if (_playerGameData[player->entnum]._currentTeam == team)
-		return false;
-	else
-		return true;
-}
-
 int ModeCoop::getInfoIcon(Player* player)
 {
 	// Make sure entity is not invisible
@@ -207,18 +227,76 @@ void ModeCoop::updatePlayerSkin(Player* player)
 	//in the future we might with some players
 	//playing normal and others controlling ai
 	return;
+}
 
-	/*
-	Team* team = getPlayersTeam(player);
-	if (!team)
+bool ModeCoop::canJoinTeam(Player* player, const str& teamName)
+{
+	if (!multiplayerManager.checkRule("respawnPlayer", true, player)){
+		return false;
+	}
+
+	// Deny red team
+	if (Q_stricmp(teamName,"red") == 0){
+		//tell player
+		if (multiplayerManager.getTime() + 1.0f > _matchStartTime + mp_warmUpTime->value) {
+			multiplayerManager.centerPrint(player->entnum, _COOP_COOP_allowesOnlyBlue, CENTERPRINT_IMPORTANCE_HIGH);
+		}
+		return false;
+	}
+
+	//Deny same team
+	if (_playerGameData[player->entnum]._currentTeam){
+		Team* fallback = _findTeamByName(teamName);
+		if (_playerGameData[player->entnum]._currentTeam == fallback) {
+			return false;
+		}
+	}
+
+	// Allow Blue and Spectator
+	return true;
+}
+
+void ModeCoop::joinTeam(Player* player, const str& teamName)
+{
+	Team* team = nullptr;
+	if(canJoinTeam(player, teamName)){
+		team = _findTeamByName(teamName);
+	}
+	else {
+		team = _findTeamByName("Blue");
+	}
+
+	changeTeams(player, team);
+}
+
+void ModeCoop::AddPlayer(Player* player)
+{
+	// Make sure everything is ok
+	if (!player){
+		warning("ModeDeathmatch::AddPlayer", "NULL Player\n");
+		return;
+	}
+
+	// Make sure player hasn't alrady been added
+
+	if (!needToAddPlayer(player))
 		return;
 
-	if (team->getName() == "Red"){
-		player->SurfaceCommand("all", "+skin1");
-	}else{
-		player->SurfaceCommand("all", "+skin2");
+	MultiplayerModeBase::AddPlayer(player);
+
+	// Add player to a team or make him a spectator
+	if (!multiplayerManager.checkFlag(MP_FLAG_NO_AUTO_JOIN_TEAM) ){
+		addPlayerToTeam(player, getTeam("Blue"));
 	}
-	*/
+	// Not force joining of teams, start as a spectator
+	else{
+		addPlayerToTeam(player, nullptr);
+	}
+
+	// If the game hasn't started yet just make the player a spectator
+	if (!_gameStarted){
+		multiplayerManager.makePlayerSpectator(player);
+	}
 }
 
 void ModeCoop::addPlayerToTeam(Player* player, Team* team)
@@ -226,102 +304,49 @@ void ModeCoop::addPlayerToTeam(Player* player, Team* team)
 	Team* oldTeam;
 	Entity* spawnPoint;
 
-
 	MultiplayerModeBase::AddPlayer(player);
 
 	oldTeam = _playerGameData[player->entnum]._currentTeam;
-
-	if (team && (oldTeam != team))
-	{
-		// Inform all of the players that the player has changed teams
-
-		multiplayerManager.HUDPrintAllClients(va("%s $$Joined$$ $$%s$$ $$Team$$.\n", player->client->pers.netname, team->getName().c_str()));
-	}
-
-	if (oldTeam)
-	{
+	if (oldTeam){
 		_playerGameData[player->entnum]._currentTeam = nullptr;
-
 		player->SurfaceCommand("all", "-skin1");
 		player->SurfaceCommand("all", "-skin2");
-
 		oldTeam->RemovePlayer(player);
 	}
 
-	if (team)
-	{
-		// Since the player is now on a team add him to the game
-
+	// Since the player is now on a team add him to the game
+	if (team){
 		if (_gameStarted)
 			multiplayerManager.playerEnterArena(player->entnum, player->health);
 		else
 			multiplayerManager.makePlayerSpectator(player);
 
 		// Add the player to the team
-
 		team->AddPlayer(player);
-
 		_playerGameData[player->entnum]._currentTeam = team;
-
 		updatePlayerSkin(player);
-
-		if (team->getName() == "Red")
-		{
-			if (multiplayerManager.isPlayerSpectator(player))
-				multiplayerManager.setTeamHud(player, "mp_teamredspec");
-			else
-				multiplayerManager.setTeamHud(player, "mp_teamred");
-		}
-		else
-		{
-			if (multiplayerManager.isPlayerSpectator(player))
-				multiplayerManager.setTeamHud(player, "mp_teambluespec");
-			else
-				multiplayerManager.setTeamHud(player, "mp_teamblue");
-		}
-
 		multiplayerManager.playerSpawned(player);
-
 		playersLastTeam[player->entnum] = team->getName();
 	}
-	else
-	{
-		// No team selected so make the player a spectator
-
+	// No team selected so make the player a spectator
+	else{
 		multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, true);
-
-		/* team = _playerGameData[ player->entnum ]._currentTeam;
-
-		if ( !team )
-			multiplayerManager.setTeamHud( player, "mp_teamspec" );
-		else if ( team->getName() == "Red" )
-			multiplayerManager.setTeamHud( player, "mp_teamredspec" );
-		else
-			multiplayerManager.setTeamHud( player, "mp_teambluespec" ); */
 	}
 
 	// Warp player to a spawn point
-
 	spawnPoint = getSpawnPoint(player);
-
-
-	//--------------------------------------------------------------
-	// GAMEFIX - Added: Use info_player_start Singleplayer Spawn if no other is found - chrissstrahl
-	//--------------------------------------------------------------
 	if (!spawnPoint) {
 		spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
 	}
 
 
-	if (spawnPoint)
-	{
+	if (spawnPoint){
 		player->WarpToPoint(spawnPoint);
 	}
 
-	if (team && _gameStarted)
-	{
-		KillBox(player);
-
+	if (team && _gameStarted){
+		//KillBox(player);
+//MakeSolidASAP
 		ActivatePlayer(player);
 	}
 }

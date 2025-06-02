@@ -19,25 +19,30 @@ public:
 
 	static ModeCoop& Get();
 
+private:
 	ModeCoop();
 	~ModeCoop();
 
+public:
+
 	/* virtual */ void					init(int maxPlayers);
 	/* virtual */ void					initItems(void);
+	/* virtual */ void					clientThink(Player* player);
 	/* virtual */ void					_giveInitialConditions(Player* player);
 	/* virtual */ int					getInfoIcon(Player* player);
 	/* virtual */ void					playerChangedModel(Player* player);
 	/* virtual */ void					updatePlayerSkin(Player* player);
+	/* virtual */ void					AddPlayer(Player* player);
 	/* virtual */ void					addPlayerToTeam(Player* player, Team* team);
 	/* virtual */ bool					canJoinTeam(Player* player, const str& teamName);
+	/* virtual */ void					joinTeam(Player* player, const str& teamName);
 
-	void								playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
-	bool								isEndOfMatch(void);
+	/* virtual */ bool					shouldStartMatch(void);
+
+	/* virtual */ void					playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
+	/* virtual */ bool					isEndOfMatch(void);
 	/* virtual */ int					getTeamPoints(Player* player);
-
 	/* virtual */ void					setupMultiplayerUI(Player* player);
-
 	/* virtual */ void					score(const Player* player);
-
 	/* virtual */ bool					checkGameType(const char* rule);
 };
