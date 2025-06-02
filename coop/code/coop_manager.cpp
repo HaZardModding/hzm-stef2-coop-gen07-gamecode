@@ -41,15 +41,21 @@ void CoopManager::LoadPlayerModelsFromINI() {
     if (gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
         str sectionContents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
         
+        DEBUG_LOG("Valid Player Models\n");
+
         //default fallback hardcoded model
         str skinName = "models/char/munro.tik";
         coopManager_validPlayerModels.AddUniqueObject(skinName);
+       
+        DEBUG_LOG("%s\n",skinName.c_str());
+
         //get models by number, starting with 1
         int i = 1;
         while (skinName.length()) {
             skinName = gamefix_iniKeyGet(_COOP_FILE_validPlayerModels, sectionContents,va("%d",i), "");
             if (skinName.length()) {
                 coopManager_validPlayerModels.AddUniqueObject(skinName);
+                
                 DEBUG_LOG("%s\n",skinName.c_str());
             }
             i++;
