@@ -198,7 +198,7 @@ void CoopManager::LoadLevelScript(str mapname) {
     int scriptFileExtensions = scriptFileExt.NumObjects();
 
     Container<str> scriptFileDir;
-    scriptFileDir.AddObject("coop/maps/");
+    scriptFileDir.AddObject("co-op/maps/");
     scriptFileDir.AddObject("maps/");
     int scriptFileDirectories = scriptFileDir.NumObjects();
     
@@ -218,7 +218,7 @@ void CoopManager::LoadLevelScript(str mapname) {
         }
     }
 
-    gi.Printf("Level *.scr or *.script file not found in coop/maps or maps: '%s'\n", mapname.c_str());
+    gi.Printf("Level *.scr or *.script file not found in co-op/maps or maps: '%s'\n", mapname.c_str());
     level.SetGameScript("");
 }
 
