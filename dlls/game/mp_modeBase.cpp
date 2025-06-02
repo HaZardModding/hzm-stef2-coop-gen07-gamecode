@@ -30,6 +30,15 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#endif
+
+
 // Setup constants
 const float	MultiplayerModeBase::_defaultStartinghealth = 100.0f;
 const int	MultiplayerModeBase::_defaultPointsPerKill = 1;
@@ -959,6 +968,17 @@ bool MultiplayerModeBase::shouldStartMatch( void )
 	// Print time remaining (if changed)
 
 	timeRemaining = (int)(_matchStartTime + mp_warmUpTime->value - multiplayerManager.getTime() + 1.0f);
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Run coop ModeCoop::shouldStartMatch - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (CoopManager::Get().IsCoopEnabled()) {
+		return ModeCoop::Get().shouldStartMatch();
+	}
+#endif
+
 
 	if ( ( timeRemaining > 0 ) && ( timeRemaining < 6 ) && ( timeRemaining != _lastTimeRemaining ) )
 	{
