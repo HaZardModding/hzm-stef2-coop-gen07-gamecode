@@ -5,27 +5,56 @@ Coop Mod execution logic:
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
-//Executed upon creation of - class CoopSettings
-	CoopSettings::LoadSettingsFromFile
-	
 //Executed exclusively only once upon first load of game dll
 	extern "C" void G_InitGame( int startTime, int randomSeed )
 		CoopManager::Init()
-		
-		
-//Executed each time a level is loaded
+			CoopManager::LoadSettingsFromINI();
+			CoopManager::LoadMapListFromINI();
+
+
+//Executed each time a level is initialised
 	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
 		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
 			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
 				MultiplayerManager::initMultiplayerGame()
 					ModeCoop::init
+					
+					
+//level script - world event
+	void World::SetScript( Event *ev )
+		CoopManager::LoadLevelScript
+
+//level script - world	
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				SpawnArgs::Spawn()
+					World::_newInstance()
+						World::World()
+							CoopManager::LoadLevelScript
+
+
+//Executed each time a level is initialised	- Items
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				MultiplayerManager::initItems
+					ModeCoop::initItems
 
 
 //Executed each time a level is loaded
 	void Level::SpawnEntities( const char *themapname, const char *entities, int levelTime )
 		CoopManager::InitWorld()
 			CoopManager::DetectMapType()
+			CoopManager::LevelStart();
 		MultiplayerManager::initMultiplayerGame( void )
+
+
+//EVENT player spawn
+ModeCoop::_giveInitialConditions(Player * player) Zeile 85	C++
+	MultiplayerModeBase::ActivatePlayer(Player * player) Zeile 1379	C++
+		ModeTeamBase::respawnPlayer(Player * player) Zeile 383	C++
+			ModeCoop::_giveInitialConditions
 
 
 //Executed continuously
@@ -35,9 +64,8 @@ Coop Mod execution logic:
 				//if the match has started
 				ModeCoop::isEndOfMatch()
 				//during warmup time only
-				MultiplayerModeBase::shouldStartMatch()	
+				ModeCoop::shouldStartMatch()
 					ModeCoop::isEndOfMatch()
-
 
 //Executed continuously	
  	Player::EndFrame(Event * ev)
@@ -45,6 +73,13 @@ Coop Mod execution logic:
 			MultiplayerManager::getInfoIcon(Player * player, int buttons)
 				ModeCoop::getInfoIcon(Player * player)
 
+//Executed continuously
+	G_ClientThink(gentity_s * ent, usercmd_s * ucmd)
+		Listener::ProcessEvent(const Event & event)
+			Listener::ProcessEvent(Event * event)
+				Player::ClientThink(Event * ev)
+					ModeCoop::clientThink
+	
 
 //Executed on Listen server
  	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
@@ -53,9 +88,8 @@ Coop Mod execution logic:
 				Player::Player()
 					Player::Init()
 						MultiplayerManager::addPlayer(Player * player)
-							ModeTeamBase::AddPlayer(Player * player)
-								MultiplayerModeBase::AddPlayer(Player * player)
-									ModeCoop::setupMultiplayerUI(Player* player)
+							ModeCoop::AddPlayer(Player * player)
+								ModeCoop::setupMultiplayerUI(Player* player)
 
 
 //Player killed
@@ -77,7 +111,7 @@ Coop Mod execution logic:
 				Player::Player()
 					Player::Init()
 						MultiplayerManager::addPlayer(Player * player)
-							ModeTeamBase::AddPlayer(Player * player)
+							ModeCoop::AddPlayer(Player * player)
 								ModeCoop::addPlayerToTeam(Player * player, Team * team)
 									ModeCoop::updatePlayerSkin(Player * player)
 
@@ -85,9 +119,10 @@ Coop Mod execution logic:
 //Player join team
  	Player::joinTeam(Event * ev)
 		MultiplayerManager::joinTeam(Player * player, const str & teamName)
-			ModeTeamBase::joinTeam(Player * player, const str & teamName)
+			ModeCoop::joinTeam(Player * player, const str & teamName)
 				ModeTeamBase::changeTeams(Player * player, Team * team)
 					ModeCoop::addPlayerToTeam(Player * player, Team * team)
+
 
 //Player score - pressing tab or getting killed
  	Player::Score(Event * ev)
@@ -101,24 +136,52 @@ Coop Mod execution logic:
 			ModeCoop::canJoinTeam(Player * player, const str & teamName)
 
 
+//Player joining team
+	G_ConsoleCommand()
+		G_ProcessClientCommand(gentity_s * ent)
+			Listener::ProcessEvent(Event * event)
+				Player::joinTeam(Event * ev)
+					MultiplayerManager::joinTeam(Player * player, const str & teamName)
+						ModeCoop::joinTeam(Player * player, const str & teamName)
+							ModeCoop::canJoinTeam(Player * player, const str & teamName)
+
+
+//level end
+	Level::CleanUp( qboolean temp_restart )
+		CoopManager::LevelEndCleanup
+
+
+//game server ends
+	extern "C" void G_ShutdownGame( void )
+		CoopManager::LevelEndCleanup
+
 
 Added File: Coop_Changelog.txt
 Added File: base/coop/config/settings.ini
 Added File: base/coop/config/maplist.ini
+Added File: base/coop/config/playerskins.ini
 Added File: base/coop/config/spawninventory.cfg
 
-Added: spawninventory.cfg is used in	@ModeCoop::init
-Disabled: Team Skin Color				@ModeCoop::updatePlayerSkin
-Disabled: Team indicator arrow			@ModeCoop::getInfoIcon		
-Disabled: mp_pointlimit during init		@ModeCoop::init
-Disabled: mp_timelimit during init		@ModeCoop::init
-
+Added: spawninventory.cfg is used in					@ModeCoop::init
+Added: Support for *.script	file extension				@CoopManager::LoadLevelScript
+Added: Support for coop/maps/ Level-Script directory	@CoopManager::LoadLevelScript
+Disabled: Team Skin Color								@ModeCoop::updatePlayerSkin
+Disabled: Team indicator arrow							@ModeCoop::getInfoIcon
+Disabled: mp_pointlimit during init						@ModeCoop::init
+Disabled: mp_timelimit during init						@ModeCoop::init
+				
 
 
 Changes to stock files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
+dlls\game\player.cpp
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	void Player::ClientThink( Event *ev )
+		Added: ModeCoop::Get().clientThink(this);
+
 dlls\game\g_main.cpp
 	extern "C" void G_InitGame
 		Added: CoopGame::Init();		
@@ -132,6 +195,14 @@ dlls\game\mp_manager.cpp
 	Added: #include coop_gametype.hpp
 	void MultiplayerManager::initMultiplayerGame( void )
 		Added: Execution of @ModeCoop::ModeCoop() replacing ModeTeamDeathmatch on Coop maps
+	void MultiplayerManager::cleanup( qboolean restart )
+		Added: CHECK	_multiplayerGame != &ModeCoop::Get() 
+		
+dlls\game\mp_modeBase.cpp
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	bool MultiplayerModeBase::shouldStartMatch( void )
+		ModeCoop::shouldStartMatch
 		
 
 Changes to Coop Mod files

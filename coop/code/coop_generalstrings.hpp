@@ -5,6 +5,8 @@
 #pragma once
 
 
+constexpr auto _COOP_COOP_allowesOnlyBlue = "Coop Mod allowes only blue team.\n";
+
 constexpr auto _COOP_INFO_TEST_maptype = "TEST HZM Coop Gen7 - Current map type is[% s]\n";
 constexpr auto _COOP_INFO_TEST_maptypedetect = "TEST HZM Coop Gen7 - Detected category %s\n";
 
