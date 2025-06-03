@@ -243,6 +243,9 @@ class Program : public Class
 		void				FreeString( int idx );
 		int				CountUsedStrings();
 
+
+
+
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Add Coop Specific Features - chrissstrahl
 //--------------------------------------------------------------
