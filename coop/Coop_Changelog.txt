@@ -1,5 +1,9 @@
 THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 
+script commands
+GetActorType() -> coop_actorGetType()
+
+
 
 Coop Mod execution logic:
 /////////////////////////////////////////
@@ -176,6 +180,10 @@ Changes to stock files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
+dlls\game\actor.cpp
+	Added: Event EV_COOP_Actor_GetActorType
+	Added: void Actor::COOP_GetActorType(Event* ev) 
+
 dlls\game\program.cpp
     Added: def_t* getDefForVarname(const char* varname);
     Added: const char* getVariableValueAsString(const char* varname);

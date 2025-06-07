@@ -2888,6 +2888,13 @@ CLASS_DECLARATION( Sentient, Actor, "monster_generic" )
 		{ &EV_Actor_AnimateOnce,						&Actor::AnimateOnce								},
 		{ &EV_Actor_SetDeathKnockbackValues,			&Actor::SetDeathKnockbackValues					},
 
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60018] chrissstrahl
+		//--------------------------------------------------------------
+		{ &EV_COOP_Actor_GetActorType,						&Actor::COOP_GetActorType },
+
+
 		//Game Specific Events
 		{ NULL, NULL }
 	};
@@ -20153,4 +20160,51 @@ void Actor::SetDeathKnockbackValues(Event *ev)
 void Actor::SetIgnoreWatchTarget( bool ignore )
 {
 	headWatcher->SetIgnoreWatchTarget( ignore );
+}
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
+//--------------------------------------------------------------
+Event EV_COOP_Actor_GetActorType
+(
+	"coop_actorgettype",
+	EV_DEFAULT,
+	"@s",
+	"string-type-name",
+	"Returns the actortype: inanimate,monster,enemy,civilian,friend,animal,teammate"
+);
+void Actor::COOP_GetActorType(Event* ev)
+{
+	str sActorType;
+	sActorType = "";
+
+	switch (actortype)
+	{
+	case IS_INANIMATE:
+		sActorType = "inanimate";
+		break;
+	case IS_MONSTER:
+		sActorType = "monster";
+		break;
+	case IS_CIVILIAN:
+		sActorType = "civilian";
+		break;
+	case IS_ENEMY:
+		sActorType = "enemy";
+		break;
+	case IS_FRIEND:
+		sActorType = "friend";
+		break;
+	case IS_ANIMAL:
+		sActorType = "animal";
+		break;
+	case IS_TEAMMATE:
+		sActorType = "teammate";
+		break;
+	default:
+		gi.Printf(va("getActorType: WARNING Actortype of $%s not in List!\n", targetname.c_str()));
+		break;
+	}
+	ev->ReturnString(sActorType.c_str());
 }

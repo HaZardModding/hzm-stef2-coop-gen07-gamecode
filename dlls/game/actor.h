@@ -79,6 +79,12 @@ extern Event EV_Actor_SetAnim ;
 extern Event EV_Actor_Blink;
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_COOP_GetActorType();
+
+
 enum SteeringDirectionPreference
 {
 	STEER_RIGHT_ALWAYS,
@@ -1587,6 +1593,13 @@ class Actor : public Sentient
 
 		qboolean							_WorkNodeInDistance( float dist );
 		qboolean							_FleeNodeInDistance( float dist );
+
+
+
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Coop Specific Actor Stuff - chrissstrahl
+		//--------------------------------------------------------------
+		void								COOP_GetActorType(Event* ev);
 };
 
 typedef PathFinder<FindMovement> FindMovementPath;
