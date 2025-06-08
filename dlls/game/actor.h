@@ -79,12 +79,6 @@ extern Event EV_Actor_SetAnim ;
 extern Event EV_Actor_Blink;
 
 
-//--------------------------------------------------------------
-// COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
-//--------------------------------------------------------------
-extern Event EV_COOP_GetActorType();
-
-
 enum SteeringDirectionPreference
 {
 	STEER_RIGHT_ALWAYS,
@@ -92,6 +86,14 @@ enum SteeringDirectionPreference
 	STEER_RANDOMLY,
 	STEER_BEST,
 };
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+extern Event EV_COOP_Actor_GetActorType;
+#endif
 
 
 //------------------------- CLASS ------------------------------
@@ -105,9 +107,16 @@ enum SteeringDirectionPreference
 //--------------------------------------------------------------
 class Actor : public Sentient
 {
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Coop Specific Actor Stuff - chrissstrahl
+		//--------------------------------------------------------------
+#ifdef ENABLE_COOP
 	public:
+		void		COOP_GetActorType(Event* ev);
+#endif
 
 
+	public:
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: Warning C26495: The Variable ? was not initialized. A Membervariable needs always to be initialized (type.6) - chrissstrahl
 		//--------------------------------------------------------------
@@ -1593,13 +1602,6 @@ class Actor : public Sentient
 
 		qboolean							_WorkNodeInDistance( float dist );
 		qboolean							_FleeNodeInDistance( float dist );
-
-
-
-		//--------------------------------------------------------------
-		// COOP Generation 7.000 - Coop Specific Actor Stuff - chrissstrahl
-		//--------------------------------------------------------------
-		void								COOP_GetActorType(Event* ev);
 };
 
 typedef PathFinder<FindMovement> FindMovementPath;

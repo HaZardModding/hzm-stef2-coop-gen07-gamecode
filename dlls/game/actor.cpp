@@ -20166,45 +20166,47 @@ void Actor::SetIgnoreWatchTarget( bool ignore )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
 //--------------------------------------------------------------
-Event EV_COOP_Actor_GetActorType
-(
-	"coop_actorgettype",
-	EV_DEFAULT,
-	"@s",
-	"string-type-name",
-	"Returns the actortype: inanimate,monster,enemy,civilian,friend,animal,teammate"
-);
-void Actor::COOP_GetActorType(Event* ev)
-{
-	str sActorType;
-	sActorType = "";
-
-	switch (actortype)
+#ifdef ENABLE_COOP
+	Event EV_COOP_Actor_GetActorType
+	(
+		"coop_actorgettype",
+		EV_DEFAULT,
+		"@s",
+		"string-type-name",
+		"Returns the actortype: inanimate,monster,enemy,civilian,friend,animal,teammate"
+	);
+	void Actor::COOP_GetActorType(Event* ev)
 	{
-	case IS_INANIMATE:
-		sActorType = "inanimate";
-		break;
-	case IS_MONSTER:
-		sActorType = "monster";
-		break;
-	case IS_CIVILIAN:
-		sActorType = "civilian";
-		break;
-	case IS_ENEMY:
-		sActorType = "enemy";
-		break;
-	case IS_FRIEND:
-		sActorType = "friend";
-		break;
-	case IS_ANIMAL:
-		sActorType = "animal";
-		break;
-	case IS_TEAMMATE:
-		sActorType = "teammate";
-		break;
-	default:
-		gi.Printf(va("getActorType: WARNING Actortype of $%s not in List!\n", targetname.c_str()));
-		break;
+		str sActorType;
+		sActorType = "";
+
+		switch (actortype)
+		{
+		case IS_INANIMATE:
+			sActorType = "inanimate";
+			break;
+		case IS_MONSTER:
+			sActorType = "monster";
+			break;
+		case IS_CIVILIAN:
+			sActorType = "civilian";
+			break;
+		case IS_ENEMY:
+			sActorType = "enemy";
+			break;
+		case IS_FRIEND:
+			sActorType = "friend";
+			break;
+		case IS_ANIMAL:
+			sActorType = "animal";
+			break;
+		case IS_TEAMMATE:
+			sActorType = "teammate";
+			break;
+		default:
+			gi.Printf(va("getActorType: WARNING Actortype of $%s not in List!\n", targetname.c_str()));
+			break;
+		}
+		ev->ReturnString(sActorType.c_str());
 	}
-	ev->ReturnString(sActorType.c_str());
-}
+#endif
