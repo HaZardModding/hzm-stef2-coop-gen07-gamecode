@@ -20173,7 +20173,7 @@ void Actor::SetIgnoreWatchTarget( bool ignore )
 		EV_DEFAULT,
 		"@s",
 		"string-type-name",
-		"Returns the actortype: inanimate,monster,enemy,civilian,friend,animal,teammate"
+		"Returns the type of actor: inanimate,monster,enemy,civilian,friend,animal,teammate"
 	);
 	void Actor::COOP_GetActorType(Event* ev)
 	{
