@@ -1111,6 +1111,19 @@ Event EV_ScriptThread_DisconnectPathnodes
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_ScriptThread_coop_getVectorVariable, &CThread::coop_getVectorVariable },
+	{ &EV_ScriptThread_coop_getFloatVariable, &CThread::coop_getFloatVariable },
+	{ &EV_ScriptThread_coop_getStringVariable, &CThread::coop_getStringVariable },
+	{ &EV_ScriptThread_coop_setVectorVariable, &CThread::coop_setVectorVariable },
+	{ &EV_ScriptThread_coop_setFloatVariable, &CThread::coop_setFloatVariable },
+	{ &EV_ScriptThread_coop_setStringVariable, &CThread::coop_setStringVariable },
+#endif
+
+
 	{ &EV_ScriptThread_Execute,						&CThread::ExecuteFunc },
 	{ &EV_MoveDone,									&CThread::ObjectMoveDone },
 	{ &EV_ScriptThread_Callback,					&CThread::ScriptCallback },
@@ -4246,3 +4259,100 @@ void CThread::connectPathnodes( Event *ev )
 {
 	thePathManager.connectNodes( ev->GetString( 1 ), ev->GetString( 2 ) );
 }
+
+
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+Event EV_ScriptThread_coop_getStringVariable
+(
+	"coop_getStringVariable",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns level script code (string) variable by given name"
+);
+void CThread::coop_getStringVariable(Event* ev)
+{
+	str s = program->coop_getStringVariableValue(ev->GetString(1));
+	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_getVectorVariable
+(
+	"coop_getVectorVariable",
+	EV_SCRIPTONLY,
+	"@vs",
+	"retunedVector string",
+	"Returns level script code (vector) variable by given name"
+);
+void CThread::coop_getVectorVariable(Event* ev)
+{
+	Vector v;
+	v = program->coop_getVectorVariableValue(ev->GetString(1));			
+	ev->ReturnVector(v);
+}
+
+Event EV_ScriptThread_coop_getFloatVariable
+(
+	"coop_getFloatVariable",
+	EV_SCRIPTONLY,
+	"@fs",
+	"retunedFloat string",
+	"Returns level script code (float) variable by given name"
+);
+void CThread::coop_getFloatVariable(Event* ev)
+{
+	float f;
+	f = program->coop_getFloatVariableValue(ev->GetString(1));
+	ev->ReturnFloat(f);
+}
+
+Event EV_ScriptThread_coop_setStringVariable
+(
+	"coop_setStringVariable",
+	EV_SCRIPTONLY,
+	"ss",
+	"variablename string",
+	"Sets string on global script string variable located by given name"
+);
+void CThread::coop_setStringVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	const char* sSet = ev->GetString(2);
+	program->coop_setStringVariableValue(varname, sSet);
+}
+
+Event EV_ScriptThread_coop_setVectorVariable
+(
+	"coop_setVectorVariable",
+	EV_SCRIPTONLY,
+	"sv",
+	"variablename vector",
+	"Sets vector on global script vector variable located by given name"
+);
+void CThread::coop_setVectorVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	Vector vSet = ev->GetVector(2);
+	program->coop_setVectorVariableValue(varname, vSet);
+}
+
+Event EV_ScriptThread_coop_setFloatVariable
+(
+	"coop_setFloatVariable",
+	EV_SCRIPTONLY,
+	"sf",
+	"variablename float",
+	"Sets float on global script float variable located by given name"
+);
+void CThread::coop_setFloatVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	float fSet = ev->GetFloat(2);
+	program->coop_setFloatVariableValue(varname, fSet);
+}
+#endif

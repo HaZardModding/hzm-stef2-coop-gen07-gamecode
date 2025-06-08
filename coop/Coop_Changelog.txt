@@ -3,6 +3,15 @@ THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 New Coop script commands
 $actor.coop_actorGetType() - Returns actor type inanimate, monster, civilian, enemy, friend, animal, teammate
 
+coop_getStringVariable(varname) - Returns contents of script variable of type string
+coop_getVectorVariable(varname) - Returns contents of script variable of type vector
+coop_getFloatVariable(varname) - Returns contents of script variable of type float
+
+coop_setStringVariable(varname,value) - Sets contents of script variable of type string
+coop_setVectorVariable(varname,value) - Sets contents of script variable of type vector
+coop_setFloatVariable(varname,value) - Sets contents of script variable of type float
+
+
 
 
 Coop Mod execution logic:

@@ -79,8 +79,38 @@ extern Event EV_ScriptThread_FloorEvent ;
 extern Event EV_ScriptThread_CeilEvent ;
 extern Event EV_ScriptThread_RoundEvent ;
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_ScriptThread_coop_setVectorVariable;
+extern Event EV_ScriptThread_coop_getStringVariable;
+extern Event EV_ScriptThread_coop_getVectorVariable;
+extern Event EV_ScriptThread_coop_getFloatVariable;
+extern Event EV_ScriptThread_coop_setStringVariable;
+extern Event EV_ScriptThread_coop_setFloatVariable;
+#endif
+
+
+
 class CThread : public Interpreter
 {
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+public:
+	void coop_getVectorVariable(Event* ev);
+	void coop_getFloatVariable(Event* ev);
+	void coop_getStringVariable(Event* ev);
+	void coop_setVectorVariable(Event* ev);
+	void coop_setFloatVariable(Event* ev);
+	void coop_setStringVariable(Event* ev);
+#endif
+
+
+
 	private:
 		float				waitUntil;
 		CThread				*waitingForThread;
