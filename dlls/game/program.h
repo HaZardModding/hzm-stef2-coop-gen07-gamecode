@@ -251,14 +251,14 @@ class Program : public Class
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
    public:
-        def_t* getDefForVarname(const char* varname);
-        const char* getVariableValueAsString(const char* varname);
-        Vector getVectorVariableValue(const char* varname);
-        float getFloatVariableValue(const char* varname);
-        str getStringVariableValue(const char* varname);
-        void setVectorVariableValue(const char* varname, Vector vSet);
-        void setFloatVariableValue(const char* varname, float fSet);
-        void setStringVariableValue(const char* varname, char const* sSet);
+        def_t* coop_getDefForVarname(const char* varname);
+        const char* coop_getVariableValueAsString(const char* varname);
+        Vector coop_getVectorVariableValue(const char* varname);
+        float coop_getFloatVariableValue(const char* varname);
+        str coop_getStringVariableValue(const char* varname);
+        void coop_setVectorVariableValue(const char* varname, Vector vSet);
+        void coop_setFloatVariableValue(const char* varname, float fSet);
+        void coop_setStringVariableValue(const char* varname, char const* sSet);
 #endif
    };
 /*
