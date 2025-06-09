@@ -90,6 +90,21 @@ extern Event EV_ScriptThread_coop_getVectorVariable;
 extern Event EV_ScriptThread_coop_getFloatVariable;
 extern Event EV_ScriptThread_coop_setStringVariable;
 extern Event EV_ScriptThread_coop_setFloatVariable;
+
+extern Event EV_ScriptThread_coop_configstrRemove;
+extern Event EV_ScriptThread_coop_configstrRemoveCombatSounds;
+
+extern Event EV_ScriptThread_coop_subString;
+extern Event EV_ScriptThread_coop_toLower;
+extern Event EV_ScriptThread_coop_toUpper;
+extern Event EV_ScriptThread_coop_length;
+extern Event EV_ScriptThread_coop_find;
+
+extern Event EV_ScriptThread_coop_isDigit;
+
+extern Event EV_ScriptThread_coop_getTimeStamp;
+
+extern Event EV_ScriptThread_coop_getClassOf;
 #endif
 
 
@@ -107,6 +122,21 @@ public:
 	void coop_setVectorVariable(Event* ev);
 	void coop_setFloatVariable(Event* ev);
 	void coop_setStringVariable(Event* ev);
+
+	void coop_configstrRemove(Event* ev);
+	void coop_configstrRemoveCombatSounds(Event* ev);
+
+	void coop_subString(Event* ev);
+	void coop_toLower(Event* ev);
+	void coop_toUpper(Event* ev);
+	void coop_length(Event* ev);
+	void coop_find(Event* ev);
+
+	void coop_isDigit(Event* ev);
+
+	void coop_getTimeStamp(Event* ev);
+
+	void coop_getClassOf(Event* ev);
 #endif
 
 

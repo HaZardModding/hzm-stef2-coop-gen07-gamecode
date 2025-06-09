@@ -1,6 +1,9 @@
 THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 
-New Coop script commands
+Coop NEW script commands
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
 $actor.coop_actorGetType() - Returns actor type inanimate, monster, civilian, enemy, friend, animal, teammate
 
 coop_getStringVariable(varname) - Returns contents of script variable of type string
@@ -11,7 +14,18 @@ coop_setStringVariable(varname,value) - Sets contents of script variable of type
 coop_setVectorVariable(varname,value) - Sets contents of script variable of type vector
 coop_setFloatVariable(varname,value) - Sets contents of script variable of type float
 
+coop_configstringRemove(text) - Removes configstring containing given value
+coop_configstringRemoveCombatSounds(actorname) - Removes configstring combat sounds for given actor name
 
+coop_subString(text,iStart,iLength) - Returns parcial string from text starting at iStart (starts at 0), with length of iLength
+coop_toLower(text) - Returns string where letters are turrned all into lower case
+coop_toUpper(text; - Returns string where letters are turrned all into upper case
+coop_length(text) - Returns length of given string
+coop_find(text,find) - Returns location at which find is found inside of text, starts at 0, returns -1 if not found
+
+coop_isDigit(text) - Returns if text is a digit/number
+
+coop_getClassOf($entity) - Returns classname of entity
 
 
 Coop Mod execution logic:

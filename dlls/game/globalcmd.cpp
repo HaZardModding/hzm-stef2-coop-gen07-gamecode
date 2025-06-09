@@ -1121,6 +1121,21 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_setVectorVariable, &CThread::coop_setVectorVariable },
 	{ &EV_ScriptThread_coop_setFloatVariable, &CThread::coop_setFloatVariable },
 	{ &EV_ScriptThread_coop_setStringVariable, &CThread::coop_setStringVariable },
+
+	{ &EV_ScriptThread_coop_configstrRemove,				&CThread::coop_configstrRemove },
+	{ &EV_ScriptThread_coop_configstrRemoveCombatSounds,	&CThread::coop_configstrRemoveCombatSounds },
+
+	{ &EV_ScriptThread_coop_subString, &CThread::coop_subString },
+	{ &EV_ScriptThread_coop_toLower, &CThread::coop_toLower },
+	{ &EV_ScriptThread_coop_toUpper, &CThread::coop_toUpper },
+	{ &EV_ScriptThread_coop_length, &CThread::coop_length },
+	{ &EV_ScriptThread_coop_find, &CThread::coop_find },
+
+	{ &EV_ScriptThread_coop_isDigit, &CThread::coop_isDigit },
+
+	{ &EV_ScriptThread_coop_getTimeStamp, &CThread::coop_getTimeStamp },
+
+	{ &EV_ScriptThread_coop_getClassOf, &CThread::coop_getClassOf },
 #endif
 
 
@@ -4267,6 +4282,266 @@ void CThread::connectPathnodes( Event *ev )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+Event EV_ScriptThread_coop_getClassOf
+(
+	"coop_getClassOf",
+	EV_SCRIPTONLY,
+	"@se",
+	"returnString entity",
+	"Returns classname of given entity"
+);
+void CThread::coop_getClassOf(Event* ev)
+{
+	Entity* e = ev->GetEntity(1);
+	str s = "";
+	if (e) {
+		s = e->getClassname();
+	}
+	
+	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_getTimeStamp
+(
+	"coop_getTimeStamp",
+	EV_SCRIPTONLY,
+	"@s",
+	"returnString",
+	"Grabs the real time from server and returns it as string"
+);
+void CThread::coop_getTimeStamp(Event* ev)
+{
+	assert(ev);
+	time_t curTime;
+	time(&curTime);
+	str s = va("%d", (int)curTime);
+	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_isDigit
+(
+	"coop_isDigit",
+	EV_SCRIPTONLY,
+	"@fs",
+	"returnFloat string",
+	"Returns if given char is a digit"
+);
+void CThread::coop_isDigit(Event* ev)
+{
+	str s = ev->GetString(1);
+	char c = s[0];
+	int i = isdigit(c);
+	if (i != 0) {
+		i = 1;
+	}
+	else {
+		i = 0;
+	}
+	ev->ReturnFloat(i);
+}
+
+Event EV_ScriptThread_coop_find
+(
+	"coop_find",
+	EV_SCRIPTONLY,
+	"@fss",
+	"retunedFloat sSource sFind",
+	"Returns position at wich sFind is found, starts at 0, if not found returns -1"
+);
+void CThread::coop_find(Event* ev)
+{
+	str sSource = ev->GetString(1);
+	str sFind = ev->GetString(2);
+
+	int iFind = gamefix_findString(sSource, sFind);
+	ev->ReturnFloat(iFind);
+}
+
+Event EV_ScriptThread_coop_length
+(
+	"coop_length",
+	EV_SCRIPTONLY,
+	"@fs",
+	"retunedFloat string",
+	"Returns length of given string."
+);
+void CThread::coop_length(Event* ev)
+{
+	str s = ev->GetString(1);
+	ev->ReturnFloat(s.length());
+}
+
+Event EV_ScriptThread_coop_toLower
+(
+	"coop_toLower",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns given string in lower case letters."
+);
+void CThread::coop_toLower(Event* ev)
+{
+	str s = ev->GetString(1);
+	s = s.tolower();
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+Event EV_ScriptThread_coop_toUpper
+(
+	"coop_toUpper",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns given string in upper case letters."
+);
+void CThread::coop_toUpper(Event* ev)
+{
+	str s = ev->GetString(1);
+	s = s.toupper();
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+
+Event EV_ScriptThread_coop_subString
+(
+	"coop_subString",
+	EV_SCRIPTONLY,
+	"@ssff",
+	"retunedString sSource iStart iLength",
+	"Returns a string Starting from iStart with given iLength"
+);
+void CThread::coop_subString(Event* ev)
+{
+	if (ev->NumArgs() < 1) {
+		ev->ReturnString("");
+		return;
+	}
+
+	str s = ev->GetString(1);
+
+	if (!s.length()) {
+		ev->ReturnString("");
+		return;
+	}
+	int iLength = ev->GetInteger(3);
+
+	if (iLength < 1) {
+		ev->ReturnString("");
+		return;
+	}
+
+	int iStart = ev->GetInteger(2);
+
+	if (iStart < 0 || iStart > s.length()) {
+		ev->ReturnString("");
+		return;
+	}
+	
+	s = gamefix_getStringLength(s,iStart, iLength);
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+Event EV_ScriptThread_coop_configstrRemoveCombatSounds
+(
+	"coop_configstringRemoveCombatSounds",
+	EV_SCRIPTONLY,
+	"s",
+	"string-actorname",
+	"Removes associated /sound/dialog/combat/ configstrings for the given actorname, to fix oversize of cl_parsegamestate"
+);
+void CThread::coop_configstrRemoveCombatSounds(Event* ev)
+{
+	if (ev->NumArgs() < 1) {
+		return;
+	}
+
+	str sActorname = ev->GetString(1);
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !sActorname.length()) {
+		return;
+	}
+
+	sActorname = sActorname.tolower();
+	char* s;
+	int iNum = 0;
+	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+		s = gi.getConfigstring(i);
+		str ss = "";
+		ss += s;
+
+		if (ss.length()) {
+			if( gamefix_findStringCase(ss,va("/sound/dialog/combat/%s_", sActorname.c_str()),false,0,true) != -1) {
+				iNum++;
+				//gi.Printf(va("#REMOVED COMBAT SOUND: #%i: %s\n", i, ss.c_str()));
+				gi.setConfigstring(i, "");
+			}
+		}
+	}
+
+	gi.Printf("coop_configstrRemoveCombatSounds(%s) removed %i items\n", sActorname.c_str(), iNum);
+}
+
+Event EV_ScriptThread_coop_configstrRemove
+(
+	"coop_configstringRemove",
+	EV_SCRIPTONLY,
+	"s",
+	"string",
+	"Removes configstrings that contain the given string, to fix oversize of cl_parsegamestate"
+);
+void CThread::coop_configstrRemove(Event* ev)
+{
+	if (ev->NumArgs() < 1) { return; }
+	str sRem = ev->GetString(1);
+	if (!sRem.length()) { return; }
+
+	int iRem = 0;
+	char* s;
+	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+		s = gi.getConfigstring(i);
+		str ss = "";
+		ss += s;
+
+		if (ss.length() > 0) {
+			//if this is a dialog try to handle german and english localized strings as well
+			if (!strnicmp(ss.c_str(), "localization/", 13)) {
+				//regular dialog
+				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle deu version of dialog
+				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (strcmpi(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle eng version of dialog
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (strcmpi(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+			else {
+				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+		}
+	}
+	gi.Printf("coop_configstrRemove(%s) removed %i items\n", sRem.c_str(), iRem);
+}
+
 Event EV_ScriptThread_coop_getStringVariable
 (
 	"coop_getStringVariable",
