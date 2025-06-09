@@ -1035,7 +1035,7 @@ char* gamefix_getStringUntilChar(const char* source, const char& delimiter, unsi
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Added: Function returning a substr / part of a string - chrissstrahl
+// GAMEFIX - Added: Function returning a substr / part of a string - until max pos(iEnd) of complete string - chrissstrahl
 //--------------------------------------------------------------
 str gamefix_getStringUntil(const str& sString, const unsigned int iStart, const unsigned int iEnd)
 {
@@ -1044,7 +1044,6 @@ str gamefix_getStringUntil(const str& sString, const unsigned int iStart, const 
 		//throw("gamefix_getStringUntil: start pos > than strlen");
 		return str("");
 	}
-
 	
 	unsigned int actualEnd = iEnd;
 	if (iEnd > iLength) {
@@ -1059,6 +1058,27 @@ str gamefix_getStringUntil(const str& sString, const unsigned int iStart, const 
 		result += sString[i];
 	}
 
+	return result;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function returning a substr / part of a string - with specified lenght starting from iStart - chrissstrahl
+// Basically subString
+//--------------------------------------------------------------
+str gamefix_getStringLength(const str& sString, const unsigned int iStart, const unsigned int iLength)
+{
+	unsigned int totalLength = strlen(sString);
+	if (iStart >= totalLength) {
+		return str("");
+	}
+
+	// Clamp actual length to avoid reading past end
+	unsigned int actualLength = (iStart + iLength > totalLength) ? (totalLength - iStart) : iLength;
+
+	str result;
+	for (unsigned int i = iStart; i < iStart + actualLength; ++i) {
+		result += sString[i];
+	}
 	return result;
 }
 

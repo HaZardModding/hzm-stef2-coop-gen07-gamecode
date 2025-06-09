@@ -205,6 +205,8 @@ void				gamefix_replaceSubstring(char* str, const char* find, const char* replac
 str					gamefix_getStringUntilChar(const str& source, const char& delimiter, unsigned int startPos);
 char*				gamefix_getStringUntilChar(const char* source, const char& delimiter, unsigned int startPos);
 str					gamefix_getStringUntil(const str& sString, const unsigned int iStart, const unsigned int iEnd);
+str					gamefix_getStringLength(const str& sString, const unsigned int iStart, const unsigned int iLength);
+
 str					gamefix_getLine(const str& sString, const unsigned int iStart);
 
 char*				gamefix_trimWhitespace(char* input, bool dontTrimNewLine);
