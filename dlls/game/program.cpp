@@ -1168,7 +1168,7 @@ def_t* Program::coop_getDefForVarname(const char* varname)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 const char* Program::coop_getVariableValueAsString(const char* varname)
