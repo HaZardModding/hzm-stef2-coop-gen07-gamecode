@@ -1134,8 +1134,13 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_isDigit, &CThread::coop_isDigit },
 
 	{ &EV_ScriptThread_coop_getTimeStamp, &CThread::coop_getTimeStamp },
+	{ &EV_ScriptThread_coop_getFloat, &CThread::coop_getFloat },
+	{ &EV_ScriptThread_coop_getVector, &CThread::coop_getVector },
 
 	{ &EV_ScriptThread_coop_getClassOf, &CThread::coop_getClassOf },
+	{ &EV_ScriptThread_coop_getPathnodeOrigin, &CThread::coop_getPathnodeOrigin },
+
+	{ &EV_ScriptThread_coop_getLevelParamater, &CThread::coop_getLevelParamater },
 #endif
 
 
@@ -4282,6 +4287,69 @@ void CThread::connectPathnodes( Event *ev )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+Event EV_ScriptThread_coop_getLevelParamater
+(
+	"coop_getLevelParamater",
+	EV_SCRIPTONLY,
+	"@ss",
+	"returnString parametername",
+	"Returns the value of a paramater, if it is attached to the mapname via $"
+);
+void CThread::coop_getLevelParamater(Event* ev)
+{
+	str varname = ev->GetString(1);
+	cvar_t* cvar = gi.cvar_get("mapname");
+	if (!cvar || !varname.length()) {
+		ev->ReturnString("");
+		return;
+	}
+
+	//make sure this is handled as part of the variable name
+	varname += "=";
+
+	int iVarPos;
+	str s = cvar->string;
+	iVarPos = gamefix_findString(s,varname.tolower());
+	
+	//not found
+	if (iVarPos < 0) {
+		ev->ReturnString("");
+		return;
+	}
+
+	//
+	str sValue = gamefix_getStringLength(s, (iVarPos + varname.length()), MAX_QPATH);
+	iVarPos = gamefix_findString(sValue, "?");
+	if (iVarPos > 0) {
+		sValue = gamefix_getStringUntil(sValue,0, iVarPos);
+	}
+	ev->ReturnString(sValue.c_str());
+}
+
+Event EV_ScriptThread_coop_getPathnodeOrigin
+(
+	"coop_getPathnodeOrigin",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnOrigin pathnodeTargetName",
+	"Returns Pathnode origin vector by targetname if Pathnode it exists, otherwhise '0 0 0' is returned"
+);
+void CThread::coop_getPathnodeOrigin(Event* ev)
+{
+	Vector vOrigin = Vector(0, 0, 0);
+	if (ev->NumArgs() > 0) {
+		str sTargetname = ev->GetString(1);
+		if (sTargetname && sTargetname.length()) {
+			PathNode* node = thePathManager.FindNode(sTargetname.c_str());
+			if (node) {
+				vOrigin = node->origin;
+			}
+		}
+	}
+	ev->ReturnVector(vOrigin);
+}
+
+
 Event EV_ScriptThread_coop_getClassOf
 (
 	"coop_getClassOf",
@@ -4316,6 +4384,71 @@ void CThread::coop_getTimeStamp(Event* ev)
 	time(&curTime);
 	str s = va("%d", (int)curTime);
 	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_getVector
+(
+	"coop_getVector",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnVector string",
+	"Returns the given string as vector, if possible"
+);
+void CThread::coop_getVector(Event* ev)
+{
+	ev->ReturnVector(ev->GetVector(1));
+}
+
+Event EV_ScriptThread_coop_getFloat
+(
+	"coop_getFloat",
+	EV_SCRIPTONLY,
+	"@fs",
+	"returned-float string",
+	"Returns the float found in a string, for example:  'time 1.5'"
+);
+void CThread::coop_getFloat(Event* ev)
+{
+	assert(ev);
+	str s = ev->GetString(1);
+	float fResult = 0.0f;
+
+	if (s && s.length()) {
+		char current;
+		bool containsPeriod = false;
+		str sConstruct = "";
+
+		for (int i = 0; i < s.length(); i++) {
+			current = s[i];
+
+			// Skip invalid characters
+			if (!isdigit(current) && current != '.')
+				continue;
+
+			if (current == '.') {
+				if (containsPeriod) {
+					// Stop if a second dot appears
+					break;
+				}
+				containsPeriod = true;
+			}
+
+			sConstruct += current;
+
+			// Limit total length to 7 characters
+			if (sConstruct.length() >= 7)
+				break;
+		}
+
+		// Make sure float doesn't end in a dot
+		if (sConstruct.length() && sConstruct[sConstruct.length() - 1] == '.')
+			sConstruct += "0";
+
+		if (sConstruct.length())
+			fResult = atof(sConstruct.c_str());
+	}
+
+	ev->ReturnFloat(fResult);
 }
 
 Event EV_ScriptThread_coop_isDigit

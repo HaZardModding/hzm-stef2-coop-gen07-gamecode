@@ -26,6 +26,12 @@ coop_find(text,find) - Returns location at which find is found inside of text, s
 coop_isDigit(text) - Returns if text is a digit/number
 
 coop_getClassOf($entity) - Returns classname of entity
+coop_getPathnodeOrigin(pathnodetargetname) - Returns Pathnode origin vector by targetname if Pathnode it exists, otherwhise '0 0 0' is returned
+
+coop_getFloat(text) - Returns a float from a string
+coop_getVector(text) - Returns a vector from a string
+
+coop_getLevelParamater(parameterName) - Returns the value of a paramater, if it is attached to the mapname via $ - Used to load checkpoints (map1$checkpoint=turbolift)
 
 
 Coop Mod execution logic:

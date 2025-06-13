@@ -103,8 +103,13 @@ extern Event EV_ScriptThread_coop_find;
 extern Event EV_ScriptThread_coop_isDigit;
 
 extern Event EV_ScriptThread_coop_getTimeStamp;
+extern Event EV_ScriptThread_coop_getFloat;
+extern Event EV_ScriptThread_coop_getVector;
 
 extern Event EV_ScriptThread_coop_getClassOf;
+extern Event EV_ScriptThread_coop_getPathnodeOrigin;
+
+extern Event EV_ScriptThread_coop_getLevelParamater;
 #endif
 
 
@@ -135,8 +140,13 @@ public:
 	void coop_isDigit(Event* ev);
 
 	void coop_getTimeStamp(Event* ev);
+	void coop_getFloat(Event* ev);
+	void coop_getVector(Event* ev);
 
 	void coop_getClassOf(Event* ev);
+	void coop_getPathnodeOrigin(Event* ev);
+
+	void coop_getLevelParamater(Event* ev);
 #endif
 
 
