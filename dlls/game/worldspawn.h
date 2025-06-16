@@ -180,6 +180,7 @@ class World : public Entity
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - coop specific script function - chrissstrahl
 	//--------------------------------------------------------------
+public:
 	void coop_getPhysicsVar(Event* ev);
 #endif
 
