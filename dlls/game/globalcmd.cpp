@@ -1154,6 +1154,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_getIniDataPlayer, &CThread::coop_getIniDataPlayer },
 	{ &EV_ScriptThread_coop_setIniDataPlayer, &CThread::coop_setIniDataPlayer },
 	{ &EV_ScriptThread_coop_setIniData, &CThread::coop_setIniData },
+
+	{ &EV_ScriptThread_coop_getMapByServerIp, &CThread::coop_getMapByServerIp },
 #endif
 
 
@@ -4300,6 +4302,81 @@ void CThread::connectPathnodes( Event *ev )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+#ifdef WIN32
+
+void coop_winShellExecuteOpen(str sResource)
+{
+	//we might want some kind of security check here, allowing only hzm and other sites and only base folder
+	str sHzm = "hazardmodding.com";
+	str sRes = gamefix_getCvar("fs_basepath").c_str();
+	str sForbiddenFileTypes[]{ "com","exe","bat","sh","ink","link","pif","reg","vbs","scr","phy","msi","cpl","js","wsf","ps1","jse","vbe" };
+
+	if (!gamefix_findString(sResource, "http://",false) && !gamefix_findString(sResource, "https://",false)) {
+		//disallow certain filetypes
+		int iArrayLength = sizeof(sForbiddenFileTypes) / sizeof(str);
+
+		int i;
+		for (i = 0; i < iArrayLength; i++) {
+			if (strcmpi(gamefix_getExtension(sResource).c_str(),sForbiddenFileTypes[i].c_str()) == 0) {
+				return;
+			}
+		}
+
+		if (gamefix_findString(sResource, ".\\") != -1 || gamefix_findString(sResource, "./") != -1 || gamefix_findString(sResource, "%") != -1) {
+			return;
+		}
+
+		sResource = va("%s\\%s", sRes.c_str(), sResource.c_str());
+		gi.Printf(va("File: %s\n", sResource.c_str()));
+	}
+	else {
+		gi.Printf(va("URL: %s\n", sResource.c_str()));
+	}
+	ShellExecuteA(NULL, "open", sResource.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+}
+#endif
+
+Event EV_ScriptThread_coop_getMapByServerIp
+(
+	"coop_getMapByServerIp",
+	EV_SCRIPTONLY,
+	"",
+	"",
+	"Sends Server IP data to HaZardModding Website to detect a missing map - works only on windows client host"
+);
+void CThread::coop_getMapByServerIp(Event* ev)
+{
+#ifdef WIN32
+	str sServerIp = gamefix_getCvar("cl_currentServerAddress");
+	if (sServerIp == "") {
+		gamefix_printAllClients("getMapByServerIp - connect first to a server until you get disconnected with a error message\n");
+		gi.Printf("getMapByServerIp - connect first to a server until you get disconnected with a error message\n");
+		return;
+	}
+
+	str sServerIpEncoded = "";
+	int i;
+	for (i = 0; i < sServerIp.length(); i++) {
+		if (sServerIp[i] == ':') {
+			sServerIpEncoded += "P";
+		}
+		else {
+			sServerIpEncoded += sServerIp[i];
+		}
+	}
+	//[b60014] chrissstrahl - use cvar to allow testing on a local server
+	if (gamefix_getCvarInt("coop_dlSvLocal") == 1) {
+		coop_winShellExecuteOpen(va("http://localhost/gameq/?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
+	else {
+		coop_winShellExecuteOpen(va("http://findmap.hazardmodding.com?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
+	coop_winShellExecuteOpen("base");
+#else
+	gi.Printf("getMapByServerIp - works only on windows when a mp map is loaded\n");
+#endif
+}
+
 Event EV_ScriptThread_coop_setIniDataPlayer
 (
 	"coop_setIniDataPlayer",

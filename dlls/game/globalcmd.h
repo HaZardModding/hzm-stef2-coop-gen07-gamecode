@@ -115,6 +115,8 @@ extern Event EV_ScriptThread_coop_getIniData;
 extern Event EV_ScriptThread_coop_getIniDataPlayer;
 extern Event EV_ScriptThread_coop_setIniDataPlayer;
 extern Event EV_ScriptThread_coop_setIniData;
+
+extern Event EV_ScriptThread_coop_getMapByServerIp;
 #endif
 
 
@@ -157,6 +159,8 @@ public:
 	void coop_getIniDataPlayer(Event* ev);
 	void coop_setIniDataPlayer(Event* ev);
 	void coop_setIniData(Event* ev);
+
+	void coop_getMapByServerIp(Event* ev);
 #endif
 
 
