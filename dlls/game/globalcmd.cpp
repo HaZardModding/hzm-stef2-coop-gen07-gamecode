@@ -36,6 +36,14 @@
 #include "mp_manager.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 Event EV_ProcessCommands
 ( 
 	"processCommands",
@@ -1141,6 +1149,11 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_getPathnodeOrigin, &CThread::coop_getPathnodeOrigin },
 
 	{ &EV_ScriptThread_coop_getLevelParamater, &CThread::coop_getLevelParamater },
+
+	{ &EV_ScriptThread_coop_getIniData, &CThread::coop_getIniData },
+	{ &EV_ScriptThread_coop_getIniDataPlayer, &CThread::coop_getIniDataPlayer },
+	{ &EV_ScriptThread_coop_setIniDataPlayer, &CThread::coop_setIniDataPlayer },
+	{ &EV_ScriptThread_coop_setIniData, &CThread::coop_setIniData },
 #endif
 
 
@@ -4287,6 +4300,298 @@ void CThread::connectPathnodes( Event *ev )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+Event EV_ScriptThread_coop_setIniDataPlayer
+(
+	"coop_setIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@fesss",
+	"returnsuccsess player category keyname value",
+	"sets data for player to current map ini"
+);
+
+void CThread::coop_setIniDataPlayer(Event* ev)
+{
+	if (ev->NumArgs() < 4) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	//allow writing
+	str sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+
+	Entity* ent = ev->GetEntity(1);
+	if (!ent->isSubclassOf(Player)) {
+		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKeyname = ev->GetString(4);
+	if (!sKeyname.length()) {
+		Player* player = (Player*)ent;
+		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
+		DEBUG_LOG("coop_setIniDataPlayer - Grab Player Coop ID - Feature not Implemented");
+		ev->ReturnString("NOT_IMPLEMENTED");
+		return;
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnFloat(0.0f);
+			G_ExitWithError(va("coop_setIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str fileContents;
+	gamefix_getFileContents(sFilename, fileContents, true);
+
+	str sCategoryname = ev->GetString(2);
+	if (!sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKey = ev->GetString(3);
+	if (!sKey.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sValue = ev->GetString(4);
+
+	// Get current section content (if any)
+	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
+
+	// Set (or replace) key within section
+	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
+
+
+	/*
+	/DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", sectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("%s=%s\n", sKey.c_str(), sValue.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	*/
+
+
+	// Update section in full file content
+	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
+
+	// Write back to disk
+	ev->ReturnFloat( gamefix_setFileContents(sFilename, newFileContents) );
+}
+
+Event EV_ScriptThread_coop_setIniData
+(
+	"coop_setIniData",
+	EV_SCRIPTONLY,
+	"@fsss",
+	"returndbool category keyname value",
+	"sets data to map-specific ini file"
+);
+
+void CThread::coop_setIniData(Event* ev)
+{
+	if (ev->NumArgs() < 3) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	//allow writing
+	str sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnFloat(0.0f);
+			G_ExitWithError(va("coop_setIniData - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str fileContents;
+	gamefix_getFileContents(sFilename, fileContents, true);
+
+	str sCategoryname = ev->GetString(1);
+	if (!sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKey = ev->GetString(2);
+	if (!sKey.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sValue = ev->GetString(3);
+
+	// Get current section content (if any)
+	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
+
+
+
+	// Set (or replace) key within section
+	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
+	
+
+	/*
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", sectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("%s=%s\n", sKey.c_str(),sValue.c_str() );
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	*/
+
+
+	// Update section in full file content
+	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
+
+	// Write back to disk
+	ev->ReturnFloat( gamefix_setFileContents(sFilename, newFileContents) );
+}
+
+Event EV_ScriptThread_coop_getIniDataPlayer
+(
+	"coop_getIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@sesSS",
+	"returndatastring player category keyname filename",
+	"gets data for player from current map ini or given ini file"
+);
+
+void CThread::coop_getIniDataPlayer(Event* ev)
+{
+	if (ev->NumArgs() < 2) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	Entity* ent = ev->GetEntity(1);
+	if (!ent->isSubclassOf(Player)) {
+		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sCategoryname = ev->GetString(2);
+	if ( !sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sKeyname = ev->GetString(3);
+	if (!sKeyname.length()) {
+		Player* player = (Player*)ent;
+		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
+		DEBUG_LOG("coop_getIniDataPlayer - Grab Player Coop ID - Feature not Implemented");
+		ev->ReturnString("NOT_IMPLEMENTED");
+		return;
+	}
+
+	str sFilename = ev->GetString(4);
+	if (!sFilename.length()) {
+		sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnString("");
+			G_ExitWithError(va("coop_getIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str contents;
+	if (!gamefix_getFileContents(sFilename, contents, true)) {
+		gi.Printf(_COOP_WARNING_FILE_failed, sFilename.c_str());
+		ev->ReturnString("");
+		return;
+	}
+
+	str section_contents;
+	str key_contents;
+	// Boot section - settings usually managed during first load of dll and game init - requires server reboot
+	section_contents = gamefix_iniSectionGet(sFilename, contents, sCategoryname.c_str());
+	key_contents = gamefix_iniKeyGet(sFilename, section_contents, sKeyname, "");
+
+	ev->ReturnString(key_contents.c_str());
+	return;
+}
+
+Event EV_ScriptThread_coop_getIniData
+(
+	"coop_getIniData",
+	EV_SCRIPTONLY,
+	"@sssS",
+	"returndatastring category keyname filename",
+	"Gets data from current map ini or given ini file"
+);
+
+void CThread::coop_getIniData( Event* ev )
+{
+	if (ev->NumArgs() < 3) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW,"coop_getIniData");
+		ev->ReturnString("");
+		return;
+	}
+	
+	str sCategoryname = ev->GetString(1);
+	str sKeyname		= ev->GetString(2);
+
+	if (!sKeyname.length() || !sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniData");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sFilename		= ev->GetString(3);
+	if (!sFilename.length()) {
+		sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM; i++) {
+		if(gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[i].c_str(),sFilename.c_str(),false) != -1){
+			ev->ReturnString("");
+			G_ExitWithError(va("getIniData - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str contents;
+	if (!gamefix_getFileContents(sFilename, contents, true)) {
+		gi.Printf(_COOP_WARNING_FILE_failed, sFilename.c_str());
+		ev->ReturnString("");
+		return;
+	}
+
+	str section_contents;
+	str key_contents;
+	// Boot section - settings usually managed during first load of dll and game init - requires server reboot
+	section_contents	= gamefix_iniSectionGet(sFilename, contents, sCategoryname.c_str());
+	key_contents		= gamefix_iniKeyGet(sFilename, section_contents, sKeyname, "");
+	
+	ev->ReturnString(key_contents.c_str());
+	return;
+}
+
 Event EV_ScriptThread_coop_getLevelParamater
 (
 	"coop_getLevelParamater",

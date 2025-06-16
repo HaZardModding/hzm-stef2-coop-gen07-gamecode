@@ -110,6 +110,11 @@ extern Event EV_ScriptThread_coop_getClassOf;
 extern Event EV_ScriptThread_coop_getPathnodeOrigin;
 
 extern Event EV_ScriptThread_coop_getLevelParamater;
+
+extern Event EV_ScriptThread_coop_getIniData;
+extern Event EV_ScriptThread_coop_getIniDataPlayer;
+extern Event EV_ScriptThread_coop_setIniDataPlayer;
+extern Event EV_ScriptThread_coop_setIniData;
 #endif
 
 
@@ -147,6 +152,11 @@ public:
 	void coop_getPathnodeOrigin(Event* ev);
 
 	void coop_getLevelParamater(Event* ev);
+
+	void coop_getIniData(Event* ev);
+	void coop_getIniDataPlayer(Event* ev);
+	void coop_setIniDataPlayer(Event* ev);
+	void coop_setIniData(Event* ev);
 #endif
 
 
