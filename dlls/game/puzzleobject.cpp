@@ -181,6 +181,14 @@ puzzleobject_solvedthread	 <thread name>	- the name of the thread called when th
 ******************************************************************************/
 CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_PuzzleObject_coop_getLastActivatingEntity, & PuzzleObject::coop_getLastActivatingEntity },
+#endif
+
+
 	{ &EV_PuzzleObject_SetOpenDistance,		&PuzzleObject::setOpenDistance		},
 	{ &EV_PuzzleObject_AnimationDone,		&PuzzleObject::animationDone		},
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
@@ -823,4 +831,23 @@ void PuzzleObject::becomeModBarInSkill( Event* ev )
 		_timeToUse = 2.0f;
 	}
 }
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+Event EV_PuzzleObject_coop_getLastActivatingEntity
+(
+	"coop_getLastActivatingEntity",
+	EV_DEFAULT,
+	"@e",
+	"entity",
+	"Returns last entity activating this puzzle"
+);
+void PuzzleObject::coop_getLastActivatingEntity(Event* ev)
+{
+	ev->ReturnEntity(gameFixAPI_getActivator((Entity*)this));
+}
+#endif
+
 
