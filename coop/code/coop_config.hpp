@@ -27,6 +27,13 @@ constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
 constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
+const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[] = { "co-op/config/settings.ini" };
+const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[0]);
+
+const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[]{ "co-op/config/settings.ini","co-op/config/maplist.ini","co-op/config/playerskins.ini","co-op/config/maplist.ini" };
+const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[0]);
+
+
 
 class CoopSettings {
 public:
