@@ -5,33 +5,33 @@ Coop NEW script commands
 /////////////////////////////////////////
 /////////////////////////////////////////
 $actor.coop_actorGetType() - Returns actor type inanimate, monster, civilian, enemy, friend, animal, teammate
-
 coop_getStringVariable(varname) - Returns contents of script variable of type string
 coop_getVectorVariable(varname) - Returns contents of script variable of type vector
 coop_getFloatVariable(varname) - Returns contents of script variable of type float
-
 coop_setStringVariable(varname,value) - Sets contents of script variable of type string
 coop_setVectorVariable(varname,value) - Sets contents of script variable of type vector
 coop_setFloatVariable(varname,value) - Sets contents of script variable of type float
-
 coop_configstringRemove(text) - Removes configstring containing given value
 coop_configstringRemoveCombatSounds(actorname) - Removes configstring combat sounds for given actor name
-
 coop_subString(text,iStart,iLength) - Returns parcial string from text starting at iStart (starts at 0), with length of iLength
 coop_toLower(text) - Returns string where letters are turrned all into lower case
 coop_toUpper(text; - Returns string where letters are turrned all into upper case
 coop_length(text) - Returns length of given string
 coop_find(text,find) - Returns location at which find is found inside of text, starts at 0, returns -1 if not found
-
 coop_isDigit(text) - Returns if text is a digit/number
-
 coop_getClassOf($entity) - Returns classname of entity
 coop_getPathnodeOrigin(pathnodetargetname) - Returns Pathnode origin vector by targetname if Pathnode it exists, otherwhise '0 0 0' is returned
-
 coop_getFloat(text) - Returns a float from a string
 coop_getVector(text) - Returns a vector from a string
-
 coop_getLevelParamater(parameterName) - Returns the value of a paramater, if it is attached to the mapname via $ - Used to load checkpoints (map1$checkpoint=turbolift)
+coop_getIniData(sCat,sKey,sFile) - get value from specific ini file
+coop_getIniDataPlayer(ePlayer,sCat,sKey,sFile) - get (player id based) value from specific ini file
+coop_setIniData(sCat,sKey,sValue) - set value into level ini file
+coop_setIniDataPlayer(ePlayer,sCat,sKey,sValue) - set (player id based) value into level ini file
+coop_getMapByServerIp() - Tries to fid the map for download from the last server ip the player was connected to
+$world.coop_getPhysicsVar(varname) - Rerturns gravity, airaccelerate, maxspeed
+coop_getLastActivatingEntity - Returns puzzle last activating player
+
 
 
 Coop Mod execution logic:
@@ -249,7 +249,43 @@ dlls\game\mp_modeBase.cpp
 	Added: #include coop_manager.hpp
 	Added: #include coop_gametype.hpp
 	bool MultiplayerModeBase::shouldStartMatch( void )
-		
+	
+dlls\game\worldspawn.cpp
+	Added: World::coop_getPhysicsVar( Event *ev )
+	
+dlls\game\puzzleobject.cpp
+	Added: PuzzleObject::coop_getLastActivatingEntity(Event* ev)
+
+dlls\game\globalcmd.cpp
+	Added: coop_getVectorVariable(Event* ev);
+	Added: coop_getFloatVariable(Event* ev);
+	Added: coop_getStringVariable(Event* ev);
+	Added: coop_setVectorVariable(Event* ev);
+	Added: coop_setFloatVariable(Event* ev);
+	Added: coop_setStringVariable(Event* ev);
+	Added: coop_configstrRemove(Event* ev);
+	Added: coop_configstrRemoveCombatSounds(Event* ev);
+	Added: coop_subString(Event* ev);
+	Added: coop_toLower(Event* ev);
+	Added: coop_toUpper(Event* ev);
+	Added: coop_length(Event* ev);
+	Added: coop_find(Event* ev);
+	Added: coop_isDigit(Event* ev);
+	Added: coop_getTimeStamp(Event* ev);
+	Added: coop_getFloat(Event* ev);
+	Added: coop_getVector(Event* ev);
+	Added: coop_getClassOf(Event* ev);
+	Added: coop_getPathnodeOrigin(Event* ev);
+	Added: coop_getLevelParamater(Event* ev);
+	Added: coop_getIniData(Event* ev);
+	Added: coop_getIniDataPlayer(Event* ev);
+	Added: coop_setIniDataPlayer(Event* ev);
+	Added: coop_setIniData(Event* ev);
+	Added: coop_getMapByServerIp(Event* ev);
+	
+dlls\game\doors.cpp
+	Added: void Door::coop_getDoorState(Event* ev)
+
 
 Changes to Coop Mod files
 /////////////////////////////////////////
