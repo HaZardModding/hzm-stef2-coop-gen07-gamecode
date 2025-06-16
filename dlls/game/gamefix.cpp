@@ -931,6 +931,7 @@ int gamefix_findCharsReverse(const char* str, const char* find, unsigned int end
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function finding first occurence of given string, returning its position - chrissstrahl
 // Basically a substitude for: .find .contains .find_first_of .IndexOf and strpos strstr
+// Returns -1 if there is no match
 //--------------------------------------------------------------
 int gamefix_findString(const char* string, const char* find)
 {
