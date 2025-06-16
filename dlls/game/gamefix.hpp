@@ -197,6 +197,7 @@ int					gamefix_findChars(const char* str, const char* find);
 int					gamefix_findCharsReverse(const char* str, const char* find);
 int					gamefix_findCharsReverse(const char* str, const char* find, unsigned int endAt, unsigned int startAt);
 int					gamefix_findString(const char* str, const char* find);
+int					gamefix_findString(const char* str, const char* find, bool caseSensitive);
 int					gamefix_findStringCase(const str& latinumstack, const str& find, bool wholeWord, unsigned int startPos, bool sameLine);
 int					gamefix_countCharOccurrences(const char* str, const char& ch);
 
