@@ -468,6 +468,14 @@ Event EV_World_CanShakeCamera
 
 CLASS_DECLARATION( Entity, World, "worldspawn" )
 {
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	{ &EV_World_coop_getPhysicsVar, & World::coop_getPhysicsVar },
+#endif
+
+
 	{ &EV_World_SetSoundtrack,				&World::SetSoundtrack },
 	{ &EV_World_SetSkipThread,				&World::SetSkipThread },
 	{ &EV_World_SetNextMap,					&World::SetNextMap },
@@ -1847,3 +1855,41 @@ Entity * TargetList::GetNextEntity( Entity * ent )
 	else
 		return list.ObjectAt( temp_index );
 }
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+Event EV_World_coop_getPhysicsVar
+(
+	"coop_getPhysicsVar",
+	EV_SCRIPTONLY,
+	"@fs",
+	"return-float physicsvar-name",
+	"returns gravity, airaccelerate, maxspeed Physics values"
+);
+void World::coop_getPhysicsVar(Event* ev)
+{
+	float fValue = -1;
+	str sName = ev->GetString(1);
+	if (sName.length()) {
+		fValue = getPhysicsVar(sName.c_str());
+		if (fValue == -1) {
+			sName.tolower();
+
+			if (sName == "maxspeed") { sName = "sv_maxspeed"; }
+			else if (sName == "airaccelerate") { sName = "sv_airaccelerate"; }
+			else if (sName == "gravity") { sName = "sv_gravity"; }
+			else { gi.Printf("getPhysicsVar - unknown Physics Var Name: %s\nKnown names are: maxspeed, airaccelerate and gravity\n", sName.c_str()); }
+			cvar_t* cvar = gi.cvar_get(sName.c_str());
+
+			if (cvar) {
+				ev->ReturnFloat((float)cvar->integer);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(fValue);
+}
+#endif

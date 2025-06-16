@@ -165,8 +165,27 @@ inline void WeatherInfo::Archive( Archiver &arc )
 	arc.ArchiveInteger( &intensity );
 }
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	extern Event EV_World_coop_getPhysicsVar;
+#endif
+
+
 class World : public Entity
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	void coop_getPhysicsVar(Event* ev);
+#endif
+
+
+
+
 private:
 	Container<TargetList *>		targetList;
 	Container<str>				_brokenThings;
