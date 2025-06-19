@@ -79,6 +79,8 @@ void gameFixAPI_levelfix_m11l3a_drull_ruins3_boss();
 void gameFixAPI_levelfix_swsglobe();
 void gameFixAPI_maxLevelitems_ctf_grey();
 void gameFixAPI_spawnlocations_dm_ctf_voy1();
+void gameFixAPI_setLastInflictor(Entity* entity, Entity* eInflictor);
+Entity* gameFixAPI_getLastInflictor(Entity* entity);
 float gameFixAPI_getActivationTime(Entity* entity);
 Player* gameFixAPI_getActivator(Entity* puzzle);
 void gameFixAPI_setActivator(Entity* entity, Entity* activator);

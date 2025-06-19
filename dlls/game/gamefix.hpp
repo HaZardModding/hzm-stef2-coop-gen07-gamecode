@@ -92,6 +92,7 @@ struct gamefix_entity_extraData_s
 {
 	EntityPtr		activator = nullptr;
 	float			lastActivated = -9999.0f;
+	EntityPtr		lastInflictor = nullptr;
 };
 extern gamefix_entity_extraData_s gamefix_entity_extraData_t[MAX_GENTITIES];
 
