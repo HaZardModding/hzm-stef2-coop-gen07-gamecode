@@ -1025,7 +1025,26 @@ Sentient* gamefixAPI_getOwner(Entity* entity)
 	return nullptr;
 }
 
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to set last inflictor - chrissstrahl
+//--------------------------------------------------------------
+void gameFixAPI_setLastInflictor(Entity* entity, Entity* eInflictor)
+{
+	if (entity) {
+		gamefix_entity_extraData_t[entity->entnum].lastInflictor = eInflictor;
+	}
+}
 
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return last inflictor - chrissstrahl
+//--------------------------------------------------------------
+Entity* gameFixAPI_getLastInflictor(Entity* entity)
+{
+	if (!entity) {
+		return nullptr;
+	}
+	return (Entity*)gamefix_entity_extraData_t[entity->entnum].lastInflictor;
+}
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function to handle activation time in Multiplayer - chrissstrahl

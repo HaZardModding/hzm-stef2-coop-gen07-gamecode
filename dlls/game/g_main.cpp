@@ -2254,6 +2254,17 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 				return "$$InvalidPassword$$";
 			}
 		}
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Crash when any client other than host connects to a listen server after changing sv_maxclients and loading a new map - chrissstrahl
+		// This issue should be looked upon in more detail and possibly fixed in the future,
+		// for now we expect the host to shut down the server and restart with corrected sv_maxclients
+		//--------------------------------------------------------------
+		if (clientNum < 0 || clientNum >= game.maxclients) {
+			return va("game.maxclients (sv_maxclients) is %d, connection rejected", game.maxclients);
+		}
+
 		
 		// they can connect
 		ent->client = game.clients + clientNum;
@@ -2264,6 +2275,14 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		// take it, otherwise spawn one from scratch
 		if ( firstTime && !ent->entity )
 		{
+			//--------------------------------------------------------------
+			// GAMEFIX - Added: Protection, against possible crash, rather shutting game down nicely - chrissstrahl
+			//--------------------------------------------------------------
+			if (!client) {
+				gi.Error(ERR_DROP, "G_ClientConnect: client [%s] was NULL", clientNum);
+			}
+
+
 			memset( client, 0, sizeof( *client ) );
 			
 			// clear the respawning variables

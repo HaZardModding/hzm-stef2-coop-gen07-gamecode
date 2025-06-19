@@ -451,8 +451,16 @@ void PlayerHeuristics::CheckForHeuristicFile()
 	filename = gi.GetArchiveFileName( NULL, s, "log", qtrue );
 	heuristicFileName = filename.c_str();
 	
-	filesize = gi.FS_ReadFile( heuristicFileName.c_str(), NULL, true );
-	if ( filesize <= 0 ) //File Does Not Exsist
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Crash, when connecting with a second client from the same base to listen server - chrissstrahl
+	//--------------------------------------------------------------
+	char* buffer = nullptr;
+	filesize = gi.FS_ReadFile(heuristicFileName.c_str(), (void**)&buffer, true);
+	gi.FS_FreeFile(buffer);
+
+
+	if ( filesize <= 0 )
 		CreateInitialHeuristicFile();
 }
 
