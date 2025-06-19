@@ -205,6 +205,11 @@ void PathManager::ResetNodes(	void )
 
 	for( int i = 0; i < PATHMAP_GRIDSIZE; i++ )
 	{
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Crash with Pathnodes when 'reloading' same map on listen server with sv_maxclients latched. - chrissstrahl
+		//--------------------------------------------------------------
+		if (!_mapCells[i]) continue;
+
 		for( int j = 0; j < PATHMAP_GRIDSIZE; j++ )
 		{
 			if ( _mapCells[i][j] )
