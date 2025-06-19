@@ -371,9 +371,35 @@ MorphInfo *CreateMorphInfo( void );
 
 typedef SafePtr<Entity> EntityPtr;
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 -coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_entity_coop_getEntNum;
+extern Event EV_entity_coop_isSpectator;
+extern Event EV_entity_coop_isEntityInsideOfEntity;
+extern Event EV_entity_coop_traceHitsSky;
+extern Event EV_entity_coop_getLastAttacker;
+#endif
+
+
 class Program;
 class Entity : public Listener
 	{
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 -coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+public:
+	void Entity::coop_getEntNum(Event* ev);
+	void Entity::coop_isSpectator(Event* ev);
+	void Entity::coop_isEntityInsideOfEntity(Event* ev);
+	void Entity::coop_traceHitsSky(Event* ev);
+	void Entity::coop_getLastAttacker(Event* ev);
+#endif
+
+
 	private:
 		Container<EntityPtr>	_lastTouchedList ;
 		str						_archetype;

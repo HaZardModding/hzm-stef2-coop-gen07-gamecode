@@ -1710,6 +1710,19 @@ Event EV_NetworkDetail
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 -coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+		{ &EV_entity_coop_getEntNum, &Entity::coop_getEntNum },
+		{ &EV_entity_coop_isSpectator, &Entity::coop_isSpectator },
+		{ &EV_entity_coop_isEntityInsideOfEntity, &Entity::coop_isEntityInsideOfEntity },
+		{ &EV_entity_coop_traceHitsSky, &Entity::coop_traceHitsSky },
+		{ &EV_entity_coop_getLastAttacker, &Entity::coop_getLastAttacker },
+#endif
+
+
+
 		{ &EV_DamageModifier,				&Entity::AddDamageModifier },
 		{ &EV_TikiNote,				        &Entity::TikiNote },
 		{ &EV_TikiTodo,				        &Entity::TikiTodo },
@@ -3290,6 +3303,21 @@ void Entity::Damage
 		{
 		inflictor = world;
 		}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	// coop_getLastAttacker - sets last attacker
+	//--------------------------------------------------------------
+	if (attacker != world) {
+		gameFixAPI_setLastInflictor(this, attacker);
+	}
+	else {
+		gameFixAPI_setLastInflictor(this, inflictor);
+	}
+#endif
+
 
 	ev = new Event( EV_Damage );
 	ev->AddFloat( damage );
@@ -10423,3 +10451,127 @@ bool Entity::isNetworkDetail( void )
 {
 	return _networkDetail;
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+//--------------------------------------------------------------
+Event EV_entity_coop_getLastAttacker
+(
+	"coop_getLastAttacker",
+	EV_SCRIPTONLY,
+	"@e",
+	"entity",
+	"Returns entity that did last attack or inflicted damage"
+);
+void Entity::coop_getLastAttacker(Event* ev)
+{
+	ev->ReturnEntity(gameFixAPI_getLastInflictor(this));
+}
+Event EV_entity_coop_traceHitsSky
+(
+	"coop_traceHitsSky",
+	EV_SCRIPTONLY,
+	"@vsf",
+	"vectorEndpoint tagName length ",
+	"Does a trace to check to see if it hits a SKYPORTAL surface, returns endpoint vector\n."
+	"Use this very rarely or a programmer will kill you!"
+);
+void Entity::coop_traceHitsSky(Event* ev)
+{
+	trace_t	trace;
+	Vector end;
+	Vector start;
+	Vector dir;
+	str tagName;
+	//str surface;
+	float length;
+	//Entity* entityToCheck;
+
+
+	// Get the event info
+
+	tagName = ev->GetString(1);
+	length = ev->GetFloat(2);
+	//surface = ev->GetString(3);
+	//entityToCheck = ev->GetEntity(3);
+
+	// Determine the start and end point of the trace
+	GetTag(tagName, &start, &dir);
+
+	end = start + dir * length;
+
+	// Do the actual trace
+	trace = G_Trace(start, vec_zero, vec_zero, end, NULL, MASK_SHOT, false, "traceHitsEntity");
+
+	// Determine if we hit this surface
+	if (trace.ent && trace.ent->entity && trace.surfaceFlags & SURF_SKY) {
+		ev->ReturnVector(trace.endpos);
+		return;
+	}
+	ev->ReturnVector(Vector(0, 0, 0));
+}
+
+Event EV_entity_coop_isEntityInsideOfEntity
+(
+	"coop_isEntityInsideOfEntity",
+	EV_SCRIPTONLY,
+	"@fe",
+	"returnInteger entity",
+	"Returns if given entity bounding-box is touching/inside-of each other"
+);
+void Entity::coop_isEntityInsideOfEntity(Event* ev)
+{
+	Entity* eIntruder = ev->GetEntity(1);
+
+	if (!eIntruder) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	if (!eIntruder || eIntruder == this ||
+		(eIntruder->absmin[0] > this->absmax[0]) ||
+		(eIntruder->absmin[1] > this->absmax[1]) ||
+		(eIntruder->absmin[2] > this->absmax[2]) ||
+		(eIntruder->absmax[0] < this->absmin[0]) ||
+		(eIntruder->absmax[1] < this->absmin[1]) ||
+		(eIntruder->absmax[2] < this->absmin[2]))
+	{
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat(1.0f);
+	return;
+}
+
+Event EV_entity_coop_getEntNum
+(
+	"coop_getEntNum",
+	EV_SCRIPTONLY,
+	"@f",
+	"returnedEntityNumber",
+	"Returns * number of entity by default within 0-1023, 1023 is world and 0 is Player in Singleplayer"
+);
+void Entity::coop_getEntNum(Event* ev)
+{
+	ev->ReturnFloat((float)this->entnum);
+}
+
+Event EV_entity_coop_isSpectator
+(
+	"coop_isSpectator",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-float-bool",
+	"Returns 1, if entity is a Player and is in Spectator, otherwhise it will return 0"
+);
+void Entity::coop_isSpectator(Event* ev)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !this->isSubclassOf(Player) || !multiplayerManager.inMultiplayer()) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator((Player*)this));
+}
+#endif

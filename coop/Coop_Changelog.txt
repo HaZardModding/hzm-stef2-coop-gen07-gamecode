@@ -285,6 +285,13 @@ dlls\game\globalcmd.cpp
 	
 dlls\game\doors.cpp
 	Added: void Door::coop_getDoorState(Event* ev)
+	
+dlls\game\entity.cpp
+	Added: void Entity::coop_getEntNum(Event* ev);
+	Added: void Entity::coop_isSpectator(Event* ev);
+	Added: void Entity::coop_isEntityInsideOfEntity(Event* ev);
+	Added: void Entity::coop_traceHitsSky(Event* ev);
+	Added: void Entity::coop_getLastAttacker(Event* ev);
 
 
 Changes to Coop Mod files
