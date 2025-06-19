@@ -3291,9 +3291,6 @@ Player::Player()
 		if ( !LoadingSavegame )
 			SetTargetName( "player" );
 	}
-	else {
-		SetTargetName(va("player%d", client->ps.clientNum));
-	}
 
 	
 	_powerup = NULL;
@@ -3330,6 +3327,14 @@ Player::Player()
 	}
 	
 	Init();
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Players get targetnames with their client-ID attached in multiplayer - chrissstrahl
+	// Needs to be done after Init() or ps.clientNum isn't set yet
+	//--------------------------------------------------------------
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
+		SetTargetName(va("player%d", client->ps.clientNum));
+	}
 	
 	_viewMode = 0;
 	
