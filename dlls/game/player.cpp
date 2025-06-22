@@ -14106,6 +14106,18 @@ void Player::shotHit( void )
 
 void Player::cinematicStarted( void )
 {
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Handle Player solid/notsolid/show/hide automatically for cinematics - chrissstrahl
+	//--------------------------------------------------------------
+	if (gameFixAPI_inMultiplayer()) {
+		if (!gameFixAPI_isSpectator_stef2(this)) {
+			gamefix_setMakeSolidAsap((Entity*)this, false, level.time + FRAMETIME);
+			Entity* e = (Entity*)this;
+			e->setSolidType(SOLID_NOT);
+			hideModel();
+		}
+	}
+
 
 	// Turn off any viewmodes
 
@@ -14144,6 +14156,17 @@ void Player::cinematicStopped( void )
 	SetAnim( "stand_idle", legs, true );
 	SetAnim( "stand_idle", torso, true );
 	LoadStateTable();
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Handle Player solid/notsolid/show/hide automatically for cinematics - chrissstrahl
+	//--------------------------------------------------------------
+	if (gameFixAPI_inMultiplayer()) {
+		if (!gameFixAPI_isSpectator_stef2(this)) {
+			gamefix_setMakeSolidAsap((Entity*)this, true, 0.0f);
+			showModel();
+		}
+	}
 }
 
 void Player::loadUseItem( const str &item )
