@@ -78,6 +78,22 @@ extern Event EV_Player_Weapon;
 extern Event EV_Player_gamefix_messageOfTheDay;
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_Player_coop_setKillThread;
+extern Event EV_Player_coop_getLanguage;
+extern Event EV_Player_coop_getName;
+extern Event EV_Player_coop_getScore;
+extern Event EV_Player_coop_getDeaths;
+extern Event EV_Player_coop_getKills;
+extern Event EV_Player_coop_addScore;
+extern Event EV_Player_coop_getLastDamaged;
+extern Event EV_Player_coop_getTeamName;
+extern Event EV_Player_coop_getTeamScore;
+
+
+
 #define HEAD_TAG        0
 #define TORSO_TAG       1
 #define L_ARM_TAG       2
@@ -205,6 +221,24 @@ class Player : public Sentient
 	//--------------------------------------------------------------
 	public:
 		void gamefix_messageOfTheDayEvent(Event* ev);
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+	//--------------------------------------------------------------
+	public:
+		void coop_playerKillThread(Event* ev);
+		void coop_getLanguage(Event* ev);
+		void coop_getName(Event* ev);
+		void coop_getScore(Event* ev);
+		void coop_getDeaths(Event* ev);
+		void coop_getKills(Event* ev);
+		void coop_addScore(Event* ev);
+		float coop_getLastDamaged(void);
+		void coop_getLastDamagedEvent(Event* ev);
+		void coop_getTeamName(Event* ev);
+		void coop_getTeamScore(Event* ev);
+
 
 
 	public:

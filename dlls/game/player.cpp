@@ -1352,7 +1352,22 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 //--------------------------------------------------------------
 	{ &EV_Player_gamefix_messageOfTheDay, & Player::gamefix_messageOfTheDayEvent },
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+	{ &EV_Player_coop_setKillThread, &Player::coop_playerKillThread },
+	{ &EV_Player_coop_getLanguage, &Player::coop_getLanguage },
+	{ &EV_Player_coop_getName, &Player::coop_getName },
+	{ &EV_Player_coop_getScore, &Player::coop_getScore },
+	{ &EV_Player_coop_getDeaths, &Player::coop_getDeaths },
+	{ &EV_Player_coop_getKills, &Player::coop_getKills },
+	{ &EV_Player_coop_addScore, &Player::coop_addScore },
+	{ &EV_Player_coop_getLastDamaged, &Player::coop_getLastDamagedEvent },
+	{ &EV_Player_coop_getTeamName, &Player::coop_getTeamName },
+	{ &EV_Player_coop_getTeamScore, &Player::coop_getTeamScore },
 	
+
 	{ &EV_ClientMove,										&Player::ClientThink },
 	{ &EV_ClientEndFrame,									&Player::EndFrame },
 	{ &EV_Vehicle_Enter,									&Player::EnterVehicle },
@@ -14605,3 +14620,257 @@ void Player::gamefix_messageOfTheDayEvent(Event* ev)
 
 	gamefix_messageOfTheDayShow(this);
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+Event EV_Player_coop_setKillThread
+(
+	"coop_playerKillThread",
+	EV_SCRIPTONLY,
+	"s",
+	"kill-thread",
+	"Sets the thread to run if player gets killed."
+);
+void Player::coop_playerKillThread(Event* ev)
+{
+	entityVars.SetVariable("_killThread", ev->GetString(1));
+}
+
+Event EV_Player_coop_getLanguage
+(
+	"coop_getLanguage",
+	EV_SCRIPTONLY,
+	"@s",
+	"language-string",
+	"Gets language string from player."
+);
+void Player::coop_getLanguage(Event* ev)
+{
+	str sLang = gamefix_getLanguage(this);
+	ev->ReturnString(sLang.c_str());
+}
+
+Event EV_Player_coop_getName
+(
+	"coop_getName",
+	EV_SCRIPTONLY,
+	"@sF",
+	"retunedString float-filter-option",
+	"Returns multiplayer name of player, filters 1=replace space,2=colorcodes,3=both"
+);
+void Player::coop_getName(Event* ev)
+{
+	//[b60019] chrissstrahl upgraded function
+	str playerName = "";
+
+	//[b60014] chrissstrahl - return also player name when not in multiplayer instead of crashing
+	if (!multiplayerManager.inMultiplayer()) {
+		cvar_t* cvar = gi.cvar_get("name");
+		if (cvar) {
+			playerName = cvar->string;
+		}
+	}
+	//multiplayer
+	else {
+		playerName = this->client->pers.netname;
+	}
+
+	//filter 
+	str new_playerName = "";
+	str sReplace = "_";
+	if (ev->NumArgs() > 0 && ev->GetInteger(1) > 0) {
+		int filterOption = ev->GetInteger(1);
+
+		//filter space
+		if (filterOption == 1 || filterOption == 3) {
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == ' ') {
+					new_playerName += sReplace;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+			new_playerName = "";
+		}
+
+		//filter color codes
+		if (filterOption == 2 || filterOption == 3) {
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == '^' && playerName.length() > (i + 1) && IsNumeric(str(playerName[i + 1]))) {
+					i++;
+					continue;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+		}
+	}
+	else {
+		new_playerName = playerName;
+	}
+	ev->ReturnString(new_playerName.c_str());
+}
+
+Event EV_Player_coop_getScore
+(
+	"coop_getScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns points/score of the player entity"
+);
+void Player::coop_getScore(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getPoints(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_getDeaths
+(
+	"coop_getDeaths",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of deaths of the player entity"
+);
+void Player::coop_getDeaths(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getDeaths(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_getKills
+(
+	"coop_getKills",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of kills by the player entity"
+);
+void Player::coop_getKills(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getKills(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_addScore
+(
+	"coop_addScore",
+	EV_SCRIPTONLY,
+	"f",
+	"integer",
+	"Adds given ammount of score to player"
+);
+void Player::coop_addScore(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		int iAdd = ev->GetInteger(1);
+
+		multiplayerManager.addPoints(entnum, iAdd);
+		str playerName;
+		playerName = this->client->pers.netname;
+		gi.Printf("Info: Level-Script adding Points(%d) to Player[%d]: %s\n", iAdd, entnum, playerName.c_str());
+	}
+}
+
+Event EV_Player_coop_getLastDamaged
+(
+	"coop_getLastDamaged",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Float",
+	"Returns time when player was last time hit"
+);
+float Player::coop_getLastDamaged(void)
+{
+	float fValue1, fValue2;
+	if (_lastDamagedTimeFront > _lastDamagedTimeBack){
+		fValue1 = _lastDamagedTimeFront;
+	}else {
+		fValue1 = _lastDamagedTimeBack;
+	}
+
+	if (_lastDamagedTimeLeft > _lastDamagedTimeRight){
+		fValue2 = _lastDamagedTimeLeft;
+	}else {
+		fValue2 = _lastDamagedTimeRight;
+	}
+
+	if (fValue1 > fValue2){
+		return fValue1;
+	}else {
+		return fValue2;
+	}
+}
+void Player::coop_getLastDamagedEvent(Event* ev)
+{
+	float fLast = coop_getLastDamaged();
+	ev->ReturnFloat(fLast);
+}
+
+Event EV_Player_coop_getTeamName
+(
+	"coop_getTeamName",
+	EV_SCRIPTONLY,
+	"@s",
+	"return-String",
+	"Returns team color/name of player"
+);
+void Player::coop_getTeamName(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			ev->ReturnString("None");
+			return;
+		}
+		ev->ReturnString(team->getName());
+	}
+	else {
+		ev->ReturnString("None");
+	}
+}
+
+Event EV_Player_coop_getTeamScore
+(
+	"coop_getTeamScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns team score of player"
+);
+void Player::coop_getTeamScore(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			ev->ReturnFloat(multiplayerManager.getPoints(this));
+		}
+		else {
+			ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
+		}
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
+}
+
+#endif
