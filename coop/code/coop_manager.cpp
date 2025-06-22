@@ -296,9 +296,11 @@ void CoopManager::playerTransported(Entity *entity){
 }
 //Executed on spawn - Multiplayer
 void CoopManager::playerSpawned(Player* player) {
-    if (player) {
-        ExecuteThread("coop_justSpawned", true, player);
-    }
+    if (!player)
+        return;
+
+    gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);
+    ExecuteThread("coop_justSpawned", true, player);
 }
 //Executed on death - Multiplayer
 void CoopManager::playerBecameSpectator(Player *player){
