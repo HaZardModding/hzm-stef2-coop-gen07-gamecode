@@ -30,8 +30,12 @@ coop_setIniData(sCat,sKey,sValue) - set value into level ini file
 coop_setIniDataPlayer(ePlayer,sCat,sKey,sValue) - set (player id based) value into level ini file
 coop_getMapByServerIp() - Tries to fid the map for download from the last server ip the player was connected to
 $world.coop_getPhysicsVar(varname) - Rerturns gravity, airaccelerate, maxspeed
-coop_getLastActivatingEntity - Returns puzzle last activating player
-
+$entity.coop_getLastActivatingEntity() - Returns puzzle last activating player
+$entity.coop_getEntNum() - Returns Entity number
+$entity.coop_isSpectator() - Checks if entity is spectator (if a player)
+$entity.coop_isEntityInsideOfEntity(eOther) - Check if entity is inside entity
+$beam.coop_traceHitsSky("tag_horizontal" , 99999) - Does a trace to check to see if it hits a SKYPORTAL surface, returns endpoint vector
+$entity.coop_getLastAttacker() - Returns last Attacker of this entity
 
 
 Coop Mod execution logic:
@@ -83,11 +87,15 @@ Coop Mod execution logic:
 		MultiplayerManager::initMultiplayerGame( void )
 
 
+//EVENT Sentity teleport
+	void Teleporter::Teleport( Event *ev )
+		void CoopManager::playerTransported
+
 //EVENT player spawn
-ModeCoop::_giveInitialConditions(Player * player) Zeile 85	C++
-	MultiplayerModeBase::ActivatePlayer(Player * player) Zeile 1379	C++
-		ModeTeamBase::respawnPlayer(Player * player) Zeile 383	C++
-			ModeCoop::_giveInitialConditions
+	ModeCoop::_giveInitialConditions(Player * player) Zeile 85	C++
+		MultiplayerModeBase::ActivatePlayer(Player * player) Zeile 1379	C++
+			ModeTeamBase::respawnPlayer(Player * player) Zeile 383	C++
+				ModeCoop::_giveInitialConditions
 
 
 //Executed continuously
