@@ -376,6 +376,8 @@ typedef SafePtr<Entity> EntityPtr;
 //--------------------------------------------------------------
 // COOP Generation 7.000 -coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+extern Event EV_entity_coop_boosterNearbyPlayer;
+extern Event EV_entity_coop_removeViewmode;
 extern Event EV_entity_coop_getEntNum;
 extern Event EV_entity_coop_isSpectator;
 extern Event EV_entity_coop_isEntityInsideOfEntity;
@@ -392,11 +394,13 @@ class Entity : public Listener
 // COOP Generation 7.000 -coop specific script function - chrissstrahl
 //--------------------------------------------------------------
 public:
-	void Entity::coop_getEntNum(Event* ev);
-	void Entity::coop_isSpectator(Event* ev);
-	void Entity::coop_isEntityInsideOfEntity(Event* ev);
-	void Entity::coop_traceHitsSky(Event* ev);
-	void Entity::coop_getLastAttacker(Event* ev);
+	void coop_boosterNearbyPlayer(Event* ev);
+	void coop_removeViewmode(Event* ev);
+	void coop_getEntNum(Event* ev);
+	void coop_isSpectator(Event* ev);
+	void coop_isEntityInsideOfEntity(Event* ev);
+	void coop_traceHitsSky(Event* ev);
+	void coop_getLastAttacker(Event* ev);
 #endif
 
 

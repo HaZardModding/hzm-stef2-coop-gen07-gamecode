@@ -1714,6 +1714,8 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 -coop specific script function - chrissstrahl
 	//--------------------------------------------------------------
+		{ &EV_entity_coop_boosterNearbyPlayer, &Entity::coop_boosterNearbyPlayer },
+		{ &EV_entity_coop_removeViewmode, &Entity::coop_removeViewmode },
 		{ &EV_entity_coop_getEntNum, &Entity::coop_getEntNum },
 		{ &EV_entity_coop_isSpectator, &Entity::coop_isSpectator },
 		{ &EV_entity_coop_isEntityInsideOfEntity, &Entity::coop_isEntityInsideOfEntity },
@@ -10474,8 +10476,119 @@ bool Entity::isNetworkDetail( void )
 
 #ifdef ENABLE_COOP
 //--------------------------------------------------------------
-// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+// COOP Generation 7.000 - Added coop script functions - chrissstrahl
 //--------------------------------------------------------------
+Event EV_entity_coop_boosterNearbyPlayer
+(
+	"coop_boosterNearbyPlayer",
+	EV_DEFAULT,
+	"sfFF",
+	"typeOfBoost bostRange ammount maximum",
+	"Gives a boost to players within range (ammo,health,armor)"
+);
+void Entity::coop_boosterNearbyPlayer(Event* ev)
+{
+	Player* player = nullptr;
+	Entity* eTemp = nullptr;
+	str sBoostType;
+	float amount = 10.0f;
+	float maximum = 0;
+	float distance;
+
+	sBoostType = ev->GetString(1);
+	distance = ev->GetFloat(2);
+	if (ev->NumArgs() > 2) {
+		amount = ev->GetFloat(3);
+		if (ev->NumArgs() > 3) {
+			maximum = ev->GetFloat(4);
+		}
+	}
+
+	int i;
+	for (i = 0; i < maxclients->integer; i++) {
+		eTemp = g_entities[i].entity;
+		if (eTemp && eTemp->isClient() && eTemp->isSubclassOf(Player)) {
+			player = (Player*)eTemp;
+			if (player->health <= 0 || !WithinDistance((Entity*)player, distance)) {
+				continue;
+			}
+
+			if (!strcmpi(sBoostType.c_str(), "ammo")) {
+				bool bGiveAmmo = false;
+				if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma")) {
+					player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
+					player->GiveAmmo("Idryll", 10, 0, player->MaxAmmoCount("Idryll"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
+					player->GiveAmmo("Federation", 10, 0, player->MaxAmmoCount("Federation"));
+					bGiveAmmo = true;
+				}
+				if (bGiveAmmo) {
+					player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else if (!strcmpi(sBoostType.c_str(), "health")) {
+				float fHealthMax = player->max_health;
+				float fHealthToGive = 10.0f;
+				if (ev->NumArgs() > 2) {
+					fHealthToGive = amount;
+					if (ev->NumArgs() > 3) {
+						fHealthMax = maximum;
+					}
+				}
+
+				if ((fHealthToGive + player->health) > fHealthMax) {
+					fHealthToGive = (fHealthMax - player->health);
+				}
+
+				if (fHealthToGive) {
+					player->health = float(fHealthToGive + player->health);
+					player->Sound("sound/misc/mp_healthshard.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else {
+				float fArmorMax = 200.0f;
+				float fArmor = 10.0f;
+				if (ev->NumArgs() > 2) {
+					fArmor = amount;
+					if (ev->NumArgs() > 3) {
+						fArmorMax = maximum;
+					}
+				}
+
+				if ((player->GetArmorValue() + fArmor) > fArmorMax) {
+					fArmor = (fArmorMax - player->GetArmorValue());
+				}
+
+				if (fArmor) {
+					Event* armorEvent;
+					armorEvent = new Event(EV_Sentient_GiveArmor);
+					armorEvent->AddString("BasicArmor");
+					armorEvent->AddFloat(fArmor);
+					player->ProcessEvent(armorEvent);
+					player->Sound("sound/misc/mp_armorshard.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+		}
+	}
+}
+
+Event EV_entity_coop_removeViewmode
+(
+	"coop_removeViewmode",
+	EV_DEFAULT,
+	"s",
+	"viewModeName",
+	"Removes entity useing the specified view mode - opposite of .viewmode() ."
+);
+void Entity::coop_removeViewmode(Event* ev)
+{
+	removeAffectingViewModes(gi.GetViewModeMask(ev->GetString(1)));
+}
 Event EV_entity_coop_getLastAttacker
 (
 	"coop_getLastAttacker",
