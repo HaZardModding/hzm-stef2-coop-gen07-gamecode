@@ -36,7 +36,8 @@ $entity.coop_isSpectator() - Checks if entity is spectator (if a player)
 $entity.coop_isEntityInsideOfEntity(eOther) - Check if entity is inside entity
 $beam.coop_traceHitsSky("tag_horizontal" , 99999) - Does a trace to check to see if it hits a SKYPORTAL surface, returns endpoint vector
 $entity.coop_getLastAttacker() - Returns last Attacker of this entity
-
+$entity.coop_removeViewmode(viewModeName) - Removes viewmode visibilty from entity
+$entity.coop_boosterNearbyPlayer(boostType,range,amount,max) - Boots player within range with ammo or health or armor
 
 Coop Mod execution logic:
 /////////////////////////////////////////
