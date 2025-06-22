@@ -34,6 +34,39 @@ gamefix_client_persistant_s gamefix_client_persistant_t[MAX_CLIENTS];
 //--------------------------------------------------------------
 gamefix_entity_extraData_s gamefix_entity_extraData_t[MAX_GENTITIES];
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Message of the Day Support - chrissstrahl
+//--------------------------------------------------------------
+void gamefix_messageOfTheDayShow(Player* player)
+{
+	gamefix_client_persistant_t[player->entnum].messageOfTheDayDone = true;
+
+	if (level.mission_failed == (qboolean)qtrue) {
+		return;
+	}
+
+	str sMessage;
+	cvar_t* cvar = gi.cvar_get("mp_motd");
+	if (!cvar) {
+		return;
+	}
+	sMessage = cvar->string;
+	if (!sMessage.length()) {
+		return;
+	}
+
+	player->hudPrint(va("^5Message of the day:^8 %s\n", sMessage.c_str()));
+}
+void gamefix_messageOfTheDay(Player* player)
+{
+	if (gamefix_client_persistant_t[player->entnum].messageOfTheDayDone)
+		return;
+
+	Event* newEvent = new Event(EV_Player_gamefix_messageOfTheDay);
+	player->PostEvent(newEvent, 12 );
+}
+
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function to set makesolid asap - chrissstrahl
 //--------------------------------------------------------------
@@ -799,6 +832,7 @@ void gamefix_playerEntered(Player* player)
 }
 void gamefix_playerSpawn(Player* player)
 {
+	gamefix_messageOfTheDay(player);
 	gameFixAPI_playerSpawn(player);
 }
 void gamefix_playerModelChanged(Player* player)

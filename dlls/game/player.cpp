@@ -1338,6 +1338,12 @@ PLAYER
 
 CLASS_DECLARATION( Sentient, Player, "player" )
 {
+//--------------------------------------------------------------
+// GAMEFIX - Added: gamefix related player events - chrissstrahl
+//--------------------------------------------------------------
+	{ &EV_Player_gamefix_messageOfTheDay, & Player::gamefix_messageOfTheDayEvent },
+
+	
 	{ &EV_ClientMove,										&Player::ClientThink },
 	{ &EV_ClientEndFrame,									&Player::EndFrame },
 	{ &EV_Vehicle_Enter,									&Player::EnterVehicle },
@@ -14538,4 +14544,27 @@ void Player::setBackupModel( Event *ev )
 void Player::setBackupModel( const str &modelName )
 {
 	gi.setviewmodel( edict, modelName );
+}
+
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: gamefix related player events - chrissstrahl
+//--------------------------------------------------------------
+Event EV_Player_gamefix_messageOfTheDay
+(
+	"gamefix_messageOfTheDay",
+	EV_DEFAULT,
+	"",
+	"",
+	"Prints the message of the day from cvar mp_motd"
+);
+void Player::gamefix_messageOfTheDayEvent(Event* ev)
+{
+	//while in cinematic postpone event, post it again
+	if (sv_cinematic->integer == 1) {
+		gamefix_messageOfTheDay(this);
+		return;
+	}
+
+	gamefix_messageOfTheDayShow(this);
 }
