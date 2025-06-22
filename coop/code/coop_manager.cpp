@@ -282,7 +282,15 @@ void CoopManager::playerDied(Player *player){
 }
 //Executed on death - Always (Multiplayer + Singleplayer)
 void CoopManager::playerTransported(Entity *entity){
-    if (entity && entity->isSubclassOf(Player)) {
+    if (!entity)
+        return;
+
+    if (!entity->isSubclassOf(Sentient))
+        return;
+
+    gamefix_setMakeSolidAsap(entity, true, level.time + FRAMETIME);
+    
+    if (entity->isSubclassOf(Player)) {
         ExecuteThread("coop_justTransported", true, (Player*)entity);
     }
 }
