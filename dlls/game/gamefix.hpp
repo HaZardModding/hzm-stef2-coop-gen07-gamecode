@@ -74,6 +74,7 @@ struct gamefix_client_persistant_s
 	str				currentTeam = "none";
 	bool			hudsAdded = false;
 	float			hudsAddedLastCheck = 0.0f;
+	bool			messageOfTheDayDone = false;
 
 
 	//--------------------------------------------------------------
@@ -97,6 +98,9 @@ struct gamefix_entity_extraData_s
 	float			makeSolidASAPTime = 0.0f;
 };
 extern gamefix_entity_extraData_s gamefix_entity_extraData_t[MAX_GENTITIES];
+
+void				gamefix_messageOfTheDayShow(Player* player);
+void				gamefix_messageOfTheDay(Player* player);
 
 void				gamefix_setMakeSolidAsap(Entity* solidMe, bool makeSolid, float atLevelTime);
 bool				gamefix_getMakeSolidAsap(Entity* solidMe);

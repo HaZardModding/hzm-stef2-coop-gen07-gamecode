@@ -71,6 +71,13 @@ extern Event EV_Player_UseItem;
 extern Event EV_Player_SetStat;
 extern Event EV_Player_Weapon;
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: gamefix related player events - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_Player_gamefix_messageOfTheDay;
+
+
 #define HEAD_TAG        0
 #define TORSO_TAG       1
 #define L_ARM_TAG       2
@@ -193,6 +200,13 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 //--------------------------------------------------------------
 class Player : public Sentient
 	{
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: gamefix related player events - chrissstrahl
+	//--------------------------------------------------------------
+	public:
+		void gamefix_messageOfTheDayEvent(Event* ev);
+
+
 	public:
 		CLASS_PROTOTYPE( Player );
 		Player();
