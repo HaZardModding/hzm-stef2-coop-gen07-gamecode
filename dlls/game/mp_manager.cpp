@@ -3229,7 +3229,9 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerSpawned(player);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerSpawned(player);
+	}
 #endif
 }
 
