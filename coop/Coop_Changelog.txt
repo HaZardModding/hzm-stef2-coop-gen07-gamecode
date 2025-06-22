@@ -250,6 +250,12 @@ dlls\game\mp_modeBase.cpp
 	Added: #include coop_gametype.hpp
 	bool MultiplayerModeBase::shouldStartMatch( void )
 	
+dlls\game\mp_modeTeamBase.cpp
+	Added: #include "../../coop/code/coop_manager.hpp"
+	Added: #include "../../coop/code/coop_gametype.hpp"
+	void ModeTeamBase::respawnPlayer( Player *player )
+		Disabled: KillBox during coop in
+	
 dlls\game\worldspawn.cpp
 	Added: World::coop_getPhysicsVar( Event *ev )
 	
