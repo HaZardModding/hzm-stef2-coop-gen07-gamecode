@@ -1953,6 +1953,13 @@ void Entity::Setup()
 	spawnflags = level.spawnflags;
    level.spawnflags = 0;
 
+
+   //--------------------------------------------------------------
+   // GAMEFIX - Added: Makesolid ASAP Handle - chrissstrahl
+   //--------------------------------------------------------------
+   gamefix_setMakeSolidAsap(this, false, 0.0f);
+
+
 	// rendering variables
 	setAlpha( 1.0f );
 	setScale( 1.0f );
@@ -3813,6 +3820,12 @@ void Entity::BecomeSolid
 	)
 
 	{
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Makesolid ASAP Handle - chrissstrahl
+	//--------------------------------------------------------------
+	gamefix_setMakeSolidAsap(this, true, 0.0f);
+
+
 	if ( ( model.length() ) && ( ( model[ 0 ] == '*' ) || ( strstr( model.c_str(), ".bsp" ) ) ) )
 		{
 		setSolidType( SOLID_BSP );
@@ -3829,6 +3842,12 @@ void Entity::BecomeNonSolid
 	)
 
 	{
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Makesolid ASAP Handle - chrissstrahl
+	//--------------------------------------------------------------
+	gamefix_setMakeSolidAsap(this, false, 0.0f);
+
+
 	setSolidType( SOLID_NOT );
 	}
 
