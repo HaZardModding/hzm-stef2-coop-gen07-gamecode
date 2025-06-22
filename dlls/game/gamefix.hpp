@@ -93,9 +93,14 @@ struct gamefix_entity_extraData_s
 	EntityPtr		activator = nullptr;
 	float			lastActivated = -9999.0f;
 	EntityPtr		lastInflictor = nullptr;
+	bool			makeSolidASAP = false;
+	float			makeSolidASAPTime = 0.0f;
 };
 extern gamefix_entity_extraData_s gamefix_entity_extraData_t[MAX_GENTITIES];
 
+void				gamefix_setMakeSolidAsap(Entity* solidMe, bool makeSolid, float atLevelTime);
+bool				gamefix_getMakeSolidAsap(Entity* solidMe);
+float				gamefix_getMakeSolidAsapTime(Entity* eCheck);
 
 Entity*				gamefix_returnInfoPlayerStart(str info);
 
@@ -132,6 +137,7 @@ void				gamefix_playerUseItem(Player* player, const char* name);
 void				gamefix_playerScore(Player* player);
 void				gamefix_playerClientBegin(gentity_t* ent);
 void				gamefix_playerClientThink(Player* player);
+void				gamefix_actorThink(Actor* actor);
 void				gamefix_dialogSetupPlayers(Actor* speaker, char *localizedDialogName, bool headDisplay);
 void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText);
 void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds);

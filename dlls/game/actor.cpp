@@ -13175,6 +13175,13 @@ void Actor::Think( void	)
 	else
 		LevelAIOn();
 
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Makesolid ASAP Handle for Actors - chrissstrahl
+	//--------------------------------------------------------------
+	gamefix_actorThink(this);
+
+
 	/*
 	Vector BS( 0 , 0 , 100 );
 	

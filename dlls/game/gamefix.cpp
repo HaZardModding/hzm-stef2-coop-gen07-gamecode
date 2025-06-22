@@ -35,6 +35,120 @@ gamefix_client_persistant_s gamefix_client_persistant_t[MAX_CLIENTS];
 gamefix_entity_extraData_s gamefix_entity_extraData_t[MAX_GENTITIES];
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Function to set makesolid asap - chrissstrahl
+//--------------------------------------------------------------
+void gamefix_setMakeSolidAsap(Entity* solidMe, bool makeSolid, float atLevelTime)
+{
+	//nothing to check
+	if (!solidMe)
+		return;
+
+	gamefix_entity_extraData_t[solidMe->entnum].makeSolidASAP = makeSolid;
+	gamefix_entity_extraData_t[solidMe->entnum].makeSolidASAPTime = atLevelTime;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to get player state of makesolidasap - chrissstrahl
+//--------------------------------------------------------------
+bool gamefix_getMakeSolidAsap(Entity* eCheck)
+{
+	//nothing to check
+	if (!eCheck)
+		return false;
+
+	return gamefix_entity_extraData_t[eCheck->entnum].makeSolidASAP;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to get player state of makesolidasap - chrissstrahl
+//--------------------------------------------------------------
+float gamefix_getMakeSolidAsapTime(Entity* eCheck)
+{
+	//nothing to check
+	if (!eCheck)
+		return false;
+
+	return gamefix_entity_extraData_t[eCheck->entnum].makeSolidASAPTime;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to make entity(player/actor) solid as soon as they are not within inside a other player or actor bbox - chrissstrahl
+//--------------------------------------------------------------
+bool gamefix_makeSolidAsapThink(Entity* eCheck)
+{
+	if (!gamefix_getMakeSolidAsap(eCheck))
+		return false;
+
+	if (gamefix_getMakeSolidAsapTime(eCheck) >= level.time)
+		return false;
+	
+	//dead sentient (Actor/Player)
+	if (gameFixAPI_isDead(eCheck))
+		return false;
+
+	//exit if player but spectator
+	if (gameFixAPI_isSpectator_stef2(eCheck))
+		return false;
+	
+	//is actor but hidden and notsolid
+	if (eCheck->isSubclassOf(Actor)) {
+		Actor* a = (Actor*)eCheck;
+		if (!a->GetActorFlag(ACTOR_FLAG_AI_ON)  /*  && a->edict->solid == SOLID_NOT && hidden  a->edict->svflags & SVF_NOCLIENT*/) {
+			return false;
+		}
+	}
+
+	int i;
+	bool bInside = false;
+	Entity* entity2 = NULL;
+
+	//check (all) entities against this entity
+	for (i = 0; i < maxentities->integer; i++) {
+
+		entity2 = g_entities[i].entity;
+
+		//skip if missing,same,not player/actor or dead
+		if (!entity2 || eCheck == entity2 || !entity2->isSubclassOf(Sentient) || entity2->health <= 0)
+			continue;
+
+		//do not check actor on actor, because this creates more trouble than it is useful
+		if (eCheck->isSubclassOf(Actor) && entity2->isSubclassOf(Actor))
+			continue;
+
+		//do not check spectators
+		if (gameFixAPI_isSpectator_stef2(entity2))
+			continue;
+
+		//ai_off and hidden
+		//make sure we skip notsolid and hidden actors as they are probably left over from cinematic
+		if (eCheck->isSubclassOf(Actor)) {
+			Actor* a = (Actor*)eCheck;
+			if (!a->GetActorFlag(ACTOR_FLAG_AI_ON)  /*  && a->edict->solid == SOLID_NOT && hidden  a->edict->svflags & SVF_NOCLIENT*/) {
+				continue;
+			}
+		}
+		
+		if (gamefix_checkEntityInsideOfEntity(eCheck, entity2)) {
+			if (!gamefix_getMakeSolidAsap(entity2)) {
+gi.Printf("asap made NOT solid: %s\n", entity2->targetname.c_str());
+				entity2->setSolidType(SOLID_NOT);
+				gamefix_setMakeSolidAsap(entity2, true, 0.0f);
+			}
+			bInside = true;
+		}
+	}
+
+	if (!bInside) {
+gi.Printf("asap made solid: %s\n", eCheck->targetname.c_str());
+		eCheck->setSolidType(SOLID_BBOX);
+		gamefix_setMakeSolidAsap(eCheck, false, 0.0f);
+	}
+
+	return bInside;
+}
+
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Function to return the singleplayer spawnspot if no multiplayer spawn spot was found - chrissstrahl
 //--------------------------------------------------------------
 Entity* gamefix_returnInfoPlayerStart(str info)
@@ -720,7 +834,12 @@ void gamefix_playerClientBegin(gentity_t* ent)
 }
 void gamefix_playerClientThink(Player* player)
 {
+	gamefix_makeSolidAsapThink((Entity*)player);
 	gameFixAPI_playerClientThink(player);
+}
+void gamefix_actorThink(Actor* actor)
+{
+	gamefix_makeSolidAsapThink((Entity*)actor);
 }
 //--------------------------------------------------------------
 // GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
