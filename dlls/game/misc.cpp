@@ -894,7 +894,23 @@ void Teleporter::Teleport( Event *ev )
 
 	if ( doFullTeleport( other ) )
 	{
-		KillBox( other );
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Don't use killbox during coop - chrissstrahl
+		//--------------------------------------------------------------
+		if (CoopManager::Get().IsCoopEnabled()) {
+			CoopManager::Get().playerTransported(other);
+		}
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Don't use killbox during coop - chrissstrahl
+		//--------------------------------------------------------------
+		else {
+			KillBox(other);
+		}
+#else
+		KillBox(other);
+#endif
+
 
 		dest->Sound( "snd_teleport", CHAN_AUTO, 1, 400 );
 	}
