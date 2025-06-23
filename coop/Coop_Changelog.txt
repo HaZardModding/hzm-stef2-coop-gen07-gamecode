@@ -38,6 +38,45 @@ $beam.coop_traceHitsSky("tag_horizontal" , 99999) - Does a trace to check to see
 $entity.coop_getLastAttacker() - Returns last Attacker of this entity
 $entity.coop_removeViewmode(viewModeName) - Removes viewmode visibilty from entity
 $entity.coop_boosterNearbyPlayer(boostType,range,amount,max) - Boots player within range with ammo or health or armor
+$player.coop_playerKillThread(threadName) - sets thread to run when player gets killed
+$player.coop_getLanguage() - gets Language string of player (Deu/Eng)
+$player.coop_getName() - gets Player Multiplayer name
+$player.coop_getScore() - gets Player Multiplayer score
+$player.coop_getDeaths() - gets Player Multiplayer deaths
+$player.coop_getKills() - gets Player Multiplayer kills
+$player.coop_addScore(int) - adds to Player Multiplayer points
+$player.coop_getLastDamaged() - gets level time player got last hurt
+$player.coop_getTeamName() - gets player team name (Red/Blue)
+$player.coop_getTeamScore() - gets player team score
+$player.coop_getViewAngles() - gets player Viewangles
+$player.coop_getTargetedEntity() - gets entity player is currently targeting
+$player.coop_getViewtraceEndpos() - gets vector location of player their viewtrace
+$player.coop_getUserFov() - gets player field of view
+$player.coop_checkCrouch() - returns if the player is crouching
+$player.coop_checkJump() - returns if the player is pressing Jumping
+$player.coop_checkForward() - returns if the player is pressing Forward
+$player.coop_checkBackward() - returns if the player is pressing Backward
+$player.coop_checkLeft() - returns if the player is pressing Left
+$player.coop_checkRight() - returns if the player is pressing Right
+$player.coop_checkLeanRight() - returns if the player is pressing LeanRight
+$player.coop_checkLeanLeft() - returns if the player is pressing LeanLeft
+$player.coop_checkDropRune() - returns if the player is pressing DropRune
+$player.coop_checkReload() - returns if the player is pressing Reload
+$player.coop_checkUse() - returns if the player is pressing Use
+$player.coop_checkFire() - returns if the player is pressing Fire
+$player.coop_checkFirealt() - returns if the player ispressing  AltFire
+$player.coop_checkMenu() - returns if the player is in a menu
+$player.coop_checkRun() - returns if the player has running on 
+$player.coop_checkAnyButton() - returns if the player is pressing any of the common buttons
+$player.coop_checkThirdperson() - returns if the player is in thirdperson view
+$player.coop_getBackpackAttachOffset() - return player model attach backpack offset
+$player.coop_getBackpackAttachAngles() - return player model attach backpack angels
+$player.coop_getFlagAttachOffset() - return player model flag attach offset
+$player.coop_getFlagAttachAngles() - return player model flag attach angels
+
+
+
+
 
 Coop Mod execution logic:
 /////////////////////////////////////////
