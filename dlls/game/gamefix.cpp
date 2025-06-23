@@ -2667,6 +2667,29 @@ str gamefix_stripDoubleChar(const str filthy, str illegal)
 	return clean;
 }
 
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to make string compatible for labeltext command - chrissstrahl
+//--------------------------------------------------------------
+str gamefix_replaceForLabelText(str sPure)
+{
+	int i = 0;
+	if (strlen(sPure) > 10) {
+		str sTemp = sPure;
+		sTemp = sTemp.tolower();
+		if(gamefix_findString(sTemp.c_str(),"labeltext ",false)){
+			i = 11;
+		}
+	}
+
+	for (i = i; i < strlen(sPure); i++) {
+		if (sPure[i] == '\n' || sPure[i] == '#')
+			sPure[i] = '~';
+		if (sPure[i] == ' ')
+			sPure[i] = '^';
+	}
+	return sPure;
+}
+
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function to print a error marker at a specific location in text - chrissstrahl

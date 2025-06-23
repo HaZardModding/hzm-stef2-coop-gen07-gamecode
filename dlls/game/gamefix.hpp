@@ -227,6 +227,7 @@ str					gamefix_cleanMapName(const str& mapname);
 str					gamefix_cleanMapKeepParameters(const str& mapname);
 str					gamefix_filterChars(const str filthy, str illegal);
 str					gamefix_stripDoubleChar(const str filthy, str illegal);
+str					gamefix_replaceForLabelText(str sPure);
 
 str					gamefix_debugTextErrorMarker(unsigned int pos);
 
