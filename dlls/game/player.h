@@ -121,6 +121,10 @@ extern Event EV_Player_coop_widgetCommand;
 extern Event EV_Player_coop_runThread;
 extern Event EV_Player_coop_hasLanguageGerman;
 extern Event EV_Player_coop_hasLanguageEnglish;
+extern Event EV_Player_coop_getCoopClass;
+extern Event EV_Player_coop_isTechnician;
+extern Event EV_Player_coop_isMedic;
+extern Event EV_Player_coop_isHeavyWeapons;
 
 
 #define HEAD_TAG        0
@@ -302,7 +306,10 @@ class Player : public Sentient
 		bool coop_hasLanguageGerman();
 		bool coop_hasLanguageEnglish();
 		void coop_hasLanguageEnglishEvent(Event* ev);
-
+		void coop_getCoopClass(Event* ev);
+		void coop_isTechnician(Event* ev);
+		void coop_isMedic(Event* ev);
+		void coop_isHeavyWeapons(Event* ev);
 
 
 	public:

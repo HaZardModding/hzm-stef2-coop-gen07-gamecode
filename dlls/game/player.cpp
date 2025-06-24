@@ -1396,6 +1396,11 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 	{ &EV_Player_coop_runThread, &Player::coop_runThreadEvent },
 	{ &EV_Player_coop_hasLanguageGerman, &Player::coop_hasLanguageGermanEvent },
 	{ &EV_Player_coop_hasLanguageEnglish, &Player::coop_hasLanguageEnglishEvent },
+	{ &EV_Player_coop_getCoopClass, &Player::coop_getCoopClass },
+	{ &EV_Player_coop_isTechnician, &Player::coop_isTechnician },
+	{ &EV_Player_coop_isMedic, &Player::coop_isMedic },
+	{ &EV_Player_coop_isHeavyWeapons, &Player::coop_isHeavyWeapons },
+
 
 
 	{ &EV_ClientMove,										&Player::ClientThink },
@@ -15389,6 +15394,93 @@ bool Player::coop_hasLanguageEnglish()
 		bLangMatch = true;
 	}
 	return bLangMatch;
+}
+
+Event EV_Player_coop_getCoopClass
+(
+	"coop_getCoopClass",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name - Technician, Medic, HeavyWeapons or empty string"
+);
+void Player::coop_getCoopClass(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			ev->ReturnString(coopManager_client_persistant_t[this->entnum].coopClass);
+		}
+	}
+	else {
+		ev->ReturnString("");
+	}
+}
+
+Event EV_Player_coop_isTechnician
+(
+	"coop_isTechnician",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool",
+	"Check if Player Coop class is Technician"
+);
+void Player::coop_isTechnician(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (coopManager_client_persistant_t[this->entnum].coopClass == "Technician") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_isMedic
+(
+	"coop_isMedic",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"Check if Player Coop class is Medic"
+);
+void Player::coop_isMedic(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (coopManager_client_persistant_t[this->entnum].coopClass == "Medic") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_isHeavyWeapons
+(
+	"coop_isHeavyWeapons",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name - Technician, Medic, HeavyWeapons or empty string"
+);
+void Player::coop_isHeavyWeapons(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (coopManager_client_persistant_t[this->entnum].coopClass == "HeavyWeapons") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
 }
 
 #endif
