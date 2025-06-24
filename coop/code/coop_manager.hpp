@@ -14,6 +14,14 @@
 #endif
 
 
+
+struct coopManager_client_persistant_s
+{
+    str				coopClass = "Technician";
+};
+extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
+
+
 struct coopManager_mapSettings_s
 {
     bool rpgMap = false;

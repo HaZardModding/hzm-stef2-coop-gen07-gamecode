@@ -2,6 +2,7 @@
 #include "../../dlls/game/gamefix.hpp"
 #include "coop_manager.hpp"
 
+coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 
 CoopManager& CoopManager::Get() {
     static CoopManager instance;
