@@ -73,9 +73,10 @@ $player.coop_getBackpackAttachOffset() - return player model attach backpack off
 $player.coop_getBackpackAttachAngles() - return player model attach backpack angels
 $player.coop_getFlagAttachOffset() - return player model flag attach offset
 $player.coop_getFlagAttachAngles() - return player model flag attach angels
-
-
-
+$player.coop_getCoopClass() - gets coop class of player
+$player.isCoopClassTechnician() - checks if player is of class
+$player.isCoopClassMedic() - checks if player is of class
+$player.isCoopClassHeavyWeapons() - checks if player is of class
 
 
 Coop Mod execution logic:
