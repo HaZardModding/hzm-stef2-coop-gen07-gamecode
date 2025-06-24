@@ -383,6 +383,7 @@ extern Event EV_entity_coop_isSpectator;
 extern Event EV_entity_coop_isEntityInsideOfEntity;
 extern Event EV_entity_coop_traceHitsSky;
 extern Event EV_entity_coop_getLastAttacker;
+extern Event EV_entity_coop_makeSolidAsap;
 #endif
 
 
@@ -401,6 +402,7 @@ public:
 	void coop_isEntityInsideOfEntity(Event* ev);
 	void coop_traceHitsSky(Event* ev);
 	void coop_getLastAttacker(Event* ev);
+	void coop_makeSolidAsap(Event* ev);
 #endif
 
 

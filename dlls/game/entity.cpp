@@ -1721,6 +1721,7 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 		{ &EV_entity_coop_isEntityInsideOfEntity, &Entity::coop_isEntityInsideOfEntity },
 		{ &EV_entity_coop_traceHitsSky, &Entity::coop_traceHitsSky },
 		{ &EV_entity_coop_getLastAttacker, &Entity::coop_getLastAttacker },
+		{ &EV_entity_coop_makeSolidAsap, &Entity::coop_makeSolidAsap },
 #endif
 
 
@@ -10705,5 +10706,23 @@ void Entity::coop_isSpectator(Event* ev)
 		return;
 	}
 	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator((Player*)this));
+}
+
+Event EV_entity_coop_makeSolidAsap
+(
+	"coop_makeSolidAsap",
+	EV_SCRIPTONLY,
+	"fF",
+	"float-bool optional-LevelTime",
+	"Sets MakeSolidAsap, 1 make solid as soon as possible, 0 don't, Optional Parameter 2 sets level time"
+);
+void Entity::coop_makeSolidAsap(Event* ev)
+{
+	float makeSolid = ev->GetFloat(1);
+	float atLevelTime = ev->GetFloat(2);
+
+	if (multiplayerManager.inMultiplayer()) {
+		gamefix_setMakeSolidAsap(this, makeSolid, atLevelTime);
+	}
 }
 #endif
