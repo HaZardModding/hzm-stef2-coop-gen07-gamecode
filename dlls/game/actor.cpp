@@ -20176,7 +20176,7 @@ void Actor::SetIgnoreWatchTarget( bool ignore )
 #ifdef ENABLE_COOP
 	Event EV_COOP_Actor_GetActorType
 	(
-		"coop_actorgettype",
+		"coop_actorGetType",
 		EV_DEFAULT,
 		"@s",
 		"string-type-name",
