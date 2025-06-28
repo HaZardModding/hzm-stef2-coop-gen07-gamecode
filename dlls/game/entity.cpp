@@ -1714,6 +1714,12 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 -coop specific script function - chrissstrahl
 	//--------------------------------------------------------------
+		{ &EV_SetUserVar5, &Entity::SetUserVar5 },
+		{ &EV_SetUserVar6, &Entity::SetUserVar6 },
+		{ &EV_SetUserVar7, &Entity::SetUserVar7 },
+		{ &EV_SetUserVar8, &Entity::SetUserVar8 },
+		{ &EV_SetUserVar9, &Entity::SetUserVar9 },
+		{ &EV_SetUserVar10, &Entity::SetUserVar10 },
 		{ &EV_entity_coop_boosterNearbyPlayer, &Entity::coop_boosterNearbyPlayer },
 		{ &EV_entity_coop_removeViewmode, &Entity::coop_removeViewmode },
 		{ &EV_entity_coop_getEntNum, &Entity::coop_getEntNum },
@@ -10479,6 +10485,78 @@ bool Entity::isNetworkDetail( void )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added coop script functions - chrissstrahl
 //--------------------------------------------------------------
+Event EV_SetUserVar5
+(
+	"uservar5",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar5(Event* ev){
+	entityVars.SetVariable("uservar5", ev->GetString(1));
+}
+
+Event EV_SetUserVar6
+(
+	"uservar6",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar6(Event* ev) {
+	entityVars.SetVariable("uservar6", ev->GetString(1));
+}
+
+Event EV_SetUserVar7
+(
+	"uservar7",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar7(Event* ev) {
+	entityVars.SetVariable("uservar7", ev->GetString(1));
+}
+
+Event EV_SetUserVar8
+(
+	"uservar8",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar8(Event* ev) {
+	entityVars.SetVariable("uservar8", ev->GetString(1));
+}
+
+Event EV_SetUserVar9
+(
+	"uservar9",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar9(Event* ev) {
+	entityVars.SetVariable("uservar9", ev->GetString(1));
+}
+
+Event EV_SetUserVar10
+(
+	"uservar10",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar10(Event* ev) {
+	entityVars.SetVariable("uservar10", ev->GetString(1));
+}
+
 Event EV_entity_coop_boosterNearbyPlayer
 (
 	"coop_boosterNearbyPlayer",

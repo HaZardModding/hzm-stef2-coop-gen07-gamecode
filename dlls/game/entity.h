@@ -376,6 +376,12 @@ typedef SafePtr<Entity> EntityPtr;
 //--------------------------------------------------------------
 // COOP Generation 7.000 -coop specific script function - chrissstrahl
 //--------------------------------------------------------------
+extern Event EV_SetUserVar5;
+extern Event EV_SetUserVar6;
+extern Event EV_SetUserVar7;
+extern Event EV_SetUserVar8;
+extern Event EV_SetUserVar9;
+extern Event EV_SetUserVar10;
 extern Event EV_entity_coop_boosterNearbyPlayer;
 extern Event EV_entity_coop_removeViewmode;
 extern Event EV_entity_coop_getEntNum;
@@ -395,6 +401,12 @@ class Entity : public Listener
 // COOP Generation 7.000 -coop specific script function - chrissstrahl
 //--------------------------------------------------------------
 public:
+	void SetUserVar5(Event* ev);
+	void SetUserVar6(Event* ev);
+	void SetUserVar7(Event* ev);
+	void SetUserVar8(Event* ev);
+	void SetUserVar9(Event* ev);
+	void SetUserVar10(Event * ev);
 	void coop_boosterNearbyPlayer(Event* ev);
 	void coop_removeViewmode(Event* ev);
 	void coop_getEntNum(Event* ev);
