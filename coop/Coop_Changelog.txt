@@ -262,6 +262,9 @@ dlls\game\actor.cpp
 	Added: Event EV_COOP_Actor_GetActorType
 	Added: void Actor::COOP_GetActorType(Event* ev) 
 
+dlls\game\program.hpp
+	Changed: MAX_STATEMENTS from 16384 to 32768
+
 dlls\game\program.cpp
     Added: def_t* coop_getDefForVarname(const char* varname);
     Added: const char* coop_getVariableValueAsString(const char* varname);
