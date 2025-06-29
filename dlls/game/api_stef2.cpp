@@ -314,7 +314,7 @@ void gameFixAPI_playerSetupUi(Player* player)
 	}
 
 	if (teamHud.length()) {
-		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", teamHud));
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", teamHud.c_str()));
 	}
 
 	gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_console");
