@@ -3,6 +3,12 @@
 #include "coop_generalstrings.hpp"
 
 
+constexpr auto _COOP_FILE_main = "co-op/matrix/main.scr";
+constexpr auto _COOP_FILE_noscript = "noscript.scr";
+constexpr auto _COOP_FILE_multioptions = "multioptions.scr";
+constexpr auto _COOP_FILE_multioptions4 = "mom4_coopInput.scr";
+constexpr auto _COOP_FILE_mrm = "mom_mrm.scr";
+
 constexpr auto _COOP_FILE_maplist = "co-op/config/maplist.ini";
 constexpr auto _COOP_FILE_settings = "co-op/config/settings.ini";
 constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/playerskins.ini";
