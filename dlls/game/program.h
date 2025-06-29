@@ -24,7 +24,15 @@ class Lexer;
 
 #define	MAX_STRINGS		4096
 //#define	MAX_STATEMENTS	65536
-#define	MAX_STATEMENTS	16384
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Changed to allow larger scripts - chrissstrahl
+// was 16384
+//--------------------------------------------------------------
+#define	MAX_STATEMENTS	32768
+
+
 #define	MAX_FUNCTIONS	2560
 
 #define	MAX_PARMS	   16
