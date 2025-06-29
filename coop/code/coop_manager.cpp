@@ -264,17 +264,37 @@ void CoopManager::LoadLevelScript(str mapname) {
     int scriptFileDirectories = scriptFileDir.NumObjects();
     
     str dir,ext;
-    for (int j = 1; j <= scriptFileDirectories; j++) {
-        dir = scriptFileDir.ObjectAt(j);
-        for (int i = 1; i <= scriptFileExtensions; i++) {
-            ext = scriptFileExt.ObjectAt(i);
-            //construct directory mapname and file extension
-            str sFile = va("%s%s.%s", dir.c_str(), mapname.c_str(), ext.c_str());
-            if (gi.FS_ReadFile(sFile.c_str(), NULL, true) != -1) {
-                gi.Printf("Adding script: '%s'\n", sFile.c_str());
-                // just set the script, we will start it in G_Spawn
-                level.SetGameScript(sFile.c_str());
-                return;
+    //multiplayer prioritise files from co-op folder and .script files
+    if (gameFixAPI_inMultiplayer()) {
+        for (int j = 1; j <= scriptFileDirectories; j++) {
+            dir = scriptFileDir.ObjectAt(j);
+            for (int i = 1; i <= scriptFileExtensions; i++) {
+                ext = scriptFileExt.ObjectAt(i);
+                //construct directory mapname and file extension
+                str sFile = va("%s%s.%s", dir.c_str(), mapname.c_str(), ext.c_str());
+                if (gi.FS_ReadFile(sFile.c_str(), NULL, true) != -1) {
+                    gi.Printf("Adding script: '%s'\n", sFile.c_str());
+                    // just set the script, we will start it in G_Spawn
+                    level.SetGameScript(sFile.c_str());
+                    return;
+                }
+            }
+        }
+    }
+    //singleplayer prioritise files from maps folder and .scr files
+    else {
+        for (int j = scriptFileDirectories; j > 0; j--) {
+            dir = scriptFileDir.ObjectAt(j);
+            for (int i = scriptFileExtensions; i > 0; i--) {
+                ext = scriptFileExt.ObjectAt(i);
+                //construct directory mapname and file extension
+                str sFile = va("%s%s.%s", dir.c_str(), mapname.c_str(), ext.c_str());
+                if (gi.FS_ReadFile(sFile.c_str(), NULL, true) != -1) {
+                    gi.Printf("Adding script: '%s'\n", sFile.c_str());
+                    // just set the script, we will start it in G_Spawn
+                    level.SetGameScript(sFile.c_str());
+                    return;
+                }
             }
         }
     }
