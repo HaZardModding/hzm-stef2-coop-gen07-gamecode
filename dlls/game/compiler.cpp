@@ -18,6 +18,15 @@
 #include "_pch_cpp.h"
 #include "compiler.h"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 opcode_t pr_opcodes[] =
 {
 	{ "<DONE>",			"DONE",			-1, false,	&def_entity,	&def_entity,	&def_void },
@@ -1221,7 +1230,23 @@ void Compiler::ParseDefs( void )
             {
 				lex.ParseError( "Expected quoted filename" );
             }
-			
+
+
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.000 - Added: Automatic loading of coop specific global_scripts - chrissstrahl
+			//--------------------------------------------------------------
+			if (CoopManager::Get().IsCoopEnabled()) {
+				str sReplace = CoopManager::Get().IncludeScriptReplace(lex.pr_immediate_string);
+				if (sReplace.length()) {
+					char repaceString[2048];
+					strcpy(repaceString, sReplace.c_str());
+					memcpy(lex.pr_immediate_string, repaceString, sizeof(lex.pr_immediate_string));
+				}
+			}
+#endif
+
+
 			program.Compile( lex.pr_immediate_string );
 			lex.Lex();
 			

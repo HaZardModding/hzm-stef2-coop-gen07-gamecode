@@ -55,6 +55,13 @@ public:
         bool multiplayerOnly = false;
         bool singleplayerOnly = false;
         bool stockMap = false;
+        str checkPoint = "";
+        str cleanName = "";
+        bool scriptIncludedCoopMain = false;
+        bool scriptIncludedCoopNoscript = false;
+        bool scriptIncludedCoopMom = false;
+        bool scriptIncludedCoopMom4 = false;
+        bool scriptIncludedCoopMrm = false;
     };
 
 public:
@@ -75,6 +82,10 @@ public:
 
 
     void ClientThink(Player* player);
+
+    str IncludeScriptReplace(str sLex);
+    void IncludeScriptCheck(str &sLex);
+    bool IncludedScriptCoop();
 
 
     void playerEntered(gentity_t* ent);

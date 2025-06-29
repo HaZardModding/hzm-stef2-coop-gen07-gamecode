@@ -21,6 +21,57 @@ void CoopManager::ClientThink(Player *player) {
     
 }
 
+//check if specific coop files are included
+//this is required because certain global_scripts
+//need to be included differehtly then
+str CoopManager::IncludeScriptReplace(str sLex) {
+   
+    //check for known coop script files
+    IncludeScriptCheck(sLex);
+    
+    if (IncludedScriptCoop()) {
+        if (gamefix_findString(sLex.c_str(), "maps/global_scripts/", false) != -1) {
+            str sFile = gamefix_getFileName(sLex);
+            str sReplace = "co-op/maps/global_scripts/";
+            sReplace += sFile;
+
+            if (gi.FS_ReadFile(sReplace.c_str(), NULL, true) != -1) {
+                DEBUG_LOG(va("%s used from /co-op/ folder\n", sFile.c_str()));
+                gi.Printf(va("%s used from /co-op/ folder\n", sFile.c_str()));
+                return sReplace;
+            }
+        }
+    }
+    return "";
+}
+
+void CoopManager::IncludeScriptCheck(str &sLex) {
+    if (Q_stricmp(sLex,_COOP_FILE_main) == 0) {
+        mapFlags.scriptIncludedCoopMain = true;
+        return;
+    }
+    if (Q_stricmp(sLex, _COOP_FILE_noscript) == 0) {
+        mapFlags.scriptIncludedCoopNoscript = true;
+        return;
+    }
+    if (Q_stricmp(sLex, _COOP_FILE_multioptions) == 0) {
+        mapFlags.scriptIncludedCoopMom = true;
+        return;
+    }
+    if (Q_stricmp(sLex, _COOP_FILE_multioptions4) == 0) {
+        mapFlags.scriptIncludedCoopMom4 = true;
+        return;
+    }
+    if (Q_stricmp(sLex, _COOP_FILE_mrm) == 0) {
+        mapFlags.scriptIncludedCoopMrm = true;
+        return;
+    }
+}
+
+bool CoopManager::IncludedScriptCoop() {
+    return mapFlags.scriptIncludedCoopMain;
+}
+
 //executed once, only on game server start/load
 //executed before world and other entities exist
 void CoopManager::Init() {
@@ -190,6 +241,11 @@ void CoopManager::SetMapType() {
     mapFlags.multiplayerOnly = struct_currentMap.multiplayerOnly;
     mapFlags.singleplayerOnly = struct_currentMap.singleplayerOnly;
     mapFlags.stockMap = struct_currentMap.stockMap;
+    mapFlags.scriptIncludedCoopMain = false;
+    mapFlags.scriptIncludedCoopNoscript = false;
+    mapFlags.scriptIncludedCoopMom = false;
+    mapFlags.scriptIncludedCoopMom4 = false;
+    mapFlags.scriptIncludedCoopMrm = false;
 }
 
 //Executes the level script
