@@ -18,6 +18,7 @@ CLASS_DECLARATION(ModeTeamDeathmatch, ModeCoop, NULL)
 ModeCoop::ModeCoop()
 {
 	//_redTeam = AddTeam("Red");
+	_redTeam = nullptr;
 	_blueTeam = AddTeam("Blue");
 	//_useTeamSpawnpoints = false;
 }
