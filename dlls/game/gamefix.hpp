@@ -198,6 +198,7 @@ bool				gamefix_containsNonANSI(const unsigned char* buffer, size_t length);
 char*				gamefix_convertUtf8UmlautsToAnsi(const char* utf8_str);
 
 str					gamefix_getExtension(const str& in);
+str					gamefix_getFileName(const str& sPath);
 void				gamefix_extractIntegerRange(const str& input, int& first, int& second);
 void				gamefix_extractFloatRange(const str input, float& first, float& second);
 float				gamefix_dialogGetSoundlength(char sound[MAX_QPATH]);
