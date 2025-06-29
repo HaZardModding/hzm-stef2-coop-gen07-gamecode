@@ -14933,12 +14933,12 @@ Event EV_Player_coop_getTargetedEntity
 );
 void Player::coop_getTargetedEntity(Event* ev)
 {
-	Entity* target;
-	target = GetTargetedEntity();
-	if (!target) {
-		target = world;
+	Entity* targetCur;
+	targetCur = GetTargetedEntity();
+	if (!targetCur) {
+		targetCur = world;
 	}
-	ev->ReturnEntity(target);
+	ev->ReturnEntity(targetCur);
 }
 
 Event EV_Player_coop_getViewtraceEndpos
@@ -14972,17 +14972,17 @@ Event EV_Player_coop_getUserFov
 );
 void Player::coop_getUserFov(Event* ev)
 {
-	float fov = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
-	if (fov < 1.0f) {
+	float fovCur = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
+	if (fovCur < 1.0f) {
 		str sCvarValue = "";
 		cvar_t* cvar = gi.cvar_get("sv_defaultFov");
 		if (cvar) { sCvarValue = cvar->string; }
-		fov = atof(sCvarValue.c_str());
+		fovCur = atof(sCvarValue.c_str());
 	}
-	else if (fov > 160.0f) {
-		fov = 160.0f;
+	else if (fovCur > 160.0f) {
+		fovCur = 160.0f;
 	}
-	ev->ReturnFloat(fov);
+	ev->ReturnFloat(fovCur);
 }
 
 Event EV_Player_coop_checkCrouch
@@ -15274,24 +15274,24 @@ Event EV_Player_coop_setCamera
 );
 void Player::coop_setCamera(Event* ev)
 {
-	Entity* camera;
+	Entity* cameraCur;
 	float switchTime = 0;
 
-	camera = ev->GetEntity(1);
+	cameraCur = ev->GetEntity(1);
 	if (ev->NumArgs() > 1) {
 		switchTime = ev->GetFloat(2);
 	}
 
-	if (!camera) {
+	if (!cameraCur) {
 		SetCamera(NULL, switchTime);
 		return;
 	}
 
-	if (!camera->isSubclassOf(Camera)) {
-		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", camera->targetname.c_str(), camera->getClassname()));
+	if (!cameraCur->isSubclassOf(Camera)) {
+		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", cameraCur->targetname.c_str(), cameraCur->getClassname()));
 		return;
 	}
-	SetCamera((Camera*)camera, switchTime);
+	SetCamera((Camera*)cameraCur, switchTime);
 }
 
 Event EV_Player_coop_widgetCommand

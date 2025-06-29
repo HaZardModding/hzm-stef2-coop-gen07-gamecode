@@ -4317,7 +4317,7 @@ void coop_winShellExecuteOpen(str sResource)
 
 		int i;
 		for (i = 0; i < iArrayLength; i++) {
-			if (strcmpi(gamefix_getExtension(sResource).c_str(),sForbiddenFileTypes[i].c_str()) == 0) {
+			if (Q_stricmp(gamefix_getExtension(sResource).c_str(),sForbiddenFileTypes[i].c_str()) == 0) {
 				return;
 			}
 		}
@@ -5018,9 +5018,9 @@ void CThread::coop_configstrRemove(Event* ev)
 
 		if (ss.length() > 0) {
 			//if this is a dialog try to handle german and english localized strings as well
-			if (!strnicmp(ss.c_str(), "localization/", 13)) {
+			if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
 				//regular dialog
-				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
 					iRem++;
@@ -5030,7 +5030,7 @@ void CThread::coop_configstrRemove(Event* ev)
 				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
 				memset(unlocal, 0, sizeof(unlocal));
 				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
-				if (strcmpi(ss.c_str(), unlocal) == 0) {
+				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
 					iRem++;
@@ -5039,14 +5039,14 @@ void CThread::coop_configstrRemove(Event* ev)
 				//handle eng version of dialog
 				memset(unlocal, 0, sizeof(unlocal));
 				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
-				if (strcmpi(ss.c_str(), unlocal) == 0) {
+				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
 					iRem++;
 				}
 			}
 			else {
-				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
 					iRem++;

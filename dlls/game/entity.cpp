@@ -10592,7 +10592,7 @@ void Entity::coop_boosterNearbyPlayer(Event* ev)
 				continue;
 			}
 
-			if (!strcmpi(sBoostType.c_str(), "ammo")) {
+			if (!Q_stricmp(sBoostType.c_str(), "ammo")) {
 				bool bGiveAmmo = false;
 				if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma")) {
 					player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
@@ -10610,7 +10610,7 @@ void Entity::coop_boosterNearbyPlayer(Event* ev)
 					player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
 				}
 			}
-			else if (!strcmpi(sBoostType.c_str(), "health")) {
+			else if (!Q_stricmp(sBoostType.c_str(), "health")) {
 				float fHealthMax = player->max_health;
 				float fHealthToGive = 10.0f;
 				if (ev->NumArgs() > 2) {
