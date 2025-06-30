@@ -4726,6 +4726,9 @@ void CThread::coop_getPathnodeOrigin(Event* ev)
 			if (node) {
 				vOrigin = node->origin;
 			}
+			else {
+				gi.Printf("coop_getPathnodeOrigin - No info_pathnode with targetname %s found\n");
+			}
 		}
 	}
 	ev->ReturnVector(vOrigin);
