@@ -328,13 +328,11 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
 //Executed from: Level::Start - always
 //Other: CoopManager::InitWorld
 void CoopManager::LevelStart(CThread* gamescript) {
-    if (coopEnabled) {
-        //start coop main function automatically
-        if (gamescript && gamescript->labelExists(_COOP_SCRIPT_main)) {
-            CThread* coopMain = Director.CreateThread(_COOP_SCRIPT_main);
-            if (coopMain) {
-                coopMain->DelayedStart(0.0f);
-            }
+    //start coop main function automatically, will auto-handle SP/MP
+    if (gamescript && gamescript->labelExists(_COOP_SCRIPT_main)) {
+        CThread* coopMain = Director.CreateThread(_COOP_SCRIPT_main);
+        if (coopMain) {
+            coopMain->DelayedStart(0.0f);
         }
     }
 }

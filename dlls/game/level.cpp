@@ -421,17 +421,16 @@ void Level::Start( void )
 
 			gamescript->DelayedStart( 0.0f );
 		}
-	}
 
 
-//--------------------------------------------------------------
-// COOP Generation 7.000 - Execute Coop Level start handle - chrissstrahl
-// Executes coop main script function - among other things
-//--------------------------------------------------------------
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Execute Coop Level start handle - chrissstrahl
+		// Executes coop main script function - among other things
+		//--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	CoopManager::Get().LevelStart(gamescript);
+		CoopManager::Get().LevelStart(gamescript);
 #endif
-	
+	}	
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Various fixes for Maps and Level-Scripts - chrissstrahl
