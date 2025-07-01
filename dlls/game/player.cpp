@@ -14052,6 +14052,18 @@ void Player::hudPrint( const str &string )
 	}
 
 
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Printout for hudprint in Singleplayer - chrissstrahl
+	//--------------------------------------------------------------
+	if (gameFixAPI_inSingleplayer()) {
+		gentity_t* other = &g_entities[this->entnum];
+		if (other && other->inuse && other->client) {
+			gi.centerprintf(other, CENTERPRINT_IMPORTANCE_CRITICAL, string.c_str());
+		}
+		return;
+	}
+
+
 	str command;
 
 	// Build the hud print command to send to the client
