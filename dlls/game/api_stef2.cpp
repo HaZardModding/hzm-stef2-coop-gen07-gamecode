@@ -577,7 +577,7 @@ str gameFixAPI_getServerLanguage()
 //--------------------------------------------------------------
 str gameFixAPI_getLanguage(Player* player)
 {
-	if (player) {
+	if (player && player->isSubclassOf(Player)) {
 		if (gameFixAPI_inSingleplayer()) {
 			if (local_language->string) {
 				return local_language->string;
