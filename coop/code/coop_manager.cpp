@@ -1,6 +1,7 @@
 #include "../../dlls/game/level.h"
 #include "../../dlls/game/gamefix.hpp"
 #include "coop_manager.hpp"
+#include "coop_objectives.hpp"
 
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 
@@ -18,7 +19,7 @@ void CoopManager::DisableCoop() {
 }
 
 void CoopManager::ClientThink(Player *player) {
-    
+    coop_objectivesUpdatePlayer(player);
 }
 
 //check if specific coop files are included

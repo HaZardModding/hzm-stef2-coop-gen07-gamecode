@@ -17,7 +17,17 @@
 
 struct coopManager_client_persistant_s
 {
-    str				coopClass = "Technician";
+    bool		coopSetupDone = false;
+    str			coopClass = "Technician";
+    int         coopVersion = 0;
+    float       lastSpawned = -1;
+    int         objectiveCycle = -1;
+    int			coopObjectiveStatus[8] = { 0,0,0,0,0,0,0,0 };
+    int			coopObjectiveSend[8] = { 0,0,0,0,0,0,0,0 };
+    int			coopObjectiveShown[8] = { 0,0,0,0,0,0,0,0 };
+    float       objectiveItemCompletedAt[8] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
+    float       objectiveItemLastTimePrintedTitleAt = -1.0;
+    str         objectiveItemLastTimePrintedTitle = "";
 };
 extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 
