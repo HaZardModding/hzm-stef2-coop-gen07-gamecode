@@ -15,7 +15,7 @@ coop_configstringRemove(text) - Removes configstring containing given value
 coop_configstringRemoveCombatSounds(actorname) - Removes configstring combat sounds for given actor name
 coop_subString(text,iStart,iLength) - Returns parcial string from text starting at iStart (starts at 0), with length of iLength
 coop_toLower(text) - Returns string where letters are turrned all into lower case
-coop_toUpper(text; - Returns string where letters are turrned all into upper case
+coop_toUpper(text - Returns string where letters are turrned all into upper case
 coop_length(text) - Returns length of given string
 coop_find(text,find) - Returns location at which find is found inside of text, starts at 0, returns -1 if not found
 coop_isDigit(text) - Returns if text is a digit/number
@@ -74,9 +74,10 @@ $player.coop_getBackpackAttachAngles() - return player model attach backpack ang
 $player.coop_getFlagAttachOffset() - return player model flag attach offset
 $player.coop_getFlagAttachAngles() - return player model flag attach angels
 $player.coop_getCoopClass() - gets coop class of player
-$player.isCoopClassTechnician() - checks if player is of class
-$player.isCoopClassMedic() - checks if player is of class
-$player.isCoopClassHeavyWeapons() - checks if player is of class
+$player.coop_isTechnician() - checks if player is of class
+$player.coop_isMedic() - checks if player is of class
+$player.coop_isHeavyWeapons() - checks if player is of class
+$sentient.coop_hasItem(itemModelName) - checks if sentient has a the specific item
 
 
 Coop Mod execution logic:
@@ -86,8 +87,8 @@ Coop Mod execution logic:
 //Executed exclusively only once upon first load of game dll
 	extern "C" void G_InitGame( int startTime, int randomSeed )
 		CoopManager::Init()
-			CoopManager::LoadSettingsFromINI();
-			CoopManager::LoadMapListFromINI();
+			CoopManager::LoadSettingsFromINI()
+			CoopManager::LoadMapListFromINI()
 
 
 //Executed each time a level is initialised
@@ -124,7 +125,7 @@ Coop Mod execution logic:
 	void Level::SpawnEntities( const char *themapname, const char *entities, int levelTime )
 		CoopManager::InitWorld()
 			CoopManager::DetectMapType()
-			CoopManager::LevelStart();
+			CoopManager::LevelStart()
 		MultiplayerManager::initMultiplayerGame( void )
 
 
@@ -262,32 +263,55 @@ dlls\game\actor.cpp
 	Added: Event EV_COOP_Actor_GetActorType
 	Added: void Actor::COOP_GetActorType(Event* ev) 
 
+dlls\game\item.hpp
+	Added: Item::Item()
+		Items don't respawn in coop
+		Items don't rotate and bob in coop
+
+dlls\game\ammo.hpp
+	Added: Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean )
+		Sharing of ammo if a player can pick up Ammo
+
 dlls\game\program.hpp
 	Changed: MAX_STATEMENTS from 16384 to 32768
 
 dlls\game\program.cpp
-    Added: def_t* coop_getDefForVarname(const char* varname);
-    Added: const char* coop_getVariableValueAsString(const char* varname);
-    Added: Vector coop_getVectorVariableValue(const char* varname);
-    Added: float coop_getFloatVariableValue(const char* varname);
-    Added: str coop_getStringVariableValue(const char* varname);
-    Added: void coop_setVectorVariableValue(const char* varname, Vector vSet);
-    Added: void coop_setFloatVariableValue(const char* varname, float fSet);
-    Added: void coop_setStringVariableValue(const char* varname, char const* sSet);
+    Added: def_t* coop_getDefForVarname(const char* varname)
+    Added: const char* coop_getVariableValueAsString(const char* varname)
+    Added: Vector coop_getVectorVariableValue(const char* varname)
+    Added: float coop_getFloatVariableValue(const char* varname)
+    Added: str coop_getStringVariableValue(const char* varname)
+    Added: void coop_setVectorVariableValue(const char* varname, Vector vSet)
+    Added: void coop_setFloatVariableValue(const char* varname, float fSet)
+    Added: void coop_setStringVariableValue(const char* varname, char const* sSet)
 	
 dlls\game\player.cpp
+	Added: int Player::coop_getCoopVersion()
+	Added: void Player::coop_getCoopVersion(Event* ev)
+	Added: bool Player::coop_hasCoopInstalled()
+	Added: unsigned int Player::coop_getObjectiveState()
+	Added: void Player::coop_setObjectiveState( unsigned int flag, bool set)
+	Added: bool Player::coop_getObjectivesCycle()
+	Added: void Player::coop_setObjectivesCycle()
+	Added: void Player::coop_setObjectivesPrintedTitleLast()
+	Added: float Player::coop_getObjectivesPrintedTitleLast()
+	Added: void Player::coop_hudsAdd(Player* player, str hudName)
 	Added: #include coop_manager.hpp
 	Added: #include coop_gametype.hpp
 	void Player::ClientThink( Event *ev )
-		Added: ModeCoop::Get().clientThink(this);
+		Added: ModeCoop::Get().clientThink(this)
+
+dlls\game\Sentient.cpp
+	Added: void Sentient::coop_hasItem(Event* ev)
+	Added: bool Sentient::coop_hasItem(str sItemModel)
 
 dlls\game\g_main.cpp
 	extern "C" void G_InitGame
-		Added: CoopGame::Init();		
+		Added: CoopGame::Init()		
 		
 dlls\game\level.cpp
 	void Level::SpawnEntities
-		Added: CoopGame::InitWorld();
+		Added: CoopGame::InitWorld()
 		
 dlls\game\mp_manager.cpp
 	Added: #include coop_manager.hpp
@@ -315,41 +339,42 @@ dlls\game\puzzleobject.cpp
 	Added: PuzzleObject::coop_getLastActivatingEntity(Event* ev)
 
 dlls\game\globalcmd.cpp
-	Added: coop_getVectorVariable(Event* ev);
-	Added: coop_getFloatVariable(Event* ev);
-	Added: coop_getStringVariable(Event* ev);
-	Added: coop_setVectorVariable(Event* ev);
-	Added: coop_setFloatVariable(Event* ev);
-	Added: coop_setStringVariable(Event* ev);
-	Added: coop_configstrRemove(Event* ev);
-	Added: coop_configstrRemoveCombatSounds(Event* ev);
-	Added: coop_subString(Event* ev);
-	Added: coop_toLower(Event* ev);
-	Added: coop_toUpper(Event* ev);
-	Added: coop_length(Event* ev);
-	Added: coop_find(Event* ev);
-	Added: coop_isDigit(Event* ev);
-	Added: coop_getTimeStamp(Event* ev);
-	Added: coop_getFloat(Event* ev);
-	Added: coop_getVector(Event* ev);
-	Added: coop_getClassOf(Event* ev);
-	Added: coop_getPathnodeOrigin(Event* ev);
-	Added: coop_getLevelParamater(Event* ev);
-	Added: coop_getIniData(Event* ev);
-	Added: coop_getIniDataPlayer(Event* ev);
-	Added: coop_setIniDataPlayer(Event* ev);
-	Added: coop_setIniData(Event* ev);
-	Added: coop_getMapByServerIp(Event* ev);
+	Added: coop_getVectorVariable(Event* ev)
+	Added: coop_getFloatVariable(Event* ev)
+	Added: coop_getStringVariable(Event* ev)
+	Added: coop_setVectorVariable(Event* ev)
+	Added: coop_setFloatVariable(Event* ev)
+	Added: coop_setStringVariable(Event* ev)
+	Added: coop_configstrRemove(Event* ev)
+	Added: coop_configstrRemoveCombatSounds(Event* ev)
+	Added: coop_subString(Event* ev)
+	Added: coop_toLower(Event* ev)
+	Added: coop_toUpper(Event* ev)
+	Added: coop_length(Event* ev)
+	Added: coop_find(Event* ev)
+	Added: coop_isDigit(Event* ev)
+	Added: coop_getTimeStamp(Event* ev)
+	Added: coop_getFloat(Event* ev)
+	Added: coop_getVector(Event* ev)
+	Added: coop_getClassOf(Event* ev)
+	Added: coop_getPathnodeOrigin(Event* ev)
+	Added: coop_getLevelParamater(Event* ev)
+	Added: coop_getIniData(Event* ev)
+	Added: coop_getIniDataPlayer(Event* ev)
+	Added: coop_setIniDataPlayer(Event* ev)
+	Added: coop_setIniData(Event* ev)
+	Added: coop_getMapByServerIp(Event* ev)
+	Added: coop_objectiveUpdate(Event* ev)
 	
 dlls\game\doors.cpp
 	Added: void Door::coop_getDoorState(Event* ev)
 	
 dlls\game\entity.cpp
-	Added: void Entity::coop_getEntNum(Event* ev);
-	Added: void Entity::coop_isSpectator(Event* ev);
-	Added: void Entity::coop_isEntityInsideOfEntity(Event* ev);
-	Added: void Entity::coop_traceHitsSky(Event* ev);
-	Added: void Entity::coop_getLastAttacker(Event* ev);
+	Added: void Entity::coop_getEntNum(Event* ev)
+	Added: void Entity::coop_isSpectator(Event* ev)
+	Added: void Entity::coop_isEntityInsideOfEntity(Event* ev)
+	Added: void Entity::coop_traceHitsSky(Event* ev)
+	Added: void Entity::coop_getLastAttacker(Event* ev)
 
 
 Changes to Coop Mod files
