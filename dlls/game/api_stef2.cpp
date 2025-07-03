@@ -34,9 +34,6 @@ bool gameFixAPI_inMultiplayer()
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		return false;
 	}
-	if (!multiplayerManager.inMultiplayer()) {
-		return false;
-	}
 #else //FAKK2 / MOHAA
 	if (!deathmatch->integer) {
 		return false;
