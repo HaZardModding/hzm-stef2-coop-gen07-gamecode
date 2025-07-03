@@ -38,6 +38,7 @@ bool gameFixAPI_isDedicatedServer();
 bool gameFixAPI_isListenServer();
 bool gameFixAPI_isWindowsServer();
 bool gameFixAPI_isLinuxServer();
+bool gameFixAPI_isHost(Player* player);
 void gameFixAPI_hudPrint(Player* player, str sText);
 int gameFixAPI_maxClients();
 bool gameFixAPI_isBot(gentity_t* ent);
