@@ -14275,6 +14275,8 @@ void Player::cinematicStopped( void )
 			gamefix_setMakeSolidAsap((Entity*)this, true, 0.0f);
 			showModel();
 		}
+		
+		SetCamera(NULL, 0.0f);
 	}
 }
 
