@@ -125,6 +125,7 @@ extern Event EV_Player_coop_getCoopClass;
 extern Event EV_Player_coop_isTechnician;
 extern Event EV_Player_coop_isMedic;
 extern Event EV_Player_coop_isHeavyWeapons;
+extern Event EV_Player_coop_getCoopVersion;
 
 
 #define HEAD_TAG        0
@@ -256,6 +257,7 @@ class Player : public Sentient
 		void gamefix_messageOfTheDayEvent(Event* ev);
 
 
+#ifdef ENABLE_COOP
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 	//--------------------------------------------------------------
@@ -310,6 +312,19 @@ class Player : public Sentient
 		void coop_isTechnician(Event* ev);
 		void coop_isMedic(Event* ev);
 		void coop_isHeavyWeapons(Event* ev);
+		int coop_getCoopVersion();
+		void coop_getCoopVersion(Event* ev);
+		bool coop_hasCoopInstalled();
+
+		unsigned int coop_getObjectiveState();
+		void coop_setObjectiveState(unsigned int states, bool set);
+		bool coop_getObjectivesCycle();
+		void coop_setObjectivesCycle();
+		void coop_setObjectivesPrintedTitleLast();
+		float coop_getObjectivesPrintedTitleLast();
+
+		void coop_hudsAdd(Player* player, str hudName);
+#endif
 
 
 	public:

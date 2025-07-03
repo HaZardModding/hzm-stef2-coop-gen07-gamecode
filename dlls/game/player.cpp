@@ -47,6 +47,7 @@
 // GAMEFIX - Added: to make gamefix functionality available - chrissstrahl
 //--------------------------------------------------------------
 #include "gamefix.hpp"
+#include "api_stef2.hpp"
 
 
 //--------------------------------------------------------------
@@ -55,6 +56,7 @@
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
 #include "../../coop/code/coop_gametype.hpp"
+#include "../../coop/code/coop_objectives.hpp"
 #endif
 
 
@@ -1353,6 +1355,7 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 	{ &EV_Player_gamefix_messageOfTheDay, & Player::gamefix_messageOfTheDayEvent },
 
 
+#ifdef ENABLE_COOP
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 //--------------------------------------------------------------
@@ -1400,7 +1403,8 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 	{ &EV_Player_coop_isTechnician, &Player::coop_isTechnician },
 	{ &EV_Player_coop_isMedic, &Player::coop_isMedic },
 	{ &EV_Player_coop_isHeavyWeapons, &Player::coop_isHeavyWeapons },
-
+	{ &EV_Player_coop_getCoopVersion, &Player::coop_getCoopVersion },
+#endif
 
 
 	{ &EV_ClientMove,										&Player::ClientThink },
@@ -15386,7 +15390,6 @@ bool Player::coop_hasLanguageGerman()
 	return bLangMatch;
 }
 
-//[b60011] chrissstrahl - checks player has ger/eng langauge
 Event EV_Player_coop_hasLanguageEnglish
 (
 	"coop_hasLanguageEnglish",
@@ -15418,7 +15421,6 @@ Event EV_Player_coop_getCoopClass
 );
 void Player::coop_getCoopClass(Event* ev)
 {
-	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
 			ev->ReturnString(coopManager_client_persistant_t[this->entnum].coopClass);
@@ -15493,6 +15495,92 @@ void Player::coop_isHeavyWeapons(Event* ev)
 		}
 	}
 	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_getCoopVersion
+(
+	"coop_getCoopVersion",
+	EV_SCRIPTONLY,
+	"@f",
+	"clientVersion",
+	"Returns Coop Version Client is using - if incompatible or none will return 0"
+);
+int Player::coop_getCoopVersion()
+{
+	return coopManager_client_persistant_t[this->entnum].coopVersion;
+}
+void Player::coop_getCoopVersion(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			ev->ReturnFloat((float)this->coop_getCoopVersion());
+			return;
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+bool Player::coop_hasCoopInstalled()
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			if (gameFixAPI_isHost(this))
+				return true;
+			if (this->coop_getCoopVersion() > 0)
+				return true;
+		}
+		return false;
+	}
+	//singleplayer
+	return true;
+}
+
+unsigned int Player::coop_getObjectiveState()
+{
+	return _objectiveStates;
+}
+
+void Player::coop_setObjectiveState( unsigned int flag, bool set)
+{
+	if (set)
+		_objectiveStates |= flag;
+	else
+		_objectiveStates &= ~flag;
+}
+
+bool Player::coop_getObjectivesCycle()
+{
+	return (coopManager_client_persistant_t[entnum].objectiveCycle == coopObjectives_t.objectiveCycle) ? true : false;
+}
+
+void Player::coop_setObjectivesCycle()
+{
+	coopManager_client_persistant_t[entnum].objectiveCycle = coopObjectives_t.objectiveCycle;
+}
+
+void Player::coop_setObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.lastTimePrintedObjectivesTitle Access VIOLATION!\n");
+	}
+	coopManager_client_persistant_t[this->entnum].objectiveItemLastTimePrintedTitleAt = level.time;
+}
+
+float Player::coop_getObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return 0.0f;
+	}
+	return coopManager_client_persistant_t[this->entnum].objectiveItemLastTimePrintedTitleAt;
+}
+
+void Player::coop_hudsAdd(Player* player, str hudName)
+{
+	if (player && strlen(hudName) > 0)
+	{
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_removehud %s", hudName.c_str()));
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", hudName.c_str()));
+	}
 }
 
 #endif
