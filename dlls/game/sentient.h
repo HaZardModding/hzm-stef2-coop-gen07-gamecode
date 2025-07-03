@@ -62,6 +62,12 @@ extern Event EV_Weapon_AltDrawBowStrain;
 
 extern Event EV_Sentient_SetMyArmorAmount;
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_Sentient_coop_hasItem;
+
+
 // Shutup compiler
 class Armor;
 class Weapon;
@@ -113,6 +119,16 @@ typedef enum
 
 class Sentient : public Entity
 	{
+#ifdef ENABLE_COOP
+	public:
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Added coop specific functions - chrissstrahl
+		//--------------------------------------------------------------
+		void coop_hasItem(Event* ev);
+		bool coop_hasItem(str sItemModel);
+#endif
+
+
 	private:
 		float				_criticalHealthPercentage;
 		damagethreshold_t	_damageThreshold;
