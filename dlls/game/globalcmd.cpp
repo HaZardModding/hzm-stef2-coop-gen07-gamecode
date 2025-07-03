@@ -41,6 +41,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_objectives.hpp"
 #endif
 
 
@@ -1156,6 +1157,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_setIniData, &CThread::coop_setIniData },
 
 	{ &EV_ScriptThread_coop_getMapByServerIp, &CThread::coop_getMapByServerIp },
+
+	{ &EV_ScriptThread_coop_objectiveUpdate, &CThread::coop_objectiveUpdate },
 #endif
 
 
@@ -5148,4 +5151,22 @@ void CThread::coop_setFloatVariable(Event* ev)
 	float fSet = ev->GetFloat(2);
 	program->coop_setFloatVariableValue(varname, fSet);
 }
+
+Event EV_ScriptThread_coop_objectiveUpdate
+(
+	"coop_objectiveUpdate",
+	EV_SCRIPTONLY,
+	"sff",
+	"itemState itemNumber itemShowNow",
+	"Updates Objective item - incomplete, complete, failed - 1 to 8 - show item now or wait for other items to update"
+);
+void CThread::coop_objectiveUpdate(Event* ev)
+{
+	str itemStatus = ev->GetString(1);
+	int itemNumber = (int)ev->GetFloat(2);
+	bool itemShow = (bool)(int)ev->GetFloat(2);
+	coop_objectivesUpdate(itemStatus, itemNumber, itemShow);
+}
+
+
 #endif
