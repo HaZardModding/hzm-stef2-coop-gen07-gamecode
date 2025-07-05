@@ -6,7 +6,6 @@
 //-----------------------------------------------------------------------------------
 #include "../../dlls/game/gamefix.hpp"
 
-
 #include "coop_manager.hpp"
 #include "coop_objectives.hpp"
 
@@ -18,10 +17,7 @@
 #include "../../dlls/game/mp_manager.hpp"
 
 
-
-
-coopObjectives_s coopObjectives_t;
-
+struct coopObjectives_s coopObjectives_t;
 
 str coop_objectivesStoryGet(str lang)
 {

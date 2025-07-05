@@ -9,24 +9,22 @@
 
 #include "../../dlls/game/_pch_cpp.h"
 
-
 struct coopObjectives_s
 {
-    str         levelAuthor = "Ritual Entertainment";
-    str         story = "$$Empty$$";
-    str         story_deu = "$$Empty$$";
-    float       lastUpdated_story = -1;
+	str         levelAuthor = "Ritual Entertainment";
+	str         story = "$$Empty$$";
+	str         story_deu = "$$Empty$$";
+	float       lastUpdated_story = -1;
 
-    int         objectiveCycle = 0;
-    str         objectiveItem[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
-    str         objectiveItem_deu[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
-    int         objectiveItemStatus[8] = { 0,0,0,0,0,0,0,0 };
-    int         objectiveItemShow[8] = { 0,0,0,0,0,0,0,0 };
-    float       objectiveItemCompletedAt[8] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
-    float       objectiveItemLastTimePrintedTitleAt = -1.0;
-    str         objectiveItemLastTimePrintedTitle = "";
-};
-extern coopObjectives_s coopObjectives_t;
+	int         objectiveCycle = 0;
+	str         objectiveItem[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
+	str         objectiveItem_deu[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
+	int         objectiveItemStatus[8] = { 0,0,0,0,0,0,0,0 };
+	int         objectiveItemShow[8] = { 0,0,0,0,0,0,0,0 };
+	float       objectiveItemCompletedAt[8] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
+	float       objectiveItemLastTimePrintedTitleAt = -1.0;
+	str         objectiveItemLastTimePrintedTitle = "";
+};extern coopObjectives_s coopObjectives_t;
 
 
 int coop_getObjectivesCycle();
