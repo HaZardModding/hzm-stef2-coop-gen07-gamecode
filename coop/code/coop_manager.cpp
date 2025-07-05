@@ -2,8 +2,10 @@
 #include "../../dlls/game/gamefix.hpp"
 #include "coop_manager.hpp"
 #include "coop_objectives.hpp"
+#include "coop_armory.hpp"
 
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
+coopManager_mapSettings_s coopManager_mapSettings_t;
 
 CoopManager& CoopManager::Get() {
     static CoopManager instance;
@@ -374,6 +376,8 @@ void CoopManager::playerTransported(Entity *entity){
 void CoopManager::playerSpawned(Player* player) {
     if (!player)
         return;
+
+    coop_armoryEquipPlayer(player);
 
     gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);
     ExecuteThread("coop_justSpawned", true, player);

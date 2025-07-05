@@ -57,6 +57,7 @@
 #include "../../coop/code/coop_manager.hpp"
 #include "../../coop/code/coop_gametype.hpp"
 #include "../../coop/code/coop_objectives.hpp"
+#include "../../coop/code/coop_armory.hpp"
 #endif
 
 
@@ -5850,6 +5851,9 @@ void Player::ClientThink( Event *ev )
 		if (CoopManager::Get().IsCoopLevel()) {
 			CoopManager::Get().ClientThink(this);
 		}
+	}
+	else if(gameFixAPI_inSingleplayer()) {
+		coop_armoryEquipPlayerSingleplayer(this);
 	}
 #endif
 }
