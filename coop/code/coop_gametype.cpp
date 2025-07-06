@@ -115,6 +115,51 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 	else
 		goodKill = false;
 
+	//let the code know that this player is being respawned
+	coopManager_client_persistant_t[killedPlayer->entnum].respawnMe = true;
+
+	//respawn at regular spawn or respawn location - MEANS OF DEATH
+	if (meansOfDeath == MOD_VAPORIZE ||
+		meansOfDeath == MOD_DROWN ||
+		meansOfDeath == MOD_CRUSH ||
+		meansOfDeath == MOD_CRUSH_EVERY_FRAME ||
+		meansOfDeath == MOD_IMPALE ||
+		meansOfDeath == MOD_UPPERCUT ||
+		meansOfDeath == MOD_TELEFRAG ||
+		meansOfDeath == MOD_LAVA ||
+		meansOfDeath == MOD_SLIME ||
+		meansOfDeath == MOD_FALLING ||
+		meansOfDeath == MOD_ELECTRICWATER ||
+		meansOfDeath == MOD_GAS ||
+		meansOfDeath == MOD_VEHICLE ||
+		meansOfDeath == MOD_GIB ||
+		meansOfDeath == MOD_EAT ||
+		meansOfDeath == MOD_VAPORIZE ||
+		meansOfDeath == MOD_VAPORIZE_COMP ||
+		meansOfDeath == MOD_VAPORIZE_DISRUPTOR ||
+		meansOfDeath == MOD_VAPORIZE_PHOTON ||
+		meansOfDeath == MOD_SNIPER)
+	{
+		coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn = true;
+	}
+
+	//respawn at regular spawn or respawn location - KILLED BY TRIGGER
+	if(inflictor) {
+		if (/* coop_checkStringInUservarsOf(ePurp, "badspot") */
+			!Q_stricmp(inflictor->getClassname(), "TriggerHurt"))
+		{
+			coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn = true;
+		}
+	}
+
+	if (!coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn) {
+		Vector vView = killedPlayer->getViewAngles();
+		vView[0] = 0.0f;
+		vView[2] = 0.0f;
+		coopManager_client_persistant_t[killedPlayer->entnum].lastValidViewAngle = vView;
+		coopManager_client_persistant_t[killedPlayer->entnum].lastValidLocation = killedPlayer->origin;
+	}
+
 	handleKill(killedPlayer, attackingPlayer, inflictor, meansOfDeath, goodKill);
 	//MultiplayerModeBase::playerKilled( killedPlayer, attackingPlayer, inflictor, meansOfDeath );
 
@@ -198,7 +243,7 @@ bool ModeCoop::canJoinTeam(Player* player, const str& teamName)
 	// Deny red team
 	if (Q_stricmp(teamName,"red") == 0){
 		//tell player
-		if (multiplayerManager.getTime() + 1.0f > _matchStartTime + mp_warmUpTime->value) {
+		if (multiplayerManager.getTime() + 1.0f > _matchStartTime + gameFixAPI_getMpWarmupTime()) {
 			multiplayerManager.centerPrint(player->entnum, _COOP_COOP_allowesOnlyBlue, CENTERPRINT_IMPORTANCE_HIGH);
 		}
 		return false;
@@ -311,31 +356,91 @@ void ModeCoop::addPlayerToTeam(Player* player, Team* team)
 	}
 }
 
+//this always returns a entity, it uses info_player_start which has to be on every map
+//it moves it around if script varaiables are used instead of actual info_player_deathmatch spawnlocations
 Entity* ModeCoop::getSpawnPoint(Player* player)
 {
+	if (!player) {
+		return nullptr;
+	}
+
 	Entity* spawnPoint = nullptr;
 
-	str s = va("coop_vector_spawnOrigin%i", (1 + player->entnum));
-	Vector vSpawn = program.coop_getVectorVariableValue(s.c_str());
-	if (vSpawn.length() > 0) {
-		Entity* ent;
-		ent = G_FindClass(NULL, "info_player_start");
-		Vector vOld = ent->origin;
-		if (ent) {
-			s = va("coop_float_spawnAngle%i", (1 + player->entnum));
-			Vector vAngle = Vector(0.0f, 0.0f, 0.0f);
-			vAngle[1] = program.coop_getFloatVariableValue(s.c_str());
-			//no player specific angle, get general angle
-			if (vAngle[1] == 0.0f) {
-				vAngle[1] = program.coop_getFloatVariableValue("coop_float_spawnAngle0");
-			}
-
-			//ent->origin = vSpawn;
-			ent->setAngles(vAngle);
-			ent->setOrigin(vSpawn);
-			ent->NoLerpThisFrame();
-			return ent;
+	ScriptVariable *entityData = nullptr, *entityData2 = nullptr;
+	if (	!coopManager_client_persistant_t[player->entnum].respawnLocationSpawn &&
+			!coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced)
+	{
+		//check if script has set all players to respawn at respawn spots
+		entityData = world->entityVars.GetVariable("coop_respawnAtRespawnpoint");
+		//check if script or code wants this player to respawn at respawn location
+		entityData2 = player->entityVars.GetVariable("coop_respawnAtRespawnpoint");
+		if (entityData && entityData->floatValue() == 1.0f ||
+			entityData2 && entityData2->floatValue() == 1.0f) {
+			coopManager_client_persistant_t[player->entnum].respawnLocationSpawn = true;
 		}
+	}
+
+	//reset forced location
+	if (!gameFixAPI_isSpectator_stef2((Entity*)player) && gameFixAPI_getMpMatchStarted()) {
+		player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
+		coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced = false;
+	}
+
+	//RESPAN LOCATION VAR
+	if (coopManager_client_persistant_t[player->entnum].respawnLocationSpawn || coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced) {
+		str respawnLoc = va("coop_vector_respawnOrigin%i", (1 + player->entnum));
+		Vector vRespawnSpawn = program.coop_getVectorVariableValue(respawnLoc.c_str());
+		if (vRespawnSpawn.length() > 0) {
+			Entity* respawnLocEnity;
+			respawnLocEnity = G_FindClass(NULL, "info_player_start");
+			Vector vOld = respawnLocEnity->origin;
+			if (respawnLocEnity) {
+				respawnLoc = va("coop_float_spawnAngle%i", (1 + player->entnum));
+				Vector vAngle = Vector(0.0f, 0.0f, 0.0f);
+				vAngle[1] = program.coop_getFloatVariableValue(respawnLoc.c_str());
+				//no player specific angle, get general angle
+				if (vAngle[1] == 0.0f) {
+					vAngle[1] = program.coop_getFloatVariableValue("coop_float_spawnAngle0");
+				}
+				
+				respawnLocEnity->setAngles(vAngle);
+				respawnLocEnity->setOrigin(vRespawnSpawn);
+				respawnLocEnity->NoLerpThisFrame();
+				return respawnLocEnity;
+			}
+		} 
+
+		//SPAN LOCATION VAR
+		str s = va("coop_vector_spawnOrigin%i", (1 + player->entnum));
+		Vector vSpawn = program.coop_getVectorVariableValue(s.c_str());
+		if (vSpawn.length() > 0) {
+			Entity* ent;
+			ent = G_FindClass(NULL, "info_player_start");
+			Vector vOld = ent->origin;
+			if (ent) {
+				s = va("coop_float_spawnAngle%i", (1 + player->entnum));
+				Vector vAngle = Vector(0.0f, 0.0f, 0.0f);
+				vAngle[1] = program.coop_getFloatVariableValue(s.c_str());
+				//no player specific angle, get general angle
+				if (vAngle[1] == 0.0f) {
+					vAngle[1] = program.coop_getFloatVariableValue("coop_float_spawnAngle0");
+				}
+
+				ent->setAngles(vAngle);
+				ent->setOrigin(vSpawn);
+				ent->NoLerpThisFrame();
+				return ent;
+			}
+		}
+	}
+	//respawn at deathspot - last location
+	else if(coopManager_client_persistant_t[player->entnum].respawnMe) {
+		Entity* lastLoc;
+		lastLoc = G_FindClass(NULL, "info_player_start");
+		lastLoc->setAngles(coopManager_client_persistant_t[player->entnum].lastValidViewAngle);
+		lastLoc->setOrigin(coopManager_client_persistant_t[player->entnum].lastValidLocation);
+		lastLoc->NoLerpThisFrame();
+		return lastLoc;
 	}
 
 	//Return coop mod targetnamed spawnpoint (ipd1, ipd2, ..., ipd8)
