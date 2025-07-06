@@ -701,31 +701,28 @@ void PuzzleObject::timedUse( void )
 
 void PuzzleObject::timedPuzzleSolved( void )
 {
+	hideTimerHud();
+	ProcessEvent( EV_PuzzleObject_Solved );
+
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
 	//--------------------------------------------------------------
 	gameFixAPI_setActivator((Entity*)this, nullptr);
-
-
-	hideTimerHud();
-
-	ProcessEvent( EV_PuzzleObject_Solved );
 }
 
 void PuzzleObject::timedPuzzleCanceled( void )
 {
-	//--------------------------------------------------------------
-	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
-	//--------------------------------------------------------------
-	gameFixAPI_setActivator((Entity*)this, nullptr);
-
-
 	hideTimerHud();
 
 	if ( _canceledThread.length() )
 	{
 		ProcessEvent( EV_PuzzleObject_Canceled );
 	}
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
+	//--------------------------------------------------------------
+	gameFixAPI_setActivator((Entity*)this,nullptr);
 }
 
 void PuzzleObject::showTimerHud( void )
