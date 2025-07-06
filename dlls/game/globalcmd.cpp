@@ -3308,23 +3308,25 @@ void CThread::SendClientCommand( Event *ev )
 	
 	// Build the command
 	
-	builtCommand += "stufftext";
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Script Code based client commands allowing delayed handle to prevent overflow - chrissstrahl
+	//--------------------------------------------------------------
+	//builtCommand += "stufftext";
+	//builtCommand += " \"";
 	
-	builtCommand += " \"";
-	
+
 	for ( i = 2 ; i <= ev->NumArgs() ; i++ )
 	{
 		builtCommand += " ";
 		
 		builtCommand += ev->GetString( i );
 	}
-	
-	builtCommand += "\"\n";
-	
 
+	
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Script Code based client commands allowing delayed handle to prevent overflow - chrissstrahl
 	//--------------------------------------------------------------
+	//builtCommand += "\"\n";
 	gamefix_playerDelayedServerCommand(player->edict - g_entities, builtCommand.c_str());
 }
 
