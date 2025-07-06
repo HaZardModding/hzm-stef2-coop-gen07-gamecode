@@ -3368,6 +3368,9 @@ void CThread::SendClientCommand( Event *ev )
 
 	for ( i = 2 ; i <= ev->NumArgs() ; i++ )
 	{
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: check to prevent withespace being added at the start of the command - chrissstrahl
+		//--------------------------------------------------------------
 		if (i > 2) {
 			builtCommand += " ";
 		}
