@@ -104,6 +104,7 @@ class MultiplayerManager : public Class
 	   Camera*					gamefixEF2_currentCamera = nullptr;
 	   float					getNextTauntTime(Player* player);
 	   void						setNextTauntTime(Player* player);
+	   float					getMatchStartTime();
 
 
 	private:

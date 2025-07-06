@@ -66,6 +66,13 @@ public:
 //-----------------------------------------------------------------------
 class MultiplayerModeBase : public Class
 	{
+	public:
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Access to _matchStartTime - chrissstrahl
+		//--------------------------------------------------------------
+		float getMatchStartTime();
+
+
 	protected:
 		static const float					_defaultStartinghealth;
 		static const int					_defaultPointsPerKill;
