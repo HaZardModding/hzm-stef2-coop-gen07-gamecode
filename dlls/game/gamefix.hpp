@@ -7,6 +7,8 @@
 
 #pragma once
 #include "_pch_cpp.h"
+#include "equipment.h"
+#include "weaputils.h"
 #include "api_stef2.hpp"
 
 //WATER DROWN AND DAMAGE VALUES
@@ -108,9 +110,12 @@ float				gamefix_getMakeSolidAsapTime(Entity* eCheck);
 
 Entity*				gamefix_returnInfoPlayerStart(str info);
 
+bool				gamefix_entityActivateTarget(Entity* start, Entity* activator, bool alltargets);
+
 Entity*				gamefix_getEntity(str& name);
 Player*				gamefix_getPlayer(int index);
 int					gamefix_getPlayers(bool state);
+Entity*				gamefix_getOwner(Entity* ent);
 bool				gamefix_EntityValid(Entity* entity);
 bool				gamefix_PlayerValid();
 bool				gamefix_checkNotarget(Entity* entity);
