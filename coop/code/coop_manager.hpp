@@ -20,6 +20,11 @@ struct coopManager_client_persistant_s
     bool		coopSetupDone = false;
     str			coopClass = "Technician";
     int         coopVersion = 0;
+    bool        respawnMe = false;
+    bool        spawnLocationSpawnForced = true;
+    bool        respawnLocationSpawn = false;
+    Vector      lastValidLocation = Vector(0.0f, 0.0f, 0.0f);
+    Vector      lastValidViewAngle = Vector(0.0f, 0.0f, 0.0f);
     float       lastSpawned = -1;
     int         objectiveCycle = -1;
     int			coopObjectiveStatus[8] = { 0,0,0,0,0,0,0,0 };
@@ -112,6 +117,40 @@ public:
     bool IsFriendlyFireEnabled() const;
     int  GetPointsForEnemyKill() const;
     int  GetPenaltyForPlayerKill() const;
+
+    // Access to coopManager_client_persistant_t
+    bool getPlayerData_coopSetupDone(Player* player);
+    void setPlayerData_coopSetupDone(Player* player, bool state);
+    str getPlayerData_coopClass(Player* player);
+    void setPlayerData_coopClass(Player* player, str className);
+    int getPlayerData_coopVersion(Player* player);
+    void setPlayerData_coopVersion(Player* player, int coopVersion);
+    bool getPlayerData_respawnMe(Player* player);
+    void setPlayerData_respawnMe(Player* player, bool respawn);
+    bool getPlayerData_spawnLocationSpawnForced(Player* player);
+    void setPlayerData_spawnLocationSpawnForced(Player* player, bool forced);
+    bool getPlayerData_respawnLocationSpawn(Player* player);
+    void setPlayerData_respawnLocationSpawn(Player* player, bool forced);
+    Vector getPlayerData_lastValidLocation(Player* player);
+    void setPlayerData_lastValidLocation(Player* player, Vector location);
+    Vector getPlayerData_lastValidViewAngle(Player* player);
+    void setPlayerData_lastValidViewAngle(Player* player, Vector viewAngle);
+    float getPlayerData_lastSpawned(Player* player);
+    void setPlayerData_lastSpawned(Player* player, float lastSpawned);
+    int getPlayerData_objectiveCycle(Player* player);
+    void setPlayerData_objectiveCycle(Player* player, int objectiveCycle);
+    bool getPlayerData_coopObjectiveStatus(Player* player, int item);
+    void setPlayerData_coopObjectiveStatus(Player* player, int item, bool status);
+    bool getPlayerData_coopObjectiveSend(Player* player, int item);
+    void setPlayerData_coopObjectiveSend(Player* player, int item, bool status);
+    bool getPlayerData_coopObjectiveShown(Player* player, int item);
+    void setPlayerData_coopObjectiveShown(Player* player, int item, bool status);
+    bool getPlayerData_objectiveItemCompletedAt(Player* player, int item);
+    void setPlayerData_objectiveItemCompletedAt(Player* player, int item, bool status);
+    float getPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player);
+    void setPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player, float lastPrintedTitleAt);
+    str getPlayerData_objectiveItemLastTimePrintedTitle(Player* player);
+    void setPlayerData_objectiveItemLastTimePrintedTitle(Player* player, str lastPrintedTitle);
 
 private:
     CoopManager() = default;

@@ -7,6 +7,280 @@
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 coopManager_mapSettings_s coopManager_mapSettings_t;
 
+
+bool CoopManager::getPlayerData_coopSetupDone(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopSetupDone() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopSetupDone;
+}
+void CoopManager::setPlayerData_coopSetupDone(Player* player, bool state) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopSetupDone() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopSetupDone = state;
+}
+
+str CoopManager::getPlayerData_coopClass(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClass() nullptr player");
+        return "";
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClass;
+}
+void CoopManager::setPlayerData_coopClass(Player* player, str className) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClass() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClass = className;
+}
+
+int CoopManager::getPlayerData_coopVersion(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopVersion() nullptr player");
+        return 0;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopVersion;
+}
+void CoopManager::setPlayerData_coopVersion(Player* player, int coopVersion) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopVersion() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopVersion = coopVersion;
+}
+
+bool CoopManager::getPlayerData_respawnMe(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_respawnMe() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].respawnMe;
+}
+void CoopManager::setPlayerData_respawnMe(Player* player, bool respawn) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_respawnMe() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].respawnMe = respawn;
+}
+
+bool CoopManager::getPlayerData_spawnLocationSpawnForced(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_spawnLocationSpawnForced() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced;
+}
+void CoopManager::setPlayerData_spawnLocationSpawnForced(Player* player, bool forced) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_spawnLocationSpawnForced() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced = forced;
+}
+
+bool CoopManager::getPlayerData_respawnLocationSpawn(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_respawnLocationSpawn() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].respawnLocationSpawn;
+}
+void CoopManager::setPlayerData_respawnLocationSpawn(Player* player, bool forced) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_respawnLocationSpawn() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].respawnLocationSpawn = forced;
+}
+
+Vector CoopManager::getPlayerData_lastValidLocation(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_lastValidLocation() nullptr player");
+        return Vector(0.0f, 0.0f, 0.0f);
+    }
+    return coopManager_client_persistant_t[player->entnum].lastValidLocation;
+}
+void CoopManager::setPlayerData_lastValidLocation(Player* player, Vector location) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_lastValidLocation() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].lastValidLocation = location;
+}
+
+Vector CoopManager::getPlayerData_lastValidViewAngle(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_lastValidViewAngle() nullptr player");
+        return Vector(0.0f, 0.0f, 0.0f);
+    }
+    return coopManager_client_persistant_t[player->entnum].lastValidViewAngle;
+}
+void CoopManager::setPlayerData_lastValidViewAngle(Player* player, Vector viewAngle) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_lastValidViewAngle() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].lastValidViewAngle = viewAngle;
+}
+
+float CoopManager::getPlayerData_lastSpawned(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_lastSpawned() nullptr player");
+        return 0.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].lastSpawned;
+}
+void CoopManager::setPlayerData_lastSpawned(Player* player, float lastSpawned) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_lastSpawned() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].lastSpawned = lastSpawned;
+}
+
+int CoopManager::getPlayerData_objectiveCycle(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveCycle() nullptr player");
+        return 0;
+    }
+    return coopManager_client_persistant_t[player->entnum].objectiveCycle;
+}
+void CoopManager::setPlayerData_objectiveCycle(Player* player, int objectiveCycle) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveCycle() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].objectiveCycle = objectiveCycle;
+}
+
+bool CoopManager::getPlayerData_coopObjectiveStatus(Player* player, int item) {
+    if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveStatus() index out of range");
+        return false;
+    }
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveStatus() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item];
+}
+void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, bool status) {
+    if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveStatus() index out of range");
+        return;
+    }
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveStatus() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item] = status;
+}
+
+bool CoopManager::getPlayerData_coopObjectiveSend(Player* player, int item) {
+    if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveSend() index out of range");
+        return false;
+    }
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveSend() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item];
+}
+void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, bool status) {
+    if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveSend() index out of range");
+        return;
+    }
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveSend() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item] = status;
+}
+
+bool CoopManager::getPlayerData_coopObjectiveShown(Player* player, int item) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveShown() nullptr player");
+        return false;
+    }
+    if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveShown() index out of range");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item];
+}
+void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, bool status) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveShown() nullptr player");
+        return;
+    }
+    if (item < 0 || item > _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveShown() index out of range");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item] = status;
+}
+
+bool CoopManager::getPlayerData_objectiveItemCompletedAt(Player* player, int item) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemCompletedAt() nullptr player");
+        return false;
+    }
+    if (item < 0 || item > _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemCompletedAt() index out of range");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].objectiveItemCompletedAt[item];
+}
+void CoopManager::setPlayerData_objectiveItemCompletedAt(Player* player, int item, bool status) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemCompletedAt() nullptr player");
+        return;
+    }
+    if (item < 0 || item > _COOP_SETTINGS_OBJECTIVES_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemCompletedAt() index out of range");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].objectiveItemCompletedAt[item] = status;
+}
+
+float CoopManager::getPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemLastTimePrintedTitleAt() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt;
+}
+void CoopManager::setPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player, float lastPrintedTitleAt) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemLastTimePrintedTitleAt() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt = lastPrintedTitleAt;
+}
+
+str CoopManager::getPlayerData_objectiveItemLastTimePrintedTitle(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemLastTimePrintedTitle() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle;
+}
+void CoopManager::setPlayerData_objectiveItemLastTimePrintedTitle(Player* player, str lastPrintedTitle) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemLastTimePrintedTitle() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle = lastPrintedTitle;
+}
+
+
 CoopManager& CoopManager::Get() {
     static CoopManager instance;
     return instance;
