@@ -22,6 +22,8 @@
 // COOP Generation 7.000 - coop specific script function - chrissstrahl
 //--------------------------------------------------------------
 extern Event EV_PuzzleObject_coop_getLastActivatingEntity;
+extern Event EV_PuzzleObject_coop_setItemUsedThread;
+extern Event EV_PuzzleObject_coop_setUsedStartThread;
 #endif
 
 
@@ -33,6 +35,8 @@ class PuzzleObject : public Entity
 	//--------------------------------------------------------------
 public:
 	void PuzzleObject::coop_getLastActivatingEntity(Event* ev);
+	void PuzzleObject::coop_setItemUsedThread(Event* ev);
+	void PuzzleObject::coop_setUsedStartThread(Event* ev);
 #endif
 
 
