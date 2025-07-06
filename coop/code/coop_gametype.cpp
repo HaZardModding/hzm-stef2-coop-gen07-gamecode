@@ -116,7 +116,7 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 		goodKill = false;
 
 	//let the code know that this player is being respawned
-	coopManager_client_persistant_t[killedPlayer->entnum].respawnMe = true;
+	CoopManager::Get().setPlayerData_respawnMe(killedPlayer, true);
 
 	//respawn at regular spawn or respawn location - MEANS OF DEATH
 	if (meansOfDeath == MOD_VAPORIZE ||
@@ -140,7 +140,7 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 		meansOfDeath == MOD_VAPORIZE_PHOTON ||
 		meansOfDeath == MOD_SNIPER)
 	{
-		coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn = true;
+		CoopManager::Get().setPlayerData_respawnLocationSpawn(killedPlayer, true);
 	}
 
 	//respawn at regular spawn or respawn location - KILLED BY TRIGGER
@@ -148,16 +148,16 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 		if (/* coop_checkStringInUservarsOf(ePurp, "badspot") */
 			!Q_stricmp(inflictor->getClassname(), "TriggerHurt"))
 		{
-			coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn = true;
+			CoopManager::Get().setPlayerData_respawnLocationSpawn(killedPlayer, true);
 		}
 	}
 
-	if (!coopManager_client_persistant_t[killedPlayer->entnum].respawnLocationSpawn) {
+	if (!CoopManager::Get().getPlayerData_respawnLocationSpawn(killedPlayer)) {
 		Vector vView = killedPlayer->getViewAngles();
 		vView[0] = 0.0f;
 		vView[2] = 0.0f;
-		coopManager_client_persistant_t[killedPlayer->entnum].lastValidViewAngle = vView;
-		coopManager_client_persistant_t[killedPlayer->entnum].lastValidLocation = killedPlayer->origin;
+		CoopManager::Get().setPlayerData_lastValidViewAngle(killedPlayer, vView);
+		CoopManager::Get().setPlayerData_lastValidLocation(killedPlayer, killedPlayer->origin);
 	}
 
 	handleKill(killedPlayer, attackingPlayer, inflictor, meansOfDeath, goodKill);
@@ -367,8 +367,8 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 	Entity* spawnPoint = nullptr;
 
 	ScriptVariable *entityData = nullptr, *entityData2 = nullptr;
-	if (	!coopManager_client_persistant_t[player->entnum].respawnLocationSpawn &&
-			!coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced)
+	if (	!CoopManager::Get().getPlayerData_respawnLocationSpawn(player) &&
+			!CoopManager::Get().getPlayerData_spawnLocationSpawnForced(player))
 	{
 		//check if script has set all players to respawn at respawn spots
 		entityData = world->entityVars.GetVariable("coop_respawnAtRespawnpoint");
@@ -376,18 +376,18 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 		entityData2 = player->entityVars.GetVariable("coop_respawnAtRespawnpoint");
 		if (entityData && entityData->floatValue() == 1.0f ||
 			entityData2 && entityData2->floatValue() == 1.0f) {
-			coopManager_client_persistant_t[player->entnum].respawnLocationSpawn = true;
+			CoopManager::Get().setPlayerData_respawnLocationSpawn(player,true);
 		}
 	}
 
 	//reset forced location
 	if (!gameFixAPI_isSpectator_stef2((Entity*)player) && gameFixAPI_getMpMatchStarted()) {
 		player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
-		coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced = false;
+		CoopManager::Get().setPlayerData_spawnLocationSpawnForced(player,false);
 	}
 
 	//RESPAN LOCATION VAR
-	if (coopManager_client_persistant_t[player->entnum].respawnLocationSpawn || coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced) {
+	if (CoopManager::Get().getPlayerData_respawnLocationSpawn(player) || CoopManager::Get().getPlayerData_spawnLocationSpawnForced(player)) {
 		str respawnLoc = va("coop_vector_respawnOrigin%i", (1 + player->entnum));
 		Vector vRespawnSpawn = program.coop_getVectorVariableValue(respawnLoc.c_str());
 		if (vRespawnSpawn.length() > 0) {
@@ -434,11 +434,11 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 		}
 	}
 	//respawn at deathspot - last location
-	else if(coopManager_client_persistant_t[player->entnum].respawnMe) {
+	else if(CoopManager::Get().getPlayerData_respawnMe(player)) {
 		Entity* lastLoc;
 		lastLoc = G_FindClass(NULL, "info_player_start");
-		lastLoc->setAngles(coopManager_client_persistant_t[player->entnum].lastValidViewAngle);
-		lastLoc->setOrigin(coopManager_client_persistant_t[player->entnum].lastValidLocation);
+		lastLoc->setAngles(CoopManager::Get().getPlayerData_lastValidViewAngle(player));
+		lastLoc->setOrigin(CoopManager::Get().getPlayerData_lastValidLocation(player));
 		lastLoc->NoLerpThisFrame();
 		return lastLoc;
 	}

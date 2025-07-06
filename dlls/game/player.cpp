@@ -15429,7 +15429,7 @@ void Player::coop_getCoopClass(Event* ev)
 {
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
-			ev->ReturnString(coopManager_client_persistant_t[this->entnum].coopClass);
+			ev->ReturnString(CoopManager::Get().getPlayerData_coopClass(this));
 		}
 	}
 	else {
@@ -15450,7 +15450,7 @@ void Player::coop_isTechnician(Event* ev)
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
 
-			if (coopManager_client_persistant_t[this->entnum].coopClass == "Technician") {
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "Technician") {
 				ev->ReturnFloat(1.0f);
 				return;
 			}
@@ -15472,7 +15472,7 @@ void Player::coop_isMedic(Event* ev)
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
 
-			if (coopManager_client_persistant_t[this->entnum].coopClass == "Medic") {
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "Medic") {
 				ev->ReturnFloat(1.0f);
 				return;
 			}
@@ -15494,7 +15494,7 @@ void Player::coop_isHeavyWeapons(Event* ev)
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
 
-			if (coopManager_client_persistant_t[this->entnum].coopClass == "HeavyWeapons") {
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "HeavyWeapons") {
 				ev->ReturnFloat(1.0f);
 				return;
 			}
@@ -15513,7 +15513,7 @@ Event EV_Player_coop_getCoopVersion
 );
 int Player::coop_getCoopVersion()
 {
-	return coopManager_client_persistant_t[this->entnum].coopVersion;
+	return CoopManager::Get().getPlayerData_coopVersion(this);
 }
 void Player::coop_getCoopVersion(Event* ev)
 {
@@ -15556,12 +15556,12 @@ void Player::coop_setObjectiveState( unsigned int flag, bool set)
 
 bool Player::coop_getObjectivesCycle()
 {
-	return (coopManager_client_persistant_t[entnum].objectiveCycle == coopObjectives_t.objectiveCycle) ? true : false;
+	return (CoopManager::Get().getPlayerData_objectiveCycle(this) == coopObjectives_t.objectiveCycle) ? true : false;
 }
 
 void Player::coop_setObjectivesCycle()
 {
-	coopManager_client_persistant_t[entnum].objectiveCycle = coopObjectives_t.objectiveCycle;
+	CoopManager::Get().setPlayerData_objectiveCycle(this,coopObjectives_t.objectiveCycle);
 }
 
 void Player::coop_setObjectivesPrintedTitleLast()
@@ -15569,7 +15569,7 @@ void Player::coop_setObjectivesPrintedTitleLast()
 	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.lastTimePrintedObjectivesTitle Access VIOLATION!\n");
 	}
-	coopManager_client_persistant_t[this->entnum].objectiveItemLastTimePrintedTitleAt = level.time;
+	CoopManager::Get().setPlayerData_objectiveItemLastTimePrintedTitleAt(this,level.time);
 }
 
 float Player::coop_getObjectivesPrintedTitleLast()
@@ -15577,7 +15577,7 @@ float Player::coop_getObjectivesPrintedTitleLast()
 	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return 0.0f;
 	}
-	return coopManager_client_persistant_t[this->entnum].objectiveItemLastTimePrintedTitleAt;
+	return CoopManager::Get().getPlayerData_objectiveItemLastTimePrintedTitleAt(this);
 }
 
 void Player::coop_hudsAdd(Player* player, str hudName)

@@ -371,7 +371,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 		return;
 
 	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() /* && coopSetupDone*/ ) {
-		if (!player->coop_getObjectivesCycle() && (coopManager_client_persistant_t[player->entnum].lastSpawned + 3.0f) < level.time) {
+		if (!player->coop_getObjectivesCycle() && (CoopManager::Get().getPlayerData_lastSpawned(player) + 3.0f) < level.time) {
 			player->coop_setObjectivesCycle();
 
 			coop_objectivesNotify( player );
