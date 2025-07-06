@@ -33,6 +33,7 @@ constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
 constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
+constexpr auto _COOP_SETTINGS_OBJECTIVES_MAX = 8;
 constexpr auto _COOP_SETTINGS_WEAPONS_MAX = 11;
 
 const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[] = { "co-op/config/settings.ini" };

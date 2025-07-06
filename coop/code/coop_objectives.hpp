@@ -17,11 +17,11 @@ struct coopObjectives_s
 	float       lastUpdated_story = -1;
 
 	int         objectiveCycle = 0;
-	str         objectiveItem[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
-	str         objectiveItem_deu[8] = { "$$Empty$$","2","3","4","5","6","7","8" };
-	int         objectiveItemStatus[8] = { 0,0,0,0,0,0,0,0 };
-	int         objectiveItemShow[8] = { 0,0,0,0,0,0,0,0 };
-	float       objectiveItemCompletedAt[8] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
+	str         objectiveItem[_COOP_SETTINGS_OBJECTIVES_MAX] = { "$$Empty$$","2","3","4","5","6","7","8" };
+	str         objectiveItem_deu[_COOP_SETTINGS_OBJECTIVES_MAX] = { "$$Empty$$","2","3","4","5","6","7","8" };
+	int         objectiveItemStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+	int         objectiveItemShow[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+	float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
 	float       objectiveItemLastTimePrintedTitleAt = -1.0;
 	str         objectiveItemLastTimePrintedTitle = "";
 };extern coopObjectives_s coopObjectives_t;
