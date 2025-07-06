@@ -10,6 +10,7 @@
 #include "api_stef2.hpp"
 
 #include "mp_manager.hpp"
+#include "mp_modeBase.hpp"
 
 
 //--------------------------------------------------------------
@@ -22,7 +23,16 @@ Container<str> gameFixAPI_maplistContainer;
 //--------------------------------------------------------------
 bool gameFixAPI_inSingleplayer()
 {
-	return !gameFixAPI_inMultiplayer();
+#ifdef GAME_STAR_TREK_ELITE_FORCE_2
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return true;
+	}
+#else //FAKK2 / MOHAA
+	if (deathmatch->integer) {
+		return true;
+	}
+#endif
+	return false;
 }
 
 //--------------------------------------------------------------
@@ -38,7 +48,7 @@ bool gameFixAPI_inMultiplayer()
 	if (!deathmatch->integer) {
 		return false;
 	}
-#endif //GAME_STAR_TREK_ELITE_FORCE_2
+#endif
 	return true;
 }
 
@@ -47,7 +57,7 @@ bool gameFixAPI_inMultiplayer()
 //--------------------------------------------------------------
 bool gameFixAPI_isSpectator_stef2(Entity* ent)
 {
-	if (!ent || !gameFixAPI_inMultiplayer()) {
+	if (!ent || gameFixAPI_inSingleplayer()) {
 		return false;
 	}
 
@@ -61,6 +71,97 @@ bool gameFixAPI_isSpectator_stef2(Entity* ent)
 	}
 	return false;
 	//FAKK2 Equivalent does not exist, there is just PM_NOCLIP
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Returns the warmuptime before a mp match will start - chrissstrahl
+//--------------------------------------------------------------
+int gameFixAPI_getMpWarmupTime()
+{
+	if (gameFixAPI_inSingleplayer()) {
+		return 0;
+	}
+
+#ifdef GAME_STAR_TREK_ELITE_FORCE_2
+	return mp_warmUpTime->value;
+#endif
+
+#ifdef GAME_MEDAL_OF_HONOR_ALLIED_ASSAULT
+	return 0;
+#endif
+
+#ifdef GAME_HEAVY_METAL_FAKK_2
+	return 0;
+#endif
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Returns the time in multiplayer - chrissstrahl
+//--------------------------------------------------------------
+float gameFixAPI_getMpTime()
+{
+	if (gameFixAPI_inSingleplayer()) {
+		return 0;
+	}
+
+#ifdef GAME_STAR_TREK_ELITE_FORCE_2
+	return multiplayerManager.getTime();
+#endif
+
+#ifdef GAME_MEDAL_OF_HONOR_ALLIED_ASSAULT
+	return 0.0f;
+#endif
+
+#ifdef GAME_HEAVY_METAL_FAKK_2
+	return 0.0f;
+#endif
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Returns the time in multiplayer - chrissstrahl
+//--------------------------------------------------------------
+float gameFixAPI_getMpMatchStartTime()
+{
+	if (gameFixAPI_inSingleplayer()) {
+		return 0;
+	}
+
+#ifdef GAME_STAR_TREK_ELITE_FORCE_2
+	return multiplayerManager.getMatchStartTime();
+#endif
+
+#ifdef GAME_MEDAL_OF_HONOR_ALLIED_ASSAULT
+	return 0.0f;
+#endif
+
+#ifdef GAME_HEAVY_METAL_FAKK_2
+	return 0.0f;
+#endif
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Returns if match has started in multiplayer - chrissstrahl
+//--------------------------------------------------------------
+bool gameFixAPI_getMpMatchStarted()
+{
+	if (gameFixAPI_inSingleplayer()) {
+		return 0;
+	}
+
+#ifdef GAME_STAR_TREK_ELITE_FORCE_2
+	if (multiplayerManager.getTime() > multiplayerManager.getMatchStartTime() + gameFixAPI_getMpWarmupTime()) {
+		return true;
+	}
+	return false;
+#endif
+
+#ifdef GAME_MEDAL_OF_HONOR_ALLIED_ASSAULT
+	return 0.0f;
+#endif
+
+#ifdef GAME_HEAVY_METAL_FAKK_2
+	return 0.0f;
+#endif
 }
 
 //--------------------------------------------------------------
