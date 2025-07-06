@@ -193,6 +193,41 @@ Entity* gamefix_returnInfoPlayerStart(str info)
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function grabbing given entity, like in scripts - chrissstrahl
 //--------------------------------------------------------------
+bool gamefix_entityActivateTarget(Entity* start, Entity* activator, bool alltargets)
+{
+	if (!start || !activator) {
+		return false;
+	}
+	Entity* ent;
+	Event* event;
+	const char* name;
+	name = start->Target();
+	bool triggered = false;
+	if (name && strcmp(name, ""))
+	{
+		ent = NULL;
+		do
+		{
+			ent = G_FindTarget(ent, name);
+			if (!ent)
+			{
+				break;
+			}
+			event = new Event(EV_Activate);
+			event->AddEntity(activator);
+			ent->ProcessEvent(event);
+			triggered = true;
+			if (!alltargets) {
+				break;
+			}
+		} while (1);
+	}
+	return triggered;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function grabbing given entity, like in scripts - chrissstrahl
+//--------------------------------------------------------------
 Entity* gamefix_getEntity(str& name)
 {
 	return gameFixAPI_getEntity(name);
@@ -222,6 +257,30 @@ Player* gamefix_getPlayer(int index)
 int gamefix_getPlayers(bool state)
 {
 	return gameFixAPI_getPlayers(state);
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function returning number of player on the server - chrissstrahl
+//--------------------------------------------------------------
+Entity* gamefix_getOwner(Entity* ent)
+{
+	Entity* owner = nullptr;
+	if (ent) {
+		if ( ent->isSubclassOf(Projectile) ) {
+			Projectile* projectile = (Projectile*)ent;
+			owner = (Entity*)projectile->getOwner();
+			return owner;
+		}
+		if (ent->isSubclassOf(Equipment)) {
+			Equipment* equipment = (Equipment*)ent;
+			Sentient* sentientOwener = equipment->GetOwner();
+			return (Entity*)sentientOwener;
+		}
+		if (ent->edict->ownerNum >= 0 && ent->edict->ownerNum < MAX_CLIENTS) {
+			return g_entities[ent->edict->ownerNum].entity;
+		}
+	}
+	return ent;
 }
 
 //--------------------------------------------------------------
