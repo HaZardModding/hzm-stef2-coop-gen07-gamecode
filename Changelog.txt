@@ -28,6 +28,10 @@ Warning C6386: Buffer overflow while writing to objlist -> template< class Type 
 Warning C6385: Invalid data is being read from objlist-> template< class Type > void Container<Type>::Resize
 WARNING C6269: Potentially incorrect order of operations -> int BotAI(int client, float thinktime)
 
+Added: Adding access to multiplayer _matchStartTime by adding new function
+float MultiplayerModeBase::getMatchStartTime()
+float MultiplayerManager::getMatchStartTime()
+
 Upgraded: Moved up inside the function to prevent it overwriting settings loaded from else where - _physicsInfo
 World::World() 
 

@@ -2074,3 +2074,12 @@ bool MultiplayerModeBase::shouldKeepNormalItem( Item *item )
 
 	return true;
 }
+
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Access to _matchStartTime - chrissstrahl
+//--------------------------------------------------------------
+float MultiplayerModeBase::getMatchStartTime()
+{
+	return _matchStartTime;
+}

@@ -4456,3 +4456,11 @@ void MultiplayerManager::setNextTauntTime(Player* player)
 		playerData->_nextTauntTime = (level.time + gamefix_mpManager_tauntCooldown);
 	}
 }
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Access to MultiplayerModeBase _matchStartTime - chrissstrahl
+//--------------------------------------------------------------
+float MultiplayerManager::getMatchStartTime()
+{
+	return _multiplayerGame->getMatchStartTime();
+}
