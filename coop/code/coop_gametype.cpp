@@ -380,14 +380,16 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 		}
 	}
 
-	//reset forced location
-	if (!gameFixAPI_isSpectator_stef2((Entity*)player) && gameFixAPI_getMpMatchStarted()) {
-		player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
-		CoopManager::Get().setPlayerData_spawnLocationSpawnForced(player,false);
-	}
-
 	//RESPAN LOCATION VAR
 	if (CoopManager::Get().getPlayerData_respawnLocationSpawn(player) || CoopManager::Get().getPlayerData_spawnLocationSpawnForced(player)) {
+		
+		//reset forced location
+		if (!gameFixAPI_isSpectator_stef2((Entity*)player) && gameFixAPI_getMpMatchStarted()) {
+			player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
+			CoopManager::Get().setPlayerData_spawnLocationSpawnForced(player, false);
+			CoopManager::Get().setPlayerData_respawnLocationSpawn(player, false);
+		}
+		
 		str respawnLoc = va("coop_vector_respawnOrigin%i", (1 + player->entnum));
 		Vector vRespawnSpawn = program.coop_getVectorVariableValue(respawnLoc.c_str());
 		if (vRespawnSpawn.length() > 0) {
@@ -441,6 +443,13 @@ Entity* ModeCoop::getSpawnPoint(Player* player)
 		lastLoc->setOrigin(CoopManager::Get().getPlayerData_lastValidLocation(player));
 		lastLoc->NoLerpThisFrame();
 		return lastLoc;
+	}
+
+	//reset forced location
+	if (!gameFixAPI_isSpectator_stef2((Entity*)player) && gameFixAPI_getMpMatchStarted()) {
+		player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
+		CoopManager::Get().setPlayerData_spawnLocationSpawnForced(player, false);
+		CoopManager::Get().setPlayerData_respawnLocationSpawn(player, false);
 	}
 
 	//Return coop mod targetnamed spawnpoint (ipd1, ipd2, ..., ipd8)
