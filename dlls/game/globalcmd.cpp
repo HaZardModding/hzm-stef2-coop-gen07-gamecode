@@ -3317,7 +3317,9 @@ void CThread::SendClientCommand( Event *ev )
 
 	for ( i = 2 ; i <= ev->NumArgs() ; i++ )
 	{
-		builtCommand += " ";
+		if (i > 2) {
+			builtCommand += " ";
+		}
 		
 		builtCommand += ev->GetString( i );
 	}
