@@ -158,18 +158,18 @@ void CoopManager::setPlayerData_objectiveCycle(Player* player, int objectiveCycl
     coopManager_client_persistant_t[player->entnum].objectiveCycle = objectiveCycle;
 }
 
-bool CoopManager::getPlayerData_coopObjectiveStatus(Player* player, int item) {
+int CoopManager::getPlayerData_coopObjectiveStatus(Player* player, int item) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveStatus() index out of range");
-        return false;
+        return -1;
     }
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveStatus() nullptr player");
-        return false;
+        return -1;
     }
     return coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item];
 }
-void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, bool status) {
+void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, int status) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveStatus() index out of range");
         return;
@@ -181,18 +181,18 @@ void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, bo
     coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item] = status;
 }
 
-bool CoopManager::getPlayerData_coopObjectiveSend(Player* player, int item) {
+int CoopManager::getPlayerData_coopObjectiveSend(Player* player, int item) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveSend() index out of range");
-        return false;
+        return 0;
     }
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveSend() nullptr player");
-        return false;
+        return 0;
     }
     return coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item];
 }
-void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, bool status) {
+void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, int status) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveSend() index out of range");
         return;
@@ -204,18 +204,18 @@ void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, bool
     coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item] = status;
 }
 
-bool CoopManager::getPlayerData_coopObjectiveShown(Player* player, int item) {
+int CoopManager::getPlayerData_coopObjectiveShown(Player* player, int item) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveShown() nullptr player");
-        return false;
+        return 0;
     }
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveShown() index out of range");
-        return false;
+        return 0;
     }
     return coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item];
 }
-void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, bool status) {
+void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, int status) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveShown() nullptr player");
         return;
@@ -227,18 +227,18 @@ void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, boo
     coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item] = status;
 }
 
-bool CoopManager::getPlayerData_objectiveItemCompletedAt(Player* player, int item) {
+float CoopManager::getPlayerData_objectiveItemCompletedAt(Player* player, int item) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemCompletedAt() nullptr player");
-        return false;
+        return 0.0f;
     }
     if (item < 0 || item > _COOP_SETTINGS_OBJECTIVES_MAX) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemCompletedAt() index out of range");
-        return false;
+        return 0.0f;
     }
     return coopManager_client_persistant_t[player->entnum].objectiveItemCompletedAt[item];
 }
-void CoopManager::setPlayerData_objectiveItemCompletedAt(Player* player, int item, bool status) {
+void CoopManager::setPlayerData_objectiveItemCompletedAt(Player* player, int item, float status) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemCompletedAt() nullptr player");
         return;
@@ -278,6 +278,43 @@ void CoopManager::setPlayerData_objectiveItemLastTimePrintedTitle(Player* player
         return;
     }
     coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle = lastPrintedTitle;
+}
+
+void CoopManager::setPlayerData_objectives_reset(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPLayerData_objectives_reset() nullptr player");
+        return;
+    }
+
+    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle = "";
+    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt = 0.0f;
+    coopManager_client_persistant_t[player->entnum].objectiveCycle = 0;
+    coopManager_client_persistant_t[player->entnum].objectiveSetupDone = false;
+
+    for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX;i++) {
+        setPlayerData_coopObjectiveStatus(player,i,-1);
+        setPlayerData_coopObjectiveSend(player, i,0);
+        setPlayerData_coopObjectiveShown(player, i,0);
+        setPlayerData_objectiveItemCompletedAt(player, i,0.0f);
+    }
+}
+
+bool CoopManager::getPlayerData_objectives_setupDone(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPLayerData_objectives_setupDone() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].objectiveSetupDone;
+}
+void CoopManager::setPlayerData_objectives_setupDone(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPLayerData_objectives_setupDone() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].objectiveSetupDone = true;
 }
 
 
@@ -595,7 +632,20 @@ void CoopManager::Shutdown() {
 //Executed if level is exited/changed/restarted - but not on first load/game start
 //Cleans up stuff while world and entities still exist - Not executed if game server is quit
 void CoopManager::LevelEndCleanup(qboolean temp_restart) {
-    //coop only
+    coop_objectives_reset();
+
+    Player* player = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        player = gamefix_getPlayer(i);
+        if (player) {
+            setPlayerData_spawnLocationSpawnForced(player, true);
+            setPlayerData_respawnLocationSpawn(player, false);
+            setPlayerData_lastValidLocation(player, Vector(0.0f, 0.0f, 0.0f));
+            setPlayerData_objectives_reset(player);
+        }
+    }
+
+
     if (coopEnabled) {
         //...
     }
@@ -614,14 +664,37 @@ void CoopManager::LevelStart(CThread* gamescript) {
     }
 }
 
+void CoopManager::playerReset(Player* player) {
+    if (!player) {
+        return;
+    }
+    setPlayerData_coopSetupDone(player,false);
+    setPlayerData_coopClass(player,"");
+    setPlayerData_coopVersion(player,-1);
+    setPlayerData_respawnMe(player,false);
+    setPlayerData_spawnLocationSpawnForced(player,true);
+    setPlayerData_respawnLocationSpawn(player,false);
+    setPlayerData_lastValidLocation(player, Vector(0.0f, 0.0f, 0.0f));
+    setPlayerData_lastValidViewAngle(player, Vector(0.0f, 0.0f, 0.0f));
+    setPlayerData_lastSpawned(player, -1.0f);
+    setPlayerData_objectives_reset(player);
+}
+
+void CoopManager::playerConnect(int clientNum) {
+    if (clientNum < 0 || clientNum >= MAX_CLIENTS) {
+        return;
+    }
+}
+
 //Executed upon entering server - Always (Multiplayer + Singleplayer)
-void CoopManager::playerEntered(gentity_t* ent){
+void CoopManager::playerEntered(gentity_t* ent) {
     if (ent && ent->entity) {
         ExecuteThread("coop_justEntered", true, ent->entity);
     }
 }
 //Executed on death - Always (Multiplayer + Singleplayer)
 void CoopManager::playerLeft(Player* player) {
+
     if (player) {
         ExecuteThread("coop_justLeft", true, player);
     }

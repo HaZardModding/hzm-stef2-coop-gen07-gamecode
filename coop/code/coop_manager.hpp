@@ -33,6 +33,7 @@ struct coopManager_client_persistant_s
     float       objectiveItemCompletedAt[8] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
     float       objectiveItemLastTimePrintedTitleAt = -1.0;
     str         objectiveItemLastTimePrintedTitle = "";
+    bool        objectiveSetupDone = false;
 };
 extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 
@@ -103,6 +104,8 @@ public:
     bool IncludedScriptCoop();
 
 
+    void playerReset(Player* player);
+    void playerConnect(int clientNum);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
     void playerDied(Player* player);
@@ -139,18 +142,21 @@ public:
     void setPlayerData_lastSpawned(Player* player, float lastSpawned);
     int getPlayerData_objectiveCycle(Player* player);
     void setPlayerData_objectiveCycle(Player* player, int objectiveCycle);
-    bool getPlayerData_coopObjectiveStatus(Player* player, int item);
-    void setPlayerData_coopObjectiveStatus(Player* player, int item, bool status);
-    bool getPlayerData_coopObjectiveSend(Player* player, int item);
-    void setPlayerData_coopObjectiveSend(Player* player, int item, bool status);
-    bool getPlayerData_coopObjectiveShown(Player* player, int item);
-    void setPlayerData_coopObjectiveShown(Player* player, int item, bool status);
-    bool getPlayerData_objectiveItemCompletedAt(Player* player, int item);
-    void setPlayerData_objectiveItemCompletedAt(Player* player, int item, bool status);
+    int getPlayerData_coopObjectiveStatus(Player* player, int item);
+    void setPlayerData_coopObjectiveStatus(Player* player, int item, int status);
+    int getPlayerData_coopObjectiveSend(Player* player, int item);
+    void setPlayerData_coopObjectiveSend(Player* player, int item, int status);
+    int getPlayerData_coopObjectiveShown(Player* player, int item);
+    void setPlayerData_coopObjectiveShown(Player* player, int item, int status);
+    float getPlayerData_objectiveItemCompletedAt(Player* player, int item);
+    void setPlayerData_objectiveItemCompletedAt(Player* player, int item, float status);
     float getPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player);
     void setPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player, float lastPrintedTitleAt);
     str getPlayerData_objectiveItemLastTimePrintedTitle(Player* player);
     void setPlayerData_objectiveItemLastTimePrintedTitle(Player* player, str lastPrintedTitle);
+    void setPlayerData_objectives_reset(Player* player);
+    bool getPlayerData_objectives_setupDone(Player* player);
+    void setPlayerData_objectives_setupDone(Player* player);
 
 private:
     CoopManager() = default;
