@@ -2228,6 +2228,14 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		gameFixAPI_initPersistant(clientNum,(bool)isBot);
 
 
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerConnect(clientNum);
+#endif
+
+
 		ent = &g_entities[ clientNum ];
 		gi.getUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 		
@@ -2280,6 +2288,7 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 			//--------------------------------------------------------------
 			if (!client) {
 				gi.Error(ERR_DROP, "G_ClientConnect: client [%s] was NULL", clientNum);
+				return "G_ClientConnect: client was NULL";
 			}
 
 
