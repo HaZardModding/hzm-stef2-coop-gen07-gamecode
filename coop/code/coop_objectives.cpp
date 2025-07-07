@@ -267,8 +267,7 @@ void coop_objectivesSetup( Player *player)
 			gamefix_playerDelayedServerCommand( player->entnum , va( "set %s ^0" , sCvar.c_str() ) );
 		}
 	}
-
-	//[b610] chrissstrahl - moved it here
+	
 	//standard maps always have ritual entertainment as author
 	if (gameFixAPI_mapIsStock(gamefix_cleanMapName(level.mapname))) {
 		coopObjectives_t.levelAuthor = "Ritual Entertainment";
@@ -286,6 +285,8 @@ void coop_objectivesSetup( Player *player)
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
 	coop_objectivesStorySet( player );
+
+	CoopManager::Get().setPlayerData_objectives_setupDone(player);
 }
 
 
@@ -367,8 +368,14 @@ void coop_objectivesNotify( Player* player )
 //================================================================
 void coop_objectivesUpdatePlayer( Player* player )
 {
-	if ( !player || level.mission_failed )
+	if ( !player )
 		return;
+
+	if (!CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
+		coop_objectivesSetup(player);
+		return;
+	}
+	
 
 	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() /* && coopSetupDone*/ ) {
 		if (!player->coop_getObjectivesCycle() && (CoopManager::Get().getPlayerData_lastSpawned(player) + 3.0f) < level.time) {
@@ -781,4 +788,25 @@ void coop_objectives_tacticalShow( Player *player , int iTactical )
 			gamefix_playerDelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacEng.c_str() ) );
 		}
 	}
+}
+
+//================================================================           
+// Description: RESETS OBJECTIVES           
+//================================================================
+void coop_objectives_reset()
+{
+	coopObjectives_t.levelAuthor = "Ritual Entertainment";
+	coopObjectives_t.story = "$$Empty$$";
+	coopObjectives_t.story_deu = "$$Empty$$";
+	coopObjectives_t.lastUpdated_story = -1;
+	coopObjectives_t.objectiveCycle = 0;
+	coopObjectives_t.objectiveItemLastTimePrintedTitleAt = -1.0;
+	coopObjectives_t.objectiveItemLastTimePrintedTitle = "";
+	coopObjectives_t.objectiveItem[0] = "$$Empty$$";
+	coopObjectives_t.objectiveItem_deu[0] = "$$Empty$$";
+	for (int i = 1; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItem[i] = va("%d",i); }
+	for (int i = 1; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItem_deu[i] = va("%d",i); }
+	for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItemStatus[i] = -1; }
+	for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItemShow[i] = 0; }
+	for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItemCompletedAt[i] = -999.0f; }
 }

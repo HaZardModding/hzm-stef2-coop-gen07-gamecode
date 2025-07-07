@@ -19,7 +19,7 @@ struct coopObjectives_s
 	int         objectiveCycle = 0;
 	str         objectiveItem[_COOP_SETTINGS_OBJECTIVES_MAX] = { "$$Empty$$","2","3","4","5","6","7","8" };
 	str         objectiveItem_deu[_COOP_SETTINGS_OBJECTIVES_MAX] = { "$$Empty$$","2","3","4","5","6","7","8" };
-	int         objectiveItemStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+	int         objectiveItemStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { -1,-1,-1,-1,-1,-1,-1,-1 };
 	int         objectiveItemShow[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
 	float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
 	float       objectiveItemLastTimePrintedTitleAt = -1.0;
@@ -44,3 +44,4 @@ void coop_objectivesUpdate( str sObjectiveState , int fObjectiveItem , int fObje
 void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveState , bool bObjectiveShow );
 void coop_objectivesSingleplayer( str sObjectiveState , int iObjectiveNumber , int iShowNow );
 void coop_objectives_tacticalShow( Player *player , int iTactical );
+void coop_objectives_reset();
