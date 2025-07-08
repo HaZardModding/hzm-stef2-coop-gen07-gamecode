@@ -252,7 +252,7 @@ void coop_objectivesMarkerRemove( Entity *eMaster )
 //================================================================
 void coop_objectivesSetup( Player *player)
 {
-	if ( !player || !player->coop_hasCoopInstalled() || gameFixAPI_isBot(player)){
+	if ( !player || gameFixAPI_isBot(player) || CoopManager::Get().getPlayerData_objectives_setupDone(player) || !player->coop_hasCoopInstalled()) {
 		return;
 	}
 
