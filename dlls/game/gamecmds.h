@@ -26,6 +26,16 @@ void     G_InitConsoleCommands( void );
 
 qboolean G_ProcessClientCommand( gentity_t *ent );
 
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
+//--------------------------------------------------------------
+qboolean coop_playerCoopDetected(const gentity_t* ent);
+#endif
+
+
 void     G_Say( const gentity_t *ent, bool team, qboolean arg0 );
 qboolean G_CameraCmd( const gentity_t *ent );
 qboolean G_SoundCmd( const gentity_t *ent );

@@ -32,6 +32,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 typedef struct
 {
 	const char  *command;
@@ -42,6 +50,15 @@ typedef struct
 consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
+	//--------------------------------------------------------------
+	{ "coopinstalled",coop_playerCoopDetected,		true },
+#endif
+	
 
 
 	//--------------------------------------------------------------
@@ -1482,3 +1499,22 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 
 	return G_ClientRunThreadCmd( ent );
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
+//--------------------------------------------------------------
+qboolean coop_playerCoopDetected(const gentity_t* ent) {
+	if (!ent || !ent->entity || !ent->client) {
+		return true;
+	}
+
+	//if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerCoopDetected(ent, gi.argv(1));
+	//}
+	return true;
+}
+#endif
+
+
