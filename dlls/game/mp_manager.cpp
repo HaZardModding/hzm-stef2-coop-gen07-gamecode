@@ -840,6 +840,14 @@ void MultiplayerManager::addPlayer( Player *player )
 	multiplayerManager.HUDPrintAllClients( va( "%s $$JoinedGame$$\n", player->client->pers.netname ) );
 
 
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerJoined(player);
+#endif
+
+
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: Dynamic lights appearing off if they have switched on before the player was in game - chrissstrahl
 	// Signal World::UpdateDynamicLights to update the dynamic lights

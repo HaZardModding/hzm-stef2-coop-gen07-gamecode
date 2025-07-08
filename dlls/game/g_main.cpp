@@ -2361,8 +2361,17 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 
 
 		Player *player;
-		
 		player = ( Player * )ent->entity;
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerDisconnect(player);
+#endif
+
+
 		player->Disconnect();
 		
 		delete ent->entity;

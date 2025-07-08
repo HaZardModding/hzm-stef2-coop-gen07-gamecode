@@ -332,6 +332,7 @@ void CoopManager::DisableCoop() {
 }
 
 void CoopManager::ClientThink(Player *player) {
+    playerSetup(player);
     coop_objectivesUpdatePlayer(player);
 }
 
@@ -664,10 +665,63 @@ void CoopManager::LevelStart(CThread* gamescript) {
     }
 }
 
+void CoopManager::playerSetup(Player* player) {
+    if (!player) {
+        return;
+    }
+    if (getPlayerData_coopSetupDone(player)) {
+        return;
+    }
+    if (coopManager_client_persistant_t[player->entnum].coopSetupTries > _COOP_SETTINGS_SETUP_TRIES) {
+        coopManager_client_persistant_t[player->entnum].coopVersion = 0;
+        
+        setPlayerData_coopSetupDone(player,true);
+        setPlayerData_objectives_setupDone(player);
+
+        DEBUG_LOG("# playerSetup Failed\n");
+        return;
+    }
+
+    if (coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime > level.time) {
+        return;
+    }
+
+    if (!coopManager_client_persistant_t[player->entnum].coopSetupStarted) {
+        gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/detect.cfg");
+        coopManager_client_persistant_t[player->entnum].coopSetupStarted = true;
+    }
+    
+    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = (level.time + 0.15f);
+    coopManager_client_persistant_t[player->entnum].coopSetupTries++;
+    DEBUG_LOG("# playerSetup Try\n");
+}
+
+void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) {
+    if (!ent || !ent->entity || !ent->client || !coopVer || !strlen(coopVer)) {
+        return;
+    }
+    Player* player = (Player*)ent->entity;
+    int iVer =  atoi(coopVer);
+
+    setPlayerData_coopSetupDone(player, true);
+    if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
+        return;
+    }
+    
+    coopManager_client_persistant_t[player->entnum].coopVersion = iVer;
+    //run coop setup
+    DEBUG_LOG("# COOP DETECTED: %d\n", iVer);
+}
+
 void CoopManager::playerReset(Player* player) {
     if (!player) {
         return;
     }
+
+    coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
+    coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
+    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.0f;
+
     setPlayerData_coopSetupDone(player,false);
     setPlayerData_coopClass(player,"");
     setPlayerData_coopVersion(player,-1);
@@ -684,6 +738,18 @@ void CoopManager::playerConnect(int clientNum) {
     if (clientNum < 0 || clientNum >= MAX_CLIENTS) {
         return;
     }
+}
+void CoopManager::playerDisconnect(Player* player) {
+    if (!player) {
+        return;
+    }
+}
+
+void CoopManager::playerJoined(Player* player) {
+    if (!player) {
+        return;
+    }
+    DEBUG_LOG("# playerJoined\n");
 }
 
 //Executed upon entering server - Always (Multiplayer + Singleplayer)

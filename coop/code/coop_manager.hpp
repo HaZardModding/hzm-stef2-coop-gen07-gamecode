@@ -17,6 +17,9 @@
 
 struct coopManager_client_persistant_s
 {
+    float		coopSetupNextCheckTime = -999.0f;
+    short		coopSetupTries = 0;
+    bool		coopSetupStarted = false;
     bool		coopSetupDone = false;
     str			coopClass = "Technician";
     int         coopVersion = 0;
@@ -25,13 +28,13 @@ struct coopManager_client_persistant_s
     bool        respawnLocationSpawn = false;
     Vector      lastValidLocation = Vector(0.0f, 0.0f, 0.0f);
     Vector      lastValidViewAngle = Vector(0.0f, 0.0f, 0.0f);
-    float       lastSpawned = -1;
+    float       lastSpawned = -1.0f;
     int         objectiveCycle = -1;
     int			coopObjectiveStatus[8] = { 0,0,0,0,0,0,0,0 };
     int			coopObjectiveSend[8] = { 0,0,0,0,0,0,0,0 };
     int			coopObjectiveShown[8] = { 0,0,0,0,0,0,0,0 };
     float       objectiveItemCompletedAt[8] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
-    float       objectiveItemLastTimePrintedTitleAt = -1.0;
+    float       objectiveItemLastTimePrintedTitleAt = -1.0f;
     str         objectiveItemLastTimePrintedTitle = "";
     bool        objectiveSetupDone = false;
 };
@@ -104,8 +107,12 @@ public:
     bool IncludedScriptCoop();
 
 
-    void playerReset(Player* player);
     void playerConnect(int clientNum);
+    void playerDisconnect(Player* player);
+    void playerJoined(Player* player);
+    void playerSetup(Player* player);
+    void playerCoopDetected(const gentity_t* ent, const char* coopVer);
+    void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
     void playerDied(Player* player);
