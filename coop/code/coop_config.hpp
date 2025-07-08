@@ -33,6 +33,9 @@ constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
 constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
+constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70000;
+
+constexpr auto _COOP_SETTINGS_SETUP_TRIES = 15;
 constexpr auto _COOP_SETTINGS_OBJECTIVES_MAX = 8;
 constexpr auto _COOP_SETTINGS_WEAPONS_MAX = 11;
 
