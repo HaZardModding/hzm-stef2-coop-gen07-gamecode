@@ -132,11 +132,27 @@ Coop Mod execution logic:
 //EVENT Sentity teleport
 	void Teleporter::Teleport( Event *ev )
 		void CoopManager::playerTransported
+	
+	
+//EVENT player disconnected
+	extern "C" void G_ClientDisconnect( gentity_t *ent )
+		void CoopManager::playerDisconnect(Player* player)
+		void CoopManager::playerLeft(Player* player)
+
+
+//EVENT player send coopinstalled command
+	void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer)
+		void CoopManager::playerSetup(Player* player)
+
+
+//EVENT player connecting and entering
+	void MultiplayerManager::addPlayer( Player *player )
+		void CoopManager::playerJoined(Player* player)
+		
 
 //EVENT player spawn
-	ModeCoop::_giveInitialConditions(Player * player) Zeile 85	C++
-		MultiplayerModeBase::ActivatePlayer(Player * player) Zeile 1379	C++
-			ModeTeamBase::respawnPlayer(Player * player) Zeile 383	C++
+		MultiplayerModeBase::ActivatePlayer(Player * player)
+			ModeTeamBase::respawnPlayer(Player * player)
 				ModeCoop::_giveInitialConditions
 
 
