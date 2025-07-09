@@ -519,6 +519,11 @@ Player* gameFixAPI_getClosestPlayerInCallvolume(Entity* entity)
 //--------------------------------------------------------------
 void gameFixAPI_initPersistant(int clientNum, bool isBot)
 {
+	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
+		gi.Error(ERR_DROP, _GFixEF2_ERR_gameFixAPI_initPersistantClNum, clientNum);
+		return;
+	}
+
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: Phaser shots and hits being count on a per bullet rather as per beam basis - chrissstrahl
 	//--------------------------------------------------------------
@@ -528,11 +533,6 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 
 
 	if (gameFixAPI_inSingleplayer()) {
-		return;
-	}
-
-	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
-		gi.Error(ERR_DROP, _GFixEF2_ERR_gameFixAPI_initPersistantClNum, clientNum);
 		return;
 	}
 
@@ -547,6 +547,7 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 	gamefix_client_persistant_t[clientNum].currentTeam = "none";
 	gamefix_client_persistant_t[clientNum].hudsAdded = false;
 	gamefix_client_persistant_t[clientNum].hudsAddedLastCheck = 0;
+	gamefix_client_persistant_t[clientNum].messageOfTheDayDone = false;
 }
 
 //--------------------------------------------------------------
@@ -604,13 +605,13 @@ bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd)
 //--------------------------------------------------------------
 bool gamefixAPI_chatUpdate(int clientNum, const str &text)
 {
-	if (gameFixAPI_inSingleplayer()) {
-		return true;
-	}
-
 	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
 		gi.Error(ERR_DROP, _GFixEF2_ERR_gamefixAPI_chatUpdateClNum, clientNum);
 		return false;
+	}
+
+	if (gameFixAPI_inSingleplayer()) {
+		return true;
 	}
 
 	if (gamefix_client_persistant_t[clientNum].chatsLast < level.time) {
@@ -631,6 +632,10 @@ bool gamefixAPI_chatUpdate(int clientNum, const str &text)
 //--------------------------------------------------------------
 qboolean gameFixAPI_languageEng(const gentity_t* ent)
 {
+	if (!ent->entity) {
+		return qtrue;
+	}
+
 	Player* player = (Player*)ent->entity;
 	gamefix_client_persistant_t[ent->client->ps.clientNum].language = "Eng";
 	
@@ -638,7 +643,7 @@ qboolean gameFixAPI_languageEng(const gentity_t* ent)
 	if ((player->client->pers.enterTime + 5) < level.time) {	
 		gameFixAPI_hudPrint(player, _GFixAPI_YOUR_LANG_WAS_SET_TO_ENG);
 	}
-	return true;
+	return qtrue;
 }
 
 //--------------------------------------------------------------
