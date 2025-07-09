@@ -713,18 +713,11 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     DEBUG_LOG("# COOP DETECTED: %d\n", iVer);
 }
 
+//Executed every level restart/reload or when player disconnects
 void CoopManager::playerReset(Player* player) {
     if (!player) {
         return;
-    }
-
-    coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
-    coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
-    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.0f;
-
-    setPlayerData_coopSetupDone(player,false);
-    setPlayerData_coopClass(player,"");
-    setPlayerData_coopVersion(player,-1);
+    }    
     setPlayerData_respawnMe(player,false);
     setPlayerData_spawnLocationSpawnForced(player,true);
     setPlayerData_respawnLocationSpawn(player,false);
@@ -732,17 +725,46 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_lastValidViewAngle(player, Vector(0.0f, 0.0f, 0.0f));
     setPlayerData_lastSpawned(player, -1.0f);
     setPlayerData_objectives_reset(player);
+
+    //see also will be cleaned up in: playerLeft
 }
 
+//Executed only when player connects first time
 void CoopManager::playerConnect(int clientNum) {
     if (clientNum < 0 || clientNum >= MAX_CLIENTS) {
         return;
     }
+    DEBUG_LOG("# playerConnect\n");
 }
+
+//Executed when player disconnects - only upon actual disconnect not on mapchange or relaod
 void CoopManager::playerDisconnect(Player* player) {
     if (!player) {
         return;
     }
+    DEBUG_LOG("# playerDisconnect\n");
+
+    coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
+    coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
+    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.0f;
+    setPlayerData_coopSetupDone(player, false);
+    setPlayerData_coopVersion(player, -1);
+    setPlayerData_coopClass(player, "");
+    
+    //rest will be cleaned up in: playerLeft
+}
+
+//Executed when player object is detroyed, every map reload or exit or disconnect - Always (Multiplayer + Singleplayer)
+void CoopManager::playerLeft(Player* player) {
+
+    if (player) {
+        ExecuteThread("coop_justLeft", true, player);
+    }
+
+    //reset player data on a l
+    playerReset(player);
+
+    DEBUG_LOG("# playerLeft\n");
 }
 
 void CoopManager::playerJoined(Player* player) {
@@ -757,21 +779,16 @@ void CoopManager::playerEntered(gentity_t* ent) {
     if (ent && ent->entity) {
         ExecuteThread("coop_justEntered", true, ent->entity);
     }
+    DEBUG_LOG("# playerEntered\n");
 }
-//Executed on death - Always (Multiplayer + Singleplayer)
-void CoopManager::playerLeft(Player* player) {
 
-    if (player) {
-        ExecuteThread("coop_justLeft", true, player);
-    }
-}
 //Executed on death - Always (Multiplayer + Singleplayer)
 void CoopManager::playerDied(Player *player){
     if (player) {
         ExecuteThread("coop_justDied", true, player);
     }
 }
-//Executed on death - Always (Multiplayer + Singleplayer)
+//Executed when player gets transported - Always (Multiplayer + Singleplayer)
 void CoopManager::playerTransported(Entity *entity){
     if (!entity)
         return;
