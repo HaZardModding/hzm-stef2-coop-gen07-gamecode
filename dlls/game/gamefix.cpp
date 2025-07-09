@@ -60,10 +60,16 @@ void gamefix_messageOfTheDayShow(Player* player)
 }
 void gamefix_messageOfTheDay(Player* player)
 {
-	if (gamefix_client_persistant_t[player->entnum].messageOfTheDayDone)
+	if (!player || gamefix_client_persistant_t[player->entnum].messageOfTheDayDone)
 		return;
 
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gamefix_client_persistant_t[player->entnum].messageOfTheDayDone = true;
+		return;
+	}
+
 	Event* newEvent = new Event(EV_Player_gamefix_messageOfTheDay);
+	player->CancelEventsOfType(EV_Player_gamefix_messageOfTheDay);
 	player->PostEvent(newEvent, 12 );
 }
 
@@ -163,7 +169,7 @@ bool gamefix_makeSolidAsapThink(Entity* eCheck)
 		
 		if (gamefix_checkEntityInsideOfEntity(eCheck, entity2)) {
 			if (!gamefix_getMakeSolidAsap(entity2)) {
-gi.Printf("asap made NOT solid: %s\n", entity2->targetname.c_str());
+				//gi.Printf("asap made NOT solid: %s\n", entity2->targetname.c_str());
 				entity2->setSolidType(SOLID_NOT);
 				gamefix_setMakeSolidAsap(entity2, true, 0.0f);
 			}
@@ -172,7 +178,7 @@ gi.Printf("asap made NOT solid: %s\n", entity2->targetname.c_str());
 	}
 
 	if (!bInside) {
-gi.Printf("asap made solid: %s\n", eCheck->targetname.c_str());
+		//gi.Printf("asap made solid: %s\n", eCheck->targetname.c_str());
 		eCheck->setSolidType(SOLID_BBOX);
 		gamefix_setMakeSolidAsap(eCheck, false, 0.0f);
 	}
