@@ -5,6 +5,7 @@ Coop NEW script commands
 /////////////////////////////////////////
 /////////////////////////////////////////
 $actor.coop_actorGetType() - Returns actor type inanimate, monster, civilian, enemy, friend, animal, teammate
+coop_getTimeStamp() - Returns unix Timestamp of server time
 coop_getStringVariable(varname) - Returns contents of script variable of type string
 coop_getVectorVariable(varname) - Returns contents of script variable of type vector
 coop_getFloatVariable(varname) - Returns contents of script variable of type float
