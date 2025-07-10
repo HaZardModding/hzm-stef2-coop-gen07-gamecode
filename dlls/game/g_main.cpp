@@ -2298,6 +2298,15 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		{
 			gi.Printf( "%s connected\n", ent->client->pers.netname );
 		}
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Entered Time handle - chrissstrahl
+		//--------------------------------------------------------------
+		if (firstTime) {
+			gameFixAPI_setPersistant_enteredServerAt(clientNum, gamefix_getTimeStamp());
+		}
+
 		
 		LoadingServer = false;
 	}
