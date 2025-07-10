@@ -33,6 +33,7 @@ qboolean G_ProcessClientCommand( gentity_t *ent );
 // COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
 //--------------------------------------------------------------
 qboolean coop_playerCoopDetected(const gentity_t* ent);
+qboolean coop_playerClientId(const gentity_t* ent);
 #endif
 
 
