@@ -56,7 +56,8 @@ consolecmd_t G_ConsoleCmds[] =
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
 	//--------------------------------------------------------------
-	{ "coopinstalled",coop_playerCoopDetected,		true },
+	{ "coopinstalled",coop_playerCoopDetected,true },
+	{ "coopcid",coop_playerClientId,true },
 #endif
 	
 
@@ -1512,6 +1513,16 @@ qboolean coop_playerCoopDetected(const gentity_t* ent) {
 
 	//if (CoopManager::Get().IsCoopEnabled()) {
 		CoopManager::Get().playerCoopDetected(ent, gi.argv(1));
+	//}
+	return true;
+}
+qboolean coop_playerClientId(const gentity_t* ent) {
+	if (!ent || !ent->entity || !ent->client) {
+		return true;
+	}
+
+	//if (CoopManager::Get().IsCoopEnabled()) {
+	CoopManager::Get().playerCoopDetectClId(ent, gi.argv(1));
 	//}
 	return true;
 }
