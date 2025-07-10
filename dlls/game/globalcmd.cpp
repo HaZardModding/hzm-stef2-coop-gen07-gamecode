@@ -4769,16 +4769,12 @@ Event EV_ScriptThread_coop_getTimeStamp
 	"coop_getTimeStamp",
 	EV_SCRIPTONLY,
 	"@s",
-	"returnString",
-	"Grabs the real time from server and returns it as string"
+	"unix-timestamp-string",
+	"Grabs the real time unix timstamp from server and returns it as string"
 );
 void CThread::coop_getTimeStamp(Event* ev)
 {
-	assert(ev);
-	time_t curTime;
-	time(&curTime);
-	str s = va("%d", (int)curTime);
-	ev->ReturnString(s.c_str());
+	ev->ReturnString(va("%d",gamefix_getTimeStamp()));
 }
 
 Event EV_ScriptThread_coop_getVector
@@ -5174,6 +5170,4 @@ void CThread::coop_objectiveUpdate(Event* ev)
 	bool itemShow = (bool)(int)ev->GetFloat(2);
 	coop_objectivesUpdate(itemStatus, itemNumber, itemShow);
 }
-
-
 #endif

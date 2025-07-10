@@ -119,6 +119,8 @@ extern Event EV_ScriptThread_coop_setIniData;
 extern Event EV_ScriptThread_coop_getMapByServerIp;
 
 extern Event EV_ScriptThread_coop_objectiveUpdate;
+
+Event EV_ScriptThread_coop_getTimeStamp;
 #endif
 
 
@@ -165,6 +167,7 @@ public:
 	void coop_getMapByServerIp(Event* ev);
 
 	void coop_objectiveUpdate(Event* ev);
+
 #endif
 
 
