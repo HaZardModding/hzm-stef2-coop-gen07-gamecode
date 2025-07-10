@@ -4418,7 +4418,7 @@ void CThread::coop_setIniDataPlayer(Event* ev)
 	if (!sKeyname.length()) {
 		Player* player = (Player*)ent;
 		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
-		DEBUG_LOG("coop_setIniDataPlayer - Grab Player Coop ID - Feature not Implemented");
+		DEBUG_LOG("coop_setIniDataPlayer - Grab Player[%d] Coop ID - Feature not Implemented", player->entnum);
 		ev->ReturnString("NOT_IMPLEMENTED");
 		return;
 	}
@@ -4586,7 +4586,7 @@ void CThread::coop_getIniDataPlayer(Event* ev)
 	if (!sKeyname.length()) {
 		Player* player = (Player*)ent;
 		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
-		DEBUG_LOG("coop_getIniDataPlayer - Grab Player Coop ID - Feature not Implemented");
+		DEBUG_LOG("coop_getIniDataPlayer - Grab Player(%d) Coop ID - Feature not Implemented", player->entnum);
 		ev->ReturnString("NOT_IMPLEMENTED");
 		return;
 	}
