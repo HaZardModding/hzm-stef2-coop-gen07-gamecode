@@ -22,6 +22,7 @@ struct coopManager_client_persistant_s
     bool		coopSetupStarted = false;
     bool		coopSetupDone = false;
     str			coopClass = "Technician";
+    str         coopClientId = "";
     int         coopVersion = 0;
     bool        respawnMe = false;
     bool        spawnLocationSpawnForced = true;
@@ -112,6 +113,7 @@ public:
     void playerJoined(Player* player);
     void playerSetup(Player* player);
     void playerCoopDetected(const gentity_t* ent, const char* coopVer);
+    void playerCoopDetectClId(const gentity_t* ent, const char* clientId);
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
@@ -133,6 +135,8 @@ public:
     void setPlayerData_coopSetupDone(Player* player, bool state);
     str getPlayerData_coopClass(Player* player);
     void setPlayerData_coopClass(Player* player, str className);
+    str getPlayerData_coopClientId(Player* player);
+    void setPlayerData_coopClientId(Player* player,str sClientId);
     int getPlayerData_coopVersion(Player* player);
     void setPlayerData_coopVersion(Player* player, int coopVersion);
     bool getPlayerData_respawnMe(Player* player);
@@ -164,6 +168,7 @@ public:
     void setPlayerData_objectives_reset(Player* player);
     bool getPlayerData_objectives_setupDone(Player* player);
     void setPlayerData_objectives_setupDone(Player* player);
+
 
 private:
     CoopManager() = default;

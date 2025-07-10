@@ -38,6 +38,22 @@ void CoopManager::setPlayerData_coopClass(Player* player, str className) {
     coopManager_client_persistant_t[player->entnum].coopClass = className;
 }
 
+str CoopManager::getPlayerData_coopClientId(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientId() nullptr player");
+        return "";
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClientId;
+}
+
+void CoopManager::setPlayerData_coopClientId(Player* player, str sClientId) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClientId() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClientId = sClientId;
+}
+
 int CoopManager::getPlayerData_coopVersion(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopVersion() nullptr player");
@@ -412,13 +428,13 @@ void CoopManager::LoadPlayerModelsFromINI() {
     if (gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
         str sectionContents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
         
-        DEBUG_LOG("Valid Player Models\n");
+        //DEBUG_LOG("Valid Player Models\n");
 
         //default fallback hardcoded model
         str skinName = "models/char/munro.tik";
         coopManager_validPlayerModels.AddUniqueObject(skinName);
        
-        DEBUG_LOG("%s\n",skinName.c_str());
+        //DEBUG_LOG("%s\n",skinName.c_str());
 
         //get models by number, starting with 1
         int i = 1;
@@ -427,7 +443,7 @@ void CoopManager::LoadPlayerModelsFromINI() {
             if (skinName.length()) {
                 coopManager_validPlayerModels.AddUniqueObject(skinName);
                 
-                DEBUG_LOG("%s\n",skinName.c_str());
+                //DEBUG_LOG("%s\n",skinName.c_str());
             }
             i++;
         }
@@ -711,6 +727,38 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     coopManager_client_persistant_t[player->entnum].coopVersion = iVer;
     //run coop setup
     DEBUG_LOG("# COOP DETECTED: %d\n", iVer);
+}
+
+void CoopManager::playerCoopDetectClId(const gentity_t* ent, const char* clientId) {
+    if (!ent || !ent->entity || !ent->client || !clientId || !strlen(clientId)) {
+        return;
+    }
+    Player* player = (Player*)ent->entity;
+    const char* cCClientId = gi.argv(1);
+    str sId = va("%s", cCClientId);
+
+    if (!sId.length()) {
+        gi.Printf(va("COOPDEBUG: coop_cId - Bad or Empty: Rejected! For: %s\n", player->client->pers.netname));
+        return;
+    }
+
+    str sClientId = "";
+    if ((gameFixAPI_getPersistant_enteredServerAt(player->entnum) + 10) > level.time) {
+        sId = gamefix_filterChars(sId, ";[]=");
+        sId = gamefix_trimWhitespace(sId,false);
+//sClientId = coop_checkPlayerCoopIdExistInIni(player, sId);
+        if (sClientId.length()) {
+            //prevent players from cheating lms by reconnecting
+//player->coop_lmsCheckReconnectHack();
+        }
+    }
+    else {
+        player->hudPrint("COOPDEBUG: coop_cId - Timed Out: Rejected!\n");
+        gi.Printf(va("COOPDEBUG: coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
+    }
+    
+    //run coop setup
+    DEBUG_LOG("# CId DETECTED: %s\n", sClientId.c_str());
 }
 
 //Executed every level restart/reload or when player disconnects
