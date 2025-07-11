@@ -1544,8 +1544,10 @@ void gamefix_playerClearDelayedServerCommand(int entNum)
     while (current != nullptr) {
         gamefix_pendingServerCommand* temp = current;
         current = current->next;
-		free(temp->command);
-        free(temp);
+		if (temp) {
+			free(temp->command);
+			free(temp);
+		}
     }
     pendingServerCommandList[entNum] = nullptr;
 }
@@ -2785,6 +2787,16 @@ str gamefix_debugTextErrorMarker(unsigned int pos)
 		sMarker += " ";
 	}
 	return (sMarker += "^ ERROR");
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to get unix timestamp from server - chrissstrahl
+//--------------------------------------------------------------
+float gamefix_getTimeStamp()
+{
+	time_t curTime;
+	time(&curTime);
+	return curTime;
 }
 
 //--------------------------------------------------------------

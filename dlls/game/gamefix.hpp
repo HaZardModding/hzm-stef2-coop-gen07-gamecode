@@ -77,6 +77,7 @@ struct gamefix_client_persistant_s
 	bool			hudsAdded = false;
 	float			hudsAddedLastCheck = 0.0f;
 	bool			messageOfTheDayDone = false;
+	bool			enteredServerAt = 999.0f;
 
 
 	//--------------------------------------------------------------
@@ -237,6 +238,7 @@ str					gamefix_replaceForLabelText(str sPure);
 
 str					gamefix_debugTextErrorMarker(unsigned int pos);
 
+float				gamefix_getTimeStamp();
 void				gamefix_runFrame(int levelTime, int frameTime);
 void				gamefix_shutdownGame();
 void				gamefix_initGame();
