@@ -548,6 +548,33 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 	gamefix_client_persistant_t[clientNum].hudsAdded = false;
 	gamefix_client_persistant_t[clientNum].hudsAddedLastCheck = 0;
 	gamefix_client_persistant_t[clientNum].messageOfTheDayDone = false;
+	gamefix_client_persistant_t[clientNum].enteredServerAt = -999.0f;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Persistant Player data handle - enteredServerAt - chrissstrahl
+//--------------------------------------------------------------
+void gameFixAPI_setPersistant_enteredServerAt(int clientNum, float fNew)
+{
+	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
+		gi.Error(ERR_DROP, "gameFixAPI_setPersistant_enteredServerAt Client Num out of Range\n", clientNum);
+		return;
+	}
+
+	gamefix_client_persistant_t[clientNum].enteredServerAt = fNew;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Persistant Player data handle - enteredServerAt - chrissstrahl
+//--------------------------------------------------------------
+float gameFixAPI_getPersistant_enteredServerAt(int clientNum)
+{
+	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
+		gi.Error(ERR_DROP, "gameFixAPI_getPersistant_enteredServerAt Client Num out of Range\n", clientNum);
+		return -997.0f;
+	}
+
+	return gamefix_client_persistant_t[clientNum].enteredServerAt;
 }
 
 //--------------------------------------------------------------

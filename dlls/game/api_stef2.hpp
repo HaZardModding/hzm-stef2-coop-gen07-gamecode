@@ -64,6 +64,8 @@ Entity* gameFixAPI_getTargetedEntity(Player* player);
 Player* gameFixAPI_getClosestPlayerInCallvolume(Entity* entity);
 
 void gameFixAPI_initPersistant(int clientNum, bool isBot);
+void gameFixAPI_setPersistant_enteredServerAt(int clientNum, float fNew);
+float gameFixAPI_getPersistant_enteredServerAt(int clientNum);
 bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd);
 bool gamefixAPI_chatUpdate(int clientNum, const str &text);
 
