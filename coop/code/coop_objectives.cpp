@@ -658,7 +658,7 @@ void coop_objectivesUpdate( str sObjectiveState, int iObjectiveNumber, int  bSho
 //================================================================
 void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveState , bool bfObjectiveShow )
 {
-	if ( !player || level.mission_failed ){
+	if ( !player || level.mission_failed || !CoopManager::Get().getPlayerData_coopSetupDone(player)){
 		return;
 	}
 
