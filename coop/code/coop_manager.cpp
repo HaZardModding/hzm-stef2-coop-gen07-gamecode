@@ -8,6 +8,20 @@ coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 coopManager_mapSettings_s coopManager_mapSettings_t;
 
 
+bool CoopManager::getPlayerData_coopClientIdDone(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientIdDone() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClientIdDone;
+}
+void CoopManager::setPlayerData_coopClientIdDone(Player* player, bool state) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClientIdDone() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClientIdDone = state;
+}
 bool CoopManager::getPlayerData_coopSetupDone(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopSetupDone() nullptr player");
@@ -367,7 +381,7 @@ str CoopManager::IncludeScriptReplace(str sLex) {
             sReplace += sFile;
 
             if (gi.FS_ReadFile(sReplace.c_str(), NULL, true) != -1) {
-                DEBUG_LOG(va("%s used from /co-op/ folder\n", sFile.c_str()));
+                //DEBUG_LOG(va("%s used from /co-op/ folder\n", sFile.c_str()));
                 gi.Printf(va("%s used from /co-op/ folder\n", sFile.c_str()));
                 return sReplace;
             }
@@ -412,6 +426,10 @@ void CoopManager::Init() {
         LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
+
+        //add coop client console commands
+        gameFixAPI_addWhitheListClCmds("coopinstalled");
+        gameFixAPI_addWhitheListClCmds("coopcid");
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
@@ -681,85 +699,141 @@ void CoopManager::LevelStart(CThread* gamescript) {
     }
 }
 
+//called by ClientThink
 void CoopManager::playerSetup(Player* player) {
     if (!player) {
         return;
     }
-    if (getPlayerData_coopSetupDone(player)) {
-        return;
-    }
-    if (coopManager_client_persistant_t[player->entnum].coopSetupTries > _COOP_SETTINGS_SETUP_TRIES) {
-        coopManager_client_persistant_t[player->entnum].coopVersion = 0;
-        
-        setPlayerData_coopSetupDone(player,true);
-        setPlayerData_objectives_setupDone(player);
 
-        DEBUG_LOG("# playerSetup Failed\n");
+    if (getPlayerData_coopSetupDone(player) && getPlayerData_coopClientIdDone(player)) {
         return;
     }
 
     if (coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime > level.time) {
         return;
     }
+    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = (level.time + 0.15f);
+    coopManager_client_persistant_t[player->entnum].coopSetupTries++;
 
     if (!coopManager_client_persistant_t[player->entnum].coopSetupStarted) {
+        //Client ID
+        gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_cId");
+        //Coop Version
         gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/detect.cfg");
         coopManager_client_persistant_t[player->entnum].coopSetupStarted = true;
     }
-    
-    coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = (level.time + 0.15f);
-    coopManager_client_persistant_t[player->entnum].coopSetupTries++;
-    DEBUG_LOG("# playerSetup Try\n");
+
+    //handle client id
+    playerSetupClId(player);
+    playerSetupCoop(player);
 }
 
+void CoopManager::playerSetupClId(Player* player) {
+    if (getPlayerData_coopClientIdDone(player)) {
+        return;
+    }
+    
+    if (coopManager_client_persistant_t[player->entnum].coopSetupTries > _COOP_SETTINGS_SETUP_TRIES) {
+        playerClIdSet(player);
+        setPlayerData_coopClientIdDone(player, true);
+
+        DEBUG_LOG("# playerSetupClId Failed\n");
+        return;
+    }
+}
+
+void CoopManager::playerSetupCoop(Player* player) {
+    if (getPlayerData_coopSetupDone(player)) {
+        return;
+    }
+    
+    if (coopManager_client_persistant_t[player->entnum].coopSetupTries > _COOP_SETTINGS_SETUP_TRIES) {
+        coopManager_client_persistant_t[player->entnum].coopVersion = 0;
+
+        setPlayerData_coopSetupDone(player, true);
+        setPlayerData_objectives_setupDone(player);
+
+        DEBUG_LOG("# playerSetupCoop Failed\n");
+        return;
+    }
+}
+
+//called by console command "coopinstalled"
 void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) {
     if (!ent || !ent->entity || !ent->client || !coopVer || !strlen(coopVer)) {
         return;
     }
     Player* player = (Player*)ent->entity;
-    int iVer =  atoi(coopVer);
 
+    if (getPlayerData_coopSetupDone(player)) {
+        return;
+    }   
+    
+    int iVer =  atoi(coopVer);
     setPlayerData_coopSetupDone(player, true);
     if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
+        DEBUG_LOG("# COOP DETECTED = OUTDATED =: %d\n", iVer);
         return;
     }
     
     coopManager_client_persistant_t[player->entnum].coopVersion = iVer;
+   
     //run coop setup
-    DEBUG_LOG("# COOP DETECTED: %d\n", iVer);
+    DEBUG_LOG("# COOP DETECTED: %d (WAITED: %d)\n", iVer, coopManager_client_persistant_t[player->entnum].coopSetupTries);
 }
 
-void CoopManager::playerCoopDetectClId(const gentity_t* ent, const char* clientId) {
+//called by console command "coopcid"
+void CoopManager::playerClIdDetected(const gentity_t* ent, const char* clientId) {
     if (!ent || !ent->entity || !ent->client || !clientId || !strlen(clientId)) {
         return;
     }
     Player* player = (Player*)ent->entity;
+
     const char* cCClientId = gi.argv(1);
     str sId = va("%s", cCClientId);
+
+    if (getPlayerData_coopClientIdDone(player)) {
+        player->hudPrint("COOPDEBUG: coop_cId - Timed Out: Rejected!\n");
+        gi.Printf(va("COOPDEBUG: coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
+        DEBUG_LOG("# CId TIMED OUT: %s\n", sId.c_str());
+        return;
+    }
 
     if (!sId.length()) {
         gi.Printf(va("COOPDEBUG: coop_cId - Bad or Empty: Rejected! For: %s\n", player->client->pers.netname));
         return;
     }
 
+    DEBUG_LOG("# CId RECIVED: %s (WAITED %d)\n", sId.c_str(), coopManager_client_persistant_t[player->entnum].coopSetupTries);
+
     str sClientId = "";
-    if ((gameFixAPI_getPersistant_enteredServerAt(player->entnum) + 10) > level.time) {
-        sId = gamefix_filterChars(sId, ";[]=");
-        sId = gamefix_trimWhitespace(sId,false);
+    sId = gamefix_filterChars(sId, ";[]=");
+    sId = gamefix_trimWhitespace(sId,false);
+
+    DEBUG_LOG("# CId CHECK VS INI NOT IMPLEMENTED\n");
+
+    sClientId = sId;
 //sClientId = coop_checkPlayerCoopIdExistInIni(player, sId);
-        if (sClientId.length()) {
-            //prevent players from cheating lms by reconnecting
+    if (sClientId.length()) {
+        //prevent players from cheating lms by reconnecting
 //player->coop_lmsCheckReconnectHack();
-        }
+        setPlayerData_coopClientIdDone(player,true);
     }
-    else {
-        player->hudPrint("COOPDEBUG: coop_cId - Timed Out: Rejected!\n");
-        gi.Printf(va("COOPDEBUG: coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
-    }
-    
-    //run coop setup
-    DEBUG_LOG("# CId DETECTED: %s\n", sClientId.c_str());
 }
+
+void CoopManager::playerClIdSet(Player* player)
+{
+    if (getPlayerData_coopClientIdDone(player)) {
+        return;
+    }
+
+    //that should create a pretty uniqe player id
+    str sId = va("%d%d", (int)gamefix_getTimeStamp(), player->entnum);
+    setPlayerData_coopClientId(player, sId);
+    gi.SendServerCommand(player->entnum, va("stufftext \"seta coop_cId 0;set coop_cId coopcid %s\"\n", sId.c_str()));
+    DEBUG_LOG("# CId NEW CREATED: %s\n", sId.c_str());
+}
+
 
 //Executed every level restart/reload or when player disconnects
 void CoopManager::playerReset(Player* player) {
@@ -793,6 +867,7 @@ void CoopManager::playerDisconnect(Player* player) {
     DEBUG_LOG("# playerDisconnect\n");
 
     setPlayerData_coopClientIdDone(player, false);
+    coopManager_client_persistant_t[player->entnum].coopClientId = "";
     coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
     coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
     coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.0f;
@@ -864,6 +939,9 @@ void CoopManager::playerSpawned(Player* player) {
 //Executed on death - Multiplayer
 void CoopManager::playerBecameSpectator(Player *player){
     if (player) {
+        coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced = true;
+        coopManager_client_persistant_t[player->entnum].respawnLocationSpawn = true;
+
         ExecuteThread("coop_justBecameSpectator", true, player);
     }
 }
