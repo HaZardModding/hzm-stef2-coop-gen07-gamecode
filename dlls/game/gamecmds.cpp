@@ -1522,7 +1522,7 @@ qboolean coop_playerClientId(const gentity_t* ent) {
 	}
 
 	//if (CoopManager::Get().IsCoopEnabled()) {
-	CoopManager::Get().playerCoopDetectClId(ent, gi.argv(1));
+	CoopManager::Get().playerClIdDetected(ent, gi.argv(1));
 	//}
 	return true;
 }
