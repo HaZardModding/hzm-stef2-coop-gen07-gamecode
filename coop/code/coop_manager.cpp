@@ -792,6 +792,7 @@ void CoopManager::playerDisconnect(Player* player) {
     }
     DEBUG_LOG("# playerDisconnect\n");
 
+    setPlayerData_coopClientIdDone(player, false);
     coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
     coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
     coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.0f;

@@ -21,8 +21,11 @@ struct coopManager_client_persistant_s
     short		coopSetupTries = 0;
     bool		coopSetupStarted = false;
     bool		coopSetupDone = false;
-    str			coopClass = "Technician";
+
     str         coopClientId = "";
+    bool		coopClientIdDone = false;
+
+    str			coopClass = "Technician";
     int         coopVersion = 0;
     bool        respawnMe = false;
     bool        spawnLocationSpawnForced = true;
@@ -112,8 +115,11 @@ public:
     void playerDisconnect(Player* player);
     void playerJoined(Player* player);
     void playerSetup(Player* player);
+    void playerSetupClId(Player* player);
+    void playerSetupCoop(Player* player);
     void playerCoopDetected(const gentity_t* ent, const char* coopVer);
-    void playerCoopDetectClId(const gentity_t* ent, const char* clientId);
+    void playerClIdDetected(const gentity_t* ent, const char* clientId);
+    void playerClIdSet(Player* player);
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
@@ -131,6 +137,8 @@ public:
     int  GetPenaltyForPlayerKill() const;
 
     // Access to coopManager_client_persistant_t
+    bool getPlayerData_coopClientIdDone(Player* player);
+    void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);
     void setPlayerData_coopSetupDone(Player* player, bool state);
     str getPlayerData_coopClass(Player* player);
