@@ -30,6 +30,11 @@ constexpr auto GAMEFIX_API_COMMANDS_CYCLE = 1.0f;
 //--------------------------------------------------------------
 extern Container<str> gameFixAPI_maplistContainer;
 
+//--------------------------------------------------------------
+// GAMEFIX - Added: Allowed commands list to prevent stalling critical commands - chrissstrahl
+//--------------------------------------------------------------
+extern Container<str> gameFixAPI_AllowedCmdsContainer;
+
 bool gameFixAPI_inSingleplayer();
 bool gameFixAPI_inMultiplayer();
 bool gameFixAPI_isSpectator_stef2(Entity* ent);
@@ -64,8 +69,8 @@ Entity* gameFixAPI_getTargetedEntity(Player* player);
 Player* gameFixAPI_getClosestPlayerInCallvolume(Entity* entity);
 
 void gameFixAPI_initPersistant(int clientNum, bool isBot);
-void gameFixAPI_setPersistant_enteredServerAt(int clientNum, float fNew);
-float gameFixAPI_getPersistant_enteredServerAt(int clientNum);
+void gameFixAPI_setPersistant_enteredServerAt(int clientNum, time_t timeNew);
+time_t gameFixAPI_getPersistant_enteredServerAt(int clientNum);
 bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd);
 bool gamefixAPI_chatUpdate(int clientNum, const str &text);
 
@@ -98,6 +103,9 @@ int gameFixAPI_mapListGetCurrentPos();
 str gameFixAPI_mapListUp();
 str gameFixAPI_mapListDown();
 void gameFixAPI_dialogSetupPlayers(Actor* speaker, char *localizedDialogName, bool headDisplay);
+void gameFixAPI_clCmdsWhitheListInit();
+bool gameFixAPI_clCmdsWhitheListContains(const str& cmdName);
+void gameFixAPI_clCmdsWhitheListAdd(const str& cmdName);
 void gameFixAPI_addMap(const str& name, str gametypes, const str& gamemodes);
 static void gameFixAPI_addDefaultMaps();
 bool gameFixAPI_mapIsStock(const str& name);

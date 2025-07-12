@@ -19,6 +19,11 @@
 Container<str> gameFixAPI_maplistContainer;
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Allowed commands list to prevent stalling critical commands - chrissstrahl
+//--------------------------------------------------------------
+Container<str> gameFixAPI_AllowedCmdsContainer;
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Returns if we are in Singleplayer - chrissstrahl
 //--------------------------------------------------------------
 bool gameFixAPI_inSingleplayer()
@@ -554,20 +559,20 @@ void gameFixAPI_initPersistant(int clientNum, bool isBot)
 //--------------------------------------------------------------
 // GAMEFIX - Added: Persistant Player data handle - enteredServerAt - chrissstrahl
 //--------------------------------------------------------------
-void gameFixAPI_setPersistant_enteredServerAt(int clientNum, float fNew)
+void gameFixAPI_setPersistant_enteredServerAt(int clientNum, time_t timeNew)
 {
 	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
 		gi.Error(ERR_DROP, "gameFixAPI_setPersistant_enteredServerAt Client Num out of Range\n", clientNum);
 		return;
 	}
 
-	gamefix_client_persistant_t[clientNum].enteredServerAt = fNew;
+	gamefix_client_persistant_t[clientNum].enteredServerAt = timeNew;
 }
 
 //--------------------------------------------------------------
 // GAMEFIX - Added: Persistant Player data handle - enteredServerAt - chrissstrahl
 //--------------------------------------------------------------
-float gameFixAPI_getPersistant_enteredServerAt(int clientNum)
+time_t gameFixAPI_getPersistant_enteredServerAt(int clientNum)
 {
 	if (clientNum < 0 || clientNum > MAX_CLIENTS) {
 		gi.Error(ERR_DROP, "gameFixAPI_getPersistant_enteredServerAt Client Num out of Range\n", clientNum);
@@ -591,18 +596,8 @@ bool gamefixAPI_commandsUpdate(int clientNum, const str &cmd)
 		return false;
 	}
 
-	//allow these commands to always pass
-	if (Q_stricmp(cmd.c_str(), "disconnect") == 0 ||
-		Q_stricmp(cmd.c_str(),"say") == 0 ||
-		Q_stricmp(cmd.c_str(),"tsay") == 0 ||
-		Q_stricmp(cmd.c_str(),"vsay") == 0 ||
-		Q_stricmp(cmd.c_str(),"vosay") == 0 ||
-		Q_stricmp(cmd.c_str(),"vosay_team") == 0 ||
-		Q_stricmp(cmd.c_str(),"vsay_team") == 0 ||
-		Q_stricmp(cmd.c_str(),"say_team") == 0 ||
-		cmd == "Eng" ||
-		cmd == "Deu")
-	{
+	//allow these commands to always pass, see gameFixAPI_clCmdsWhitheListInit
+	if (gameFixAPI_clCmdsWhitheListContains(cmd)) {
 		return true;
 	}
 
@@ -1375,6 +1370,42 @@ void gameFixAPI_dialogSetupPlayers(Actor* speaker, char *localizedDialogName, bo
 }
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Function to add allowed client commands - chrissstrahl
+//--------------------------------------------------------------
+bool gameFixAPI_clCmdsWhitheListContains(const str& cmdName)
+{
+	if (cmdName.length()) {
+		if (gameFixAPI_AllowedCmdsContainer.ObjectInList(cmdName)) {
+			return true;
+		}
+	}
+	return false;
+}
+void gameFixAPI_clCmdsWhitheListInit()
+{
+	gameFixAPI_clCmdsWhitheListAdd("disconnect");
+	gameFixAPI_clCmdsWhitheListAdd("say");
+	gameFixAPI_clCmdsWhitheListAdd("tsay");
+	gameFixAPI_clCmdsWhitheListAdd("vsay");
+	gameFixAPI_clCmdsWhitheListAdd("vosay");
+	gameFixAPI_clCmdsWhitheListAdd("vosay_team");
+	gameFixAPI_clCmdsWhitheListAdd("vsay_team");
+	gameFixAPI_clCmdsWhitheListAdd("say_team");
+
+	gameFixAPI_clCmdsWhitheListAdd("Eng");
+	gameFixAPI_clCmdsWhitheListAdd("Deu");
+}
+void gameFixAPI_clCmdsWhitheListAdd(const str& cmdName)
+{
+	if (!cmdName.length()) {
+		return;
+	}
+	gameFixAPI_AllowedCmdsContainer.AddObject(cmdName);
+}
+
+
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Function to create default maps list - chrissstrahl
 //--------------------------------------------------------------
 void gameFixAPI_addMap(const str& name, str gametypes, const str& gamemodes)
@@ -1975,6 +2006,7 @@ bool gameFixAPI_callvoteIniHandle(Player* player ,const str &command, const str 
 void gameFixAPI_shutdownGame()
 {
 	gameFixAPI_maplistContainer.FreeObjectList();
+	gameFixAPI_maplistContainer.FreeObjectList();
 	gamefix_fileContentTokenized.FreeObjectList();
 
 	/* int i = 0;
@@ -1989,6 +2021,7 @@ void gameFixAPI_shutdownGame()
 //--------------------------------------------------------------
 void gameFixAPI_initGame()
 {
+	gameFixAPI_clCmdsWhitheListInit();
 	gameFixAPI_addDefaultMaps();
 }
 
