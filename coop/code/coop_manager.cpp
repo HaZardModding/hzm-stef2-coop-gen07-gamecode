@@ -428,8 +428,8 @@ void CoopManager::Init() {
         LoadPlayerModelsFromINI();
 
         //add coop client console commands
-        gameFixAPI_addWhitheListClCmds("coopinstalled");
-        gameFixAPI_addWhitheListClCmds("coopcid");
+        gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
+        gameFixAPI_clCmdsWhitheListAdd("coopcid");
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
