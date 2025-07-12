@@ -2792,7 +2792,7 @@ str gamefix_debugTextErrorMarker(unsigned int pos)
 //--------------------------------------------------------------
 // GAMEFIX - Added: Function to get unix timestamp from server - chrissstrahl
 //--------------------------------------------------------------
-float gamefix_getTimeStamp()
+time_t gamefix_getTimeStamp()
 {
 	time_t curTime;
 	time(&curTime);
