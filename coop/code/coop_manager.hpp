@@ -99,6 +99,9 @@ public:
     void Shutdown();
     void LevelStart(CThread* gamescript);
     void LevelEndCleanup(qboolean temp_restart);
+    void MissionFailed(const str& reason);
+    str MissionFailureString(const str& reason);
+    void MissionFailureLoadMap();
     bool IsCoopEnabled() const;
     void DisableCoop();
     bool IsRpgEnabled() const;

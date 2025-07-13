@@ -325,6 +325,19 @@ void CoopManager::Shutdown() {
     coopManager_validPlayerModels.FreeObjectList();
 }
 
+//Executed each time a level is starting - scripts are started
+//Executed from: Level::Start - always
+//Other: CoopManager::InitWorld
+void CoopManager::LevelStart(CThread* gamescript) {
+    //start coop main function automatically, will auto-handle SP/MP
+    if (gamescript && gamescript->labelExists(_COOP_SCRIPT_main)) {
+        CThread* coopMain = Director.CreateThread(_COOP_SCRIPT_main);
+        if (coopMain) {
+            coopMain->DelayedStart(0.0f);
+        }
+    }
+}
+
 //Executed if level is exited/changed/restarted - but not on first load/game start
 //Cleans up stuff while world and entities still exist - Not executed if game server is quit
 void CoopManager::LevelEndCleanup(qboolean temp_restart) {
@@ -347,17 +360,68 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
     }
 }
 
-//Executed each time a level is starting - scripts are started
-//Executed from: Level::Start - always
-//Other: CoopManager::InitWorld
-void CoopManager::LevelStart(CThread* gamescript) {
-    //start coop main function automatically, will auto-handle SP/MP
-    if (gamescript && gamescript->labelExists(_COOP_SCRIPT_main)) {
-        CThread* coopMain = Director.CreateThread(_COOP_SCRIPT_main);
-        if (coopMain) {
-            coopMain->DelayedStart(0.0f);
+void CoopManager::MissionFailed(const str & reason) {
+    if (g_gametype->integer == GT_SINGLE_PLAYER) { return; }
+
+    gentity_t* other;
+    int j;
+    for (j = 0; j < game.maxclients; j++) {
+        other = &g_entities[j];
+        if (other->inuse && other->client && other->entity) {
+            Player* player = (Player*)other->entity;
+            str sReason = reason;
+            //Intentionally no $$ wanted
+            if (reason.length() && reason[0] == '#') {
+                sReason = gamefix_getStringUntil(sReason,1,999);
+            }
+            //If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
+            else if (gamefix_findString(sReason.c_str(), "$$") == -1 && gamefix_findString(sReason.c_str(), " ") == -1) {
+                sReason = va("$$%s$$", sReason.c_str());
+            }
+
+            //show hud for coop clients and text for others
+            if (player->coop_hasCoopInstalled()) {
+                gamefix_playerDelayedServerCommand(player->entnum, va("set ui_failureReason %s\n", sReason.c_str()));
+                gamefix_playerDelayedServerCommand(player->entnum, "pushmenu coop_failure");
+            }
+            else {
+                gamefix_playerDelayedServerCommand(player->entnum, "hudprint ^1=============^3$$MISSIONFAILED$$^1=============\n");
+                gamefix_playerDelayedServerCommand(player->entnum, va("hudprint ^3%s\n", sReason.c_str()));
+            }
         }
     }
+}
+
+str CoopManager::MissionFailureString(const str& reason)
+{
+    str newReason = reason;
+    //if # is used it means set string without $$
+    if (reason[0] == '#') {
+        newReason = gamefix_getStringUntil(reason, 1, 999);
+        newReason = va("\n\n  %s^0", newReason.c_str());
+    }
+    return newReason;
+}
+
+void CoopManager::MissionFailureLoadMap()
+{
+    if (!multiplayerManager.inMultiplayer()) { return; }
+
+    Event* ev_loadMap = new Event(EV_World_coop_loadMap);
+    str sParameters = "";
+
+    //Checkpoints - do this only if we know we have a valid scriptfile for this map, cuz scriptmaster keeps values of last script file - chrissstrahl
+    if (level.game_script != "") {
+        sParameters = program.coop_getStringVariableValue("coop_string_checkpointParameters");
+    }
+
+    if (sParameters != "") {
+        ev_loadMap->AddString(va("%s$%s", level.mapname.c_str(), sParameters.c_str()));
+    } else {
+        ev_loadMap->AddString(level.mapname.c_str());
+    }
+
+    world->PostEvent(ev_loadMap, 6.0f);
 }
 
 //called by ClientThink
