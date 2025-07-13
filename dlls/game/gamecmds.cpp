@@ -61,6 +61,8 @@ consolecmd_t G_ConsoleCmds[] =
 
 	{ "!thread",coop_playerThread,true },
 
+	{ "coopinput",coop_playerInput,true },
+
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
 	{ "dialogrunthread",	G_DialogRunThread,		false },
@@ -1578,6 +1580,56 @@ qboolean coop_playerThread(const gentity_t* ent)
 	if (pThread == nullptr) { sPrint = "^2FAILED to run func"; }
 	player->hudPrint(va("%s:^3 %s\n", sPrint.c_str(), threadName.c_str()));	
 
+	return true;
+}
+
+qboolean coop_playerInput(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	if (!gi.argc())
+		return true;
+
+	str inputData = gi.argv(1);
+
+	//Grab more data
+	for (int i = 2; i < 32; i++) {
+		str sGrabMe = gi.argv(i);
+		if (sGrabMe.length()) {
+			inputData = va("%s %s", inputData.c_str(), sGrabMe.c_str());
+		}
+	}
+
+	if (!inputData.length())
+		return false;
+
+	Player* player = (Player*)ent->entity;
+
+	/*
+	//if !login is active add input to coopPlayer.adminAuthString instead
+	//also update the cvar that is shown in the login menu of the communicator
+	if (multiplayerManager.inMultiplayer() && player->coop_playerAdminAuthStarted()) {
+		if (inputData == "clear") {
+			player->coop_playerAdminAuthString("");
+		}
+		else {
+			player->coop_playerAdminAuthString(va("%s%s", player->coop_playerAdminAuthString().c_str(), inputData.c_str()));
+		}
+
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", player->coop_playerAdminAuthString().c_str()));
+		return true;
+	}
+	*/
+
+	//limit of data that can be actually used
+	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
+		inputData = gamefix_getStringLength(inputData,0,259);
+	}
+
+	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());
+
+	ExecuteThread("playerInput", true, (Entity*)player);
 	return true;
 }
 #endif
