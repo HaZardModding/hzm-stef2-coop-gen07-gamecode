@@ -79,7 +79,17 @@ $player.coop_isTechnician() - checks if player is of class
 $player.coop_isMedic() - checks if player is of class
 $player.coop_isHeavyWeapons() - checks if player is of class
 $sentient.coop_hasItem(itemModelName) - checks if sentient has a the specific item
+missionfailed(reason) - fails the mission, forces a map reload
 
+
+NEW console commands:
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+coopinstalled			//tell installed coop version
+coopcid					//tell client coop identification
+!thread					//run script thread executed by player entity
+dialogrunthread 		//now allowed in multiplayer
 
 Coop Mod execution logic:
 /////////////////////////////////////////
