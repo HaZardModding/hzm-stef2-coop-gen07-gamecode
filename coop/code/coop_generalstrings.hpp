@@ -16,7 +16,9 @@ constexpr auto _COOP_INFO_INIT_world = "==== HaZardModding Coop Mod Gen7 WORLD -
 constexpr auto _COOP_INFO_INIT_status = "==== HaZardModding Coop Mod Gen7 STAUS - %s ====\n";
 
 
-constexpr auto _COOP_INFO_needAdmin = "^3You need to !login as Coop Admin to use this command.\n";
+constexpr auto _COOP_INFO_adminAuto = "Automatically logged you in as Host.";
+constexpr auto _COOP_INFO_adminLoggedInHost = "^3You are now logged in (Host auto-!login).\n";
+constexpr auto _COOP_INFO_adminNeeded = "^3You need to !login as Coop Admin to use this command.\n";
 
 
 constexpr auto _COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW = "%s - too few parameters\n";
