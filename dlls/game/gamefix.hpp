@@ -176,6 +176,9 @@ str					gamefix_getLocalizedString(Player* player, const str sEnglish,const str 
 str					gamefix_localizeStringForPlayer(Player* player, char unlocal[MAX_QPATH]);
 void				gamefix_printAllClients(const str text);
 
+float				gamefix_getEntityVarFloat(Entity* e, str sVarName);
+int					gamefix_getEntityVarInt(Entity* e, str sVarName);
+
 int					gamefix_getCvarInt(str cvarName);
 float				gamefix_getCvarFloat(str cvarName);
 str					gamefix_getCvar(str cvarName);

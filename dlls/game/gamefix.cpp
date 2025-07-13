@@ -600,6 +600,36 @@ Player* gamefix_getAnyPlayerPreferably(bool noDead,bool noSpectator)
 }
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Function to return float value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+float gamefix_getEntityVarFloat(Entity* e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->floatValue();
+		}
+	}
+	return 0.0f;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return integer value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+int gamefix_getEntityVarInt(Entity* e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->intValue();
+		}
+	}
+	return 0;
+}
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Function to return interger value from cVar - chrissstrahl
 //--------------------------------------------------------------
 int gamefix_getCvarInt(str cvarName)
