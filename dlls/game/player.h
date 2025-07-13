@@ -315,6 +315,7 @@ class Player : public Sentient
 		int coop_getCoopVersion();
 		void coop_getCoopVersion(Event* ev);
 		bool coop_hasCoopInstalled();
+		bool coop_isAdmin();
 
 		unsigned int coop_getObjectiveState();
 		void coop_setObjectiveState(unsigned int states, bool set);
@@ -325,7 +326,7 @@ class Player : public Sentient
 
 		void coop_hudsAdd(Player* player, str hudName);
 
-		Actor* Player::coop_getBranchDialogActor(void);
+		Actor* coop_getBranchDialogActor(void);
 #endif
 
 

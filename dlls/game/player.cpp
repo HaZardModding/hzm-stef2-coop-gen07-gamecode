@@ -15594,4 +15594,19 @@ Actor* Player::coop_getBranchDialogActor(void)
 	return _branchDialogActor;
 }
 
+bool Player::coop_isAdmin()
+{
+	if (CoopManager::Get().getPlayerData_coopAdmin(this)) {
+		return true;
+	}
+	
+	if (gameFixAPI_isHost(this)) {
+		CoopManager::Get().setPlayerData_coopAdmin(this,true);
+		gamefix_playerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", gamefix_replaceForLabelText(_COOP_INFO_adminAuto).c_str()));
+		hudPrint(_COOP_INFO_adminLoggedInHost);
+		return true;
+	}
+	return false;
+}
+
 #endif

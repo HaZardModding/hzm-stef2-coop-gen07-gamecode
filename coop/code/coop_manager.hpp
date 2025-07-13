@@ -23,10 +23,11 @@ struct coopManager_client_persistant_s
     bool		coopSetupDone = false;
 
     str         coopClientId = "";
-    bool		coopClientIdDone = false;
-
     str			coopClass = "Technician";
     int         coopVersion = 0;
+    bool        coopAdmin = false;
+
+    bool		coopClientIdDone = false;
     bool        respawnMe = false;
     bool        spawnLocationSpawnForced = true;
     bool        respawnLocationSpawn = false;
@@ -140,6 +141,8 @@ public:
     int  GetPenaltyForPlayerKill() const;
 
     // Access to coopManager_client_persistant_t
+    bool getPlayerData_coopAdmin(Player* player);
+    void setPlayerData_coopAdmin(Player* player, bool state);
     bool getPlayerData_coopClientIdDone(Player* player);
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);

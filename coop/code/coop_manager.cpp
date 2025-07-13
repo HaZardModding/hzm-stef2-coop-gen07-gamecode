@@ -592,6 +592,7 @@ void CoopManager::playerDisconnect(Player* player) {
     DEBUG_LOG("# playerDisconnect\n");
 
     setPlayerData_coopClientIdDone(player, false);
+    setPlayerData_coopAdmin(player,false);
     coopManager_client_persistant_t[player->entnum].coopClientId = "";
     coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
     coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
@@ -710,6 +711,20 @@ int CoopManager::GetPenaltyForPlayerKill() const {
 
 
 
+bool CoopManager::getPlayerData_coopAdmin(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdmin() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopAdmin;
+}
+void CoopManager::setPlayerData_coopAdmin(Player* player, bool state) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopAdmin() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdmin = state;
+}
 bool CoopManager::getPlayerData_coopClientIdDone(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientIdDone() nullptr player");
