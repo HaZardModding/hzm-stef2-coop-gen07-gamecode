@@ -15363,16 +15363,16 @@ Event EV_Player_coop_runThread
 );
 void Player::coop_runThreadEvent(Event* ev)
 {
-	str thread_name = "";
-	thread_name = ev->GetString(1);
-	coop_runThread(thread_name);
+	str threadName = "";
+	threadName = ev->GetString(1);
+	coop_runThread(threadName);
 }
-CThread* Player::coop_runThread(const str& thread_name)
+CThread* Player::coop_runThread(const str& threadName)
 {
-	if (thread_name.length() <= 0)
-		return NULL;
+	if (!threadName.length())
+		return nullptr;
 
-	return ExecuteThread(thread_name, true, this);
+	return ExecuteThread(threadName, true, this);
 }
 
 Event EV_Player_coop_hasLanguageGerman
