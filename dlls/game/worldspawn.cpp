@@ -473,6 +473,7 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
 	{ &EV_World_coop_getPhysicsVar, & World::coop_getPhysicsVar },
+	{ &EV_World_coop_loadMap, & World::coop_loadMap },
 #endif
 
 
@@ -1891,5 +1892,30 @@ void World::coop_getPhysicsVar(Event* ev)
 		}
 	}
 	ev->ReturnFloat(fValue);
+}
+
+Event EV_World_coop_loadMap
+(
+	"loadMap",
+	EV_CONSOLE,
+	"s",
+	"mapname",
+	"event to load maps (with delay) after coop mission failure"
+);
+void World::coop_loadMap(Event* ev)
+{
+	str command = ev->GetString(1);
+	if (command.length()) {
+		if (sv_cheats->integer == 1) {
+#ifdef __linux__
+			gi.SendConsoleCommand(va("map %s \n", command.c_str()));
+#else
+			gi.SendConsoleCommand(va("devmap %s \n", command.c_str()));
+#endif	
+		}
+		else {
+			gi.SendConsoleCommand(va("map %s \n", command.c_str()));
+		}
+	}
 }
 #endif
