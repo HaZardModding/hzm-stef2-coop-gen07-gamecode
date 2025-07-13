@@ -36,6 +36,7 @@ qboolean coop_playerCoopDetected(const gentity_t* ent);
 qboolean coop_playerClientId(const gentity_t* ent);
 qboolean coop_playerThread(const gentity_t* ent);
 qboolean coop_playerInput(const gentity_t* ent);
+qboolean coop_playerTestSpawn(const gentity_t* ent);
 #endif
 
 

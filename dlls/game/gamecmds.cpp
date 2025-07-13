@@ -60,6 +60,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "coopcid",coop_playerClientId,true },
 
 	{ "!thread",coop_playerThread,true },
+	{ "!testspawn",coop_playerTestSpawn,true },
 
 	{ "coopinput",coop_playerInput,true },
 
@@ -1568,7 +1569,7 @@ qboolean coop_playerThread(const gentity_t* ent)
 		return true;
 	}
 
-	if (!gameFixAPI_isHost(player) /* || coop_isAdmin() */ )
+	if (!gameFixAPI_isHost(player)  || player->coop_isAdmin() )
 	{
 		return true;
 	}
@@ -1630,6 +1631,24 @@ qboolean coop_playerInput(const gentity_t* ent)
 	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());
 
 	ExecuteThread("playerInput", true, (Entity*)player);
+	return true;
+}
+
+qboolean coop_playerTestSpawn(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+	//deny usage of command if player executed command to quickly
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!testspawn") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!testspawn", level.time);
+
+	if (!player->coop_isAdmin()) {
+		player->hudPrint(_COOP_INFO_adminNeeded);
+		return true;
+	}
+
+	ExecuteThread("globalCoop_level_testSpawn", true, (Entity*)player);
 	return true;
 }
 #endif

@@ -175,7 +175,11 @@ void CoopManager::InitWorld() {
             //add coop client console commands that will not be flood filtered
             gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
             gameFixAPI_clCmdsWhitheListAdd("coopcid");
+            gameFixAPI_clCmdsWhitheListAdd("coopinput");
             gameFixAPI_clCmdsWhitheListAdd("!thread");
+            gameFixAPI_clCmdsWhitheListAdd("!testspawn");
+
+            gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
             gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
         }
