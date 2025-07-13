@@ -112,7 +112,8 @@ class Actor : public Sentient
 		//--------------------------------------------------------------
 #ifdef ENABLE_COOP
 	public:
-		void		COOP_GetActorType(Event* ev);
+		void		coop_getActorType(Event* ev);
+		str			coop_getBranchDialogName();
 #endif
 
 
