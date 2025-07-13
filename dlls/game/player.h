@@ -324,6 +324,8 @@ class Player : public Sentient
 		float coop_getObjectivesPrintedTitleLast();
 
 		void coop_hudsAdd(Player* player, str hudName);
+
+		Actor* Player::coop_getBranchDialogActor(void);
 #endif
 
 

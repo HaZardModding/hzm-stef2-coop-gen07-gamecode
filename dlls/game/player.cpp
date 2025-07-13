@@ -15589,4 +15589,9 @@ void Player::coop_hudsAdd(Player* player, str hudName)
 	}
 }
 
+Actor* Player::coop_getBranchDialogActor(void)
+{
+	return _branchDialogActor;
+}
+
 #endif
