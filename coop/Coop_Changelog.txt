@@ -88,6 +88,7 @@ NEW console commands:
 /////////////////////////////////////////
 coopinstalled			//tell installed coop version
 coopcid					//tell client coop identification
+coopinput				//allowing players to send text to server
 !thread					//run script thread executed by player entity
 dialogrunthread 		//now allowed in multiplayer
 
