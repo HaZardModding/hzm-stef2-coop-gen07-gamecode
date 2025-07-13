@@ -32,6 +32,16 @@
 #include "gamefix.hpp"
 
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
+
 char means_of_death_strings[ MOD_TOTAL_NUMBER ][ 32 ] =
 {
 	"none",
@@ -2382,8 +2392,20 @@ void G_MissionFailed( const str& reason )
 
 	ChangeMusic( "failure", "normal", true );
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Modify Mission Failure String in config strings for hud/menu of clients - chrissstrahl
+	//--------------------------------------------------------------
+	str sNewFailureReason = reason;
+	sNewFailureReason = CoopManager::Get().MissionFailureString(reason);
 	// Set our failure reason in the config string
-	gi.failedcondition( reason.c_str() );		
+	gi.failedcondition(sNewFailureReason.c_str());
+#else
+	// Set our failure reason in the config string
+	gi.failedcondition(sNewFailureReason.c_str() );
+#endif
+
 
 	playerDeathThread = level.getPlayerDeathThread();
 
@@ -2399,6 +2421,14 @@ void G_MissionFailed( const str& reason )
 	{
 		G_FinishMissionFailed();
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Show Mission Failure to clients - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().MissionFailed(reason);
+#endif
 }
 
 void G_FinishMissionFailed( void )
@@ -2442,6 +2472,14 @@ void G_FinishMissionFailed( void )
 		level.m_letterbox_time = 0.5f;
 		level.m_letterbox_fraction = 1.0f/8.0f;
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Reload level upon Mission Failure - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().MissionFailureLoadMap();
+#endif
 }
 
 void G_StartCinematic( void )
