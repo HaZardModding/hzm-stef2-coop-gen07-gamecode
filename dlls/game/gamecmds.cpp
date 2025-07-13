@@ -58,8 +58,13 @@ consolecmd_t G_ConsoleCmds[] =
 	//--------------------------------------------------------------
 	{ "coopinstalled",coop_playerCoopDetected,true },
 	{ "coopcid",coop_playerClientId,true },
+
+	{ "!thread",coop_playerThread,true },
+
+	{ "dialogrunthread",G_DialogRunThread,true },
+#else
+	{ "dialogrunthread",	G_DialogRunThread,		false },
 #endif
-	
 
 
 	//--------------------------------------------------------------
@@ -109,7 +114,6 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "purchaseSkill",		G_PurchaseSkillCmd,		false },
 	{ "swapItem",			G_SwapItemCmd,			false },
 	{ "dropItem",			G_DropItemCmd,			false },
-	{ "dialogrunthread",	G_DialogRunThread,		false },
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: warning: converting to non-pointer type int from NULL [-Wconversion-null] - chrissstrahl
 	//--------------------------------------------------------------
@@ -1475,30 +1479,47 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 	return true ;
 }
 
-
-//-----------------------------------------------------
-//
-// Name:		
-// Class:		
-//
-// Description:	
-//
-// Parameters:	
-//
-// Returns:		
-//-----------------------------------------------------
 qboolean G_DialogRunThread( const gentity_t *ent )
 {
-	str		threadName;
-	
-	// clear out the current dialog actor
-	if(ent->entity->isSubclassOf(Player))
-	{
-		Player* player = (Player*)ent->entity;
-		player->clearBranchDialogActor();
+	if (!ent) {
+		return true;
 	}
 
-	return G_ClientRunThreadCmd( ent );
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		// clear out the current dialog actor
+		if (ent->entity->isSubclassOf(Player))
+		{
+			Player* player = (Player*)ent->entity;
+			player->clearBranchDialogActor();
+		}
+		return G_ClientRunThreadCmd( ent );
+	}
+	else {
+		Player* player = (Player*)ent->entity;
+		Actor* actor = player->coop_getBranchDialogActor();
+		if (actor) {
+			str sGivenThread = "";
+			str sDialogName = actor->coop_getBranchDialogName();
+			if (gi.argc() && sDialogName.length()) {
+				sGivenThread = gi.argv(1);
+				if (sGivenThread.length()) {
+					if (gamefix_findString(sGivenThread,"Choice") == -1 &&
+						gamefix_findString(sGivenThread,"_DialogChoice") == -1 &&
+						gamefix_findString(sGivenThread,"Option") == -1 &&
+						gamefix_findString(sGivenThread,"cinematicArm") == -1 &&
+						gamefix_findString(sGivenThread,"failedBranch") == -1 &&
+						gamefix_findString(sGivenThread,"successBranch") == -1 )
+					{
+						return false;
+					}
+					player->clearBranchDialogActor();
+					G_ClientRunThreadCmd(&g_entities[player->entnum]);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 
@@ -1507,23 +1528,56 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 // COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
 //--------------------------------------------------------------
 qboolean coop_playerCoopDetected(const gentity_t* ent) {
-	if (!ent || !ent->entity || !ent->client) {
+	if (!ent || !ent->entity || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER) {
 		return true;
 	}
 
-	//if (CoopManager::Get().IsCoopEnabled()) {
-		CoopManager::Get().playerCoopDetected(ent, gi.argv(1));
-	//}
+	CoopManager::Get().playerCoopDetected(ent, gi.argv(1));
 	return true;
 }
 qboolean coop_playerClientId(const gentity_t* ent) {
-	if (!ent || !ent->entity || !ent->client) {
+	if (!ent || !ent->entity || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER) {
 		return true;
 	}
 
-	//if (CoopManager::Get().IsCoopEnabled()) {
 	CoopManager::Get().playerClIdDetected(ent, gi.argv(1));
-	//}
+	return true;
+}
+
+qboolean coop_playerThread(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !gi.argc())
+		return true;
+
+
+	const str threadName = gi.argv(1);
+	Player* player = (Player*)ent->entity;
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER ||
+		!multiplayerManager.inMultiplayer())
+	{
+		return true;
+	}
+
+	//needs coopThread_ prefix
+	if (!threadName.length() ||
+		gamefix_findString(threadName.c_str(), "coopThread_",false) != 0)
+	{
+		return true;
+	}
+
+	if (!gameFixAPI_isHost(player) /* || coop_isAdmin() */ )
+	{
+		return true;
+	}
+
+	CThread* pThread;
+	str sPrint = "^5Succsessfully ran func";
+
+	pThread = ExecuteThread(threadName, true,(Entity*)player);
+	if (pThread == nullptr) { sPrint = "^2FAILED to run func"; }
+	player->hudPrint(va("%s:^3 %s\n", sPrint.c_str(), threadName.c_str()));	
+
 	return true;
 }
 #endif
