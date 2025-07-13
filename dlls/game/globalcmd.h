@@ -120,7 +120,7 @@ extern Event EV_ScriptThread_coop_getMapByServerIp;
 
 extern Event EV_ScriptThread_coop_objectiveUpdate;
 
-extern Event EV_ScriptThread_coop_getTimeStamp;
+extern Event EV_ScriptThread_coop_missionFailed;
 #endif
 
 
@@ -168,6 +168,7 @@ public:
 
 	void coop_objectiveUpdate(Event* ev);
 
+	void coop_missionFailed(Event* ev);
 #endif
 
 

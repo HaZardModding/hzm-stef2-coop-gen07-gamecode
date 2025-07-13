@@ -1159,6 +1159,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_coop_getMapByServerIp, &CThread::coop_getMapByServerIp },
 
 	{ &EV_ScriptThread_coop_objectiveUpdate, &CThread::coop_objectiveUpdate },
+
+	{ &EV_ScriptThread_coop_missionFailed, &CThread::coop_missionFailed },
 #endif
 
 
@@ -5169,5 +5171,22 @@ void CThread::coop_objectiveUpdate(Event* ev)
 	int itemNumber = (int)ev->GetFloat(2);
 	bool itemShow = (bool)(int)ev->GetFloat(2);
 	coop_objectivesUpdate(itemStatus, itemNumber, itemShow);
+}
+
+Event EV_ScriptThread_coop_missionFailed
+(
+	"missionfailed",
+	EV_SCRIPTONLY,
+	"S",
+	"reason",
+	"Displays the mission failed screen on the client side"
+);
+void CThread::coop_missionFailed(Event* ev)
+{
+	str reason = "DefaultFailure";
+	if (ev->NumArgs() > 0)
+		reason = ev->GetString(1);
+
+	G_MissionFailed(reason);
 }
 #endif
