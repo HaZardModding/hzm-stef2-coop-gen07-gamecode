@@ -58,12 +58,12 @@ consolecmd_t G_ConsoleCmds[] =
 	//--------------------------------------------------------------
 	{ "coopinstalled",coop_playerCoopDetected,true },
 	{ "coopcid",coop_playerClientId,true },
+	{ "coopinput",coop_playerInput,true },
+	{ "coopradarscale",coop_playerRadarScale,true },
 
 	{ "!thread",coop_playerThread,true },
 	{ "!testspawn",coop_playerTestSpawn,true },
-
-	{ "coopinput",coop_playerInput,true },
-
+	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
 	{ "dialogrunthread",	G_DialogRunThread,		false },
@@ -1636,6 +1636,9 @@ qboolean coop_playerInput(const gentity_t* ent)
 
 qboolean coop_playerTestSpawn(const gentity_t* ent)
 {
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
 	Player* player = (Player*)ent->entity;
 	//deny usage of command if player executed command to quickly
 	if ((gamefix_getEntityVarFloat((Entity*)player, "!testspawn") + 3) > level.time) {
@@ -1650,6 +1653,33 @@ qboolean coop_playerTestSpawn(const gentity_t* ent)
 
 	ExecuteThread("globalCoop_level_testSpawn", true, (Entity*)player);
 	return true;
+}
+
+qboolean coop_playerRadarScale(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	if (!gi.argc())
+		return true;
+
+	const char* coopRadarScale = gi.argv(1);
+	if (strlen(coopRadarScale) == 0) {
+		return true;
+	}
+
+	
+	float scale = atoi(coopRadarScale);
+	if (scale > 6) { scale = 6;	}
+	else if (scale < 1) { scale = 1; }
+	
+	//force update of blips in the next frame
+	Player* player = (Player*)ent->entity;
+	player->entityVars.SetVariable("coop_radarScale", float(scale));
+	//for (int iBlip = 0; iBlip < COOP_RADAR_MAX_BLIPS; iBlip++) {
+	//	player->coopPlayer.radarBlipLastPosition[iBlip] = Vector(float(iBlip), 0.22, 0.33);
+	//}
+	return qtrue;
 }
 #endif
 

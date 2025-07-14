@@ -178,6 +178,7 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
             gameFixAPI_clCmdsWhitheListAdd("coopcid");
             gameFixAPI_clCmdsWhitheListAdd("coopinput");
+            gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
             gameFixAPI_clCmdsWhitheListAdd("!thread");
             gameFixAPI_clCmdsWhitheListAdd("!testspawn");
 
