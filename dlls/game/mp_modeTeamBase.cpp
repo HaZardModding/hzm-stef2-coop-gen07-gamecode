@@ -98,7 +98,17 @@ void ModeTeamBase::init( int maxPlayers )
 {
 	MultiplayerModeBase::init( maxPlayers );
 
-	multiplayerManager.cacheMultiplayerFiles( "mp_teamBase" );
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		multiplayerManager.cacheMultiplayerFiles("mp_teamBase");
+	}
+#else
+	multiplayerManager.cacheMultiplayerFiles("mp_teamBase");
+#endif
 }
 
 //================================================================

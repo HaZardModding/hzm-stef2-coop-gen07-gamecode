@@ -171,7 +171,17 @@ void MultiplayerModeBase::init( int maxPlayers )
 	_maxPlayers = maxPlayers;
 	_playerGameData = new MultiplayerPlayerGameData[ _maxPlayers ];
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		multiplayerManager.cacheMultiplayerFiles("mp_general");
+	}
+#else
 	multiplayerManager.cacheMultiplayerFiles( "mp_general" );
+#endif
 }
 
 void MultiplayerModeBase::initItems( void )
