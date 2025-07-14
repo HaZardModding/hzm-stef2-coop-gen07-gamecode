@@ -82,6 +82,7 @@ bool CoopManager::IncludedScriptCoop() {
 void CoopManager::Init() {
     try {
         gi.Printf(_COOP_INFO_INIT_game);
+        DEBUG_LOG(_COOP_INFO_INIT_game);
 
         LoadSettingsFromINI();
         LoadMapListFromINI();
@@ -153,6 +154,7 @@ void CoopManager::LoadMapListFromINI() {
 void CoopManager::InitWorld() {
     try {
         gi.Printf(_COOP_INFO_INIT_world, level.mapname.c_str());
+        DEBUG_LOG(_COOP_INFO_INIT_world, level.mapname.c_str());
 
         SetMapType();
 
