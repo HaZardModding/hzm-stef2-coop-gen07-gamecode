@@ -1,24 +1,5 @@
-//-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// E-Mail:	chrissstrahl@yahoo.de
-//
-// CONTAINING PLAYER WEAPON/ARMORY RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-//-----------------------------------------------------------------------------------
-
-#include "../../dlls/game/_pch_cpp.h"
-
-/*
-#include "level.h"
-#include "player.h"
-#include "weapon.h"
-#include "mp_manager.hpp"
-#include "mp_modeDm.hpp"
-#include "mp_modeTeamDm.hpp"
-#include "mp_modeCtf.hpp"
-#include "powerups.h"*/
-
-
 #include "../../dlls/game/gamefix.hpp"
+#include "../../dlls/game/mp_manager.hpp"
 #include "coop_manager.hpp"
 #include "coop_objectives.hpp"
 #include "coop_armory.hpp"

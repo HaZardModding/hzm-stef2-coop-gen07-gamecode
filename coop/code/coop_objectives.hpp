@@ -5,9 +5,7 @@
 // CONTAINING OBJECTIVES RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 #pragma once
-
-
-#include "../../dlls/game/_pch_cpp.h"
+#include "coop_manager.hpp"
 
 struct coopObjectives_s
 {
