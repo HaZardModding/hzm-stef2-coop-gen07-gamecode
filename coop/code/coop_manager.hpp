@@ -1,5 +1,4 @@
 #pragma once
-#include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/_pch_cpp.h"
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
@@ -21,13 +20,20 @@ struct coopManager_client_persistant_s
     short		coopSetupTries = 0;
     bool		coopSetupStarted = false;
     bool		coopSetupDone = false;
+    bool		coopClientIdDone = false;
+    bool        objectiveSetupDone = false;
 
     str         coopClientId = "";
     str			coopClass = "Technician";
     int         coopVersion = 0;
     bool        coopAdmin = false;
+    
+    Vector      radarBlipPositionLast[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f) };
+    bool        radarBlipActive[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { false,false,false,false,false,false,false,false,false };
+    bool        radarSelectedActive = false;
+    float       radarUpdateTimeLast = -976.1f;
+    float       radarAngleLast = 976.1f;
 
-    bool		coopClientIdDone = false;
     bool        respawnMe = false;
     bool        spawnLocationSpawnForced = true;
     bool        respawnLocationSpawn = false;
@@ -35,13 +41,12 @@ struct coopManager_client_persistant_s
     Vector      lastValidViewAngle = Vector(0.0f, 0.0f, 0.0f);
     float       lastSpawned = -1.0f;
     int         objectiveCycle = -1;
-    int			coopObjectiveStatus[8] = { 0,0,0,0,0,0,0,0 };
-    int			coopObjectiveSend[8] = { 0,0,0,0,0,0,0,0 };
-    int			coopObjectiveShown[8] = { 0,0,0,0,0,0,0,0 };
-    float       objectiveItemCompletedAt[8] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
+    int			coopObjectiveStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    int			coopObjectiveSend[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    int			coopObjectiveShown[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
     float       objectiveItemLastTimePrintedTitleAt = -1.0f;
     str         objectiveItemLastTimePrintedTitle = "";
-    bool        objectiveSetupDone = false;
 };
 extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 
@@ -141,8 +146,25 @@ public:
     int  GetPenaltyForPlayerKill() const;
 
     // Access to coopManager_client_persistant_t
+
+
+
     bool getPlayerData_coopAdmin(Player* player);
     void setPlayerData_coopAdmin(Player* player, bool state);
+
+
+    Vector getPlayerData_radarBlipLastPos(Player* player, short int blipNum);
+    void setPlayerData_radarBlipLastPos(Player* player, short int blipNum, Vector blipLastPos);
+    bool getPlayerData_radarBlipActive(Player* player, short int blipNum);
+    void setPlayerData_radarBlipActive(Player* player, short int blipNum, bool blipActive);
+    bool getPlayerData_radarSelectedActive(Player* player);
+    void setPlayerData_radarSelectedActive(Player* player, bool selectedActive);
+    float getPlayerData_radarUpdatedLast(Player* player);
+    void setPlayerData_radarUpdatedLast(Player* player, float lastUpdate);
+    float getPlayerData_radarAngleLast(Player* player);
+    void setPlayerData_radarAngleLast(Player* player, float lastAngle);
+
+
     bool getPlayerData_coopClientIdDone(Player* player);
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);

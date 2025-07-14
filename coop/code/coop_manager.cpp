@@ -1,8 +1,10 @@
-#include "../../dlls/game/level.h"
 #include "../../dlls/game/gamefix.hpp"
-#include "coop_manager.hpp"
+#include "../../dlls/game/level.h"
+#include "../../dlls/game/mp_manager.hpp"
 #include "coop_objectives.hpp"
 #include "coop_armory.hpp"
+#include "coop_radar.hpp"
+#include "coop_manager.hpp"
 
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 coopManager_mapSettings_s coopManager_mapSettings_t;
@@ -24,6 +26,7 @@ void CoopManager::DisableCoop() {
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
     coop_objectivesUpdatePlayer(player);
+    coop_radarUpdate(player);
 }
 
 //check if specific coop files are included
@@ -598,6 +601,8 @@ void CoopManager::playerDisconnect(Player* player) {
     }
     DEBUG_LOG("# playerDisconnect\n");
 
+    coop_radarReset(player);
+
     setPlayerData_coopClientIdDone(player, false);
     setPlayerData_coopAdmin(player,false);
     coopManager_client_persistant_t[player->entnum].coopClientId = "";
@@ -666,6 +671,11 @@ void CoopManager::playerSpawned(Player* player) {
 
     coop_armoryEquipPlayer(player);
 
+    if (!gameFixAPI_isSpectator_stef2(player)) {
+        coop_radarReset(player);
+        gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
+    }
+
     gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);
     ExecuteThread("coop_justSpawned", true, player);
 }
@@ -732,6 +742,111 @@ void CoopManager::setPlayerData_coopAdmin(Player* player, bool state) {
     }
     coopManager_client_persistant_t[player->entnum].coopAdmin = state;
 }
+
+
+Vector CoopManager::getPlayerData_radarBlipLastPos(Player* player, short int blipNum)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarBlipLastPos() nullptr player");
+        return Vector(0.0f, 0.0f, 0.0f);
+    }
+    if (blipNum < 0 || blipNum >= _COOP_SETTINGS_RADAR_BLIPS_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarBlipLastPos() blipNum out of range");
+        return Vector(0.0f, 0.0f, 0.0f);
+    }
+    return coopManager_client_persistant_t[player->entnum].radarBlipPositionLast[blipNum];
+}
+void CoopManager::setPlayerData_radarBlipLastPos(Player* player,short int blipNum,Vector blipLastPos)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarBlipLastPos() nullptr player");
+        return;
+    }
+    if (blipNum < 0 || blipNum >= _COOP_SETTINGS_RADAR_BLIPS_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarBlipLastPos() blipNum out of range");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].radarBlipPositionLast[blipNum] = blipLastPos;
+}
+
+bool CoopManager::getPlayerData_radarBlipActive(Player* player, short int blipNum)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarBlipActive() nullptr player");
+        return false;
+    }
+    if (blipNum < 0 || blipNum >= _COOP_SETTINGS_RADAR_BLIPS_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarBlipActive() blipNum out of range");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].radarBlipActive[blipNum];
+}
+void CoopManager::setPlayerData_radarBlipActive(Player* player,short int blipNum,bool blipActive)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarBlipActive() nullptr player");
+        return;
+    }
+    if (blipNum < 0 || blipNum >= _COOP_SETTINGS_RADAR_BLIPS_MAX) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarBlipActive() blipNum out of range");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].radarBlipActive[blipNum] = blipActive;
+}
+
+bool CoopManager::getPlayerData_radarSelectedActive(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarSelectedActive() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].radarSelectedActive;
+}
+void CoopManager::setPlayerData_radarSelectedActive(Player* player,bool selectedActive)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarSelectedActive() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].radarSelectedActive = selectedActive;
+}
+
+float CoopManager::getPlayerData_radarUpdatedLast(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarUpdatedLast() nullptr player");
+        return 99999.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].radarUpdateTimeLast;
+}
+void CoopManager::setPlayerData_radarUpdatedLast(Player* player,float lastUpdate)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarUpdatedLast() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].radarUpdateTimeLast = lastUpdate;
+}
+
+float CoopManager::getPlayerData_radarAngleLast(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarAngleLast() nullptr player");
+        return 99999.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].radarAngleLast;
+}
+void CoopManager::setPlayerData_radarAngleLast(Player* player,float lastAngle)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarAngleLast() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].radarAngleLast = lastAngle;
+}
+
+
+
 bool CoopManager::getPlayerData_coopClientIdDone(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientIdDone() nullptr player");

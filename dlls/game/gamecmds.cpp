@@ -1618,7 +1618,7 @@ qboolean coop_playerInput(const gentity_t* ent)
 			player->coop_playerAdminAuthString(va("%s%s", player->coop_playerAdminAuthString().c_str(), inputData.c_str()));
 		}
 
-		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", player->coop_playerAdminAuthString().c_str()));
+		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", player->coop_playerAdminAuthString().c_str()));
 		return true;
 	}
 	*/
@@ -1668,7 +1668,6 @@ qboolean coop_playerRadarScale(const gentity_t* ent)
 		return true;
 	}
 
-	
 	float scale = atoi(coopRadarScale);
 	if (scale > 6) { scale = 6;	}
 	else if (scale < 1) { scale = 1; }
@@ -1676,8 +1675,8 @@ qboolean coop_playerRadarScale(const gentity_t* ent)
 	//force update of blips in the next frame
 	Player* player = (Player*)ent->entity;
 	player->entityVars.SetVariable("coop_radarScale", float(scale));
-	//for (int iBlip = 0; iBlip < COOP_RADAR_MAX_BLIPS; iBlip++) {
-	//	player->coopPlayer.radarBlipLastPosition[iBlip] = Vector(float(iBlip), 0.22, 0.33);
+	//for (int iBlip = 0; iBlip < _COOP_SETTINGS_RADAR_BLIPS_MAX; iBlip++) {
+	//	player->coopPlayer.radarBlipPositionLast[iBlip] = Vector(float(iBlip), 0.22, 0.33);
 	//}
 	return qtrue;
 }

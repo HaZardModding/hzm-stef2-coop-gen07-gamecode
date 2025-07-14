@@ -552,6 +552,9 @@
     <ClCompile Include="..\..\coop\code\coop_armory.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_radar.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1152,6 +1155,9 @@
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_armory.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_radar.hpp">
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
