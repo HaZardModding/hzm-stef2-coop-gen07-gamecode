@@ -2008,6 +2008,7 @@ void gameFixAPI_shutdownGame()
 	gameFixAPI_maplistContainer.FreeObjectList();
 	gameFixAPI_maplistContainer.FreeObjectList();
 	gamefix_fileContentTokenized.FreeObjectList();
+	gameFixAPI_AllowedCmdsContainer.FreeObjectList();
 
 	/* int i = 0;
 	while (i < 89) {
@@ -2026,10 +2027,10 @@ void gameFixAPI_initGame()
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Added: Function to manage game clanup / mapchange - chrissstrahl
+// GAMEFIX - Added: Function to manage game cleanup / mapchange - chrissstrahl
 //--------------------------------------------------------------
 void gameFixAPI_cleanupGame(qboolean restart)
 {
-	
+	gameFixAPI_AllowedCmdsContainer.FreeObjectList();
 }
 
