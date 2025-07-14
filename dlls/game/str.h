@@ -549,7 +549,13 @@ inline str& str::operator=
 	const char* text
 	)
 {
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Disabled Assert, I am not quite sure why it has ben there in the first place - chrissstrahl
+//--------------------------------------------------------------
+#ifndef ENABLE_COOP
 	assert(text);
+#endif
+
 
 	if (!text)
 	{
