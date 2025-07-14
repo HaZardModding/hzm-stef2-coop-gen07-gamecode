@@ -1126,11 +1126,20 @@ void MultiplayerModeBase::startMatch( void )
 		}
 	}
 
-
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		// Tell everyone the match started
+		multiplayerManager.centerPrintAllClients("$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH);
+		multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f);
+	}
+#else
 	// Tell everyone the match started
-
-	multiplayerManager.centerPrintAllClients( "$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH );
-	multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f );
+	multiplayerManager.centerPrintAllClients("$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH);
+	multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f);
+#endif
 }
 
 void MultiplayerModeBase::restartMatch( void )
