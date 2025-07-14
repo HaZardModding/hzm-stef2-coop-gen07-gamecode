@@ -800,8 +800,8 @@ void coop_objectives_reset()
 	coopObjectives_t.story_deu = "$$Empty$$";
 	coopObjectives_t.lastUpdated_story = -1;
 	coopObjectives_t.objectiveCycle = 0;
-	coopObjectives_t.objectiveItemLastTimePrintedTitleAt = -1.0;
-	coopObjectives_t.objectiveItemLastTimePrintedTitle = "";
+	coopObjectives_t.objectiveItemPrintedTitleLastTime = -1.0;
+	coopObjectives_t.objectiveItemPrintedTitleLast = "";
 	coopObjectives_t.objectiveItem[0] = "$$Empty$$";
 	coopObjectives_t.objectiveItem_deu[0] = "$$Empty$$";
 	for (int i = 1; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItem[i] = va("%d",i); }

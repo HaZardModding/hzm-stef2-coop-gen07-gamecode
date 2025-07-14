@@ -1036,7 +1036,7 @@ int CoopManager::getPlayerData_coopObjectiveStatus(Player* player, int item) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveStatus() nullptr player");
         return -1;
     }
-    return coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item];
+    return coopManager_client_persistant_t[player->entnum].objectiveItemStatus[item];
 }
 void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, int status) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
@@ -1047,7 +1047,7 @@ void CoopManager::setPlayerData_coopObjectiveStatus(Player* player, int item, in
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveStatus() nullptr player");
         return;
     }
-    coopManager_client_persistant_t[player->entnum].coopObjectiveStatus[item] = status;
+    coopManager_client_persistant_t[player->entnum].objectiveItemStatus[item] = status;
 }
 
 int CoopManager::getPlayerData_coopObjectiveSend(Player* player, int item) {
@@ -1059,7 +1059,7 @@ int CoopManager::getPlayerData_coopObjectiveSend(Player* player, int item) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveSend() nullptr player");
         return 0;
     }
-    return coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item];
+    return coopManager_client_persistant_t[player->entnum].objectiveItemSend[item];
 }
 void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, int status) {
     if (item < 0 || item >= _COOP_SETTINGS_OBJECTIVES_MAX) {
@@ -1070,7 +1070,7 @@ void CoopManager::setPlayerData_coopObjectiveSend(Player* player, int item, int 
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveSend() nullptr player");
         return;
     }
-    coopManager_client_persistant_t[player->entnum].coopObjectiveSend[item] = status;
+    coopManager_client_persistant_t[player->entnum].objectiveItemSend[item] = status;
 }
 
 int CoopManager::getPlayerData_coopObjectiveShown(Player* player, int item) {
@@ -1082,7 +1082,7 @@ int CoopManager::getPlayerData_coopObjectiveShown(Player* player, int item) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopObjectiveShown() index out of range");
         return 0;
     }
-    return coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item];
+    return coopManager_client_persistant_t[player->entnum].objectiveItemShown[item];
 }
 void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, int status) {
     if (!player) {
@@ -1093,7 +1093,7 @@ void CoopManager::setPlayerData_coopObjectiveShown(Player* player, int item, int
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopObjectiveShown() index out of range");
         return;
     }
-    coopManager_client_persistant_t[player->entnum].coopObjectiveShown[item] = status;
+    coopManager_client_persistant_t[player->entnum].objectiveItemShown[item] = status;
 }
 
 float CoopManager::getPlayerData_objectiveItemCompletedAt(Player* player, int item) {
@@ -1124,14 +1124,14 @@ float CoopManager::getPlayerData_objectiveItemLastTimePrintedTitleAt(Player* pla
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemLastTimePrintedTitleAt() nullptr player");
         return false;
     }
-    return coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt;
+    return coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLastTime;
 }
 void CoopManager::setPlayerData_objectiveItemLastTimePrintedTitleAt(Player* player, float lastPrintedTitleAt) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemLastTimePrintedTitleAt() nullptr player");
         return;
     }
-    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt = lastPrintedTitleAt;
+    coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLastTime = lastPrintedTitleAt;
 }
 
 str CoopManager::getPlayerData_objectiveItemLastTimePrintedTitle(Player* player) {
@@ -1139,14 +1139,14 @@ str CoopManager::getPlayerData_objectiveItemLastTimePrintedTitle(Player* player)
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_objectiveItemLastTimePrintedTitle() nullptr player");
         return false;
     }
-    return coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle;
+    return coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLast;
 }
 void CoopManager::setPlayerData_objectiveItemLastTimePrintedTitle(Player* player, str lastPrintedTitle) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_objectiveItemLastTimePrintedTitle() nullptr player");
         return;
     }
-    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle = lastPrintedTitle;
+    coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLast = lastPrintedTitle;
 }
 
 void CoopManager::setPlayerData_objectives_reset(Player* player)
@@ -1156,8 +1156,8 @@ void CoopManager::setPlayerData_objectives_reset(Player* player)
         return;
     }
 
-    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitle = "";
-    coopManager_client_persistant_t[player->entnum].objectiveItemLastTimePrintedTitleAt = 0.0f;
+    coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLast = "";
+    coopManager_client_persistant_t[player->entnum].objectiveItemPrintedTitleLastTime = 0.0f;
     coopManager_client_persistant_t[player->entnum].objectiveCycle = 0;
     coopManager_client_persistant_t[player->entnum].objectiveSetupDone = false;
 

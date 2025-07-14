@@ -41,12 +41,12 @@ struct coopManager_client_persistant_s
     Vector      lastValidViewAngle = Vector(0.0f, 0.0f, 0.0f);
     float       lastSpawned = -1.0f;
     int         objectiveCycle = -1;
-    int			coopObjectiveStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
-    int			coopObjectiveSend[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
-    int			coopObjectiveShown[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    int			objectiveItemStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    int			objectiveItemSend[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
+    int			objectiveItemShown[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
     float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
-    float       objectiveItemLastTimePrintedTitleAt = -1.0f;
-    str         objectiveItemLastTimePrintedTitle = "";
+    float       objectiveItemPrintedTitleLastTime = -1.0f;
+    str         objectiveItemPrintedTitleLast = "";
 };
 extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 

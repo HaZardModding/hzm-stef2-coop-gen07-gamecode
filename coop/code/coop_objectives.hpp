@@ -20,8 +20,8 @@ struct coopObjectives_s
 	int         objectiveItemStatus[_COOP_SETTINGS_OBJECTIVES_MAX] = { -1,-1,-1,-1,-1,-1,-1,-1 };
 	int         objectiveItemShow[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0,0,0,0,0,0,0,0 };
 	float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { -999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f,-999.0f };
-	float       objectiveItemLastTimePrintedTitleAt = -1.0;
-	str         objectiveItemLastTimePrintedTitle = "";
+	float       objectiveItemPrintedTitleLastTime = -1.0;
+	str         objectiveItemPrintedTitleLast = "";
 };extern coopObjectives_s coopObjectives_t;
 
 
