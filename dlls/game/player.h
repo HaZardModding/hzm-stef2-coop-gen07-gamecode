@@ -290,6 +290,7 @@ class Player : public Sentient
 		void coop_checkRun(Event* ev);
 		void coop_checkReload(Event* ev);
 		void coop_checkUse(Event* ev);
+		bool coop_checkThirdperson();
 		void coop_checkThirdperson(Event* ev);
 		void coop_checkFire(Event* ev);
 		void coop_checkFirealt(Event* ev);

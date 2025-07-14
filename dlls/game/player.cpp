@@ -15177,9 +15177,13 @@ Event EV_Player_coop_checkThirdperson
 	"return-int",
 	"Returns Int/Bool if player is in third person view"
 );
+bool Player::coop_checkThirdperson()
+{
+	return _isThirdPerson;
+}
 void Player::coop_checkThirdperson(Event* ev)
 {
-	ev->ReturnFloat((int)_isThirdPerson);
+	ev->ReturnFloat((int)coop_checkThirdperson());
 }
 
 Event EV_Player_coop_checkFire
