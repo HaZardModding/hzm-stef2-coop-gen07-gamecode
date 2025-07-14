@@ -38,7 +38,7 @@ void coop_armoryRememberLastUsed( Player *player, str sWeapon )
 //================================================================
 void coop_armoryEquipPlayer(Player *player)
 {
-	if ( !player )return;
+	if (!player || gameFixAPI_isSpectator_stef2(player)) { return; }
 //	bool bGiveSecretWeapons=true;
 	int iWeapons=0;
 	int iTemporary;
