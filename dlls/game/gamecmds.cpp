@@ -37,6 +37,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_radar.hpp"
 #endif
 
 
@@ -1669,15 +1670,13 @@ qboolean coop_playerRadarScale(const gentity_t* ent)
 	}
 
 	float scale = atoi(coopRadarScale);
-	if (scale > 6) { scale = 6;	}
-	else if (scale < 1) { scale = 1; }
+	if (scale > _COOP_SETTINGS_RADAR_SCALE_MAX) { scale = _COOP_SETTINGS_RADAR_SCALE_MAX;	}
+	else if (scale < _COOP_SETTINGS_RADAR_SCALE_MIN) { scale = _COOP_SETTINGS_RADAR_SCALE_MIN; }
 	
 	//force update of blips in the next frame
 	Player* player = (Player*)ent->entity;
-	player->entityVars.SetVariable("coop_radarScale", float(scale));
-	//for (int iBlip = 0; iBlip < _COOP_SETTINGS_RADAR_BLIPS_MAX; iBlip++) {
-	//	player->coopPlayer.radarBlipPositionLast[iBlip] = Vector(float(iBlip), 0.22, 0.33);
-	//}
+	coop_radarReset(player);
+	CoopManager::Get().setPlayerData_radarScale(player, scale);
 	return qtrue;
 }
 #endif

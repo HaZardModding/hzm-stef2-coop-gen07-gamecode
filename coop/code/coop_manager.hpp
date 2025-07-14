@@ -33,6 +33,7 @@ struct coopManager_client_persistant_s
     bool        radarSelectedActive = false;
     float       radarUpdateTimeLast = -976.1f;
     float       radarAngleLast = 976.1f;
+    int         radarScale = 1;
 
     bool        respawnMe = false;
     bool        spawnLocationSpawnForced = true;
@@ -163,6 +164,8 @@ public:
     void setPlayerData_radarUpdatedLast(Player* player, float lastUpdate);
     float getPlayerData_radarAngleLast(Player* player);
     void setPlayerData_radarAngleLast(Player* player, float lastAngle);
+    int getPlayerData_radarScale(Player* player);
+    void setPlayerData_radarScale(Player* player, int radarScale);
 
 
     bool getPlayerData_coopClientIdDone(Player* player);

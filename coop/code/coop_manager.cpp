@@ -844,6 +844,24 @@ void CoopManager::setPlayerData_radarAngleLast(Player* player,float lastAngle)
     }
     coopManager_client_persistant_t[player->entnum].radarAngleLast = lastAngle;
 }
+int CoopManager::getPlayerData_radarScale(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_radarScale() nullptr player");
+        return 1;
+    }
+    return coopManager_client_persistant_t[player->entnum].radarScale;
+}
+void CoopManager::setPlayerData_radarScale(Player* player, int radarScale)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_radarScale() nullptr player");
+        return;
+    }
+    if (radarScale < _COOP_SETTINGS_RADAR_SCALE_MIN) { radarScale = _COOP_SETTINGS_RADAR_SCALE_MIN; }
+    if (radarScale > _COOP_SETTINGS_RADAR_SCALE_MAX) { radarScale = _COOP_SETTINGS_RADAR_SCALE_MAX; }
+    coopManager_client_persistant_t[player->entnum].radarScale = radarScale;
+}
 
 
 

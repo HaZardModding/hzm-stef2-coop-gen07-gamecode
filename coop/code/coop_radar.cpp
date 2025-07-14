@@ -15,12 +15,13 @@ void coop_radarReset(Player* player)
 
 	for (int i = 0; i < _COOP_SETTINGS_RADAR_BLIPS_MAX; i++) {
 		CoopManager::Get().setPlayerData_radarUpdatedLast(player, level.time);
-		CoopManager::Get().setPlayerData_radarBlipLastPos(player, i ,Vector(0.0f, -999.0f, -999.0f));
+		CoopManager::Get().setPlayerData_radarBlipLastPos(player, i ,Vector(float(i), 1.0f, 1.0f));
 		CoopManager::Get().setPlayerData_radarBlipActive(player, i, false);
 	}
 	CoopManager::Get().setPlayerData_radarSelectedActive(player, false);
-	CoopManager::Get().setPlayerData_radarUpdatedLast(player, -967.1f);
-	CoopManager::Get().setPlayerData_radarAngleLast(player, 967.1f);
+	CoopManager::Get().setPlayerData_radarUpdatedLast(player, -937.1f);
+	CoopManager::Get().setPlayerData_radarAngleLast(player, 987.1f);
+	CoopManager::Get().setPlayerData_radarScale(player,1);
 }
 
 float coop_radarAngleTo(const Vector& source, const Vector& dest)
@@ -118,7 +119,7 @@ void coop_radarUpdateBlip(Player* player,
 	vRadarBlipLastPosition[1] = fBlipAxisY;
 
 	//[b60025] chrissstrahl - scale for user specific scaled radar hud
-	int userScaleFactor = gamefix_getEntityVarInt(player, "coop_radarScale");
+	int userScaleFactor = CoopManager::Get().getPlayerData_radarScale(player);
 	if (userScaleFactor <= 0) {
 		userScaleFactor = 1;
 	}
@@ -168,16 +169,16 @@ void coop_radarUpdateBlip(Player* player,
 }
 
 void coop_radarUpdate(Player* player)
-//[b60014] chrissstrahl - check for mission objective entities update radar
-//- update the radar every server frame (1 / sv_fps 20)
 //- CALCULATION CODE BY ALBERT DORN (dorn.albert)
 {
-	//Exit on NULL
-	if (!player) { return; }
+	if (!player || !player->coop_hasCoopInstalled()) {
+		return;
+	}
 
-	//Exit on NULL, bot and mod not installed
 	gentity_t* ent = player->edict;
-	if (!player || ent->svflags & SVF_BOT || !player->coop_hasCoopInstalled()) { return; }
+	if (ent->svflags & SVF_BOT) {
+		return;
+	}
 
 	//player dead or in spectator, disable selected blip
 	Entity* target = player->GetTargetedEntity();
