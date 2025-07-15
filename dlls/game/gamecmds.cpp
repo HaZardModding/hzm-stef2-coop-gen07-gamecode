@@ -64,6 +64,8 @@ consolecmd_t G_ConsoleCmds[] =
 
 	{ "!thread",coop_playerThread,true },
 	{ "!testspawn",coop_playerTestSpawn,true },
+	{ "!follow",coop_playerFollowMe,true },
+	{ "!leader",coop_playerLeader,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -1678,6 +1680,89 @@ qboolean coop_playerRadarScale(const gentity_t* ent)
 	coop_radarReset(player);
 	CoopManager::Get().setPlayerData_radarScale(player, scale);
 	return qtrue;
+}
+
+qboolean coop_playerFollowMe(const gentity_t* ent)
+{
+	//deny usage of command if player executed command to quickly
+	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!follow") + 3) > level.time) {
+		return true;
+	}
+	Player* player = (Player*)ent->entity;
+	player->entityVars.SetVariable("!follow", level.time);
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopLevel()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+
+	//remember if player using command is currently shown on radar (as missionobjective blip)
+	bool bDisable = (bool)ent->entity->edict->s.missionObjective;
+
+	//reset missionobjective blip on all players
+	gentity_t* gentity;
+	for (int i = 0; i < maxclients->integer; i++) {
+		gentity = &g_entities[i];
+		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
+			gentity->entity->edict->s.missionObjective = 0;
+		}
+	}
+
+	//If blip is enabled for player disable (toggle)
+	if (bDisable) {
+		str text = _COOP_INFO_radarFollowMarker_off;
+		if (player->coop_hasLanguageGerman()) {
+			text = _COOP_INFO_radarFollowMarker_off_deu;
+		}
+		multiplayerManager.HUDPrint(player->entnum, va("%s", text.c_str()));
+		ent->entity->edict->s.missionObjective;
+		return true;
+	}
+
+	//Otherwise enable missionobjective blip for player
+	ent->entity->edict->s.missionObjective = 1;
+
+	//print message to all player huds of player being marked
+	for (int i = 0; i < maxclients->integer; i++) {
+		gentity_t* gentity2 = &g_entities[i];
+		if (gentity2->inuse && gentity2->entity && gentity2->client && gentity2->entity->isSubclassOf(Player)) {
+			Player* currentPlayer = (Player*)gentity2->entity;
+			if (currentPlayer) {
+				str text = _COOP_INFO_radarFollowMarker_on;
+				if (currentPlayer->coop_hasLanguageGerman()) {
+					text = _COOP_INFO_radarFollowMarker_on_deu;
+				}
+				multiplayerManager.HUDPrint(currentPlayer->entnum, va("%s: %s\n", text.c_str(), player->client->pers.netname));
+			}
+		}
+	}
+	return true;
+}
+
+qboolean coop_playerLeader(const gentity_t* ent)
+{	
+	//deny usage of command if player executed command to quickly
+	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!leader") + 3) > level.time) {
+		return true;
+	}
+	Player* player = (Player*)ent->entity;
+	player->entityVars.SetVariable("!leader", level.time);
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopLevel()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+	
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+
+	player->hudPrint("!leader - Not implemented yet.\n");
+	//multiplayerManager.callVote(player, "leader", va("%i", player->entnum));
+	return true;
 }
 #endif
 

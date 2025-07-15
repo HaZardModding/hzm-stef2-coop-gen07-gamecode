@@ -194,6 +194,8 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
             gameFixAPI_clCmdsWhitheListAdd("!thread");
             gameFixAPI_clCmdsWhitheListAdd("!testspawn");
+            gameFixAPI_clCmdsWhitheListAdd("!follow");
+            gameFixAPI_clCmdsWhitheListAdd("!leader");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
