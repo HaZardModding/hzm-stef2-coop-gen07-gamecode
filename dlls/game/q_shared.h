@@ -1145,7 +1145,22 @@ typedef struct
 //
 // per-level limits
 //
-#define	MAX_CLIENTS			128		// absolute limit
+
+
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Reduce Player Limit to a more sensible number - chrissstrahl
+	//--------------------------------------------------------------
+	#define	MAX_CLIENTS			32		// absolute limit
+#else
+	#define	MAX_CLIENTS			128		// absolute limit
+#endif
+
+
+
+
 #define MAX_LOCATIONS		64
 
 #define	GENTITYNUM_BITS		10		// don't need to send any more
