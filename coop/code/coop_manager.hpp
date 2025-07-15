@@ -97,9 +97,13 @@ public:
 public:
     static CoopManager& Get();
 
+    bool IsCoopEnabled() const;
+    void DisableCoop();
+    bool IsCoopLevel();
+    bool IsRpgEnabled() const;
+
     void Init();
     void InitWorld();
-    bool IsCoopLevel();
     coopManager_mapSettings_s DetectMapType(str mapName);
     void SetMapType();
     void LoadLevelScript(str mapname);
@@ -109,9 +113,6 @@ public:
     void MissionFailed(const str& reason);
     str MissionFailureString(const str& reason);
     void MissionFailureLoadMap();
-    bool IsCoopEnabled() const;
-    void DisableCoop();
-    bool IsRpgEnabled() const;
 
 
     void ClientThink(Player* player);

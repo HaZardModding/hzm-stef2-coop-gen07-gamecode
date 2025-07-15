@@ -15,6 +15,7 @@ CoopManager& CoopManager::Get() {
     return instance;
 }
 
+
 bool CoopManager::IsCoopEnabled() const {
     return coopEnabled;
 }
@@ -22,6 +23,15 @@ bool CoopManager::IsCoopEnabled() const {
 void CoopManager::DisableCoop() {
     coopEnabled = false;
 }
+
+bool CoopManager::IsCoopLevel() {
+    return mapFlags.coopMap;
+}
+
+bool CoopManager::IsRpgEnabled() const {
+    return rpgEnabled;
+}
+
 
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
@@ -198,10 +208,6 @@ void CoopManager::InitWorld() {
         gi.Printf(_COOP_ERROR_fatal, error);
         G_ExitWithError(error);
     }
-}
-
-bool CoopManager::IsCoopLevel() {
-    return mapFlags.coopMap;
 }
 
 //detects what kind of gametype the level
@@ -710,9 +716,6 @@ void CoopManager::playerChangedClass(Player* player) {
 }
 
 //not yet in use
-bool CoopManager::IsRpgEnabled() const {
-    return rpgEnabled;
-}
 bool CoopManager::ShouldGiveSpawnItems() const {
     return giveSpawnItems;
 }
