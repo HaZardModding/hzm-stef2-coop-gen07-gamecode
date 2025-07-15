@@ -1012,18 +1012,19 @@ str gamefix_localizeStringForPlayer(Player* player,char unlocal[MAX_QPATH])
 float gamefix_dialogGetSoundlength(char realDialogName[MAX_QPATH])
 {
 	float fLength = 0.0f;
-	str sLoc = realDialogName;
+	str pathStripped = realDialogName;
 
-	//get english and german version of the file and compare them - if their *.vlp exist and it is unlocalized
-	if (Q_stricmpn(realDialogName,"localization/",13) == 0) {
-		gamefix_replaceSubstring(realDialogName,"localization/","");
-		fLength = max(gi.SoundLength(va("loc/Eng/%s",realDialogName)), gi.SoundLength(va("loc/Deu/%s",realDialogName)));
+	if (Q_stricmpn(pathStripped, "localization/", 13) == 0) {
+		pathStripped = gamefix_getStringLength(realDialogName, 13, MAX_QPATH);
 	}
-
-	//get real dialog length - usually starting with localization/... - this will always work
-	//if it is not unlocalized, assume the path is eigther already localized or there is no localization for it
-	fLength = max(gi.SoundLength(sLoc.c_str()), fLength);
-
+	else if (Q_stricmpn(pathStripped, "loc/eng/", 8) == 0) {
+		pathStripped = gamefix_getStringLength(realDialogName, 8, MAX_QPATH);
+	}
+	else if (Q_stricmpn(pathStripped, "loc/deu/", 8) == 0) {
+		pathStripped = gamefix_getStringLength(realDialogName, 8, MAX_QPATH);
+	}
+	fLength = max(gi.SoundLength(va("loc/Eng/%s", (char*)pathStripped.c_str())), gi.SoundLength(va("loc/Deu/%s", (char*)pathStripped.c_str())));
+	fLength = max(gi.SoundLength(realDialogName), fLength);
 	return fLength;
 }
 
