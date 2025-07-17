@@ -11654,7 +11654,10 @@ void Player::SetupDialog( Event *ev )
 //-----------------------------------------------------
 void Player::SetupDialog( Entity *entity, const str &soundName )
 {
-	if( gi.SoundLength( soundName.c_str() ) <= 0 )
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Multiplayer compatibility - using the longer playtime of Eng/Deu dialog - chrissstrahl
+	//--------------------------------------------------------------
+	if( gamefix_dialogGetSoundlength((char*)soundName.c_str()) <= 0)
 		return;
 	
 	//If we have an entity, then we are dealing with Dialog events.
@@ -11696,12 +11699,18 @@ void Player::handleDialogSetup( Entity* entity, const str& soundName )
 	
 	ClearDialog();
 
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Multiplayer compatibility - using the longer playtime of Eng/Deu dialog - chrissstrahl
+	//--------------------------------------------------------------
+	float fLength = gamefix_dialogGetSoundlength((char*)soundName.c_str());
+	if (fLength >= 0)
 	if ( gi.SoundLength( soundName.c_str() ) >= 0 )
 	{
 		_dialogEntnum = entity->entnum;
 		_dialogSoundIndex = gi.soundindex( soundName.c_str() );
 
-		PostEvent( EV_Player_ClearDialog, gi.SoundLength( soundName.c_str() ) );
+		PostEvent( EV_Player_ClearDialog, fLength );
 	}
 	else
 	{
