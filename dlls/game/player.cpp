@@ -11833,10 +11833,15 @@ void Player::handleTextDialogSetup( const str& soundName )
 	// Make sure current stuff is cleared properly
 	ClearTextDialog();
 	
-	if ( gi.SoundLength( soundName.c_str() ) >= 0 )
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+	//--------------------------------------------------------------
+	float soundLength = gamefix_dialogGetSoundlength((char*)soundName.c_str());
+	if ( soundLength >= 0 )
 	{
 		_dialogTextSoundIndex = gi.soundindex( soundName.c_str() );
-		PostEvent( EV_Player_ClearTextDialog, gi.SoundLength( soundName.c_str() ) );
+		PostEvent( EV_Player_ClearTextDialog, soundLength );
 	}
 	else
 	{
