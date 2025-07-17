@@ -11800,7 +11800,6 @@ void Player::handleDialogSetup( Entity* entity, const str& soundName )
 	//--------------------------------------------------------------
 	float fLength = gamefix_dialogGetSoundlength((char*)soundName.c_str());
 	if (fLength >= 0)
-	if ( gi.SoundLength( soundName.c_str() ) >= 0 )
 	{
 		_dialogEntnum = entity->entnum;
 		_dialogSoundIndex = gi.soundindex( soundName.c_str() );
