@@ -11253,8 +11253,20 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		dialog_length = gi.SoundLength(localizedDialogName);
 	}
 	else {
-		gamefix_dialogSetupPlayers(this, localizedDialogName,headDisplay);
-		dialog_length = gamefix_dialogGetSoundlength((char*)dialog_name);
+		gamefix_dialogSetupPlayers(this, (char*)real_dialog.c_str(), headDisplay);
+		float lengthNew = 0.0f;
+		dialog_length = 0.0f;
+		if (dialog_name && strlen(dialog_name)) {
+			lengthNew = gamefix_dialogGetSoundlength((char*)dialog_name);
+		}
+		
+		lengthNew = max(dialog_length,lengthNew);
+
+		if (real_dialog && strlen(real_dialog)) {
+			lengthNew = gamefix_dialogGetSoundlength((char*)real_dialog.c_str());
+		}
+
+		lengthNew = max(dialog_length, lengthNew);
 	}
 
 	//--------------------------------------------------------------
