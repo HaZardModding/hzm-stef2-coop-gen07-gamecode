@@ -1007,7 +1007,7 @@ str gamefix_localizeStringForPlayer(Player* player,char unlocal[MAX_QPATH])
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Added: Function returning the higher dialog playtime of Eng/Deu - chrissstrahl
+// GAMEFIX - Added: Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
 //--------------------------------------------------------------
 float gamefix_dialogGetSoundlength(char realDialogName[MAX_QPATH])
 {
