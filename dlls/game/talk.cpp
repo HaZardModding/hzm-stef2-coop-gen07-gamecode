@@ -24,6 +24,13 @@
 #include "talk.hpp"
 #include <qcommon/gameplaymanager.h>
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: to make gamefix functionality available - chrissstrahl
+//--------------------------------------------------------------
+#include "gamefix.hpp"
+
+
 Event EV_TalkBehavior_GreetingDone
 	(
 	"greetingdone",
@@ -256,7 +263,13 @@ BehaviorReturnCode_t	Talk::Evaluate
 				}
 
 			gi.LocalizeFilePath( greetingDialog.c_str(), localizedDialogName );
-			greetingDialogLength = gi.SoundLength( localizedDialogName );
+
+
+			//--------------------------------------------------------------
+			// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+			//--------------------------------------------------------------
+			greetingDialogLength = gamefix_dialogGetSoundlength( localizedDialogName );
+
 
 			if ( greetingDialogLength > 0 )
 				{

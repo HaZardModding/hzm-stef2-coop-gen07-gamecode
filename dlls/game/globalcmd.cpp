@@ -1437,7 +1437,12 @@ void CThread::EventWaitForSound( Event *ev )
 	delay = 0.0f;
 	sound = ev->GetString( 1 );
 	
-	delay = gi.SoundLength( sound.c_str() );
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+	//--------------------------------------------------------------
+	delay = gamefix_dialogGetSoundlength( (char*)sound.c_str() );
+
 	
 	if ( delay < 0.0f )
 	{
@@ -1495,7 +1500,12 @@ void CThread::EventWaitDialogLength( Event *ev )
 
 	// Figure out the delay time (length of dialog + extra specified delay)
 
-	delay = gi.SoundLength( localizedDialogName );
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+	//--------------------------------------------------------------
+	delay = gamefix_dialogGetSoundlength( localizedDialogName );
+
 
 	if ( ev->NumArgs() > 1 )
 	{

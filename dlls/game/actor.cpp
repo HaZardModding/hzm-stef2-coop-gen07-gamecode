@@ -13078,9 +13078,11 @@ void Actor::Chatter( const char *snd, float chance, float volume,	int channel	)
    realname = GetRandomAlias( snd );
 	if ( realname.length() > 1 )
 		{
-      float delay;
+		//--------------------------------------------------------------
+		// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+		//--------------------------------------------------------------
+		float delay = gamefix_dialogGetSoundlength( (char*)realname.c_str() );
 
-      delay = gi.SoundLength( realname.c_str() );
 
 		if ( delay < 0.0f )
 			gi.WDPrintf( "Lip file not found for dialog %s\n", realname.c_str() );
@@ -17265,7 +17267,13 @@ void Actor::InContext( const str &theContext , bool useDefaultMinDist )
 
 	_nextContextTime = level.time + G_Random() + _contextInterval;
 
-	dialogLength = gi.SoundLength( localizedDialogName );
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Changed: Using Function returning the longer dialog playtime of Eng/Deu - chrissstrahl
+	//--------------------------------------------------------------
+	dialogLength = gamefix_dialogGetSoundlength( localizedDialogName );
+
+
 	broadcastEvent = new Event ( EV_Actor_BroadcastDialog );
 	broadcastEvent->AddString( theContext );
 	PostEvent( broadcastEvent, dialogLength );
