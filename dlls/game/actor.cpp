@@ -11250,16 +11250,14 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		float lengthNew = 0.0f;
 		dialog_length = 0.0f;
 		if (dialog_name && strlen(dialog_name)) {
-			lengthNew = gamefix_dialogGetSoundlength((char*)dialog_name);
+			dialog_length = gamefix_dialogGetSoundlength((char*)dialog_name);
 		}
-		
-		lengthNew = max(dialog_length,lengthNew);
 
 		if (real_dialog && strlen(real_dialog)) {
 			lengthNew = gamefix_dialogGetSoundlength((char*)real_dialog.c_str());
 		}
 
-		lengthNew = max(dialog_length, lengthNew);
+		dialog_length = max(dialog_length, lengthNew);
 	}
 
 	//--------------------------------------------------------------
