@@ -26,6 +26,17 @@ constexpr auto _COOP_INFO_radarFollowMarker_off_deu = "^2Gruene ^5Positions ^5Ma
 constexpr auto _COOP_INFO_radarFollowMarker_on = "^5Locaction marked ^2green ^5on Radar of^8";
 constexpr auto _COOP_INFO_radarFollowMarker_on_deu = "^5Position ^2gruen ^5markiert auf Radar von^8";
 
+constexpr auto _COOP_INFO_adminLogin_auth = "globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n";
+constexpr auto _COOP_INFO_adminLogin_authCvarToShort = "Error: 'coop_admin' is empty or shorter than 3 digits - Aborting";
+constexpr auto _COOP_INFO_adminLogin_authCvarToLong = "Error: 'coop_admin' is longer than 10 digits - Aborting";
+constexpr auto _COOP_INFO_adminLogin_authSuccess = "Login succsessful - Accsess granted!";
+constexpr auto _COOP_INFO_adminLogin_authFailure = "Login failed - Accsess denied!";
+constexpr auto _COOP_INFO_adminLogin_useLogout = "^3You are already logged in - use ^2!logout ^3 to log out.\n";
+constexpr auto _COOP_INFO_adminLogin_loginStartedEnter = "Login Started - Please enter the code.";
+constexpr auto _COOP_INFO_adminLogin_needLatestCoop = "You need the latest HZM Coop Mod to use !login.\n";
+constexpr auto _COOP_INFO_adminLogin_logoutDone = "^3You are now logged out.\n";
+constexpr auto _COOP_INFO_adminLogin_logoutAlready = "^3You are already logged out.\n";
+
 
 constexpr auto _COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW = "%s - too few parameters\n";
 

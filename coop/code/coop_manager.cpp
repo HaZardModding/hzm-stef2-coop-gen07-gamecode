@@ -35,6 +35,7 @@ bool CoopManager::IsRpgEnabled() const {
 
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
+    playerAdminThink(player);
     coop_objectivesUpdatePlayer(player);
     coop_radarUpdate(player);
 }
@@ -196,6 +197,8 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!testspawn");
             gameFixAPI_clCmdsWhitheListAdd("!follow");
             gameFixAPI_clCmdsWhitheListAdd("!leader");
+            gameFixAPI_clCmdsWhitheListAdd("!login");
+            gameFixAPI_clCmdsWhitheListAdd("!logout");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
@@ -577,6 +580,59 @@ void CoopManager::playerClIdSet(Player* player)
     DEBUG_LOG("# CId NEW CREATED: %s\n", sId.c_str());
 }
 
+void CoopManager::playerAdminThink(Player* player) {
+    if (getPlayerData_coopAdmin(player)) {
+        return;
+    }
+
+    if (!getPlayerData_coopAdminAuthStarted(player)) {
+        return;
+    }
+
+    if (!getPlayerData_coopAdminAuthString_changed(player)) {
+        return;
+    }
+
+    str authStringActual = gamefix_getCvar("coop_admin");
+    if (strlen(authStringActual) < _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MIN){
+        setPayerData_coopAdminAuthStarted(player,false);
+        gamefix_playerDelayedServerCommand(player->entnum, va(_COOP_INFO_adminLogin_auth, gamefix_replaceForLabelText(_COOP_INFO_adminLogin_authCvarToShort).c_str()));
+        return;
+    }
+
+    if (strlen(authStringActual) > _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MAX){
+        setPayerData_coopAdminAuthStarted(player,false);
+        gamefix_playerDelayedServerCommand(player->entnum, va(_COOP_INFO_adminLogin_auth, gamefix_replaceForLabelText(_COOP_INFO_adminLogin_authCvarToLong).c_str()));
+        return;
+    }
+
+    str authStringPlayer = getPlayerData_coopAdminAuthString(player);
+    int authStringLengthNew = strlen(authStringPlayer);
+    setPlayerData_coopAdminAuthStringLengthLast(player, authStringLengthNew);
+
+    //total failure
+    if (authStringLengthNew > _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MAX || getPlayerData_coopAdminAuthAttemps(player) > _COOP_SETTINGS_ADMIN_LOGIN_TRIES) {
+        setPayerData_coopAdminAuthAttemps_update(player);
+        setPayerData_coopAdminAuthStarted(player, false);
+        setPlayerData_coopAdminAuthString(player,"");
+        if (getPlayerData_coopAdminAuthAttemps(player) > _COOP_SETTINGS_ADMIN_LOGIN_TRIES) {
+            gi.SendConsoleCommand(va("kick %d\n", player->entnum));
+            return;
+        }
+        gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand coop_comCmdLoginCode title ''");
+        gamefix_playerDelayedServerCommand(player->entnum, va(_COOP_INFO_adminLogin_auth, gamefix_replaceForLabelText(_COOP_INFO_adminLogin_authFailure).c_str()));
+        return;
+    }
+
+    //success - match
+    if (authStringPlayer == authStringActual) {
+        setPlayerData_coopAdmin(player, true);
+        setPayerData_coopAdminAuthStarted(player, false);
+        setPayerData_coopAdminAuthAttemps_reset(player);
+        gamefix_playerDelayedServerCommand(player->entnum, va(_COOP_INFO_adminLogin_auth, gamefix_replaceForLabelText(_COOP_INFO_adminLogin_authSuccess).c_str()));
+        return;
+    }
+}
 
 //Executed every level restart/reload or when player disconnects
 void CoopManager::playerReset(Player* player) {
@@ -613,6 +669,7 @@ void CoopManager::playerDisconnect(Player* player) {
 
     setPlayerData_coopClientIdDone(player, false);
     setPlayerData_coopAdmin(player,false);
+    setPayerData_coopAdminAuthAttemps_reset(player);
     coopManager_client_persistant_t[player->entnum].coopClientId = "";
     coopManager_client_persistant_t[player->entnum].coopSetupStarted = false;
     coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
@@ -747,7 +804,94 @@ void CoopManager::setPlayerData_coopAdmin(Player* player, bool state) {
     }
     coopManager_client_persistant_t[player->entnum].coopAdmin = state;
 }
+void CoopManager::setPayerData_coopAdmin_reset(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPayerData_coopAdmin_reset() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdmin = false;
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthAttemps = 0;
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthString = "";
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthStarted = false;
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthStringLengthLast = 0; 
+}
+int CoopManager::getPlayerData_coopAdminAuthAttemps(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthAttemps() nullptr player");
+        return 0;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopAdminAuthAttemps;
+}
+void CoopManager::setPayerData_coopAdminAuthAttemps_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPayerData_coopAdminAuthAttemps_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthAttemps++;
+}
+void CoopManager::setPayerData_coopAdminAuthAttemps_reset(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPayerData_coopAdminAuthAttemps_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthAttemps = 0;
+}
+bool CoopManager::getPlayerData_coopAdminAuthStarted(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthStarted() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopAdminAuthStarted;
+}
+void CoopManager::setPayerData_coopAdminAuthStarted(Player* player, bool started) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPayerData_coopAdminAuthStarted() nullptr player");
+        return;
+    }
 
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthStarted = started;
+}
+str CoopManager::getPlayerData_coopAdminAuthString(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthString() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopAdminAuthString;
+}
+void CoopManager::setPlayerData_coopAdminAuthString(Player* player, str newText) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopAdminAuthString() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthString = newText;
+}
+bool CoopManager::getPlayerData_coopAdminAuthString_changed(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthString_changed() nullptr player");
+        return false;
+    }
+    if (getPlayerData_coopAdminAuthStringLengthLast(player) != (int)strlen(getPlayerData_coopAdminAuthString(player))) {
+        int lastAuthStringLength = getPlayerData_coopAdminAuthStringLengthLast(player);
+        lastAuthStringLength++;
+        setPlayerData_coopAdminAuthStringLengthLast(player,lastAuthStringLength);
+        return true;
+    }
+    return false;
+}
+int CoopManager::getPlayerData_coopAdminAuthStringLengthLast(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthStringLengthLast() nullptr player");
+        return 0;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopAdminAuthStringLengthLast;
+}
+void CoopManager::setPlayerData_coopAdminAuthStringLengthLast(Player* player, int strLength) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopAdminAuthStringLengthLast() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopAdminAuthStringLengthLast = strLength;
+}
 
 Vector CoopManager::getPlayerData_radarBlipLastPos(Player* player, short int blipNum)
 {

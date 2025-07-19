@@ -66,6 +66,8 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!testspawn",coop_playerTestSpawn,true },
 	{ "!follow",coop_playerFollowMe,true },
 	{ "!leader",coop_playerLeader,true },
+	{ "!login",coop_playerLogin,true },
+	{ "!logout",coop_playerLogout,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -1609,22 +1611,23 @@ qboolean coop_playerInput(const gentity_t* ent)
 		return false;
 
 	Player* player = (Player*)ent->entity;
+	str authStringPlayerNew = "";
 
-	/*
 	//if !login is active add input to coopPlayer.adminAuthString instead
 	//also update the cvar that is shown in the login menu of the communicator
-	if (multiplayerManager.inMultiplayer() && player->coop_playerAdminAuthStarted()) {
+	if (multiplayerManager.inMultiplayer() && CoopManager::Get().getPlayerData_coopAdminAuthStarted(player)) {
 		if (inputData == "clear") {
-			player->coop_playerAdminAuthString("");
+			CoopManager::Get().setPlayerData_coopAdminAuthString(player,"");
 		}
 		else {
-			player->coop_playerAdminAuthString(va("%s%s", player->coop_playerAdminAuthString().c_str(), inputData.c_str()));
+			authStringPlayerNew = CoopManager::Get().getPlayerData_coopAdminAuthString(player);
+			authStringPlayerNew += inputData;
+			CoopManager::Get().setPlayerData_coopAdminAuthString(player, authStringPlayerNew);
 		}
 
-		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", player->coop_playerAdminAuthString().c_str()));
+		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", authStringPlayerNew.c_str()));
 		return true;
 	}
-	*/
 
 	//limit of data that can be actually used
 	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
@@ -1762,6 +1765,58 @@ qboolean coop_playerLeader(const gentity_t* ent)
 
 	player->hudPrint("!leader - Not implemented yet.\n");
 	//multiplayerManager.callVote(player, "leader", va("%i", player->entnum));
+	return true;
+}
+
+qboolean coop_playerLogin(const gentity_t* ent)
+{
+	//deny usage of command if player executed command to quickly
+	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!login") + 3) > level.time) {
+		return true;
+	}
+	Player* player = (Player*)ent->entity;
+	player->entityVars.SetVariable("!login", level.time);
+
+	if (!player->coop_hasCoopInstalled()) {
+		player->hudPrint(_COOP_INFO_adminLogin_needLatestCoop);
+		return true;
+	}
+
+	if (CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(_COOP_INFO_adminLogin_useLogout);
+		return true;
+	}
+	
+	CoopManager::Get().setPayerData_coopAdminAuthStarted(player, true);
+	CoopManager::Get().setPlayerData_coopAdminAuthString(player,"");
+	CoopManager::Get().setPlayerData_coopAdminAuthStringLengthLast(player,-1);
+	gamefix_playerDelayedServerCommand(player->entnum,va("pushmenu %s", _COOP_UI_NAME_communicator));
+	gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand coop_comCmdLoginCode title ''");
+	gamefix_playerDelayedServerCommand(player->entnum,va(_COOP_INFO_adminLogin_auth, gamefix_replaceForLabelText(_COOP_INFO_adminLogin_loginStartedEnter).c_str()));
+	return true;
+}
+qboolean coop_playerLogout(const gentity_t* ent)
+{
+	if (!ent || !ent->entity) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	player->entityVars.SetVariable("!logout", level.time);
+
+	str sMessage = _COOP_INFO_adminLogin_logoutAlready;
+	if (CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		CoopManager::Get().setPlayerData_coopAdmin(player, false);
+		player->entityVars.SetVariable("coop_login_authorisation", "*");
+		sMessage = _COOP_INFO_adminLogin_logoutDone;
+	}
+
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!logout") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!logout", level.time);
+	player->hudPrint(sMessage.c_str());
+
 	return true;
 }
 #endif

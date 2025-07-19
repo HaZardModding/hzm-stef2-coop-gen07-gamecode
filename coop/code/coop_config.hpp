@@ -14,6 +14,8 @@ constexpr auto _COOP_FILE_settings = "co-op/config/settings.ini";
 constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/playerskins.ini";
 constexpr auto _COOP_FILE_spawninventory = "co-op/config/spawninventory.cfg";
 
+constexpr auto _COOP_UI_NAME_communicator = "coop_com";
+
 constexpr auto _COOP_INI_CAT_default = "categories";
 
 constexpr auto _COOP_MAPLIST_CAT_coopcompatible = "coopCompatible";
@@ -35,6 +37,9 @@ constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
 constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70000;
 
+constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_TRIES = 5;
+constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MIN = 3;
+constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MAX = 10;
 constexpr auto _COOP_SETTINGS_SETUP_TRIES = 15;
 constexpr auto _COOP_SETTINGS_OBJECTIVES_MAX = 8;
 constexpr auto _COOP_SETTINGS_WEAPONS_MAX = 11;

@@ -27,6 +27,10 @@ struct coopManager_client_persistant_s
     str			coopClass = "Technician";
     int         coopVersion = 0;
     bool        coopAdmin = false;
+    int         coopAdminAuthAttemps = 0;
+    str         coopAdminAuthString = "";
+    bool        coopAdminAuthStarted = false;
+    int         coopAdminAuthStringLengthLast = 0;
     
     Vector      radarBlipPositionLast[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f) };
     bool        radarBlipActive[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { false,false,false,false,false,false,false,false,false };
@@ -131,6 +135,9 @@ public:
     void playerCoopDetected(const gentity_t* ent, const char* coopVer);
     void playerClIdDetected(const gentity_t* ent, const char* clientId);
     void playerClIdSet(Player* player);
+
+    void playerAdminThink(Player* player);
+
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
@@ -153,7 +160,17 @@ public:
 
     bool getPlayerData_coopAdmin(Player* player);
     void setPlayerData_coopAdmin(Player* player, bool state);
-
+    void setPayerData_coopAdmin_reset(Player* player);
+    int getPlayerData_coopAdminAuthAttemps(Player* player);
+    void setPayerData_coopAdminAuthAttemps_update(Player* player);
+    void setPayerData_coopAdminAuthAttemps_reset(Player* player);
+    bool getPlayerData_coopAdminAuthStarted(Player* player);
+    void setPayerData_coopAdminAuthStarted(Player* player, bool started);
+    str getPlayerData_coopAdminAuthString(Player* player);
+    void setPlayerData_coopAdminAuthString(Player* player,str newText);
+    bool getPlayerData_coopAdminAuthString_changed(Player* player);
+    int getPlayerData_coopAdminAuthStringLengthLast(Player* player);
+    void setPlayerData_coopAdminAuthStringLengthLast(Player* player, int strLength);
 
     Vector getPlayerData_radarBlipLastPos(Player* player, short int blipNum);
     void setPlayerData_radarBlipLastPos(Player* player, short int blipNum, Vector blipLastPos);
