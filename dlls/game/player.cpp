@@ -15547,6 +15547,7 @@ bool Player::coop_hasCoopInstalled()
 {
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
+			//disabled for testing and development
 			//if (gameFixAPI_isHost(this))
 				//return true;
 			if (this->coop_getCoopVersion() >= _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION)
