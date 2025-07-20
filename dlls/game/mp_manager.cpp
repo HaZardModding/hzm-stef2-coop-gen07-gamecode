@@ -4472,3 +4472,21 @@ float MultiplayerManager::getMatchStartTime()
 {
 	return _multiplayerGame->getMatchStartTime();
 }
+
+
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Coop Specific functionality - chrissstrahl
+//--------------------------------------------------------------
+MultiplayerModeBase* MultiplayerManager::coop_getMultiplayerGame()
+{
+	if (_multiplayerGame) {
+		return _multiplayerGame;
+	}
+	gi.Error(ERR_DROP, "coop_getMultiplayerGame() _multiplayerGame was nullptr\n");
+	return nullptr;
+}
+
+#endif
