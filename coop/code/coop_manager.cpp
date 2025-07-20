@@ -225,6 +225,9 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!origin");
             gameFixAPI_clCmdsWhitheListAdd("!noclip");
             gameFixAPI_clCmdsWhitheListAdd("!stuck");
+            gameFixAPI_clCmdsWhitheListAdd("!transport");
+            gameFixAPI_clCmdsWhitheListAdd("!notransport");
+            gameFixAPI_clCmdsWhitheListAdd("!showspawn");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
