@@ -228,6 +228,11 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!transport");
             gameFixAPI_clCmdsWhitheListAdd("!notransport");
             gameFixAPI_clCmdsWhitheListAdd("!showspawn");
+            gameFixAPI_clCmdsWhitheListAdd("!transferlife");
+            //gameFixAPI_clCmdsWhitheListAdd("!ability");
+            gameFixAPI_clCmdsWhitheListAdd("!targetnames");
+            gameFixAPI_clCmdsWhitheListAdd("!levelend");
+            gameFixAPI_clCmdsWhitheListAdd("!drop");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
@@ -663,6 +668,16 @@ void CoopManager::playerAdminThink(Player* player) {
     }
 }
 
+void CoopManager::playerMoveToSpawn(Player* player) {
+    Entity* spawnPoint = multiplayerManager.coop_getMultiplayerGame()->getSpawnPoint(player);
+    if (!spawnPoint) {
+        spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
+    }
+    if (spawnPoint) {
+        player->WarpToPoint(spawnPoint);
+    }
+}
+
 Entity* CoopManager::getSpawnSpecific(int spotNumber){
     Entity* ent = nullptr;
 
@@ -722,22 +737,43 @@ bool CoopManager::playerMoveToSpawnSpecific(Player* player, int spotNumber)
     return false;
 }
 
+void CoopManager::playerTargetnames(Player *player, Entity* viewTrace)
+{
+    if (!CoopManager::Get().IsCoopEnabled()) {
+        return;
+    }
 
-void CoopManager::playerMoveToSpawn(Player* player) {
-    Entity* spawnPoint = multiplayerManager.coop_getMultiplayerGame()->getSpawnPoint(player);
-    if (!spawnPoint) {
-        spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
+    if (!player || player->getHealth() <= 0 || !viewTrace || viewTrace->entnum == world->entnum) {
+        return;
     }
-    if (spawnPoint) {
-        player->WarpToPoint(spawnPoint);
+
+    if (multiplayerManager.inMultiplayer() && getPlayerData_targetedShow(player)) {
+        Vector vData;
+        ScriptVariable* scriptVar = NULL;
+        scriptVar = player->entityVars.GetVariable("!targeted");
+        if (scriptVar != NULL) {
+            vData = scriptVar->vectorValue();
+        }
+        else {
+            vData = Vector(0, 0, 0);
+        }
+        //0=time,1=entitynum,2=?
+        if ((vData[0] + 3) < level.time || (int)vData[1] != viewTrace->entnum) {
+            vData[0] = level.time;
+            vData[1] = viewTrace->entnum;
+            player->entityVars.SetVariable("!targeted", vData);
+            player->hudPrint(va("^5Object:^3 $%s, ^5Class:^3 %s\n", viewTrace->targetname.c_str(), viewTrace->getClassname()));
+        }
     }
- }
+}
 
 //Executed every level restart/reload or when player disconnects
 void CoopManager::playerReset(Player* player) {
     if (!player) {
         return;
-    }    
+    }
+    
+    setPlayerData_targetedShow(player, false);
     setPlayerData_respawnMe(player,false);
     setPlayerData_spawnLocationSpawnForced(player,true);
     setPlayerData_respawnLocationSpawn(player,false);
@@ -1450,4 +1486,21 @@ void CoopManager::setPlayerData_objectives_setupDone(Player* player)
         return;
     }
     coopManager_client_persistant_t[player->entnum].objectiveSetupDone = true;
+}
+
+bool CoopManager::getPlayerData_targetedShow(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_targetedShow() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].targetedShow;
+}
+void CoopManager::setPlayerData_targetedShow(Player* player, bool status)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_targetedShow() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].targetedShow = status;
 }

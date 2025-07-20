@@ -75,6 +75,11 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!transport",coop_playerTransport,true },
 	{ "!notransport",coop_playerNotransport,true },
 	{ "!showspawn",coop_playerShowspawn,true },
+	{ "!transferlife",coop_playerTransferlife,true },
+	{ "!ability",coop_playerAbility,true },
+	{ "!targetnames",coop_playerTargetnames,true },
+	{ "!levelend",coop_playerLevelend,true },
+	{ "!drop",coop_playerDrop,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -1665,8 +1670,8 @@ qboolean coop_playerTestSpawn(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!testspawn", level.time);
 
-	if (!player->coop_isAdmin()) {
-		player->hudPrint(_COOP_INFO_adminNeeded);
+	if (CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!testspawn"));
 		return true;
 	}
 
@@ -2190,10 +2195,11 @@ qboolean coop_playerTransport(const gentity_t* ent)
 
 qboolean coop_playerNotransport(const gentity_t* ent)
 {
-	Player* player = (Player*)ent->entity;
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
 
-	//[b60014] chrissstrahl - add spam protection
-	//deny usage of command if player executed command to quickly
+	Player* player = (Player*)ent->entity;
 	if ((gamefix_getEntityVarFloat((Entity*)player, "!notransport") + 3) > level.time) {
 		return true;
 	}
@@ -2232,22 +2238,320 @@ qboolean coop_playerNotransport(const gentity_t* ent)
 
 qboolean coop_playerShowspawn(const gentity_t* ent)
 {
-	Player* player = (Player*)ent->entity;
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
 
-	//[b60014] chrissstrahl - add spam protection
-	//deny usage of command if player executed command to quickly
-	if ((gamefix_getEntityVarFloat((Entity*)player, "!showspawn") + 3) > level.time) {
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	
+	if ((gamefix_getEntityVarFloat(ent->entity, "!showspawn") + 1) > level.time) {
 		return qtrue;
 	}
-	player->entityVars.SetVariable("!showspawn", level.time);
+	ent->entity->entityVars.SetVariable("!showspawn", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!showspawn"));
+		return qtrue;
+	}
+
+	ExecuteThread("globalCoop_level_showSpawn", true, ent->entity);
+	return qtrue;
+}
+
+qboolean coop_playerTransferlife(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	
+	if ((gamefix_getEntityVarFloat(ent->entity, "!transferlife") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!transferlife", level.time);
+
+
+	//coop only command
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	player->hudPrint("!transferlife - Not Implemented\n");
+	gi.Printf("!transferlife - Not Implemented\n");
+
+	/*
+
+	//transfer live
+	bool hasTransferedLive = false;
+	int iLivesRemaining = (coop_lmsGetLives() - player->coopPlayer.lmsDeaths);
+
+	//if not a spectator player needs one live for him self
+	if (!multiplayerManager.isPlayerSpectator(player)) {
+		iLivesRemaining--;
+	}
+
+	//check if player can give away a live at all
+	if (iLivesRemaining > 0) {
+
+		Player* playerOther = NULL;
+		for (int i = 0; i < maxclients->integer; i++) {
+			playerOther = (Player*)g_entities[i].entity;
+			if (!hasTransferedLive && playerOther && player != playerOther && playerOther->isSubclassOf(Player) && !playerOther->upgPlayerIsBot()) {
+				if (coop_lmsRevivePlayer(playerOther)) {
+					//THE RECEIVER
+					if (playerOther->upgPlayerHasLanguageGerman()) {
+						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2hat 1 Leben transferiert.\n", player->client->pers.netname));
+					}
+					else {
+						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2has transfered 1 live to you.\n", player->client->pers.netname));
+					}
+					//print info - of lives
+					playerOther->coop_lmsInfo();
+
+					//THE DONOR
+					player->coopPlayer.lmsDeaths++;
+					if (player->upgPlayerHasLanguageGerman()) {
+						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2Leben transferiert an^8 %s.\n", playerOther->client->pers.netname));
+					}
+					else {
+						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2live transfered to^8 %s.\n", playerOther->client->pers.netname));
+					}
+					//print info - of lives
+					player->coop_lmsInfo();
+
+					hasTransferedLive = true;
+					return true;
+				}
+			}
+		}
+		//has not transfered live
+		if (!hasTransferedLive) {
+			//print message to let player know whats going on
+			if (player->upgPlayerHasLanguageGerman()) {
+				multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Kein valieden Spieler zum Transfer gefunden.\n"));
+			}
+			else {
+				multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - No valid Player for transfer found.\n"));
+			}
+		}
+	}
+	//Can not transfer live
+	else {
+		//print message to let player know whats going on
+		if (player->upgPlayerHasLanguageGerman()) {
+			multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Nicht genug Leben zum Transfer.\n"));
+		}
+		else {
+			multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Not enough lives for transfer.\n"));
+		}
+	}*/
+	return true;
+}
+
+qboolean coop_playerAbility(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	if (multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+
+	player->hudPrint("!ability - Not Implemented\n");
+	gi.Printf("!ability - Not Implemented\n");
+
+	/*
+	//deny usage of command if player executed command to quickly
+	float cooldownTime = gamefix_getEntityVarFloat((Entity*)player, "!ability");
+	cooldownTime += COOP_CLASS_REGENERATION_COOLDOWN;
+	if ((cooldownTime - level.time) >= 1) { //make sure we don't get the "less than a sec remaining" situation
+		//have printout on a cooldown for 3 sec
+		float cooldownTimePrintout = gamefix_getEntityVarFloat((Entity*)player, "!abilityPrintout");
+		if (cooldownTimePrintout < level.time) {
+			player->entityVars.SetVariable("!abilityPrintout", (level.time + 3));
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint(va("^5Coop Klasse Talent^2 am abklang^5 %d ^2sekunden verbleibend.\n", (int)(cooldownTime - level.time)));
+			}
+			else {
+				player->hudPrint(va("^5Coop Class ability^2 in cool-down^5 %d ^2secounds remaining.\n", (int)(cooldownTime - level.time)));
+			}
+		}
+		return true;
+	}
+
+	player->entityVars.SetVariable("!ability", level.time);
+	player->entityVars.SetVariable("!abilityPrintout", (level.time + 3));
+
+	if (player->coop_hasLanguageGerman()) {
+		player->hudPrint(va("^5Coop Klasse Talent^2 eingesetzt, erneut bereit in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
+	}
+	else {
+		player->hudPrint(va("^5Coop Class ability^2 used, ready again in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
+	}
+
+
+
+	//activate ability now
+	player->coop_classAbilityUse();
+	*/
+	return true;
+}
+
+qboolean coop_playerTargetnames(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!targetnames") + 3) > level.time) {
+		return qtrue;
+	}
+	player->entityVars.SetVariable("!targetnames", level.time);
 
 	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
-		player->hudPrint(_COOP_INFO_adminNeeded);
+		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse, "!targetnames"));
 		return qtrue;
 	}
 
-	ExecuteThread("globalCoop_level_showSpawn", true, (Entity*)player);
+	if (CoopManager::Get().getPlayerData_targetedShow(player)) {
+		CoopManager::Get().setPlayerData_targetedShow(player,false);
+		player->hudPrint(_COOP_INFO_usedCommand_targetnames1);
+	}
+	else {
+		CoopManager::Get().setPlayerData_targetedShow(player,true);
+		player->hudPrint(_COOP_INFO_usedCommand_targetnames2);
+	}
 	return qtrue;
+}
+
+qboolean coop_playerLevelend(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!levelend") + 10) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!levelend", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!levelend"));
+		return true;
+	}
+
+	CThread* thread = ExecuteThread("coop_endLevel", true, (Entity*)player);
+	if (thread == NULL) {
+		player->hudPrint(_COOP_INFO_usedCommand_levelend1);
+	}
+	else {
+		player->hudPrint(_COOP_INFO_usedCommand_levelend2);
+	}
+	return true;
+}
+qboolean coop_playerDrop(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+
+	Weapon *weap = player->GetActiveWeapon(WEAPON_ANY);
+	if (!weap) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!drop") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!drop", level.time);
+	
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	str weaponName;
+	player->getActiveWeaponName(WEAPON_ANY, weaponName);
+
+	if (!weap->IsDroppable() ||
+		Q_stricmpn("None", weaponName.c_str(), 4) == 0 ||
+		Q_stricmpn("EnterpriseCannon", weaponName.c_str(), 4) == 0 ||
+		Q_stricmpn("Batleth", weaponName.c_str(), 4) == 0 ||
+		Q_stricmpn("Phaser", weaponName.c_str(), 6) == 0 ||
+		Q_stricmpn("Tricorder", weaponName.c_str(), 9) == 0)
+	{
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_drop1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_drop1);
+		}
+		return true;
+	}
+
+	
+	//Sentient* playerSent = (Sentient*)player;
+	//Item* itemNew = playerSent->PrevItem((Item*)weap);
+
+	weap->Drop();
+
+	//Event* ev1;
+	//ev1 = new Event(EV_InventoryItem_Use);
+	//ev1->AddEntity(player);
+	//itemNew->ProcessEvent(ev1);
+
+	//this would make the weapon disapear :(
+	//player->animate->ClearTorsoAnim();
+
+	return true;
 }
 #endif
 

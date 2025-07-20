@@ -49,6 +49,11 @@ qboolean coop_playerStuck(const gentity_t* ent);
 qboolean coop_playerTransport(const gentity_t* ent);
 qboolean coop_playerNotransport(const gentity_t* ent);
 qboolean coop_playerShowspawn(const gentity_t* ent);
+qboolean coop_playerTransferlife(const gentity_t* ent);
+qboolean coop_playerAbility(const gentity_t* ent);
+qboolean coop_playerTargetnames(const gentity_t* ent);
+qboolean coop_playerLevelend(const gentity_t* ent);
+qboolean coop_playerDrop(const gentity_t* ent);
 #endif
 
 

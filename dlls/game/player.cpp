@@ -5956,7 +5956,16 @@ void Player::CheckForTargetedEntity( void )
 		{
 			SetTargetedEntity(viewTrace.ent->entity);
 		}
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerTargetnames(this, viewTrace.ent->entity);
+#endif
 		
+
 		return;
 	}
 	

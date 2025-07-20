@@ -36,6 +36,9 @@ struct coopManager_client_persistant_s
     str         coopAdminAuthString = "";
     bool        coopAdminAuthStarted = false;
     int         coopAdminAuthStringLengthLast = 0;
+
+    bool        targetedShow = false;
+    int         targetedLastEntNum = -1;
     
     Vector      radarBlipPositionLast[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f) };
     bool        radarBlipActive[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { false,false,false,false,false,false,false,false,false };
@@ -145,6 +148,7 @@ public:
     void playerMoveToSpawn(Player* player);
     Entity* getSpawnSpecific(int spotNumber);
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
+    void playerTargetnames(Player *player, Entity* viewTrace);
 
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
@@ -233,7 +237,8 @@ public:
     void setPlayerData_objectives_reset(Player* player);
     bool getPlayerData_objectives_setupDone(Player* player);
     void setPlayerData_objectives_setupDone(Player* player);
-
+    bool getPlayerData_targetedShow(Player* player);
+    void setPlayerData_targetedShow(Player* player, bool status);
 
 private:
     CoopManager() = default;
