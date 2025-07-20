@@ -86,11 +86,26 @@ NEW console commands:
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
+dialogrunthread 		//now allowed in multiplayer
 coopinstalled			//tell installed coop version
 coopcid					//tell client coop identification
-coopinput				//allowing players to send text to server
-!thread					//run script thread executed by player entity
-dialogrunthread 		//now allowed in multiplayer
+coopinput				//allowing player to send text to server
+coopradarscale			//allowing player to set the scale of the radar hud
+!follow					//allowing player to show up as green marker on the radar
+!leader					//allowing player to take the lead
+!kill					//comit suicide
+!origin					//allowing player to get position of objects and them self
+!stuck					//allowing player to get get them self unstuck
+!transport				//allowing player transport to other player
+!notransport			//allowing player to block players transporting to them
+
+!login					//Admin - login
+!logout					//Admin - logout
+!thread					//Admin - allowing player to run script thread
+!testspawn				//Admin - allowing to test current spawnlocations
+!noclip					//Admin - allowing to use noclip without cheats
+!showspawn				//Admin - allowing to see player spawnlocations without cheats
+
 
 Coop Mod execution logic:
 /////////////////////////////////////////
