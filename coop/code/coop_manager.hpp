@@ -1,7 +1,12 @@
 #pragma once
 #include "../../dlls/game/_pch_cpp.h"
+#include "../../dlls/game/mp_manager.hpp"
+#include "../../dlls/game/mp_modeBase.hpp"
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
+
+extern Event EV_Player_DeactivateWeapon;
+extern Event EV_Player_ActivateNewWeapon;
 
 
 //windows/linux+other handle
@@ -118,13 +123,13 @@ public:
     str MissionFailureString(const str& reason);
     void MissionFailureLoadMap();
 
-
-    void ClientThink(Player* player);
-
     str IncludeScriptReplace(str sLex);
     void IncludeScriptCheck(str &sLex);
     bool IncludedScriptCoop();
 
+    void ClientThink(Player* player);
+
+    int getNumberOfPlayers(bool noDead, bool noSpectator);
 
     void playerConnect(int clientNum);
     void playerDisconnect(Player* player);
@@ -137,6 +142,9 @@ public:
     void playerClIdSet(Player* player);
 
     void playerAdminThink(Player* player);
+    void playerMoveToSpawn(Player* player);
+    Entity* getSpawnSpecific(int spotNumber);
+    bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
 
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);

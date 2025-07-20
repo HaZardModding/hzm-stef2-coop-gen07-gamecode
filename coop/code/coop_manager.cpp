@@ -32,14 +32,6 @@ bool CoopManager::IsRpgEnabled() const {
     return rpgEnabled;
 }
 
-
-void CoopManager::ClientThink(Player *player) {
-    playerSetup(player);
-    playerAdminThink(player);
-    coop_objectivesUpdatePlayer(player);
-    coop_radarUpdate(player);
-}
-
 //check if specific coop files are included
 //this is required because certain global_scripts
 //need to be included differehtly then
@@ -89,6 +81,36 @@ void CoopManager::IncludeScriptCheck(str &sLex) {
 
 bool CoopManager::IncludedScriptCoop() {
     return mapFlags.scriptIncludedCoopMain;
+}
+
+void CoopManager::ClientThink(Player *player) {
+    playerSetup(player);
+    playerAdminThink(player);
+    coop_objectivesUpdatePlayer(player);
+    coop_radarUpdate(player);
+}
+
+//return player quanity based on certain parameters
+int CoopManager::getNumberOfPlayers(bool noDead, bool noSpectator) {
+    int iNumberOfPlayer = 0;
+    Player* player = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        player = gamefix_getPlayer(i);
+
+        if (!player) {
+            continue;
+        }
+
+        if (noDead && gameFixAPI_isDead((Entity*)player) || noSpectator && gameFixAPI_isSpectator_stef2((Entity*)player)) {
+            continue;
+        }
+
+        if (gamefix_checkNotarget((Entity*)player)) {
+            continue;
+        }
+        iNumberOfPlayer++;
+    }
+    return iNumberOfPlayer;
 }
 
 //executed once, only on game server start/load
@@ -199,6 +221,10 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!leader");
             gameFixAPI_clCmdsWhitheListAdd("!login");
             gameFixAPI_clCmdsWhitheListAdd("!logout");
+            gameFixAPI_clCmdsWhitheListAdd("!kill");
+            gameFixAPI_clCmdsWhitheListAdd("!origin");
+            gameFixAPI_clCmdsWhitheListAdd("!noclip");
+            gameFixAPI_clCmdsWhitheListAdd("!stuck");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
@@ -633,6 +659,76 @@ void CoopManager::playerAdminThink(Player* player) {
         return;
     }
 }
+
+Entity* CoopManager::getSpawnSpecific(int spotNumber){
+    Entity* ent = nullptr;
+
+    if (spotNumber > _COOP_SETTINGS_PLAYER_SPAWNSPOT_MAX || spotNumber < 1) {
+        gi.Error(ERR_FATAL, va("CoopManager::getSpawnSpecific() spotNumber '%d' out of range\n", spotNumber));
+        return ent;
+    }
+
+    //Script based spawnspot
+    Vector vAngle = Vector(0.0f, 0.0f, 0.0f);
+    Vector vSpawn = program.coop_getVectorVariableValue(va("coop_vector_spawnOrigin%i", spotNumber));
+    vAngle[1] = program.coop_getFloatVariableValue(va("coop_float_spawnAngle%d", spotNumber));
+    if (vAngle[1] == 0.0f) {
+        vAngle[1] = program.coop_getFloatVariableValue("coop_float_spawnAngle0");
+    }
+
+    if (vSpawn.length() > 0) {
+        ent = G_FindClass(NULL, "info_player_start");
+        Vector vOld = ent->origin;
+        if (ent) {
+            ent->setAngles(vAngle);
+            ent->setOrigin(vSpawn);
+            ent->NoLerpThisFrame();
+            return ent;
+        }
+    }
+    
+    //info_player_deathmatch based spawnspot with targetname
+    TargetList* tlist;
+    tlist = world->GetTargetList(va("ipd%d", spotNumber), false);
+    if (tlist) {
+        ent = tlist->GetNextEntity(NULL);
+        if (ent) {
+            return ent;
+        }
+    }
+
+    gi.Printf(va(_COOP_INFO_spawnspotNumberedNotFound,spotNumber));
+
+    return ent;
+}
+
+bool CoopManager::playerMoveToSpawnSpecific(Player* player, int spotNumber)
+{
+    if (!player) {
+        return false;
+    }
+    if (spotNumber > _COOP_SETTINGS_PLAYER_SPAWNSPOT_MAX || spotNumber < 1) {
+        gi.Error(ERR_FATAL, va("CoopManager::playerMoveToSpawnSpecific() spotNumber '%d' out of range\n", spotNumber));
+        return false;
+    }
+    Entity* ent = getSpawnSpecific(spotNumber);
+    if (ent) {
+        player->WarpToPoint(ent);
+        return true;
+    }
+    return false;
+}
+
+
+void CoopManager::playerMoveToSpawn(Player* player) {
+    Entity* spawnPoint = multiplayerManager.coop_getMultiplayerGame()->getSpawnPoint(player);
+    if (!spawnPoint) {
+        spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
+    }
+    if (spawnPoint) {
+        player->WarpToPoint(spawnPoint);
+    }
+ }
 
 //Executed every level restart/reload or when player disconnects
 void CoopManager::playerReset(Player* player) {
