@@ -42,6 +42,13 @@ qboolean coop_playerFollowMe(const gentity_t* ent);
 qboolean coop_playerLeader(const gentity_t* ent);
 qboolean coop_playerLogin(const gentity_t* ent);
 qboolean coop_playerLogout(const gentity_t* ent);
+qboolean coop_playerKill(const gentity_t* ent);
+qboolean coop_playerOrigin(const gentity_t* ent);
+qboolean coop_playerNoclip(const gentity_t* ent);
+qboolean coop_playerStuck(const gentity_t* ent);
+qboolean coop_playerTransport(const gentity_t* ent);
+qboolean coop_playerNotransport(const gentity_t* ent);
+qboolean coop_playerShowspawn(const gentity_t* ent);
 #endif
 
 

@@ -68,6 +68,13 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!leader",coop_playerLeader,true },
 	{ "!login",coop_playerLogin,true },
 	{ "!logout",coop_playerLogout,true },
+	{ "!kill",coop_playerKill,true },
+	{ "!origin",coop_playerOrigin,true },
+	{ "!noclip",coop_playerNoclip,true },
+	{ "!stuck",coop_playerStuck,true },
+	{ "!transport",coop_playerTransport,true },
+	{ "!notransport",coop_playerNotransport,true },
+	{ "!showspawn",coop_playerShowspawn,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -1489,7 +1496,11 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 
 qboolean G_DialogRunThread( const gentity_t *ent )
 {
-	if (!ent) {
+	if (!ent || !ent->entity || !ent->client) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
 		return true;
 	}
 
@@ -1557,25 +1568,19 @@ qboolean coop_playerThread(const gentity_t* ent)
 	if (!ent || !ent->inuse || !ent->client || !gi.argc())
 		return true;
 
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
 
 	const str threadName = gi.argv(1);
 	Player* player = (Player*)ent->entity;
 
-	if (g_gametype->integer == GT_SINGLE_PLAYER ||
-		!multiplayerManager.inMultiplayer())
-	{
-		return true;
-	}
-
 	//needs coopThread_ prefix
-	if (!threadName.length() ||
-		gamefix_findString(threadName.c_str(), "coopThread_",false) != 0)
-	{
+	if (!threadName.length() ||	gamefix_findString(threadName.c_str(), "coopThread_",false) != 0) {
 		return true;
 	}
 
-	if (!gameFixAPI_isHost(player)  || player->coop_isAdmin() )
-	{
+	if (!gameFixAPI_isHost(player) || !player->coop_isAdmin() ) {
 		return true;
 	}
 
@@ -1593,6 +1598,10 @@ qboolean coop_playerInput(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
 
 	if (!gi.argc())
 		return true;
@@ -1645,6 +1654,10 @@ qboolean coop_playerTestSpawn(const gentity_t* ent)
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;
 
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
 	Player* player = (Player*)ent->entity;
 	//deny usage of command if player executed command to quickly
 	if ((gamefix_getEntityVarFloat((Entity*)player, "!testspawn") + 3) > level.time) {
@@ -1688,11 +1701,20 @@ qboolean coop_playerRadarScale(const gentity_t* ent)
 qboolean coop_playerFollowMe(const gentity_t* ent)
 {
 	//deny usage of command if player executed command to quickly
-	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!follow") + 3) > level.time) {
+	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!follow") + 1.5) > level.time) {
 		return true;
 	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
 	Player* player = (Player*)ent->entity;
 	player->entityVars.SetVariable("!follow", level.time);
+
+	if (player->getHealth() <= 0) {
+		return true;
+	}
 
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
@@ -1751,8 +1773,17 @@ qboolean coop_playerLeader(const gentity_t* ent)
 	if (!ent || !ent->entity || (gamefix_getEntityVarFloat((Entity*)ent->entity, "!leader") + 3) > level.time) {
 		return true;
 	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
 	Player* player = (Player*)ent->entity;
 	player->entityVars.SetVariable("!leader", level.time);
+
+	if (player->getHealth() <= 0) {
+		return true;
+	}
 
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
@@ -1818,6 +1849,405 @@ qboolean coop_playerLogout(const gentity_t* ent)
 	player->hudPrint(sMessage.c_str());
 
 	return true;
+}
+
+qboolean coop_playerKill(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (player->getHealth() <= 0) {
+		return true;
+	}
+	
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32){
+		gi.SendServerCommand(player->entnum, "stufftext \"kill\"\n");
+	}
+	return true;
+}
+
+qboolean coop_playerOrigin(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!origin") + 1) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!origin", level.time);
+
+
+	Player* player = (Player*)ent->entity;
+	player->hudPrint(va("^5Your ^3origin is:^8 %i %i %i\n", (int)ent->entity->origin[1], (int)ent->entity->origin[1], (int)ent->entity->origin[2]));
+
+	Entity* targetedEntity = player->GetTargetedEntity();
+	if (targetedEntity) {
+		player->hudPrint(va("^3Targeted ^5'$%s'^3 origin is:^8 %i %i %i\n", targetedEntity->targetname.c_str(), (int)targetedEntity->origin[0], (int)targetedEntity->origin[1], (int)targetedEntity->origin[2]));
+	}
+	
+	return true;
+}
+
+qboolean coop_playerNoclip(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!origin") + 1) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!origin", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!noclip"));
+		return true;
+	}
+	
+	player->hudPrint(_COOP_INFO_usedCommand_noclip);
+	extern Event EV_Player_DevNoClipCheat;
+	player->ProcessEvent(EV_Player_DevNoClipCheat);
+	return true;
+}
+
+qboolean coop_playerStuck(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+	
+	if ((gamefix_getEntityVarFloat(ent->entity, "!stuck") + 1) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!stuck", level.time);
+
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	Vector vOriginB4 = player->origin;
+	CoopManager::Get().setPlayerData_spawnLocationSpawnForced(player,true);
+	CoopManager::Get().playerMoveToSpawn(player);
+	Vector vOriginDATA = player->origin;
+
+	//compare player locations to determin if player is at a bad spawnspot
+	//level z-axis out so we ignore falling players
+	vOriginDATA[2] = 0;
+	vOriginB4[2] = 0;
+	int spawnSpotToTry = gamefix_getEntityVarInt((Entity*)player, "!stuck_spot");
+	//cycle spawnspots
+	spawnSpotToTry++;
+	if (spawnSpotToTry < 1) {
+		spawnSpotToTry = 1;
+	}
+	if (spawnSpotToTry == (player->entnum + 1)) {
+		spawnSpotToTry++;
+	}
+	if (spawnSpotToTry > _COOP_SETTINGS_PLAYER_SPAWNSPOT_MAX) {
+		spawnSpotToTry = 1;
+	}
+
+	if (VectorLength(vOriginB4 - vOriginDATA) < 100 || spawnSpotToTry != 0 && spawnSpotToTry != (player->entnum + 1)) {
+		//player->entityVars.SetVariable("!transport", 0.0f);
+		//coop_playerTransport(ent);
+
+		ent->entity->entityVars.SetVariable("!stuck_spot", spawnSpotToTry);
+
+		bool moved = CoopManager::Get().playerMoveToSpawnSpecific(player,spawnSpotToTry);
+		if (moved) {
+			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
+			{
+				if (player->coop_hasLanguageGerman()) {
+					player->hudPrint(va(_COOP_INFO_usedCommand_stuck2_deu, spawnSpotToTry));
+				}
+				else {
+					player->hudPrint(va(_COOP_INFO_usedCommand_stuck2, spawnSpotToTry));
+				}
+			}
+		}
+		return true;
+	}
+
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
+	{
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_stuck1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_stuck1);
+		}
+	}
+	return true;
+}
+
+
+qboolean coop_playerTransport(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (ent->entity->getHealth() <= 0) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!transport") + 5) > level.time) {
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_transport1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_transport1);
+		}
+		return true;
+	}
+
+	//coop only command
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	//deny request during cinematic and in spec [b607] chrissstrahl - moved health check here
+	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player) || player->health <= 0) {
+		return true;
+	}
+
+	bool bTransportFailed = false;
+	const char* cmd;
+	int   n;
+	n = gi.argc();
+	cmd = gi.argv(1);
+
+
+	int iPlayer = -1;
+	if (n > 1) {
+		str sId = va("%s", cmd);
+
+		int i;
+		for (i = 0; i < sId.length(); i++) {
+			if (isdigit(sId[i])) {
+				sId = sId[i];
+				iPlayer = atoi(sId.c_str());
+			}
+		}
+	}
+
+	Player* targetPlayer = NULL;
+	//beam directly to a given player number
+	if (iPlayer >= 0) {
+		if (&g_entities[iPlayer] && g_entities[iPlayer].client && g_entities[iPlayer].inuse) {
+			targetPlayer = (Player*)g_entities[iPlayer].entity;
+		}
+	}
+	//given player does not exist or no number was given
+	if (!targetPlayer) {
+		//more than 2 players, transport to closest player
+		if (CoopManager::Get().getNumberOfPlayers(true,true) > 1) {
+			targetPlayer = gamefix_getClosestPlayer(player);
+		}
+		else
+		{
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint(_COOP_INFO_usedCommand_transport2_deu);
+			}
+			else {
+				player->hudPrint(_COOP_INFO_usedCommand_transport2);
+			}
+			bTransportFailed = true;
+		}
+	}
+
+	if (!targetPlayer || multiplayerManager.isPlayerSpectator(targetPlayer) || targetPlayer->health <= 0) {
+		bTransportFailed = true;
+	}
+	//prevent transport to target player if player has !notransport activated
+	else {
+		if (gamefix_getEntityVarInt((Entity*)targetPlayer, "!notransport_active") == 1) {
+			bTransportFailed = true;
+
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint(_COOP_INFO_usedCommand_transport3_deu);
+			}
+			else {
+				player->hudPrint(_COOP_INFO_usedCommand_transport3);
+			}
+		}
+		//[b60014] chrissstrahl - prevent transport if player has !notransport activated - do not allow terrorising other players
+		else {
+			if (gamefix_getEntityVarInt((Entity*)player, "!notransport_active") == 1) {
+				bTransportFailed = true;
+
+				if (player->coop_hasLanguageGerman()) {
+					player->hudPrint(_COOP_INFO_usedCommand_transport4_deu);
+				}
+				else {
+					player->hudPrint(_COOP_INFO_usedCommand_transport4);
+				}
+			}
+		}
+	}
+
+	if (targetPlayer == player) {
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_transport5);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_transport5);
+		}
+		bTransportFailed = true;
+	}
+
+	if (bTransportFailed) {
+		return true;
+	}
+
+	player->entityVars.SetVariable("!transport", level.time);
+
+	//make notsolid - so nobody gets stuck
+	ent->entity->setSolidType(SOLID_NOT);
+
+	//use the circle menu code to make the weapon go away and reapear after transport
+	str lastWeapon = "None";
+	player->getActiveWeaponName(WEAPON_ANY, lastWeapon);
+
+	Event* StopFireEvent;
+	StopFireEvent = new Event(EV_Sentient_StopFire);
+	StopFireEvent->AddString("dualhand");
+	player->ProcessEvent(StopFireEvent);
+
+	Event* deactivateWeaponEv;
+	deactivateWeaponEv = new Event(EV_Player_DeactivateWeapon);
+	deactivateWeaponEv->AddString("dualhand");
+	player->PostEvent(deactivateWeaponEv, 0.05);
+
+	player->disableInventory();
+
+	//[b60025] chrissstrahl - set code to restore weapon
+	Event* useWeaponEv;
+	useWeaponEv = new Event(EV_Player_UseItem);
+	useWeaponEv->AddString(lastWeapon);
+	useWeaponEv->AddString("dualhand");
+	player->PostEvent(useWeaponEv, 2.0f);
+
+	StopFireEvent = new Event(EV_Sentient_StopFire);
+	StopFireEvent->AddString("dualhand");
+	player->PostEvent(StopFireEvent, 1.9f);
+
+	Event* activateWeaponEv;
+	activateWeaponEv = new Event(EV_Player_ActivateNewWeapon);
+	player->PostEvent(activateWeaponEv, 1.9f);
+
+
+	player->client->ps.pm_time = 100;
+	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
+
+	player->client->ps.pm_time = 100;
+	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
+
+	Event* newEvent2 = new Event(EV_DisplayEffect);
+	newEvent2->AddString("TransportIn");
+	newEvent2->AddString("Multiplayer");
+	player->PostEvent(newEvent2, 0.0f);
+
+	player->origin = targetPlayer->origin;
+	player->SetViewAngles(targetPlayer->angles);
+
+	CoopManager::Get().playerTransported(player);
+	return true;
+}
+
+qboolean coop_playerNotransport(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!notransport") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!notransport", level.time);
+
+
+	//coop only command
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	if (gamefix_getEntityVarFloat((Entity*)player, "!notransport_active") == 0.0f) {
+		player->entityVars.SetVariable("!notransport_active", 1.0f);
+
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_notransport1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_notransport1);
+		}
+	}
+	else {
+		player->entityVars.SetVariable("!notransport_active", 0.0f);
+
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_notransport1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_notransport1);
+		}
+	}
+
+	return true;
+}
+
+qboolean coop_playerShowspawn(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!showspawn") + 3) > level.time) {
+		return qtrue;
+	}
+	player->entityVars.SetVariable("!showspawn", level.time);
+
+	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
+		player->hudPrint(_COOP_INFO_adminNeeded);
+		return qtrue;
+	}
+
+	ExecuteThread("globalCoop_level_showSpawn", true, (Entity*)player);
+	return qtrue;
 }
 #endif
 
