@@ -2792,7 +2792,7 @@ str gamefix_replaceForLabelText(str sPure)
 	if (strlen(sPure) > 10) {
 		str sTemp = sPure;
 		sTemp = sTemp.tolower();
-		if(gamefix_findString(sTemp.c_str(),"labeltext ",false)){
+		if(gamefix_findString(sTemp.c_str(),"labeltext ",false) != -1){
 			i = 11;
 		}
 	}
@@ -2800,7 +2800,7 @@ str gamefix_replaceForLabelText(str sPure)
 	for (; i < strlen(sPure); i++) {
 		if (sPure[i] == '\n' || sPure[i] == '#')
 			sPure[i] = '~';
-		if (sPure[i] == ' ')
+		else if (sPure[i] == ' ')
 			sPure[i] = '^';
 	}
 	return sPure;
