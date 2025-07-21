@@ -2903,7 +2903,17 @@ void L_ProcessPendingEvents( void )
 		
 		// ProcessEvent will dispose of this event when it is done
 		obj->ProcessEvent( event );
-		
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: SAFELY RECYCLE after processing - chrissstrahl
+		// Added to make sure there will be no reuse or delete of the same event twice, causing pointer corruption, dangling references, or crashes.
+		//--------------------------------------------------------------
+		LL_Remove( event, next, prev );
+		LL_Add( FreeEvents, event, next, prev );
+		numFreeEvents++;
+
+
 		// Don't allow ourselves to stay in here too long.  An abnormally high number
 		// of events being processed is evidence of an infinite loop of events.
 		num++;

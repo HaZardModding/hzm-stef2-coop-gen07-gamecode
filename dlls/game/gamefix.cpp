@@ -1571,16 +1571,20 @@ void gamefix_playerHandleDelayedServerCommand(void)
 //--------------------------------------------------------------
 void gamefix_playerClearDelayedServerCommand(int entNum)
 {
-    gamefix_pendingServerCommand* current = pendingServerCommandList[entNum];
-    while (current != nullptr) {
-        gamefix_pendingServerCommand* temp = current;
-        current = current->next;
+	gamefix_pendingServerCommand* current = pendingServerCommandList[entNum];
+	while (current != nullptr) {
+		gamefix_pendingServerCommand* temp = current;
+		current = current->next;
+
 		if (temp) {
-			free(temp->command);
+			if (temp->command) {
+				free(temp->command);
+				temp->command = nullptr;
+			}
 			free(temp);
 		}
-    }
-    pendingServerCommandList[entNum] = nullptr;
+	}
+	pendingServerCommandList[entNum] = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -2011,6 +2015,14 @@ gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* da
 					break;
 				}
 				current_section = &sections[(*section_count)++];
+
+				int copy_len = end_pos - 1;
+				if (copy_len <= 0 || copy_len >= sizeof(current_section->section)) {
+					gi.Printf("Invalid section header size at: %s\n", trimmed_line);
+					gi.Error(ERR_DROP,va("Invalid section header size at: %s\n", trimmed_line));
+					continue;
+				}
+
 				strncpy(current_section->section, trimmed_line + 1, end_pos - 1);
 				current_section->section[end_pos - 1] = '\0';
 			}
