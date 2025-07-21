@@ -195,7 +195,23 @@ void Container<Type>::Resize
 			}
 
 		objlist = new Type[ maxobjects ];
-		for( i = 0; i < numobjects; i++ )
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Debug check, copying more than allocated - chrissstrahl
+		// This DEBUG part can be deleted after a while if it never gets triggered
+		//--------------------------------------------------------------
+		if (numobjects > maxobjects) {
+			assert(false && "Container copy overflow: numobjects > maxobjects");
+			numobjects = maxobjects;
+		}
+		
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Possible overflow - chrissstrahl
+		//--------------------------------------------------------------
+		int count = (numobjects < maxobjects) ? numobjects : maxobjects;
+		for (i = 0; i < count; i++)
 			{
 			objlist[ i ] = temp[ i ];
 			}
