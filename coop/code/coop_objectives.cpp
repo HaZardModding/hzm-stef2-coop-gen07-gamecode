@@ -280,8 +280,9 @@ void coop_objectivesSetup( Player *player)
 			coopObjectives_t.levelAuthor = "$$Empty$$";
 		}
 	}
-	coopObjectives_t.levelAuthor = gamefix_replaceForLabelText(coopObjectives_t.levelAuthor);
-	gamefix_playerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objAuthor labeltext %s" , coopObjectives_t.levelAuthor.c_str() ) );
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objAuthor labeltext %s", gamefix_replaceForLabelText(coopObjectives_t.levelAuthor).c_str()));
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %d", skill->integer));
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
 	coop_objectivesStorySet( player );

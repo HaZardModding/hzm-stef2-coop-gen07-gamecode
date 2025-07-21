@@ -134,7 +134,7 @@ void coop_armoryEquipPlayerSingleplayer(Player* player)
 	}
 	else {
 		gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc pushmenu coop_obj\"\n");
-		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objAuthor title %s", coopObjectives_t.levelAuthor.c_str()));
+		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objAuthor title %s", gamefix_replaceForLabelText(coopObjectives_t.levelAuthor).c_str()));
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %d",skill->integer));
 	}
