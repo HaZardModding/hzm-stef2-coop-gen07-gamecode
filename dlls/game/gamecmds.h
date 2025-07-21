@@ -58,6 +58,7 @@ qboolean coop_playerSkill(const gentity_t* ent);
 qboolean coop_playerInfo(const gentity_t* ent);
 qboolean coop_playerBlock(const gentity_t* ent);
 qboolean coop_playerMapname(const gentity_t* ent);
+qboolean coop_playerClass(const gentity_t* ent);
 #endif
 
 

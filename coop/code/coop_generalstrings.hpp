@@ -6,8 +6,11 @@
 
 
 constexpr auto _COOP_COOP_allowesOnlyBlue = "Coop Mod allowes only blue team.\n";
-
 constexpr auto _COOP_INFO_coopCommandOnly = "^3This command is only usable during Coop.\n";
+
+constexpr auto _COOP_NAME_CLASS_technician = "Technician";
+constexpr auto _COOP_NAME_CLASS_medic = "Medic";
+constexpr auto _COOP_NAME_CLASS_heavyWeapons = "HeavyWeapons";
 
 constexpr auto _COOP_INFO_TEST_maptype = "TEST HZM Coop Gen7 - Current map type is[%s]\n";
 constexpr auto _COOP_INFO_TEST_maptypedetect = "TEST HZM Coop Gen7 - Detected category %s\n";
@@ -52,6 +55,12 @@ constexpr auto _COOP_INFO_usedCommand_block2 = "^2No valid target found!\n";
 constexpr auto _COOP_INFO_usedCommand_block2_deu = "^2Kein valides Ziel gefunden!\n";
 constexpr auto _COOP_INFO_usedCommand_mapname = "Current Level is:^5 %s.bsp\n";
 constexpr auto _COOP_INFO_usedCommand_mapname_deu = "Aktuelles Level ist:^5 %s.bsp\n";
+constexpr auto _COOP_INFO_usedCommand_class1 = "^3You can't change your class anymore.\n";
+constexpr auto _COOP_INFO_usedCommand_class1_deu = "^3Ihre Klasse kann nicht mehr wechseln.\n";
+constexpr auto _COOP_INFO_usedCommand_class2 = "^5Your current class is^5: ";
+constexpr auto _COOP_INFO_usedCommand_class2_deu = "^5Ihre aktuelle Klasse ist^5: ";
+constexpr auto _COOP_INFO_usedCommand_class3 = "^3Invalid Classenname!^2 Valid: [^5t^2] $$Technician$$ [^5m^2] $$Medic$$ [^5h^2] $$HeavyWeapons$$\n";
+constexpr auto _COOP_INFO_usedCommand_class3_deu = "^3Invalider Klassenname!^2 Valide: [^5t^2] $$Technician$$ [^5m^2] $$Medic$$ [^5h^2] $$HeavyWeapons$$\n";
 
 constexpr auto _COOP_INFO_spawnspotNumberedNotFound = "Spawnspot (in script/bsp) with number %d was not found...\n";
 

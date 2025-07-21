@@ -84,6 +84,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!info",coop_playerInfo,true },
 	{ "!block",coop_playerBlock,true },
 	{ "!mapname",coop_playerMapname,true },
+	{ "!class",coop_playerClass,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -2839,6 +2840,90 @@ qboolean coop_playerMapname(const gentity_t* ent)
 			player->hudPrint(va(_COOP_INFO_usedCommand_mapname, level.mapname.c_str()));
 		}
 	}
+	return true;
+}
+
+qboolean coop_playerClass(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	//locked
+	if (CoopManager::Get().getPlayerData_coopClassLocked(player)) {
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_class1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_class1);
+		}
+
+		DEBUG_LOG(va("#coop_playerClass can't change class anymore for %s\n", player->client->pers.netname));
+		gi.Printf(va("#coop_playerClass can't change class anymore for %s\n", player->client->pers.netname));
+
+		return true;
+	}
+	
+	//NO ARGUMENT GIVEN - show current
+	int n = gi.argc();
+	if (n == 1) {
+		//[b60012][cleanup] chrissstrahl - this could be put into a func
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint(va("%s %s\n", _COOP_INFO_usedCommand_class2_deu, CoopManager::Get().getPlayerData_coopClass(player).c_str()));
+			}
+			else {
+				player->hudPrint(va("%s %s\n", _COOP_INFO_usedCommand_class2, CoopManager::Get().getPlayerData_coopClass(player).c_str()));
+			}
+		}
+		return true;
+	}
+
+	//[b60021] chrissstrahl - disabled saving of client data here, why would we save here, also this saves imidiately after joining the game, which we don't want
+	//hzm coop mod chrissstrahl - remember current health/armor/ammo status
+	//coop_serverSaveClientData(player);
+
+	//grab intended class
+	str classSelected = gi.argv(1);
+	classSelected.tolower();
+
+	switch (classSelected[0]) {
+	case 'h':
+		classSelected = _COOP_NAME_CLASS_heavyWeapons;
+		break;
+	case 'm':
+		classSelected = _COOP_NAME_CLASS_medic;
+		break;
+	case 't':
+		classSelected = _COOP_NAME_CLASS_technician;
+		break;
+	default:
+		classSelected = _COOP_NAME_CLASS_technician;
+
+
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint(_COOP_INFO_usedCommand_class3);
+			}
+			else {
+				player->hudPrint(_COOP_INFO_usedCommand_class3_deu);
+			}
+		}
+	}
+
+	gi.Printf("!class not fully implemented\n");
+	player->hudPrint("!class not fully implemented\n");
+
+	//hzm coop mod chrissstrahl - set new class on player
+	//coop_classSet(player, classSelected);
+	//coop_classApplayAttributes(player, true);
+
 	return true;
 }
 

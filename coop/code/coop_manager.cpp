@@ -237,6 +237,7 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!info");
             gameFixAPI_clCmdsWhitheListAdd("!block");
             gameFixAPI_clCmdsWhitheListAdd("!mapname");
+            gameFixAPI_clCmdsWhitheListAdd("!class");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 
@@ -1507,4 +1508,21 @@ void CoopManager::setPlayerData_targetedShow(Player* player, bool status)
         return;
     }
     coopManager_client_persistant_t[player->entnum].targetedShow = status;
+}
+
+bool CoopManager::getPlayerData_coopClassLocked(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClassLocked() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassLocked;
+}
+void CoopManager::setPlayerData_coopClassLocked(Player* player, bool status)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLocked() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLocked = status;
 }

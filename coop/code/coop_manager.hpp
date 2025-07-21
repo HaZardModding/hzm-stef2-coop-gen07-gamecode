@@ -30,6 +30,7 @@ struct coopManager_client_persistant_s
 
     str         coopClientId = "";
     str			coopClass = "Technician";
+    bool		coopClassLocked = false;
     int         coopVersion = 0;
     bool        coopAdmin = false;
     int         coopAdminAuthAttemps = 0;
@@ -204,6 +205,8 @@ public:
     void setPlayerData_coopSetupDone(Player* player, bool state);
     str getPlayerData_coopClass(Player* player);
     void setPlayerData_coopClass(Player* player, str className);
+    bool getPlayerData_coopClassLocked(Player* player);
+    void setPlayerData_coopClassLocked(Player* player, bool status);
     str getPlayerData_coopClientId(Player* player);
     void setPlayerData_coopClientId(Player* player,str sClientId);
     int getPlayerData_coopVersion(Player* player);
