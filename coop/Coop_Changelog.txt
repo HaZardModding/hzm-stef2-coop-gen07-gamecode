@@ -98,6 +98,12 @@ coopradarscale			//allowing player to set the scale of the radar hud
 !stuck					//allowing player to get get them self unstuck
 !transport				//allowing player transport to other player
 !notransport			//allowing player to block players transporting to them
+!transferlife			//allowing player to block players transporting to them
+!ability				//allowing player to block players transporting to them
+!drop					//allowing player to drop a weapon - to give it to other players
+!skill					//allowing player to see and set skill level
+!info					//allowing player to retrive detailed informations from server
+!mapname				//allowing player to get map name
 
 !login					//Admin - login
 !logout					//Admin - logout
@@ -105,6 +111,8 @@ coopradarscale			//allowing player to set the scale of the radar hud
 !testspawn				//Admin - allowing to test current spawnlocations
 !noclip					//Admin - allowing to use noclip without cheats
 !showspawn				//Admin - allowing to see player spawnlocations without cheats
+!targetnames			//Admin - allowing player to see target and class names of Entities targeted
+!levelend				//Admin - allowing player to run level end script
 
 
 Coop Mod execution logic:

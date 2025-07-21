@@ -2,6 +2,10 @@
 #include "../../dlls/game/_pch_cpp.h"
 #include "coop_generalstrings.hpp"
 
+constexpr auto _COOP_THIS_VERSION = 70000;
+constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70000;
+
+constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
 constexpr auto _COOP_FILE_main = "co-op/matrix/main.scr";
 constexpr auto _COOP_FILE_noscript = "noscript.scr";
@@ -33,10 +37,6 @@ constexpr auto _COOP_SETTINGS_CAT_gameplay = "gameplay";
 constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
 
-constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
-
-constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70000;
-
 constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_TRIES = 5;
 constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MIN = 3;
 constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MAX = 10;
@@ -59,6 +59,7 @@ constexpr auto _COOP_SETTINGS_PLAYER_SPAWNSPOT_MAX = _COOP_SETTINGS_PLAYER_SUPPO
 constexpr auto _COOP_SETTINGS_PLAYER_WEAPON_RANGE_THROW = 300.0f;
 constexpr auto _COOP_SETTINGS_PLAYER_WEAPON_RANGE_DROW = 100.0f;
 constexpr auto _COOP_SETTINGS_PLAYER_WEAPON_DROP_REMOVE = 120.0f;
+constexpr auto _COOP_SETTINGS_PLAYER_BLOCK_NOTSOLID_TIME = 7.0f;
 
 const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[] = { "co-op/config/settings.ini" };
 const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[0]);

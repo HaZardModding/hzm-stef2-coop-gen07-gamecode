@@ -80,6 +80,10 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!targetnames",coop_playerTargetnames,true },
 	{ "!levelend",coop_playerLevelend,true },
 	{ "!drop",coop_playerDrop,true },
+	{ "!skill",coop_playerSkill,true },
+	{ "!info",coop_playerInfo,true },
+	{ "!block",coop_playerBlock,true },
+	{ "!mapname",coop_playerMapname,true },
 	
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
@@ -1670,7 +1674,7 @@ qboolean coop_playerTestSpawn(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!testspawn", level.time);
 
-	if (CoopManager::Get().getPlayerData_coopAdmin(player)) {
+	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
 		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!testspawn"));
 		return true;
 	}
@@ -1800,6 +1804,7 @@ qboolean coop_playerLeader(const gentity_t* ent)
 	}
 
 	player->hudPrint("!leader - Not implemented yet.\n");
+	gi.Printf("!leader - Not implemented yet.\n");
 	//multiplayerManager.callVote(player, "leader", va("%i", player->entnum));
 	return true;
 }
@@ -2553,6 +2558,290 @@ qboolean coop_playerDrop(const gentity_t* ent)
 
 	return true;
 }
+
+qboolean coop_playerSkill(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!skill") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!skill", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	//NO ARGUMENT GIVEN
+	int n = gi.argc();
+	if (n == 1) {
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+			int currentSkill = (int)skill->value;
+			str printMe = "^5Coop^2: ";
+			if (player->coop_hasLanguageGerman()) {
+				printMe += "Schwierigkeit bei: ";
+			}
+			else {
+				printMe += "Current SKILL is: ";
+			}
+			printMe += currentSkill;
+
+			if (currentSkill == 0)
+				printMe += " [$$Easy$$]";
+			else if (currentSkill == 1)
+				printMe += " [$$Normal$$]";
+			else if (currentSkill == 2)
+				printMe += " [$$Hard$$]";
+			else
+				printMe += " [$$VeryHard$$]";
+
+			printMe += "\n";
+			player->hudPrint(printMe);
+		}
+		return true;
+	}
+
+	//deny request during cinematic
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	if (1) {
+		player->hudPrint("!skill - Not fully implemented yet.\n");
+		gi.Printf("!skill - Not fully implemented yet.\n");
+		return true;
+	}
+	
+	//get skill level input
+	const char* cmd = gi.argv(1);
+	str sVal = cmd[0];
+	int iRange = atoi(sVal.c_str());
+	if (iRange < 0 || iRange > 3) {
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint("^5Coop^2: Illegale Angabe! Optionen: 0^8[$$Easy$$]^2, bis 3^8[$$Very Hard$$]\n");
+			}
+			else {
+				player->hudPrint("^5Coop^2: Invalide range! Range is: 0^8[$$Easy$$]^2, to 3^8[$$Very Hard$$]\n");
+			}
+		}
+		return true;
+	}
+
+	//hzm coop mod chrissstrahl - callvote if valid skill has been requested
+	str command = "stufftext \"callvote skill ";
+	command += cmd[0];
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
+	{
+		command += "\n";
+		gi.SendServerCommand(player->entnum, command);
+	}
+
+	return true;
+}
+
+qboolean coop_playerInfo(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 48 ||
+		multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!info") + 10) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!info", level.time);
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	str s, s2;
+	//[b60014] chrissstrahl printout the info to menu
+	if (CoopManager::Get().getPlayerData_coopVersion(player) >= 60014) {
+		str sInfoPrint = va("Ver.: %i, C-Id: %i\n", CoopManager::Get().getPlayerData_coopVersion(player), player->entnum);
+		int iTemp_do_delete_me_upon_completing_all_implementatiosn = 1;
+		sInfoPrint += va("Class: %s - Lives: %d of %d\n", CoopManager::Get().getPlayerData_coopClass(player).c_str(), iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives() - player->coopPlayer.lmsDeaths*/, iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives()*/);
+		sInfoPrint += va("Lang.: %s, Entered: %.2f ", gamefix_getLanguage(player).c_str(), player->client->pers.enterTime);
+		sInfoPrint += va("Pers.Id: %s\n", "notImplemented" /*player->coop_getId().c_str()*/);
+
+		sInfoPrint += "\nSERVER Info:\n";
+
+		//[b60022] chrissstrahl - updated to use the cvar
+		s = local_language->string;
+
+		if (skill->integer == 0)
+			s2 = "Easy";
+		else if (skill->integer == 1)
+			s2 = "Normal";
+		else if (skill->integer == 2)
+			s2 = "Hard";
+		else
+			s2 = "VeryHard";
+
+		sInfoPrint += va("Lang: %s Skill: %s FF: %.2f\n", s.c_str(), s2.c_str(), 0.0f /*game.coop_friendlyFire*/);
+
+#ifdef WIN32
+		str sys2 = "Win";
+#else
+		str sys2 = "Lin";
+#endif
+		sInfoPrint += va("%d %s [%s %s]\n", _COOP_THIS_VERSION, sys2.c_str(), __DATE__, __TIME__);
+		sInfoPrint += va("Map: %s ", level.mapname.c_str());
+		//[b60021] chrissstrahl - added mapchecksum printout
+		str sChecksum = "ERROR";
+		cvar_t* var;
+		var = gi.cvar("sv_mapchecksum", "", 0);
+		if (var) {
+			if (var->string) {
+				sChecksum = var->string;
+			}
+		}
+		sInfoPrint += va(" %s\n", sChecksum.c_str());
+		sInfoPrint = gamefix_replaceForLabelText(sInfoPrint);
+		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
+
+		player->hudPrint("!info - Not fully implemented\n");
+		return true;
+	}
+
+	//coop not installed
+	player->hudPrint(_COOP_INFO_usedCommand_info1);
+	if (player->coop_hasCoopInstalled() == true) {
+		player->hudPrint(va("^5Coop Version^8: %i\n", CoopManager::Get().getPlayerData_coopVersion(player)));
+	}
+	else {
+		player->hudPrint("^5Coop Version^8: None detected\n");
+	}
+	player->hudPrint(va("^5Coop Class^8: %s, ", CoopManager::Get().getPlayerData_coopClass(player).c_str()));
+	player->hudPrint(va("^5Language^8: %s, ", gamefix_getLanguage(player).c_str()));
+	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
+
+	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));
+	player->hudPrint(va("^5Personal Id^8: %s\n", "notImplemneted" /*player->coop_getId().c_str()*/));
+
+	player->hudPrint("===SERVER Informations ===\n");
+	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
+
+	//[b60022] chrissstrahl - updated to use the cvar
+	s = local_language->string;
+	player->hudPrint(va("^5Language:^8 %s, ", s.c_str()));
+
+	if (skill->integer == 0)
+		s = " [$$Easy$$]";
+	else if (skill->integer == 1)
+		s = " [$$Normal$$]";
+	else if (skill->integer == 2)
+		s = " [$$Hard$$]";
+	else
+		s = " [$$VeryHard$$]";
+	player->hudPrint(va("^5Dificulty:^8 %d %s\n", skill->integer, s.c_str()));
+
+
+	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %.2f\n", 0.0f /*game.coop_friendlyFire*/));
+#ifdef WIN32
+	str sys = "Windows";
+#else
+	str sys = "Linux";
+#endif
+	player->hudPrint(va("^5HZM Coop Mod [ %i ]^8 [ %s ] - ^3Compiled:^8 %s %s\n", _COOP_THIS_VERSION, sys.c_str(), __DATE__, __TIME__));
+
+
+	//player->hudPrint( "^3For more, Mission Info type:^5 !status\n" );
+	//player->hudPrint( va( "^5Monsters killed^8: %i\n" , player->client->pers.enterTime ) );
+	//add more from heuristics! - chrissstrahl - //hzm unfinished, //hzm upgrademe
+	player->hudPrint("==================\n");
+	return true;
+}
+
+qboolean coop_playerBlock(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || sv_cinematic->integer || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER ) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if (multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		player->hudPrint(_COOP_INFO_coopCommandOnly);
+		return true;
+	}
+
+	constexpr auto COOP_COOLDOWN_CMD_BLOCK = 9;
+	float fCoolDownTime = gamefix_getEntityVarFloat((Entity*)player, "!block");
+	if ((fCoolDownTime + COOP_COOLDOWN_CMD_BLOCK) > level.time) {
+		player->hudPrint(va("^5!hudprint^8, has a Cooldown please wait %d sec\n", ((fCoolDownTime + COOP_COOLDOWN_CMD_BLOCK) - level.time)));
+		return true;
+	}
+	player->entityVars.SetVariable("!block", level.time);
+
+	//hzm coop mod chrissstrahl - allow to walk trugh a player that is currently blocking, this player needs to aim at the blocking player
+	Entity* target;
+	target = player->GetTargetedEntity();
+	if ((target) && target->health > 0 && target->isSubclassOf(Player)) {
+		Player* targetPlayer = (Player*)target;
+		targetPlayer->setSolidType(SOLID_NOT);
+		
+		gamefix_setMakeSolidAsap(targetPlayer,true, (level.time + _COOP_SETTINGS_PLAYER_BLOCK_NOTSOLID_TIME));
+
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_block1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_block1);
+		}
+	}
+	else {
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_block2_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_block2);
+		}
+	}
+	return true;
+}
+
+qboolean coop_playerMapname(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || sv_cinematic->integer || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+	
+	if ((gamefix_getEntityVarFloat(ent->entity, "!mapname") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!mapname", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
+	{
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(va(_COOP_INFO_usedCommand_mapname_deu, level.mapname.c_str()));
+		}
+		else {
+			player->hudPrint(va(_COOP_INFO_usedCommand_mapname, level.mapname.c_str()));
+		}
+	}
+	return true;
+}
+
 #endif
 
 

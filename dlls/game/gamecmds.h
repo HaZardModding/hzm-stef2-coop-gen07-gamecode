@@ -54,6 +54,10 @@ qboolean coop_playerAbility(const gentity_t* ent);
 qboolean coop_playerTargetnames(const gentity_t* ent);
 qboolean coop_playerLevelend(const gentity_t* ent);
 qboolean coop_playerDrop(const gentity_t* ent);
+qboolean coop_playerSkill(const gentity_t* ent);
+qboolean coop_playerInfo(const gentity_t* ent);
+qboolean coop_playerBlock(const gentity_t* ent);
+qboolean coop_playerMapname(const gentity_t* ent);
 #endif
 
 

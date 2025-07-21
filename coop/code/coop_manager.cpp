@@ -233,6 +233,10 @@ void CoopManager::InitWorld() {
             gameFixAPI_clCmdsWhitheListAdd("!targetnames");
             gameFixAPI_clCmdsWhitheListAdd("!levelend");
             gameFixAPI_clCmdsWhitheListAdd("!drop");
+            gameFixAPI_clCmdsWhitheListAdd("!skill");
+            gameFixAPI_clCmdsWhitheListAdd("!info");
+            gameFixAPI_clCmdsWhitheListAdd("!block");
+            gameFixAPI_clCmdsWhitheListAdd("!mapname");
 
             gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 

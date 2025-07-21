@@ -44,6 +44,14 @@ constexpr auto _COOP_INFO_usedCommand_drop1 = "^5Can't drop this particular Weap
 constexpr auto _COOP_INFO_usedCommand_drop1_deu = "^5Diese Waffe kann nicht ablegt werden.\n";
 constexpr auto _COOP_INFO_usedCommand_drop2 = "^5Your Weapon was dropped.\n";
 constexpr auto _COOP_INFO_usedCommand_drop2_deu = "^5Ihre Waffe wurde ablegt.\n";
+constexpr auto _COOP_INFO_usedCommand_info1 = "===Your Informations ===\n";
+constexpr auto _COOP_INFO_usedCommand_info1_deu = "===Ihre Informationen ===\n";
+constexpr auto _COOP_INFO_usedCommand_block1 = "^2Player marked!\n";
+constexpr auto _COOP_INFO_usedCommand_block1_deu = "^2Spieler makiert!\n";
+constexpr auto _COOP_INFO_usedCommand_block2 = "^2No valid target found!\n";
+constexpr auto _COOP_INFO_usedCommand_block2_deu = "^2Kein valides Ziel gefunden!\n";
+constexpr auto _COOP_INFO_usedCommand_mapname = "Current Level is:^5 %s.bsp\n";
+constexpr auto _COOP_INFO_usedCommand_mapname_deu = "Aktuelles Level ist:^5 %s.bsp\n";
 
 constexpr auto _COOP_INFO_spawnspotNumberedNotFound = "Spawnspot (in script/bsp) with number %d was not found...\n";
 
