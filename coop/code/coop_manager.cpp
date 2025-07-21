@@ -795,6 +795,10 @@ void CoopManager::playerConnect(int clientNum) {
     if (clientNum < 0 || clientNum >= MAX_CLIENTS) {
         return;
     }
+
+    //used to minimize the usage of configstrings due to cl_parsegamestate issue
+    configstringCleanup();
+
     DEBUG_LOG("# playerConnect\n");
 }
 
@@ -912,6 +916,161 @@ void CoopManager::playerChangedClass(Player* player) {
     if (player) {
         ExecuteThread("coop_justChangedClass", true, player);
     }
+}
+
+//used to minimize the usage of configstrings due to cl_parsegamestate issue
+int CoopManager::configstringRemove(str sRem)
+{
+    if (!sRem.length()) {
+        return 0;
+    }
+
+    int iRem = 0;
+    char* s;
+    for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+        s = gi.getConfigstring(i);
+        str ss = "";
+        ss += s;
+
+        if (ss.length() > 0) {
+            //if this is a dialog try to handle german and english localized strings as well
+            if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
+                //regular dialog
+                if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
+                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    gi.setConfigstring(i, "");
+                    iRem++;
+                }
+
+                //handle deu version of dialog
+                char unlocal[96]; //MAX_QPATH + 5 <- did not work!
+                memset(unlocal, 0, sizeof(unlocal));
+                Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
+                if (Q_stricmp(ss.c_str(), unlocal) == 0) {
+                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    gi.setConfigstring(i, "");
+                    iRem++;
+                }
+
+                //handle eng version of dialog
+                memset(unlocal, 0, sizeof(unlocal));
+                Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
+                if (Q_stricmp(ss.c_str(), unlocal) == 0) {
+                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    gi.setConfigstring(i, "");
+                    iRem++;
+                }
+            }
+            else {
+                if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
+                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    gi.setConfigstring(i, "");
+                    iRem++;
+                }
+            }
+        }
+    }
+    return iRem;
+}
+
+//used to minimize the usage of configstrings due to cl_parsegamestate issue
+void CoopManager::configstringCleanup()
+{
+    if (g_gametype->integer == GT_SINGLE_PLAYER || !IsCoopEnabled()) {
+        return;
+    }
+    //mp taunts we do not use in coop
+    configstringRemove("localization/sound/dialog/dm/mp_andor1.mp3");
+    configstringRemove("localization/sound/dialog/m10l1/romgate3_cred.mp3");
+    configstringRemove("localization/sound/dialog/m10l1/outrom1_ohno.mp3");
+
+    configstringRemove("localization/sound/dialog/dm/mp_andor2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_attrexf1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_attrexf2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_attrexm1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_attrexm2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_borgf1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_borgf2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_borgm1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_borgm2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_kleeya1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_kleeya2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_krindo1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_krindo2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_omag1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_omag2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_lurok1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_lurok2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_klingf1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_klingf2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_naus1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_naus2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_picard1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_picard2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_inform1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_inform2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_rene1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_rene2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_rom1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_rom2.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_tuvok1.mp3");
+    configstringRemove("localization/sound/dialog/dm/mp_tuvok2.mp3");
+
+    //mp player models we do not allow in coop
+    configstringRemove("models/char/dm_andorian_merc-male.tik");
+    configstringRemove("models/char/dm_picard.tik");
+
+    configstringRemove("models/char/dm_attrexian_command-female.tik");
+    configstringRemove("models/char/dm_attrexian_security-male.tik");
+    configstringRemove("models/char/dm_borg_female.tik");
+    configstringRemove("models/char/dm_borg_male.tik");
+    configstringRemove("models/char/dm_drull_kleeya.tik");
+    configstringRemove("models/char/dm_drull_krindo.tik");
+    configstringRemove("models/char/dm_ferengi_oolpax.tik");
+    configstringRemove("models/char/dm_klingon_merc-boss.tik");
+    configstringRemove("models/char/dm_klingon_merc-female.tik");
+    configstringRemove("models/char/dm_nausicaan_male-merc.tik");
+    configstringRemove("models/char/dm_romulan_informant-boss.tik");
+    configstringRemove("models/char/dm_romulan_rebel-commander.tik");
+    configstringRemove("models/char/dm_romulan_rebel-guard-snow.tik");
+    configstringRemove("models/char/dm_romulan_stx-female.tik");
+    configstringRemove("models/char/dm_stalker.tik");
+    configstringRemove("models/char/dm_tuvok.tik");
+
+    //awards we do not use in coop
+    configstringRemove("sysimg/icons/mp/award_sharpshooter");
+    configstringRemove("sysimg/icons/mp/award_untouchable");
+    configstringRemove("sysimg/icons/mp/award_logistics");
+    configstringRemove("sysimg/icons/mp/award_tactician");
+    configstringRemove("sysimg/icons/mp/award_demolitionist");
+    configstringRemove("sysimg/icons/mp/award_mvp");
+    configstringRemove("sysimg/icons/mp/award_defender");
+    configstringRemove("sysimg/icons/mp/award_warrior");
+    configstringRemove("sysimg/icons/mp/award_carrier");
+    configstringRemove("sysimg/icons/mp/award_interceptor");
+    configstringRemove("sysimg/icons/mp/award_bravery");
+    configstringRemove("sysimg/icons/mp/award_firstStrike");
+
+    //mp computer voice we do not use in coop
+    configstringRemove("localization/sound/dialog/dm/comp_5mins.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_2mins.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_1min.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_500pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_100pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_25pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_10pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_5pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_4pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_3pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_2pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_1pointsleft.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_mats.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_tiedfirst.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_winn.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_second.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_third.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_didnotrank.mp3");
+    configstringRemove("localization/sound/dialog/dm/comp_matover.mp3");
 }
 
 //not yet in use

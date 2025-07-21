@@ -132,8 +132,10 @@ public:
     bool IncludedScriptCoop();
 
     void ClientThink(Player* player);
+    void playerAdminThink(Player* player);
 
     int getNumberOfPlayers(bool noDead, bool noSpectator);
+    Entity* getSpawnSpecific(int spotNumber);
 
     void playerConnect(int clientNum);
     void playerDisconnect(Player* player);
@@ -145,9 +147,7 @@ public:
     void playerClIdDetected(const gentity_t* ent, const char* clientId);
     void playerClIdSet(Player* player);
 
-    void playerAdminThink(Player* player);
     void playerMoveToSpawn(Player* player);
-    Entity* getSpawnSpecific(int spotNumber);
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
     void playerTargetnames(Player *player, Entity* viewTrace);
 
@@ -157,9 +157,12 @@ public:
     void playerDied(Player* player);
     void playerLeft(Player* player);
     void playerTransported(Entity* entity);
-    void playerChangedClass(Player* player);
-    void playerChangedModel(Player* player);
     void playerBecameSpectator(Player* player);
+    void playerChangedModel(Player* player);
+    void playerChangedClass(Player* player);
+
+    int configstringRemove(str sRem);
+    void configstringCleanup();
 
     // Configurable systems
     bool ShouldGiveSpawnItems() const;
@@ -168,9 +171,6 @@ public:
     int  GetPenaltyForPlayerKill() const;
 
     // Access to coopManager_client_persistant_t
-
-
-
     bool getPlayerData_coopAdmin(Player* player);
     void setPlayerData_coopAdmin(Player* player, bool state);
     void setPayerData_coopAdmin_reset(Player* player);
