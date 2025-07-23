@@ -81,7 +81,6 @@ struct coopManager_mapSettings_s
 };
 extern coopManager_mapSettings_s coopManager_mapSettings_t;
 
-
 class CoopManager {
 public:
     str coopManager_maplist_contents = "";
@@ -130,6 +129,9 @@ public:
     str IncludeScriptReplace(str sLex);
     void IncludeScriptCheck(str &sLex);
     bool IncludedScriptCoop();
+
+    str playerScriptCallValidateThreadname(str threadName);
+    bool playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed);
 
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);

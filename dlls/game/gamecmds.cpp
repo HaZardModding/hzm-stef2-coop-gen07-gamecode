@@ -85,10 +85,14 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!block",coop_playerBlock,true },
 	{ "!mapname",coop_playerMapname,true },
 	{ "!class",coop_playerClass,true },
-	
+
+	{ "script",G_ScriptCmd,false },
+	{ "clientrunthread",G_ClientRunThreadCmd,true },
 	{ "dialogrunthread",G_DialogRunThread,true },
 #else
+	{ "script",G_ScriptCmd,false },
 	{ "dialogrunthread",	G_DialogRunThread,		false },
+	{ "clientrunthread",	G_ClientRunThreadCmd,	false },
 #endif
 
 
@@ -126,8 +130,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "snd",				G_SoundCmd,				false },
 	{ "cin",				G_CinematicCmd,			false },
 //	{ "showvar",			G_ShowVarCmd,			false },
-	{ "script",				G_ScriptCmd,			false },
-	{ "clientrunthread",	G_ClientRunThreadCmd,	false },
+
 	{ "clientsetvar",		G_ClientSetVarCmd,		false },
 	{ "levelvars",			G_LevelVarsCmd,			false },
 	{ "gamevars",			G_GameVarsCmd,			false },
@@ -984,8 +987,22 @@ qboolean G_ScriptCmd( const gentity_t *ent )
 			argc++;
 		}
 	}
+
+
+
 	if ( argc > 0 )
 	{
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Added: script functions execution - chrissstrahl
+		// make tricorderpuzzel an other default gamplay components from singleplayer work
+		//--------------------------------------------------------------
+		if ( argc > 2 && Q_stricmp("thread", gi.argv(2)) == 0) {
+			if (!CoopManager::Get().playerScriptCallExecute(ent->entity,"script",gi.argv(3) ,nullptr )) {
+				return false;
+			}
+		}
+
+
 		level.consoleThread->ProcessCommand( argc, argv );
 	}
 	
@@ -1013,7 +1030,18 @@ qboolean G_ClientRunThreadCmd( const gentity_t *ent )
 	
 	if ( !threadName.length() )
 		return true;
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: script functions execution - chrissstrahl
+	// make tricorderpuzzel an other default gamplay components from singleplayer work
+	//--------------------------------------------------------------
+
+	//hzm gameupdate chrissstrahl - make tricorderpuzzels an other default gamplay components from singleplayer work
+	if (!CoopManager::Get().playerScriptCallExecute(ent->entity, "clientrunthread",threadName, nullptr)) {
+		return false;
+	}
 	
+
 	thread = Director.CreateThread( threadName );
 	
 	if ( thread )

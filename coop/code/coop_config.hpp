@@ -68,6 +68,18 @@ const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[]{ "co-op/config/settings.ini
 const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[0]);
 
 
+struct CoopSettings_clientThreads_s {
+	str command = "";
+	str command2 = "";
+	str thread = "";
+	str item = "";
+	float distanceLimit = 0.0f;
+	str type = "";
+	bool activatingPlayerRequired = false;
+};
+
+extern CoopSettings_clientThreads_s CoopSettings_clientThreads_t;
+extern Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowList;
 
 class CoopSettings {
 public:
@@ -88,5 +100,8 @@ public:
 	int scoreKilledEnemy;
 	int scoreKilledBoss;
 
+	void playerCommandsAllow();
+	void playerScriptThreadsAllow();
 	void LoadSettingsFromFile(const str& iniFilePath = _COOP_FILE_settings);
 };
+extern CoopSettings coopSettings;

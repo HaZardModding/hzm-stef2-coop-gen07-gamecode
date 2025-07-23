@@ -83,6 +83,70 @@ bool CoopManager::IncludedScriptCoop() {
     return mapFlags.scriptIncludedCoopMain;
 }
 
+str CoopManager::playerScriptCallValidateThreadname(str threadName)
+{
+    str threadToCall = "";
+    for (int i = 0; i < (threadName.length() - 1); i++) {
+        if (threadName[i] == '"' ||
+            threadName[i] == '%' ||
+            threadName[i] == ';' ||
+            threadName[i] != ' ')
+        {
+            break;
+        }
+        threadToCall += threadName[i];
+    }
+    return threadToCall;
+}
+
+//checks if this player is allowed to call this thread at this time and circumstance - security measurs
+bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed)
+{
+    if (g_gametype->integer == GT_SINGLE_PLAYER) {
+        return true;
+    }
+
+    if (!entPlayer || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || !entPlayer->isSubclassOf(Player)) {
+        return false;
+    }
+
+
+    threadName = playerScriptCallValidateThreadname(threadName);
+
+
+    Player* player = (Player*)entPlayer;
+    if (player->coop_isAdmin()) {
+        ExecuteThread(threadName, true,entPlayer);
+        return true;
+    }
+
+    for (int i = CoopSettings_playerScriptThreadsAllowList.NumObjects(); i > 0; i--) {
+        CoopSettings_clientThreads_s threadListTemp;
+        threadListTemp = CoopSettings_playerScriptThreadsAllowList.ObjectAt(i);
+
+        //command match
+        if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
+            //thread match
+            if (threadListTemp.thread.length() && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), (threadListTemp.thread.length() - 1)) == 0) {
+                //item check
+                if (threadListTemp.item.length() && threadListTemp.item != "None") {
+                    str itemName = "";
+                    weaponhand_t	hand = WEAPON_ANY;
+                    player->getActiveWeaponName(hand, itemName);
+                    //mismatch - just skip
+                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), (threadListTemp.item.length() - 1)) != 0) {
+                        continue;
+                    }
+
+                    ExecuteThread(threadName, true, entPlayer);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
     playerAdminThink(player);
@@ -208,38 +272,10 @@ void CoopManager::InitWorld() {
         //notify scripts - is a coop level
         levelVars.SetVariable("isCoopLevel",float(int(coopEnabled)));
 
-        //coop only
-        if (coopEnabled) {
-            //add coop client console commands that will not be flood filtered
-            gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
-            gameFixAPI_clCmdsWhitheListAdd("coopcid");
-            gameFixAPI_clCmdsWhitheListAdd("coopinput");
-            gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
-            gameFixAPI_clCmdsWhitheListAdd("!thread");
-            gameFixAPI_clCmdsWhitheListAdd("!testspawn");
-            gameFixAPI_clCmdsWhitheListAdd("!follow");
-            gameFixAPI_clCmdsWhitheListAdd("!leader");
-            gameFixAPI_clCmdsWhitheListAdd("!login");
-            gameFixAPI_clCmdsWhitheListAdd("!logout");
-            gameFixAPI_clCmdsWhitheListAdd("!kill");
-            gameFixAPI_clCmdsWhitheListAdd("!origin");
-            gameFixAPI_clCmdsWhitheListAdd("!noclip");
-            gameFixAPI_clCmdsWhitheListAdd("!stuck");
-            gameFixAPI_clCmdsWhitheListAdd("!transport");
-            gameFixAPI_clCmdsWhitheListAdd("!notransport");
-            gameFixAPI_clCmdsWhitheListAdd("!showspawn");
-            gameFixAPI_clCmdsWhitheListAdd("!transferlife");
-            //gameFixAPI_clCmdsWhitheListAdd("!ability");
-            gameFixAPI_clCmdsWhitheListAdd("!targetnames");
-            gameFixAPI_clCmdsWhitheListAdd("!levelend");
-            gameFixAPI_clCmdsWhitheListAdd("!drop");
-            gameFixAPI_clCmdsWhitheListAdd("!skill");
-            gameFixAPI_clCmdsWhitheListAdd("!info");
-            gameFixAPI_clCmdsWhitheListAdd("!block");
-            gameFixAPI_clCmdsWhitheListAdd("!mapname");
-            gameFixAPI_clCmdsWhitheListAdd("!class");
 
-            gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
+        if (coopEnabled) {
+            coopSettings.playerCommandsAllow();
+            coopSettings.playerScriptThreadsAllow();
 
             gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
         }
@@ -377,9 +413,9 @@ void CoopManager::LoadLevelScript(str mapname) {
 //Cleans up stuff while world and entities still exist
 //Executed ONLY on game shutdown
 void CoopManager::Shutdown() {
-    //coop only
+
     if (coopEnabled) {
-        //...
+        CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
     }
 
     coopManager_validPlayerModels.FreeObjectList();
@@ -416,7 +452,7 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
 
 
     if (coopEnabled) {
-        //...
+        CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
     }
 }
 
@@ -797,7 +833,11 @@ void CoopManager::playerConnect(int clientNum) {
     }
 
     //used to minimize the usage of configstrings due to cl_parsegamestate issue
-    configstringCleanup();
+    //if a new player connects mid game
+    if (level.time > 30.0f) {
+        configstringCleanup();
+    }
+    
 
     DEBUG_LOG("# playerConnect\n");
 }
