@@ -1426,22 +1426,6 @@ void CoopManager::setPlayerData_coopClass(Player* player, str className) {
     coopManager_client_persistant_t[player->entnum].coopClass = className;
 }
 
-str CoopManager::getPlayerData_coopClientId(Player* player) {
-    if (!player) {
-        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientId() nullptr player");
-        return "";
-    }
-    return coopManager_client_persistant_t[player->entnum].coopClientId;
-}
-
-void CoopManager::setPlayerData_coopClientId(Player* player, str sClientId) {
-    if (!player) {
-        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClientId() nullptr player");
-        return;
-    }
-    coopManager_client_persistant_t[player->entnum].coopClientId = sClientId;
-}
-
 int CoopManager::getPlayerData_coopVersion(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopVersion() nullptr player");
