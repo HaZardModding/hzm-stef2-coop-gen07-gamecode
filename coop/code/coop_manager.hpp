@@ -205,6 +205,8 @@ public:
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);
     void setPlayerData_coopSetupDone(Player* player, bool state);
+    bool getPlayerData_coopSetupStarted(Player* player);
+    void setPlayerData_coopSetupStarted(Player* player, bool state);
     str getPlayerData_coopClass(Player* player);
     void setPlayerData_coopClass(Player* player, str className);
     bool getPlayerData_coopClassLocked(Player* player);
