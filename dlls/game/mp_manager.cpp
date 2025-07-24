@@ -3200,6 +3200,20 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	player->health = health;
 
 
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Player Spawn beam in animation not playing during coop - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() && sv_cinematic->integer == 0) {
+		// hold in place briefly
+		player->client->ps.pm_time = 100;
+		player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
+
+		Event* newEvent = new Event(EV_DisplayEffect);
+		newEvent->AddString("TransportIn");
+		newEvent->AddString("Multiplayer");
+	}
+#else
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Player Spawn beam in animation not playing during cinematic - chrissstrahl
 	//--------------------------------------------------------------
@@ -3213,6 +3227,9 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 		newEvent->AddString("Multiplayer");
 		player->PostEvent(newEvent, 0.0f);
 	}
+#endif
+
+
 
 
 	changePlayerModel( player, player->model, true );
