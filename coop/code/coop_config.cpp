@@ -36,7 +36,7 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("!mapname");
 	gameFixAPI_clCmdsWhitheListAdd("!class");
 
-	gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
+	//gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 }
 void CoopSettings::playerScriptThreadsAllow()
 {
