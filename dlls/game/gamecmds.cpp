@@ -86,9 +86,10 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!mapname",coop_playerMapname,true },
 	{ "!class",coop_playerClass,true },
 
-	{ "script",G_ScriptCmd,false },
+	{ "script",G_ScriptCmd,true },
 	{ "clientrunthread",G_ClientRunThreadCmd,true },
 	{ "dialogrunthread",G_DialogRunThread,true },
+	//{ "serverthreadtorun",???,true },
 #else
 	{ "script",G_ScriptCmd,false },
 	{ "dialogrunthread",	G_DialogRunThread,		false },
@@ -992,15 +993,23 @@ qboolean G_ScriptCmd( const gentity_t *ent )
 
 	if ( argc > 0 )
 	{
+
+
+#ifdef ENABLE_COOP
 		//--------------------------------------------------------------
 		// COOP Generation 7.000 - Added: script functions execution - chrissstrahl
 		// make tricorderpuzzel an other default gamplay components from singleplayer work
 		//--------------------------------------------------------------
-		if ( argc > 2 && Q_stricmp("thread", gi.argv(2)) == 0) {
-			if (!CoopManager::Get().playerScriptCallExecute(ent->entity,"script",gi.argv(3) ,nullptr )) {
-				return false;
+		if (gameFixAPI_inMultiplayer()) {
+			if (argc > 1 && Q_stricmp("thread", gi.argv(1)) == 0) {
+				str ssds = gi.argv(2);
+				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "script", ssds, nullptr)) {
+					return true;
+				}
 			}
+			return false;
 		}
+#endif
 
 
 		level.consoleThread->ProcessCommand( argc, argv );
@@ -1031,15 +1040,19 @@ qboolean G_ClientRunThreadCmd( const gentity_t *ent )
 	if ( !threadName.length() )
 		return true;
 
+
+#ifdef ENABLE_COOP
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Added: script functions execution - chrissstrahl
 	// make tricorderpuzzel an other default gamplay components from singleplayer work
 	//--------------------------------------------------------------
-
-	//hzm gameupdate chrissstrahl - make tricorderpuzzels an other default gamplay components from singleplayer work
-	if (!CoopManager::Get().playerScriptCallExecute(ent->entity, "clientrunthread",threadName, nullptr)) {
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().playerScriptCallExecute(ent->entity, "clientrunthread", threadName, nullptr)) {
+			return true;
+		}
 		return false;
 	}
+#endif
 	
 
 	thread = Director.CreateThread( threadName );
@@ -1535,11 +1548,11 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 qboolean G_DialogRunThread( const gentity_t *ent )
 {
 	if (!ent || !ent->entity || !ent->client) {
-		return true;
+		return false;
 	}
 
 	if (ent->entity->getHealth() <= 0) {
-		return true;
+		return false;
 	}
 
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
@@ -1551,31 +1564,41 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 		}
 		return G_ClientRunThreadCmd( ent );
 	}
-	else {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Allow Cinematic Dialog Selection Options - chrissstrahl
+	//--------------------------------------------------------------
+	else if(CoopManager::Get().IsCoopEnabled() && gameFixAPI_inMultiplayer()){
+		if (!ent->entity->isSubclassOf(Player)) {
+			return false;
+		}
+
 		Player* player = (Player*)ent->entity;
 		Actor* actor = player->coop_getBranchDialogActor();
-		if (actor) {
-			str sGivenThread = "";
+		if (actor && gi.argc()) {
+			str sGivenThread = gi.argv(1);
 			str sDialogName = actor->coop_getBranchDialogName();
-			if (gi.argc() && sDialogName.length()) {
-				sGivenThread = gi.argv(1);
-				if (sGivenThread.length()) {
-					if (gamefix_findString(sGivenThread,"Choice") == -1 &&
-						gamefix_findString(sGivenThread,"_DialogChoice") == -1 &&
-						gamefix_findString(sGivenThread,"Option") == -1 &&
-						gamefix_findString(sGivenThread,"cinematicArm") == -1 &&
-						gamefix_findString(sGivenThread,"failedBranch") == -1 &&
-						gamefix_findString(sGivenThread,"successBranch") == -1 )
-					{
-						return false;
+			if (sDialogName.length() && sGivenThread.length()) {
+				
+				/* Pretty sure we don't need this
+				Player* other = nullptr;
+				for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+					other = gamefix_getPlayer(i);
+					if (!other) {
+						continue;
 					}
-					player->clearBranchDialogActor();
-					G_ClientRunThreadCmd(&g_entities[player->entnum]);
+					other->clearBranchDialogActor();
+				}*/	
+				
+				player->clearBranchDialogActor();
+
+				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "dialogrunthread", sDialogName, nullptr)) {
 					return true;
 				}
 			}
 		}
 	}
+#endif
 	return false;
 }
 

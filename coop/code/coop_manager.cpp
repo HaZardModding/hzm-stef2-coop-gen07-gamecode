@@ -86,11 +86,11 @@ bool CoopManager::IncludedScriptCoop() {
 str CoopManager::playerScriptCallValidateThreadname(str threadName)
 {
     str threadToCall = "";
-    for (int i = 0; i < (threadName.length() - 1); i++) {
+    for (int i = 0; i < strlen(threadName); i++) {
         if (threadName[i] == '"' ||
             threadName[i] == '%' ||
             threadName[i] == ';' ||
-            threadName[i] != ' ')
+            threadName[i] == ' ')
         {
             break;
         }
@@ -112,13 +112,14 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
 
 
     threadName = playerScriptCallValidateThreadname(threadName);
-
+    
 
     Player* player = (Player*)entPlayer;
+    /*Deactivated for testing
     if (player->coop_isAdmin()) {
         ExecuteThread(threadName, true,entPlayer);
         return true;
-    }
+    }*/
 
     for (int i = CoopSettings_playerScriptThreadsAllowList.NumObjects(); i > 0; i--) {
         CoopSettings_clientThreads_s threadListTemp;
@@ -127,20 +128,19 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
         //command match
         if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
             //thread match
-            if (threadListTemp.thread.length() && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), (threadListTemp.thread.length() - 1)) == 0) {
+            if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread)) == 0) {
                 //item check
-                if (threadListTemp.item.length() && threadListTemp.item != "None") {
+                if (strlen(threadListTemp.item) && threadListTemp.item != "None") {
                     str itemName = "";
                     weaponhand_t	hand = WEAPON_ANY;
                     player->getActiveWeaponName(hand, itemName);
                     //mismatch - just skip
-                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), (threadListTemp.item.length() - 1)) != 0) {
-                        continue;
+                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), strlen(threadListTemp.item)) != 0) {
+                        return false;
                     }
-
-                    ExecuteThread(threadName, true, entPlayer);
-                    return true;
                 }
+                ExecuteThread(threadName, true, entPlayer);
+                return true;
             }
         }
     }

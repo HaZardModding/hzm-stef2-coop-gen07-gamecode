@@ -8,10 +8,6 @@ Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowLis
 void CoopSettings::playerCommandsAllow()
 {
 	//client console commands that will not be flood filtered
-	gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
-	gameFixAPI_clCmdsWhitheListAdd("coopcid");
-	gameFixAPI_clCmdsWhitheListAdd("coopinput");
-	gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
 	gameFixAPI_clCmdsWhitheListAdd("!thread");
 	gameFixAPI_clCmdsWhitheListAdd("!testspawn");
 	gameFixAPI_clCmdsWhitheListAdd("!follow");
@@ -36,39 +32,44 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("!mapname");
 	gameFixAPI_clCmdsWhitheListAdd("!class");
 
+	//gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
+	//gameFixAPI_clCmdsWhitheListAdd("coopcid");
+	//gameFixAPI_clCmdsWhitheListAdd("coopinput");
+	//gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
+	//gameFixAPI_clCmdsWhitheListAdd("clientrunthread");
 	//gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 }
 void CoopSettings::playerScriptThreadsAllow()
 {
 	//Allowed script threads in coop multiplayer
 	CoopSettings_clientThreads_s trirteClick;
-	trirteClick.command = "clientthread";
+	trirteClick.command = "clientrunthread";
 	trirteClick.thread = "trirteClick";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(trirteClick);
 
 	CoopSettings_clientThreads_s exitRoutine;
-	exitRoutine.command = "clientthread";
-	exitRoutine.thread = "trirteClick";
+	exitRoutine.command = "clientrunthread";
+	exitRoutine.thread = "exitRoutine";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(exitRoutine);
 
 	CoopSettings_clientThreads_s tricorderMod_;
-	tricorderMod_.command = "clientthread";
+	tricorderMod_.command = "clientrunthread";
 	tricorderMod_.thread = "tricorderMod_";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(tricorderMod_);
 
 	CoopSettings_clientThreads_s tricorderKeypad_;
-	tricorderKeypad_.command = "clientthread";
+	tricorderKeypad_.command = "clientrunthread";
 	tricorderKeypad_.thread = "tricorderKeypad_";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(tricorderKeypad_);
 
 	CoopSettings_clientThreads_s useLibraryTerminal;
-	tricorderKeypad_.command = "clientrunthread";
-	tricorderKeypad_.thread = "useLibraryTerminal";
+	useLibraryTerminal.command = "clientrunthread";
+	useLibraryTerminal.thread = "useLibraryTerminal";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(useLibraryTerminal);
 
 	CoopSettings_clientThreads_s tricorderBaseCancel;
-	tricorderKeypad_.command = "clientrunthread";
-	tricorderKeypad_.thread = "tricorderBaseCancel";
+	tricorderBaseCancel.command = "clientrunthread";
+	tricorderBaseCancel.thread = "tricorderBaseCancel";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(tricorderBaseCancel);
 
 	CoopSettings_clientThreads_s trirteClick_2;
@@ -76,11 +77,18 @@ void CoopSettings::playerScriptThreadsAllow()
 	trirteClick_2.thread = "trirteClick";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(trirteClick_2);
 
-	CoopSettings_clientThreads_s globalTricorder;
-	globalTricorder.command = "script";
-	globalTricorder.command2 = "thread";
-	globalTricorder.thread = "trirteClick";
-	CoopSettings_playerScriptThreadsAllowList.AddObject(globalTricorder);
+	CoopSettings_clientThreads_s globalTricorder1;
+	globalTricorder1.command = "script";
+	globalTricorder1.command2 = "thread";
+	globalTricorder1.thread = "globalTricorder_TT";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(globalTricorder1);
+
+	CoopSettings_clientThreads_s trirteClick_3;
+	trirteClick_3.command = "script";
+	trirteClick_3.command2 = "thread";
+	trirteClick_3.thread = "trirteClick";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(trirteClick_3);
+
 
 	CoopSettings_clientThreads_s trirteTT;
 	trirteTT.command = "script";
@@ -105,6 +113,36 @@ void CoopSettings::playerScriptThreadsAllow()
 	useLibraryTerminal_2.command2 = "thread";
 	useLibraryTerminal_2.thread = "useLibraryTerminal";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(useLibraryTerminal_2);
+
+	CoopSettings_clientThreads_s dialogrunthread_Choice;
+	dialogrunthread_Choice.command = "dialogrunthread";
+	dialogrunthread_Choice.thread = "Choice";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_Choice);
+
+	CoopSettings_clientThreads_s dialogrunthread__DialogChoice;
+	dialogrunthread__DialogChoice.command = "dialogrunthread";
+	dialogrunthread__DialogChoice.thread = "_DialogChoice";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread__DialogChoice);
+
+	CoopSettings_clientThreads_s dialogrunthread_Option;
+	dialogrunthread_Option.command = "dialogrunthread";
+	dialogrunthread_Option.thread = "Option";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_Option);
+
+	CoopSettings_clientThreads_s dialogrunthread_cinematicArm;
+	dialogrunthread_cinematicArm.command = "dialogrunthread";
+	dialogrunthread_cinematicArm.thread = "cinematicArm";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_cinematicArm);
+
+	CoopSettings_clientThreads_s dialogrunthread_failedBranch;
+	dialogrunthread_failedBranch.command = "dialogrunthread";
+	dialogrunthread_failedBranch.thread = "failedBranch";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_failedBranch);
+
+	CoopSettings_clientThreads_s dialogrunthread_successBranch;
+	dialogrunthread_successBranch.command = "dialogrunthread";
+	dialogrunthread_successBranch.thread = "successBranch";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_successBranch);
 }
 
 void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
