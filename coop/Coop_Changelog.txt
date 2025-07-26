@@ -86,7 +86,9 @@ NEW console commands:
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
-dialogrunthread 		//now allowed in multiplayer
+dialogrunthread 		//certain exceptions allowed in multiplayer
+clientrunthread 		//certain exceptions allowed in multiplayer
+script			 		//certain exceptions allowed in multiplayer
 coopinstalled			//tell installed coop version
 coopcid					//tell client coop identification
 coopinput				//allowing player to send text to server
