@@ -199,6 +199,11 @@ void CoopManager::Init() {
 //executed once, only on game server start/load
 //loads coop valid model list for players from ini
 void CoopManager::LoadPlayerModelsFromINI() {
+
+    //default fallback hardcoded model - if coop gamefiles are missing
+    str skinName = "models/char/munro.tik";
+    coopManager_validPlayerModels.AddUniqueObject(skinName);
+
     str contents;
     if (gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
         str sectionContents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
