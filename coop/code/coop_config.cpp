@@ -158,6 +158,11 @@ void CoopSettings::playerScriptThreadsAllow()
 	dialogrunthread_entDeck1IGM.command = "dialogrunthread";
 	dialogrunthread_entDeck1IGM.thread = "entDeck1IGM";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_entDeck1IGM);
+
+	CoopSettings_clientThreads_s dialogrunthread_entDeck8IGM;
+	dialogrunthread_entDeck8IGM.command = "dialogrunthread";
+	dialogrunthread_entDeck8IGM.thread = "entDeck8IGM";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_entDeck8IGM);
 }
 
 void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
