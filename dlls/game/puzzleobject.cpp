@@ -594,13 +594,6 @@ void PuzzleObject::useEvent(Event* event)
 					player->loadUseItem( _itemToUse );
 					
 					gi.centerprintf(entity->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$NeedToUse$$ %s", _itemToUse.c_str());
-
-					//--------------------------------------------------------------
-					// GAMEFIX - Added: print out to hud/chat in multiplayer - chrissstrahl
-					//--------------------------------------------------------------
-					if (g_gametype->integer != GT_SINGLE_PLAYER) {
-						player->hudPrint(va("$$NeedToUse$$ %s\n", _itemToUse.c_str()));
-					}
 				}
 			}
 
