@@ -143,6 +143,21 @@ void CoopSettings::playerScriptThreadsAllow()
 	dialogrunthread_successBranch.command = "dialogrunthread";
 	dialogrunthread_successBranch.thread = "successBranch";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_successBranch);
+
+	CoopSettings_clientThreads_s dialogrunthread_entDeck7cIGM;
+	dialogrunthread_entDeck7cIGM.command = "dialogrunthread";
+	dialogrunthread_entDeck7cIGM.thread = "entDeck7cIGM";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_entDeck7cIGM);
+
+	CoopSettings_clientThreads_s dialogrunthread_IGM7_DialogChoice;
+	dialogrunthread_IGM7_DialogChoice.command = "dialogrunthread";
+	dialogrunthread_IGM7_DialogChoice.thread = "IGM7_DialogChoice";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_IGM7_DialogChoice);
+
+	CoopSettings_clientThreads_s dialogrunthread_entDeck1IGM;
+	dialogrunthread_entDeck1IGM.command = "dialogrunthread";
+	dialogrunthread_entDeck1IGM.thread = "entDeck1IGM";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_entDeck1IGM);
 }
 
 void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
