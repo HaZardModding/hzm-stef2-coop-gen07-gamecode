@@ -175,7 +175,13 @@ public:
     // Access to coopManager_client_persistant_t
     bool getPlayerData_coopAdmin(Player* player);
     void setPlayerData_coopAdmin(Player* player, bool state);
-    void setPayerData_coopAdmin_reset(Player* player);
+    void setPlayerData_coopAdmin_reset(Player* player);
+    int getPlayerData_coopSetupTries(Player* player);
+    void setPlayerData_coopSetupTries_update(Player* player);
+    void setPlayerData_coopSetupTries_reset(Player* player);
+    int getPlayerData_coopSetupNextCheckTime(Player* player);
+    void setPlayerData_coopSetupNextCheckTime_update(Player* player);
+    void setPlayerData_coopSetupNextCheckTime_reset(Player* player);
     int getPlayerData_coopAdminAuthAttemps(Player* player);
     void setPayerData_coopAdminAuthAttemps_update(Player* player);
     void setPayerData_coopAdminAuthAttemps_reset(Player* player);
@@ -200,7 +206,7 @@ public:
     int getPlayerData_radarScale(Player* player);
     void setPlayerData_radarScale(Player* player, int radarScale);
 
-
+ 
     bool getPlayerData_coopClientIdDone(Player* player);
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);
