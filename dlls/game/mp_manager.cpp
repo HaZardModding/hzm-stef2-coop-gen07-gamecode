@@ -475,6 +475,62 @@ void MultiplayerManager::initMultiplayerGame( void )
 					_multiplayerGame = nullptr;
 				}
 			}
+
+			// Setup some stuff for bots
+
+			mp_modifier_Destruction = gi.cvar("mp_modifier_Destruction", "0", 0);
+
+			if (mp_modifier_Destruction->integer)
+			{
+				gametype = GT_OBELISK;
+			}
+
+			if (!_multiplayerGame)
+				return;
+
+			// Create the player data
+
+			_playerData = new MultiplayerPlayerData[maxclients->integer];
+
+			// Initialize the game
+
+			_multiplayerGame->init(maxclients->integer);
+
+			_multiplayerGame->setPointLimit(0);
+			_multiplayerGame->setTimeLimit(0);
+
+			_inMultiplayerGame = true;
+
+			// Add all of the needed modifiers
+
+			addModifiers();
+
+			// Initialize all of the needed modifiers
+
+			for (i = 1; i <= _modifiers.NumObjects(); i++)
+			{
+				MultiplayerModifier* modifier;
+
+				modifier = _modifiers.ObjectAt(i);
+
+				if (modifier)
+					modifier->init(maxclients->integer);
+			}
+
+			// Initialize the award system
+
+			_awardSystem = new AwardSystem;
+			_awardSystem->init(maxclients->integer);
+
+			// Initialize anything needed that is outside of the multiplayer system
+
+			// Make sure no tricorder modes are available except those explicitly set by the script
+
+			Event* event = new Event("addAvailableViewMode");
+			event->AddString("BogusMode");
+			world->ProcessEvent(event);
+
+			return;
 		}
 		catch (const char* error) {
 			gi.Printf(_COOP_ERROR_fatal, error);
@@ -482,6 +538,8 @@ void MultiplayerManager::initMultiplayerGame( void )
 		}
 	}
 #endif
+
+
 	if(!_multiplayerGame) {
 		// Create the correct game type
 		switch (mp_gametype->integer) // Todo : switch off of a something better than a hardcoded index
