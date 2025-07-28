@@ -32,12 +32,12 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("!mapname");
 	gameFixAPI_clCmdsWhitheListAdd("!class");
 
-	//gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
-	//gameFixAPI_clCmdsWhitheListAdd("coopcid");
-	//gameFixAPI_clCmdsWhitheListAdd("coopinput");
-	//gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
-	//gameFixAPI_clCmdsWhitheListAdd("clientrunthread");
-	//gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
+	gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
+	gameFixAPI_clCmdsWhitheListAdd("coopcid");
+	gameFixAPI_clCmdsWhitheListAdd("coopinput");
+	gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
+	gameFixAPI_clCmdsWhitheListAdd("clientrunthread");
+	gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
 }
 void CoopSettings::playerScriptThreadsAllow()
 {
