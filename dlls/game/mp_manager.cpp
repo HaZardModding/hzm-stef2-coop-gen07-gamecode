@@ -467,70 +467,68 @@ void MultiplayerManager::initMultiplayerGame( void )
 			//activate coop only if this is a coop level
 			if (CoopManager::Get().IsCoopLevel()) {
 				gametype = GT_TEAM; // Or define GT_COOP if needed
-			}
-			else {
-				if (_multiplayerGame) {
-					CoopManager::Get().DisableCoop();
-					delete _multiplayerGame;
-					_multiplayerGame = nullptr;
+
+				// Setup some stuff for bots
+				mp_modifier_Destruction = gi.cvar("mp_modifier_Destruction", "0", 0);
+
+				if (mp_modifier_Destruction->integer)
+				{
+					gametype = GT_OBELISK;
 				}
-			}
 
-			// Setup some stuff for bots
+				if (!_multiplayerGame)
+					return;
 
-			mp_modifier_Destruction = gi.cvar("mp_modifier_Destruction", "0", 0);
+				// Create the player data
 
-			if (mp_modifier_Destruction->integer)
-			{
-				gametype = GT_OBELISK;
-			}
+				_playerData = new MultiplayerPlayerData[maxclients->integer];
 
-			if (!_multiplayerGame)
+				// Initialize the game
+
+				_multiplayerGame->init(maxclients->integer);
+
+				_multiplayerGame->setPointLimit(0);
+				_multiplayerGame->setTimeLimit(0);
+
+				_inMultiplayerGame = true;
+
+				// Add all of the needed modifiers
+
+				addModifiers();
+
+				// Initialize all of the needed modifiers
+
+				for (i = 1; i <= _modifiers.NumObjects(); i++)
+				{
+					MultiplayerModifier* modifier;
+
+					modifier = _modifiers.ObjectAt(i);
+
+					if (modifier)
+						modifier->init(maxclients->integer);
+				}
+
+				// Initialize the award system
+
+				_awardSystem = new AwardSystem;
+				_awardSystem->init(maxclients->integer);
+
+				// Initialize anything needed that is outside of the multiplayer system
+
+				// Make sure no tricorder modes are available except those explicitly set by the script
+
+				Event* event = new Event("addAvailableViewMode");
+				event->AddString("BogusMode");
+				world->ProcessEvent(event);
+
 				return;
-
-			// Create the player data
-
-			_playerData = new MultiplayerPlayerData[maxclients->integer];
-
-			// Initialize the game
-
-			_multiplayerGame->init(maxclients->integer);
-
-			_multiplayerGame->setPointLimit(0);
-			_multiplayerGame->setTimeLimit(0);
-
-			_inMultiplayerGame = true;
-
-			// Add all of the needed modifiers
-
-			addModifiers();
-
-			// Initialize all of the needed modifiers
-
-			for (i = 1; i <= _modifiers.NumObjects(); i++)
-			{
-				MultiplayerModifier* modifier;
-
-				modifier = _modifiers.ObjectAt(i);
-
-				if (modifier)
-					modifier->init(maxclients->integer);
 			}
 
-			// Initialize the award system
-
-			_awardSystem = new AwardSystem;
-			_awardSystem->init(maxclients->integer);
-
-			// Initialize anything needed that is outside of the multiplayer system
-
-			// Make sure no tricorder modes are available except those explicitly set by the script
-
-			Event* event = new Event("addAvailableViewMode");
-			event->AddString("BogusMode");
-			world->ProcessEvent(event);
-
-			return;
+			if (_multiplayerGame) {
+				CoopManager::Get().DisableCoop();
+				delete _multiplayerGame;
+				_multiplayerGame = nullptr;
+			}
 		}
 		catch (const char* error) {
 			gi.Printf(_COOP_ERROR_fatal, error);
@@ -4554,21 +4552,3 @@ float MultiplayerManager::getMatchStartTime()
 {
 	return _multiplayerGame->getMatchStartTime();
 }
-
-
-
-
-#ifdef ENABLE_COOP
-//--------------------------------------------------------------
-// COOP Generation 7.000 - Coop Specific functionality - chrissstrahl
-//--------------------------------------------------------------
-MultiplayerModeBase* MultiplayerManager::coop_getMultiplayerGame()
-{
-	if (_multiplayerGame) {
-		return _multiplayerGame;
-	}
-	gi.Error(ERR_DROP, "coop_getMultiplayerGame() _multiplayerGame was nullptr\n");
-	return nullptr;
-}
-
-#endif

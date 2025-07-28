@@ -95,15 +95,6 @@ public:
 
 class MultiplayerManager : public Class
    {
-#ifdef ENABLE_COOP
-	//--------------------------------------------------------------
-	// COOP Generation 7.000 - Coop Specific functionality - chrissstrahl
-	//--------------------------------------------------------------
-   public:
-	   MultiplayerModeBase* coop_getMultiplayerGame();
-#endif
-
-
    public:
 	   //--------------------------------------------------------------
 	   // GAMEFIX - Added: Functions and Variables - chrissstrahl
