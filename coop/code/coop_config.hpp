@@ -83,22 +83,22 @@ extern Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsA
 
 class CoopSettings {
 public:
-	bool coopEnabled;
-	bool rpgEnabled;
+	bool coopEnabled = false;
+	bool rpgEnabled = false;
 
-	str levelPrefixCoop;
-	str levelPrefixRpg;
+	str levelPrefixCoop = "";
+	str levelPrefixRpg = "";
 
 	Container<str> voteAllowedCommands; // space-separated string
-	bool voteRefundOnSuccess;
+	bool voteRefundOnSuccess = false;
 
-	bool rpgSpawnWeapons;
-	int  coopLastManStandingLifes;
+	bool rpgSpawnWeapons = false;
+	int  coopLastManStandingLifes = 0;
 
-	int scoreKilledPlayer;
-	int scoreKilledFriendly;
-	int scoreKilledEnemy;
-	int scoreKilledBoss;
+	int scoreKilledPlayer = 0;
+	int scoreKilledFriendly = 0;
+	int scoreKilledEnemy = 0;
+	int scoreKilledBoss = 0;
 
 	void playerCommandsAllow();
 	void playerScriptThreadsAllow();
