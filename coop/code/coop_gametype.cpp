@@ -204,7 +204,30 @@ int ModeCoop::getTeamPoints(Player* player)
 
 void ModeCoop::setupMultiplayerUI(Player* player)
 {
-	gamefix_playerSetupUi(player);
+	if (multiplayerManager.inMultiplayer()) {
+		gi.SendServerCommand(player->entnum, "stufftext \"ui_removehuds all\"\n");	
+		
+		//multiplayerManager.gameFixAPI_setTeamHud(player, true);
+		Team* team = getPlayersTeam(player);
+		
+		if (gameFixAPI_isSpectator_stef2(player)) {
+			if (!team)
+				multiplayerManager.setTeamHud(player, "mp_teamspec");
+			else if (team->getName() == "Red")
+				multiplayerManager.setTeamHud(player, "mp_teamredspec");
+			else
+				multiplayerManager.setTeamHud(player, "mp_teambluespec");
+		}
+
+		gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_console");
+
+		if (mp_timelimit->integer) {
+			gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer enable");
+		}
+		else {
+			gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
+		}
+	}
 }
 
 int ModeCoop::getInfoIcon(Player* player)
