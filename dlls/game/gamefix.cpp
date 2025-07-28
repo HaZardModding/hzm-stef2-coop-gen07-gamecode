@@ -970,13 +970,14 @@ void gamefix_actorThink(Actor* actor)
 {
 	gamefix_makeSolidAsapThink((Entity*)actor);
 }
+
 //--------------------------------------------------------------
-// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
-// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+// GAMEFIX - Checks: If player is ready to have huds added - this is for windows listen server host - chrissstrahl
+// Only the host can already be on the server to early - this is a issue only occuring once on the first map loaded
 //--------------------------------------------------------------
-void gamefix_playerSetupUi(Player* player)
+bool gamefix_playerReadyForSetupUi(Player* player)
 {
-	gameFixAPI_playerSetupUi(player);
+	return gameFixAPI_playerReadyForSetupUi(player);
 }
 
 //--------------------------------------------------------------

@@ -804,6 +804,16 @@ void MultiplayerModeBase::AddPlayer( Player *player )
 	playerGameData->_playing = true;
 	playerGameData->_startTime = multiplayerManager.getTime();
 
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
+	// host is handled from: gamefix_playerClientThink
+	//--------------------------------------------------------------
+	if (gameFixAPI_isListenServer() && gameFixAPI_isWindowsServer() && gameFixAPI_isHost(player)) {
+		return;
+	}
+
+
 	// Setup the correct ui on the client
 
 	setupMultiplayerUI( player );
