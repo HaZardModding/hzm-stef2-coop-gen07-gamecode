@@ -127,6 +127,14 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
 
         //command match
         if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
+            //dialog active check
+            if (entUsed && entUsed->isSubclassOf(Actor) && threadListTemp.command.tolower() == "dialogrunthread") {
+                Actor* actor = (Actor*)entUsed;
+                str sDialogName = actor->coop_getBranchDialogName();
+                if (!strlen(sDialogName)) {
+                    return false;
+                }
+            }
             //thread match
             if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread)) == 0) {
                 //item check

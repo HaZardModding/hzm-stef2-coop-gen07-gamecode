@@ -1592,7 +1592,7 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 				
 				player->clearBranchDialogActor();
 
-				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "dialogrunthread", sGivenThread, nullptr)) {
+				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "dialogrunthread", sGivenThread, (Entity*)actor)) {
 					return true;
 				}
 			}
