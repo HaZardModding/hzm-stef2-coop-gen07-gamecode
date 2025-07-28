@@ -23,6 +23,15 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#endif
+
+
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
 #include "mp_modeTeamBase.hpp"
@@ -89,7 +98,17 @@ void ModeTeamBase::init( int maxPlayers )
 {
 	MultiplayerModeBase::init( maxPlayers );
 
-	multiplayerManager.cacheMultiplayerFiles( "mp_teamBase" );
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		multiplayerManager.cacheMultiplayerFiles("mp_teamBase");
+	}
+#else
+	multiplayerManager.cacheMultiplayerFiles("mp_teamBase");
+#endif
 }
 
 //================================================================
@@ -378,7 +397,18 @@ void ModeTeamBase::respawnPlayer( Player *player )
 		player->WarpToPoint( spawnPoint );
 	}
 
-	KillBox( player );
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Don't use killbox during coop - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		KillBox(player);
+	}
+#else
+	KillBox(player);
+#endif
+
 
 	ActivatePlayer( player );
 }

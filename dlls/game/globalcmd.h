@@ -79,8 +79,100 @@ extern Event EV_ScriptThread_FloorEvent ;
 extern Event EV_ScriptThread_CeilEvent ;
 extern Event EV_ScriptThread_RoundEvent ;
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_ScriptThread_coop_setVectorVariable;
+extern Event EV_ScriptThread_coop_getStringVariable;
+extern Event EV_ScriptThread_coop_getVectorVariable;
+extern Event EV_ScriptThread_coop_getFloatVariable;
+extern Event EV_ScriptThread_coop_setStringVariable;
+extern Event EV_ScriptThread_coop_setFloatVariable;
+
+extern Event EV_ScriptThread_coop_configstrRemove;
+extern Event EV_ScriptThread_coop_configstrRemoveCombatSounds;
+
+extern Event EV_ScriptThread_coop_subString;
+extern Event EV_ScriptThread_coop_toLower;
+extern Event EV_ScriptThread_coop_toUpper;
+extern Event EV_ScriptThread_coop_length;
+extern Event EV_ScriptThread_coop_find;
+
+extern Event EV_ScriptThread_coop_isDigit;
+
+extern Event EV_ScriptThread_coop_getTimeStamp;
+extern Event EV_ScriptThread_coop_getFloat;
+extern Event EV_ScriptThread_coop_getVector;
+
+extern Event EV_ScriptThread_coop_getClassOf;
+extern Event EV_ScriptThread_coop_getPathnodeOrigin;
+
+extern Event EV_ScriptThread_coop_getLevelParamater;
+
+extern Event EV_ScriptThread_coop_getIniData;
+extern Event EV_ScriptThread_coop_getIniDataPlayer;
+extern Event EV_ScriptThread_coop_setIniDataPlayer;
+extern Event EV_ScriptThread_coop_setIniData;
+
+extern Event EV_ScriptThread_coop_getMapByServerIp;
+
+extern Event EV_ScriptThread_coop_objectiveUpdate;
+
+extern Event EV_ScriptThread_coop_missionFailed;
+#endif
+
+
+
 class CThread : public Interpreter
 {
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+public:
+	void coop_getVectorVariable(Event* ev);
+	void coop_getFloatVariable(Event* ev);
+	void coop_getStringVariable(Event* ev);
+	void coop_setVectorVariable(Event* ev);
+	void coop_setFloatVariable(Event* ev);
+	void coop_setStringVariable(Event* ev);
+
+	void coop_configstrRemove(Event* ev);
+	void coop_configstrRemoveCombatSounds(Event* ev);
+
+	void coop_subString(Event* ev);
+	void coop_toLower(Event* ev);
+	void coop_toUpper(Event* ev);
+	void coop_length(Event* ev);
+	void coop_find(Event* ev);
+
+	void coop_isDigit(Event* ev);
+
+	void coop_getTimeStamp(Event* ev);
+	void coop_getFloat(Event* ev);
+	void coop_getVector(Event* ev);
+
+	void coop_getClassOf(Event* ev);
+	void coop_getPathnodeOrigin(Event* ev);
+
+	void coop_getLevelParamater(Event* ev);
+
+	void coop_getIniData(Event* ev);
+	void coop_getIniDataPlayer(Event* ev);
+	void coop_setIniDataPlayer(Event* ev);
+	void coop_setIniData(Event* ev);
+
+	void coop_getMapByServerIp(Event* ev);
+
+	void coop_objectiveUpdate(Event* ev);
+
+	void coop_missionFailed(Event* ev);
+#endif
+
+
+
 	private:
 		float				waitUntil;
 		CThread				*waitingForThread;

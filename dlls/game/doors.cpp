@@ -218,6 +218,14 @@ Door.enemy chains from the master door through all doors linked in the chain.
 
 CLASS_DECLARATION( ScriptSlave, Door, "NormalDoor" )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_Door_coop_getState, &Door::coop_getDoorState },
+#endif
+
+
 	{ &EV_Door_StopSound,				&Door::SetStopSound },
 	{ &EV_Door_MoveSound,				&Door::SetMoveSound },
 	{ &EV_Door_MessageSound,			&Door::SetMessageSound },
@@ -2106,3 +2114,22 @@ ScriptDoor::ScriptDoor()
 	}
 
 */
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+Event EV_Door_coop_getState
+(
+	"coop_getDoorState",
+	EV_SCRIPTONLY,
+	"@f",
+	"State-Number",
+	"Gets Current State of Door open=1,opening=2,closeing=3,closed=4"
+);
+void Door::coop_getDoorState(Event* ev)
+{
+	ev->ReturnFloat(state);
+}
+#endif

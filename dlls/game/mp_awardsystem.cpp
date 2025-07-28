@@ -20,6 +20,15 @@
 #include "mp_awardsystem.hpp"
 #include "powerups.h"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 // Setup constants
 
 const float	AwardSystem::_minEfficiencyForEfficiencyAward = 0.5f;
@@ -47,7 +56,17 @@ void MultiplayerPlayerAwardData::init( void )
 
 	reset();
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		multiplayerManager.cacheMultiplayerFiles("mp_awardsystem");
+	}
+#else
 	multiplayerManager.cacheMultiplayerFiles( "mp_awardsystem" );
+#endif	
 }
 
 void MultiplayerPlayerAwardData::reset( void )

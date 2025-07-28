@@ -30,6 +30,15 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#endif
+
+
 MultiplayerManager multiplayerManager;
 
 str playersLastTeam[ MAX_CLIENTS ];
@@ -136,9 +145,9 @@ void MultiplayerManager::cleanup( qboolean restart )
 	}
 
 	// Clean up the game
-
 	delete _multiplayerGame;
-	_multiplayerGame = NULL;
+	_multiplayerGame = nullptr;
+
 
 	// Clean up the player data
 
@@ -441,40 +450,129 @@ void MultiplayerManager::initMultiplayerGame( void )
 
 	gi.cvar_set( "mp_modifier_diffusion", "0" );
 
-	// Create the correct game type
 
-	switch ( mp_gametype->integer ) // Todo : switch off of a something better than a hardcoded index
-	{
-		case 0 : 
-			_multiplayerGame = new ModeDeathmatch(); 
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added ModeCoop replacing ModeTeamDeathmatch on Coop maps - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (CoopManager::Get().IsCoopEnabled()) {
+		try {
+			if (_multiplayerGame){
+				delete _multiplayerGame;
+				_multiplayerGame = nullptr;
+			}
+
+			_multiplayerGame = new ModeCoop();
+			
+			//activate coop only if this is a coop level
+			if (CoopManager::Get().IsCoopLevel()) {
+				gametype = GT_TEAM; // Or define GT_COOP if needed
+
+				// Setup some stuff for bots
+				mp_modifier_Destruction = gi.cvar("mp_modifier_Destruction", "0", 0);
+
+				if (mp_modifier_Destruction->integer)
+				{
+					gametype = GT_OBELISK;
+				}
+
+				if (!_multiplayerGame)
+					return;
+
+				// Create the player data
+
+				_playerData = new MultiplayerPlayerData[maxclients->integer];
+
+				// Initialize the game
+
+				_multiplayerGame->init(maxclients->integer);
+
+				_multiplayerGame->setPointLimit(0);
+				_multiplayerGame->setTimeLimit(0);
+
+				_inMultiplayerGame = true;
+
+				// Add all of the needed modifiers
+
+				addModifiers();
+
+				// Initialize all of the needed modifiers
+
+				for (i = 1; i <= _modifiers.NumObjects(); i++)
+				{
+					MultiplayerModifier* modifier;
+
+					modifier = _modifiers.ObjectAt(i);
+
+					if (modifier)
+						modifier->init(maxclients->integer);
+				}
+
+				// Initialize the award system
+
+				_awardSystem = new AwardSystem;
+				_awardSystem->init(maxclients->integer);
+
+				// Initialize anything needed that is outside of the multiplayer system
+
+				// Make sure no tricorder modes are available except those explicitly set by the script
+
+				Event* event = new Event("addAvailableViewMode");
+				event->AddString("BogusMode");
+				world->ProcessEvent(event);
+
+				return;
+			}
+
+			if (_multiplayerGame) {
+				CoopManager::Get().DisableCoop();
+				delete _multiplayerGame;
+				_multiplayerGame = nullptr;
+			}
+		}
+		catch (const char* error) {
+			gi.Printf(_COOP_ERROR_fatal, error);
+			G_ExitWithError(error);
+		}
+	}
+#endif
+
+
+	if(!_multiplayerGame) {
+		// Create the correct game type
+		switch (mp_gametype->integer) // Todo : switch off of a something better than a hardcoded index
+		{
+		case 0:
+			_multiplayerGame = new ModeDeathmatch();
 			gametype = GT_FFA;
 			break;
-		case 1 :  
-			_multiplayerGame = new ModeTeamDeathmatch(); 
+		case 1:
+			_multiplayerGame = new ModeTeamDeathmatch();
 			gametype = GT_TEAM;
 			break;
-		case 2 :  
-			_multiplayerGame = new ModeCaptureTheFlag(); 
+		case 2:
+			_multiplayerGame = new ModeCaptureTheFlag();
 			gametype = GT_CTF;
-			break ;
-		case 3 :  
+			break;
+		case 3:
 			// This is bomb diffusion mode
 
-			_multiplayerGame = new ModeTeamDeathmatch(); 
+			_multiplayerGame = new ModeTeamDeathmatch();
 
-			gi.cvar_set( "mp_modifier_diffusion", "1" );
+			gi.cvar_set("mp_modifier_diffusion", "1");
 			/* gi.cvar_set( "mp_modifier_specialties", "1" );
 			gi.cvar_set( "mp_modifier_elimination", "1" ); */
 
 			//gi.cvar_set( "mp_gametype", "1" );
 
 			gametype = GT_TEAM;
-			break ;
+			break;
 
-		default: 
-			_multiplayerGame = new ModeDeathmatch(); 
+		default:
+			_multiplayerGame = new ModeDeathmatch();
 			gametype = GT_FFA;
-			break ;
+			break;
+		}
 	}
 
 	// Setup some stuff for bots
@@ -546,6 +644,19 @@ void MultiplayerManager::initItems( void )
 	// Tell the game to initialize items
 
 	_multiplayerGame->initItems();
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Handle Items for Coop - chrissstrahl
+	// See ModeCoop::initItems started above from _multiplayerGame->initItems();
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		_awardSystem->initItems();
+		return;
+	}
+#endif
+
 
 	// Tell all of the modifiers to initialize items
 
@@ -783,6 +894,14 @@ void MultiplayerManager::addPlayer( Player *player )
 	// Inform all of the players that the player has joined the game
 
 	multiplayerManager.HUDPrintAllClients( va( "%s $$JoinedGame$$\n", player->client->pers.netname ) );
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerJoined(player);
+#endif
 
 
 	//--------------------------------------------------------------
@@ -2978,6 +3097,14 @@ void MultiplayerManager::makePlayerSpectator( Player *player, SpectatorTypes spe
 		// GAMEFIX - Added: Function handling player game event - chrissstrahl
 		//--------------------------------------------------------------
 		gamefix_playerSpectator(player);
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerBecameSpectator(player);
+#endif
 	}
 }
 
@@ -3129,6 +3256,20 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	player->health = health;
 
 
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Player Spawn beam in animation not playing during coop - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() && sv_cinematic->integer == 0) {
+		// hold in place briefly
+		player->client->ps.pm_time = 100;
+		player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
+
+		Event* newEvent = new Event(EV_DisplayEffect);
+		newEvent->AddString("TransportIn");
+		newEvent->AddString("Multiplayer");
+	}
+#else
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Player Spawn beam in animation not playing during cinematic - chrissstrahl
 	//--------------------------------------------------------------
@@ -3142,6 +3283,9 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 		newEvent->AddString("Multiplayer");
 		player->PostEvent(newEvent, 0.0f);
 	}
+#endif
+
+
 
 
 	changePlayerModel( player, player->model, true );
@@ -3167,6 +3311,16 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	if (level.cinematic == 1 && multiplayerManager.gamefixEF2_currentCamera) {
 		player->SetCamera(multiplayerManager.gamefixEF2_currentCamera, 0);
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerSpawned(player);
+	}
+#endif
 }
 
 void MultiplayerManager::playerSpawned( Player *player )

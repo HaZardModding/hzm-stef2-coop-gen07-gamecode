@@ -24,7 +24,15 @@ class Lexer;
 
 #define	MAX_STRINGS		4096
 //#define	MAX_STATEMENTS	65536
-#define	MAX_STATEMENTS	16384
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Changed to allow larger scripts - chrissstrahl
+// was 16384
+//--------------------------------------------------------------
+#define	MAX_STATEMENTS	32768
+
+
 #define	MAX_FUNCTIONS	2560
 
 #define	MAX_PARMS	   16
@@ -242,6 +250,24 @@ class Program : public Class
 		int				AllocString();
 		void				FreeString( int idx );
 		int				CountUsedStrings();
+
+
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Add Coop Specific Features - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+   public:
+        def_t* coop_getDefForVarname(const char* varname);
+        const char* coop_getVariableValueAsString(const char* varname);
+        Vector coop_getVectorVariableValue(const char* varname);
+        float coop_getFloatVariableValue(const char* varname);
+        str coop_getStringVariableValue(const char* varname);
+        void coop_setVectorVariableValue(const char* varname, Vector vSet);
+        void coop_setFloatVariableValue(const char* varname, float fSet);
+        void coop_setStringVariableValue(const char* varname, char const* sSet);
+#endif
    };
 /*
 inline float Program::getFloat

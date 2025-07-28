@@ -26,6 +26,42 @@ void     G_InitConsoleCommands( void );
 
 qboolean G_ProcessClientCommand( gentity_t *ent );
 
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop console command specific functions - chrissstrahl
+//--------------------------------------------------------------
+qboolean coop_playerCoopDetected(const gentity_t* ent);
+qboolean coop_playerClientId(const gentity_t* ent);
+qboolean coop_playerThread(const gentity_t* ent);
+qboolean coop_playerInput(const gentity_t* ent);
+qboolean coop_playerTestSpawn(const gentity_t* ent);
+qboolean coop_playerRadarScale(const gentity_t* ent);
+qboolean coop_playerFollowMe(const gentity_t* ent);
+qboolean coop_playerLeader(const gentity_t* ent);
+qboolean coop_playerLogin(const gentity_t* ent);
+qboolean coop_playerLogout(const gentity_t* ent);
+qboolean coop_playerKill(const gentity_t* ent);
+qboolean coop_playerOrigin(const gentity_t* ent);
+qboolean coop_playerNoclip(const gentity_t* ent);
+qboolean coop_playerStuck(const gentity_t* ent);
+qboolean coop_playerTransport(const gentity_t* ent);
+qboolean coop_playerNotransport(const gentity_t* ent);
+qboolean coop_playerShowspawn(const gentity_t* ent);
+qboolean coop_playerTransferlife(const gentity_t* ent);
+qboolean coop_playerAbility(const gentity_t* ent);
+qboolean coop_playerTargetnames(const gentity_t* ent);
+qboolean coop_playerLevelend(const gentity_t* ent);
+qboolean coop_playerDrop(const gentity_t* ent);
+qboolean coop_playerSkill(const gentity_t* ent);
+qboolean coop_playerInfo(const gentity_t* ent);
+qboolean coop_playerBlock(const gentity_t* ent);
+qboolean coop_playerMapname(const gentity_t* ent);
+qboolean coop_playerClass(const gentity_t* ent);
+#endif
+
+
 void     G_Say( const gentity_t *ent, bool team, qboolean arg0 );
 qboolean G_CameraCmd( const gentity_t *ent );
 qboolean G_SoundCmd( const gentity_t *ent );

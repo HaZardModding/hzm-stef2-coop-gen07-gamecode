@@ -47,6 +47,18 @@
 // GAMEFIX - Added: to make gamefix functionality available - chrissstrahl
 //--------------------------------------------------------------
 #include "gamefix.hpp"
+#include "api_stef2.hpp"
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#include "../../coop/code/coop_objectives.hpp"
+#include "../../coop/code/coop_armory.hpp"
+#endif
 
 
 //Forward
@@ -1343,7 +1355,59 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 //--------------------------------------------------------------
 	{ &EV_Player_gamefix_messageOfTheDay, & Player::gamefix_messageOfTheDayEvent },
 
-	
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+	{ &EV_Player_coop_setKillThread, &Player::coop_playerKillThread },
+	{ &EV_Player_coop_getLanguage, &Player::coop_getLanguage },
+	{ &EV_Player_coop_getName, &Player::coop_getName },
+	{ &EV_Player_coop_getScore, &Player::coop_getScore },
+	{ &EV_Player_coop_getDeaths, &Player::coop_getDeaths },
+	{ &EV_Player_coop_getKills, &Player::coop_getKills },
+	{ &EV_Player_coop_addScore, &Player::coop_addScore },
+	{ &EV_Player_coop_getLastDamaged, &Player::coop_getLastDamagedEvent },
+	{ &EV_Player_coop_getTeamName, &Player::coop_getTeamName },
+	{ &EV_Player_coop_getTeamScore, &Player::coop_getTeamScore },
+	{ &EV_Player_coop_getViewangles, &Player::coop_getViewAngles },
+	{ &EV_Player_coop_getTargetedEntity, &Player::coop_getTargetedEntity },
+	{ &EV_Player_coop_getViewtraceEndpos, &Player::coop_getViewtraceEndposEvent },
+	{ &EV_Player_coop_getUserFov, &Player::coop_getUserFov },
+	{ &EV_Player_coop_checkCrouch, &Player::coop_checkCrouch },
+	{ &EV_Player_coop_checkJump, &Player::coop_checkJump },
+	{ &EV_Player_coop_checkForward, &Player::coop_checkForward },
+	{ &EV_Player_coop_checkBackward, &Player::coop_checkBackward },
+	{ &EV_Player_coop_checkLeft, &Player::coop_checkLeft },
+	{ &EV_Player_coop_checkRight, &Player::coop_checkRight },
+	{ &EV_Player_coop_checkLeanRight, &Player::coop_checkLeanRight },
+	{ &EV_Player_coop_checkLeanLeft, &Player::coop_checkLeanLeft },
+	{ &EV_Player_coop_checkDropRune, &Player::coop_checkDropRune },
+	{ &EV_Player_coop_checkRun, &Player::coop_checkRun },
+	{ &EV_Player_coop_checkReload, &Player::coop_checkReload },
+	{ &EV_Player_coop_checkUse, &Player::coop_checkUse },
+	{ &EV_Player_coop_checkThirdperson, &Player::coop_checkThirdperson },
+	{ &EV_Player_coop_checkFire, &Player::coop_checkFire },
+	{ &EV_Player_coop_checkFirealt, &Player::coop_checkFirealt },
+	{ &EV_Player_coop_checkAnyButton, &Player::coop_checkAnyButton },
+	{ &EV_Player_coop_checkMenu, &Player::coop_checkMenu },
+	{ &EV_Player_coop_getBackpackAttachOffset, &Player::coop_getBackpackAttachOffset },
+	{ &EV_Player_coop_getBackpackAttachAngles, &Player::coop_getBackpackAttachAngles },
+	{ &EV_Player_coop_getFlagAttachOffset, &Player::coop_getFlagAttachOffset },
+	{ &EV_Player_coop_getFlagAttachAngles, &Player::coop_getFlagAttachAngles },
+	{ &EV_Player_coop_setCamera, &Player::coop_setCamera },
+	{ &EV_Player_coop_widgetCommand, &Player::coop_widgetCommandEvent },
+	{ &EV_Player_coop_runThread, &Player::coop_runThreadEvent },
+	{ &EV_Player_coop_hasLanguageGerman, &Player::coop_hasLanguageGermanEvent },
+	{ &EV_Player_coop_hasLanguageEnglish, &Player::coop_hasLanguageEnglishEvent },
+	{ &EV_Player_coop_getCoopClass, &Player::coop_getCoopClass },
+	{ &EV_Player_coop_isTechnician, &Player::coop_isTechnician },
+	{ &EV_Player_coop_isMedic, &Player::coop_isMedic },
+	{ &EV_Player_coop_isHeavyWeapons, &Player::coop_isHeavyWeapons },
+	{ &EV_Player_coop_getCoopVersion, &Player::coop_getCoopVersion },
+#endif
+
+
 	{ &EV_ClientMove,										&Player::ClientThink },
 	{ &EV_ClientEndFrame,									&Player::EndFrame },
 	{ &EV_Vehicle_Enter,									&Player::EnterVehicle },
@@ -3399,7 +3463,15 @@ Player::Player()
 }
 
 Player::~Player()
-{	
+{
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerLeft(this);
+#endif
+
+
 	if ( p_heuristics )
 	{
 		p_heuristics->SaveHeuristics( this );	
@@ -3929,6 +4001,14 @@ void Player::Killed( Event *ev )
 	// GAMEFIX - Added: Function handling player game event - chrissstrahl
 	//--------------------------------------------------------------
 	gamefix_playerKilled(this);
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerDied(this);
+#endif
 
 	
 	if ( multiplayerManager.inMultiplayer() )
@@ -5761,6 +5841,21 @@ void Player::ClientThink( Event *ev )
 	// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
 	//--------------------------------------------------------------
 	gamefix_playerClientThink(this);
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Allow access to ClientThink - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	if (CoopManager::Get().IsCoopEnabled()) {
+		if (CoopManager::Get().IsCoopLevel()) {
+			CoopManager::Get().ClientThink(this);
+		}
+	}
+	else if(gameFixAPI_inSingleplayer()) {
+		coop_armoryEquipPlayerSingleplayer(this);
+	}
+#endif
 }
 
 // This function returns the endpoint of where the crosshair is located on the
@@ -5861,7 +5956,16 @@ void Player::CheckForTargetedEntity( void )
 		{
 			SetTargetedEntity(viewTrace.ent->entity);
 		}
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerTargetnames(this, viewTrace.ent->entity);
+#endif
 		
+
 		return;
 	}
 	
@@ -14595,3 +14699,942 @@ void Player::gamefix_messageOfTheDayEvent(Event* ev)
 
 	gamefix_messageOfTheDayShow(this);
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+Event EV_Player_coop_setKillThread
+(
+	"coop_playerKillThread",
+	EV_SCRIPTONLY,
+	"s",
+	"kill-thread",
+	"Sets the thread to run if player gets killed."
+);
+void Player::coop_playerKillThread(Event* ev)
+{
+	entityVars.SetVariable("_killThread", ev->GetString(1));
+}
+
+Event EV_Player_coop_getLanguage
+(
+	"coop_getLanguage",
+	EV_SCRIPTONLY,
+	"@s",
+	"language-string",
+	"Gets language string from player."
+);
+void Player::coop_getLanguage(Event* ev)
+{
+	str sLang = gamefix_getLanguage(this);
+	ev->ReturnString(sLang.c_str());
+}
+
+Event EV_Player_coop_getName
+(
+	"coop_getName",
+	EV_SCRIPTONLY,
+	"@sF",
+	"retunedString float-filter-option",
+	"Returns multiplayer name of player, filters 1=replace space,2=colorcodes,3=both"
+);
+void Player::coop_getName(Event* ev)
+{
+	//[b60019] chrissstrahl upgraded function
+	str playerName = "";
+
+	//[b60014] chrissstrahl - return also player name when not in multiplayer instead of crashing
+	if (!multiplayerManager.inMultiplayer()) {
+		cvar_t* cvar = gi.cvar_get("name");
+		if (cvar) {
+			playerName = cvar->string;
+		}
+	}
+	//multiplayer
+	else {
+		playerName = this->client->pers.netname;
+	}
+
+	//filter 
+	str new_playerName = "";
+	str sReplace = "_";
+	if (ev->NumArgs() > 0 && ev->GetInteger(1) > 0) {
+		int filterOption = ev->GetInteger(1);
+
+		//filter space
+		if (filterOption == 1 || filterOption == 3) {
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == ' ') {
+					new_playerName += sReplace;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+			new_playerName = "";
+		}
+
+		//filter color codes
+		if (filterOption == 2 || filterOption == 3) {
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == '^' && playerName.length() > (i + 1) && IsNumeric(str(playerName[i + 1]))) {
+					i++;
+					continue;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+		}
+	}
+	else {
+		new_playerName = playerName;
+	}
+	ev->ReturnString(new_playerName.c_str());
+}
+
+Event EV_Player_coop_getScore
+(
+	"coop_getScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns points/score of the player entity"
+);
+void Player::coop_getScore(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getPoints(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_getDeaths
+(
+	"coop_getDeaths",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of deaths of the player entity"
+);
+void Player::coop_getDeaths(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getDeaths(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_getKills
+(
+	"coop_getKills",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of kills by the player entity"
+);
+void Player::coop_getKills(Event* ev)
+{
+	int iScore = 0;
+	if (gameFixAPI_inMultiplayer()) {
+		iScore = multiplayerManager.getKills(this);
+	}
+	ev->ReturnFloat((float)iScore);
+}
+
+Event EV_Player_coop_addScore
+(
+	"coop_addScore",
+	EV_SCRIPTONLY,
+	"f",
+	"integer",
+	"Adds given ammount of score to player"
+);
+void Player::coop_addScore(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		int iAdd = ev->GetInteger(1);
+
+		multiplayerManager.addPoints(entnum, iAdd);
+		str playerName;
+		playerName = this->client->pers.netname;
+		gi.Printf("Info: Level-Script adding Points(%d) to Player[%d]: %s\n", iAdd, entnum, playerName.c_str());
+	}
+}
+
+Event EV_Player_coop_getLastDamaged
+(
+	"coop_getLastDamaged",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Float",
+	"Returns time when player was last time hit"
+);
+float Player::coop_getLastDamaged(void)
+{
+	float fValue1, fValue2;
+	if (_lastDamagedTimeFront > _lastDamagedTimeBack){
+		fValue1 = _lastDamagedTimeFront;
+	}else {
+		fValue1 = _lastDamagedTimeBack;
+	}
+
+	if (_lastDamagedTimeLeft > _lastDamagedTimeRight){
+		fValue2 = _lastDamagedTimeLeft;
+	}else {
+		fValue2 = _lastDamagedTimeRight;
+	}
+
+	if (fValue1 > fValue2){
+		return fValue1;
+	}else {
+		return fValue2;
+	}
+}
+void Player::coop_getLastDamagedEvent(Event* ev)
+{
+	float fLast = coop_getLastDamaged();
+	ev->ReturnFloat(fLast);
+}
+
+Event EV_Player_coop_getTeamName
+(
+	"coop_getTeamName",
+	EV_SCRIPTONLY,
+	"@s",
+	"return-String",
+	"Returns team color/name of player"
+);
+void Player::coop_getTeamName(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			ev->ReturnString("None");
+			return;
+		}
+		ev->ReturnString(team->getName());
+	}
+	else {
+		ev->ReturnString("None");
+	}
+}
+
+Event EV_Player_coop_getTeamScore
+(
+	"coop_getTeamScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns team score of player"
+);
+void Player::coop_getTeamScore(Event* ev)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			ev->ReturnFloat(multiplayerManager.getPoints(this));
+		}
+		else {
+			ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
+		}
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
+}
+
+Event EV_Player_coop_getViewangles
+(
+	"coop_getViewAngles",
+	EV_DEFAULT,
+	"@v",
+	"vector-viewangle",
+	"Returns the player current viewangles"
+);
+void Player::coop_getViewAngles(Event* ev)
+{
+	Vector vAngle = Vector(0, 0, 0);
+	GetPlayerView(NULL, &vAngle);
+	ev->ReturnVector(vAngle);
+}
+
+Event EV_Player_coop_getTargetedEntity
+(
+	"coop_getTargetedEntity",
+	EV_DEFAULT,
+	"@e",
+	"entity-targeted",
+	"Returns the entity the player is currently targeting"
+);
+void Player::coop_getTargetedEntity(Event* ev)
+{
+	Entity* targetCur;
+	targetCur = GetTargetedEntity();
+	if (!targetCur) {
+		targetCur = world;
+	}
+	ev->ReturnEntity(targetCur);
+}
+
+Event EV_Player_coop_getViewtraceEndpos
+(
+	"coop_getViewtraceEndpos",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector at wich players aim ends at"
+);
+Vector Player::coop_getViewtraceEndpos(void)
+{
+	trace_t viewTrace;
+	memset(&viewTrace, 0, sizeof(trace_t));
+	GetViewTrace(viewTrace, MASK_SHOT | CONTENTS_TARGETABLE, 999999.0f);
+	if (!viewTrace.ent) { return origin; }
+	return viewTrace.endpos;
+}
+void Player::coop_getViewtraceEndposEvent(Event* ev)
+{
+	ev->ReturnVector(coop_getViewtraceEndpos());
+}
+
+Event EV_Player_coop_getUserFov
+(
+	"coop_getUserFov",
+	EV_DEFAULT,
+	"@f",
+	"return-float",
+	"Returns player their userfov setting"
+);
+void Player::coop_getUserFov(Event* ev)
+{
+	float fovCur = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
+	if (fovCur < 1.0f) {
+		str sCvarValue = "";
+		cvar_t* cvar = gi.cvar_get("sv_defaultFov");
+		if (cvar) { sCvarValue = cvar->string; }
+		fovCur = atof(sCvarValue.c_str());
+	}
+	else if (fovCur > 160.0f) {
+		fovCur = 160.0f;
+	}
+	ev->ReturnFloat(fovCur);
+}
+
+Event EV_Player_coop_checkCrouch
+(
+	"coop_checkCrouch",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing Crouch button"
+);
+void Player::coop_checkCrouch(Event* ev)
+{
+	ev->ReturnFloat((int)GetCrouch());
+}
+
+Event EV_Player_coop_checkJump
+(
+	"coop_checkJump",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing jump button"
+);
+void Player::coop_checkJump(Event* ev) {
+	qboolean bJump = last_ucmd.upmove > 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkForward
+(
+	"coop_checkForward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing forward button"
+);
+void Player::coop_checkForward(Event* ev)
+{
+	qboolean bJump = last_ucmd.forwardmove > 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkBackward
+(
+	"coop_checkBackward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing backward button"
+);
+void Player::coop_checkBackward(Event* ev)
+{
+	qboolean bJump = last_ucmd.forwardmove < 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkLeft
+(
+	"coop_checkLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing left button"
+);
+void Player::coop_checkLeft(Event* ev)
+{
+	qboolean bJump = last_ucmd.rightmove < 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkRight
+(
+	"coop_checkRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing right button"
+);
+void Player::coop_checkRight(Event* ev)
+{
+	qboolean bJump = last_ucmd.rightmove > 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkLeanRight
+(
+	"coop_checkLeanRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean right button"
+);
+void Player::coop_checkLeanRight(Event* ev)
+{
+	qboolean bJump = last_ucmd.lean > 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkLeanLeft
+(
+	"coop_checkLeanLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean left button"
+);
+void Player::coop_checkLeanLeft(Event* ev)
+{
+	qboolean bJump = last_ucmd.lean < 0;
+	ev->ReturnFloat((int)bJump);
+}
+
+Event EV_Player_coop_checkDropRune
+(
+	"coop_checkDropRune",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing drop rune button"
+);
+void Player::coop_checkDropRune(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0);
+}
+
+Event EV_Player_coop_checkRun
+(
+	"coop_checkRun",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing run button"
+);
+void Player::coop_checkRun(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_RUN) != 0);
+}
+
+Event EV_Player_coop_checkReload
+(
+	"coop_checkReload",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing reload button"
+);
+void Player::coop_checkReload(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0);
+}
+
+Event EV_Player_coop_checkUse
+(
+	"coop_checkUse",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player was pressing use or not"
+);
+void Player::coop_checkUse(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0);
+}
+
+Event EV_Player_coop_checkThirdperson
+(
+	"coop_checkThirdperson",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is in third person view"
+);
+bool Player::coop_checkThirdperson()
+{
+	return _isThirdPerson;
+}
+void Player::coop_checkThirdperson(Event* ev)
+{
+	ev->ReturnFloat((int)coop_checkThirdperson());
+}
+
+Event EV_Player_coop_checkFire
+(
+	"coop_checkFire",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing fire button"
+);
+void Player::coop_checkFire(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0);
+}
+
+Event EV_Player_coop_checkFirealt
+(
+	"coop_checkFirealt",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing alternatvive fire button"
+);
+void Player::coop_checkFirealt(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0);
+}
+
+Event EV_Player_coop_checkAnyButton
+(
+	"coop_checkAnyButton",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing any button"
+);
+void Player::coop_checkAnyButton(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_ANY) != 0);
+}
+
+Event EV_Player_coop_checkMenu
+(
+	"coop_checkMenu",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is in chat, menu or console"
+);
+void Player::coop_checkMenu(Event* ev)
+{
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_TALK) != 0);
+}
+
+Event EV_Player_coop_getBackpackAttachOffset
+(
+	"coop_getBackpackAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for backpacks"
+);
+void Player::coop_getBackpackAttachOffset(Event* ev)
+{
+	ev->ReturnVector(_backpackAttachOffset);
+}
+
+Event EV_Player_coop_getBackpackAttachAngles
+(
+	"coop_getBackpackAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for backpacks"
+);
+void Player::coop_getBackpackAttachAngles(Event* ev)
+{
+	ev->ReturnVector(_backpackAttachAngles);
+}
+
+Event EV_Player_coop_getFlagAttachOffset
+(
+	"coop_getFlagAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for CTF Flags"
+);
+void Player::coop_getFlagAttachOffset(Event* ev)
+{
+	ev->ReturnVector(_flagAttachOffset);
+}
+
+Event EV_Player_coop_getFlagAttachAngles
+(
+	"coop_getFlagAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for CTF Flags"
+);
+void Player::coop_getFlagAttachAngles(Event* ev)
+{
+	ev->ReturnVector(_flagAttachAngles);
+}
+
+Event EV_Player_coop_setCamera
+(
+	"coop_setCamera",
+	EV_SCRIPTONLY,
+	"eF",
+	"camera switchtime",
+	"Sets view of this player to this camera"
+);
+void Player::coop_setCamera(Event* ev)
+{
+	Entity* cameraCur;
+	float switchTime = 0;
+
+	cameraCur = ev->GetEntity(1);
+	if (ev->NumArgs() > 1) {
+		switchTime = ev->GetFloat(2);
+	}
+
+	if (!cameraCur) {
+		SetCamera(NULL, switchTime);
+		return;
+	}
+
+	if (!cameraCur->isSubclassOf(Camera)) {
+		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", cameraCur->targetname.c_str(), cameraCur->getClassname()));
+		return;
+	}
+	SetCamera((Camera*)cameraCur, switchTime);
+}
+
+Event EV_Player_coop_widgetCommand
+(
+	"coop_widgetCmd",
+	EV_SCRIPTONLY,
+	"ssS",
+	"string-widgetname string-command string-parameter",
+	"Allowes to set widget text using SPACE and NEWLINE in text"
+);
+void Player::coop_widgetCommandEvent(Event* ev)
+{
+	if (ev->NumArgs() < 2) {
+		return;
+	}
+
+	str sData;
+	str sParameters = ev->GetString(2);
+
+	if (ev->NumArgs() > 2) {
+		sParameters += " "; //spacer
+		str sTemp = ev->GetString(3);
+		sParameters += sTemp;
+	}
+	coop_widgetCommand(ev->GetString(1), sParameters);
+}
+void Player::coop_widgetCommand(str sWidget, str sParameters)
+{
+	if (gamefix_findString(sParameters.c_str(), "labeltext",false)) {
+		sParameters = gamefix_replaceForLabelText(sParameters);
+	}
+	str sData = "stufftext \"globalwidgetcommand ";
+	sData += sWidget;
+	sData += " ";
+	sData += sParameters;
+	sData += "\"\n";
+	gi.SendServerCommand(edict - g_entities, sData.c_str());
+}
+
+Event EV_Player_coop_runThread
+(
+	"coop_runThread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"Runs the specified thread. and sets this player as currententity"
+);
+void Player::coop_runThreadEvent(Event* ev)
+{
+	str threadName = "";
+	threadName = ev->GetString(1);
+	coop_runThread(threadName);
+}
+CThread* Player::coop_runThread(const str& threadName)
+{
+	if (!threadName.length())
+		return nullptr;
+
+	return ExecuteThread(threadName, true, this);
+}
+
+Event EV_Player_coop_hasLanguageGerman
+(
+	"coop_hasLanguageGerman",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has German Language of the game"
+);
+void Player::coop_hasLanguageGermanEvent(Event* ev)
+{
+	ev->ReturnFloat((float)coop_hasLanguageGerman());
+}
+bool Player::coop_hasLanguageGerman()
+{
+	bool bLangMatch = false;
+	if (gamefix_getLanguage(this) == "Deu") {
+		bLangMatch = true;
+	}
+	return bLangMatch;
+}
+
+Event EV_Player_coop_hasLanguageEnglish
+(
+	"coop_hasLanguageEnglish",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has English Language of the game"
+);
+void Player::coop_hasLanguageEnglishEvent(Event* ev)
+{
+	ev->ReturnFloat((float)coop_hasLanguageEnglish());
+}
+bool Player::coop_hasLanguageEnglish()
+{
+	bool bLangMatch = false;
+	if (gamefix_getLanguage(this) == "Eng") {
+		bLangMatch = true;
+	}
+	return bLangMatch;
+}
+
+Event EV_Player_coop_getCoopClass
+(
+	"coop_getCoopClass",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name - Technician, Medic, HeavyWeapons or empty string"
+);
+void Player::coop_getCoopClass(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			ev->ReturnString(CoopManager::Get().getPlayerData_coopClass(this));
+		}
+	}
+	else {
+		ev->ReturnString("");
+	}
+}
+
+Event EV_Player_coop_isTechnician
+(
+	"coop_isTechnician",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool",
+	"Check if Player Coop class is Technician"
+);
+void Player::coop_isTechnician(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "Technician") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_isMedic
+(
+	"coop_isMedic",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"Check if Player Coop class is Medic"
+);
+void Player::coop_isMedic(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "Medic") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_isHeavyWeapons
+(
+	"coop_isHeavyWeapons",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name - Technician, Medic, HeavyWeapons or empty string"
+);
+void Player::coop_isHeavyWeapons(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+
+			if (CoopManager::Get().getPlayerData_coopClass(this) == "HeavyWeapons") {
+				ev->ReturnFloat(1.0f);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+Event EV_Player_coop_getCoopVersion
+(
+	"coop_getCoopVersion",
+	EV_SCRIPTONLY,
+	"@f",
+	"clientVersion",
+	"Returns Coop Version Client is using - if incompatible or none will return 0"
+);
+int Player::coop_getCoopVersion()
+{
+	return CoopManager::Get().getPlayerData_coopVersion(this);
+}
+void Player::coop_getCoopVersion(Event* ev)
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			ev->ReturnFloat((float)this->coop_getCoopVersion());
+			return;
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+bool Player::coop_hasCoopInstalled()
+{
+	if (gameFixAPI_inMultiplayer()) {
+		if (CoopManager::Get().IsCoopEnabled()) {
+			//disabled for testing and development
+			//if (gameFixAPI_isHost(this))
+				//return true;
+			if (this->coop_getCoopVersion() >= _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION)
+				return true;
+		}
+		return false;
+	}
+	//singleplayer
+	return true;
+}
+
+unsigned int Player::coop_getObjectiveState()
+{
+	return _objectiveStates;
+}
+
+void Player::coop_setObjectiveState( unsigned int flag, bool set)
+{
+	if (set)
+		_objectiveStates |= flag;
+	else
+		_objectiveStates &= ~flag;
+}
+
+bool Player::coop_getObjectivesCycle()
+{
+	return (CoopManager::Get().getPlayerData_objectiveCycle(this) == coopObjectives_t.objectiveCycle) ? true : false;
+}
+
+void Player::coop_setObjectivesCycle()
+{
+	CoopManager::Get().setPlayerData_objectiveCycle(this,coopObjectives_t.objectiveCycle);
+}
+
+void Player::coop_setObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.lastTimePrintedObjectivesTitle Access VIOLATION!\n");
+	}
+	CoopManager::Get().setPlayerData_objectiveItemLastTimePrintedTitleAt(this,level.time);
+}
+
+float Player::coop_getObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return 0.0f;
+	}
+	return CoopManager::Get().getPlayerData_objectiveItemLastTimePrintedTitleAt(this);
+}
+
+void Player::coop_hudsAdd(Player* player, str hudName)
+{
+	if (player && strlen(hudName) > 0)
+	{
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_removehud %s", hudName.c_str()));
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", hudName.c_str()));
+	}
+}
+
+Actor* Player::coop_getBranchDialogActor(void)
+{
+	return _branchDialogActor;
+}
+
+bool Player::coop_isAdmin()
+{
+	if (CoopManager::Get().getPlayerData_coopAdmin(this)) {
+		return true;
+	}
+	
+	if (gameFixAPI_isHost(this)) {
+		CoopManager::Get().setPlayerData_coopAdmin(this,true);
+		gamefix_playerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", gamefix_replaceForLabelText(_COOP_INFO_adminAuto).c_str()));
+		hudPrint(_COOP_INFO_adminLoggedInHost);
+		DEBUG_LOG("# Admin auto loggedin player%d\n",this->entnum);
+		return true;
+	}
+	return false;
+}
+
+#endif

@@ -392,7 +392,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\coop\code\coop_game.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_armory.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_config.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_manager.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_gametype.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_objectives.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_radar.cpp" />
+    <ClCompile Include="..\..\coop\code\rpg_gametype.cpp" />
     <ClCompile Include="api_stef2.cpp" />
     <ClCompile Include="changePosture.cpp" />
     <ClCompile Include="closeInOnEnemy.cpp" />
@@ -1393,8 +1399,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\coop\code\coop_game.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_armory.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_config.hpp" />
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_manager.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_gametype.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_objectives.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_radar.hpp" />
+    <ClInclude Include="..\..\coop\code\rpg_gametype.hpp" />
     <ClInclude Include="..\..\Shared\qcommon\alias.h" />
     <ClInclude Include="..\..\Shared\qcommon\cm_public.h" />
     <ClInclude Include="..\..\Shared\qcommon\platform.h" />

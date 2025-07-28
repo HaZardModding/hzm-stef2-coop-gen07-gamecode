@@ -27,6 +27,14 @@
 #include <qcommon/gameplaymanager.h>
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 // for bot code
 #include "g_local.h"
 #include "botlib.h"
@@ -264,11 +272,24 @@ Item::Item()
 	setRespawn( false );
 	setRespawnTime( 20 );
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Do not respawn and set full bright in coop - chrissstrahl
+	//--------------------------------------------------------------
+	if ( multiplayerManager.inMultiplayer() && !CoopManager::Get().IsCoopEnabled())
+	{
+		setRespawn( true );
+		edict->s.renderfx |= RF_FULLBRIGHT;
+	}
+#else
 	if ( multiplayerManager.inMultiplayer() )
 	{
 		setRespawn( true );
 		edict->s.renderfx |= RF_FULLBRIGHT;
 	}
+#endif
+
 
 	//
 	// we want the bounds of this model auto-rotated
@@ -306,12 +327,28 @@ Item::Item()
 	maximum_amount = 1.0f;
 	playrespawn = false;
 
+	
 	// this is an item entity
 
-	if ( g_gametype->integer == GT_SINGLE_PLAYER )
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Do not animate items, keep them like in singleplayer in coop - chrissstrahl
+	//--------------------------------------------------------------
+	if (multiplayerManager.inMultiplayer() && CoopManager::Get().IsCoopEnabled()) {
 		edict->s.eType = ET_MODELANIM;
-	else
+	}
+	else {
 		edict->s.eType = ET_ITEM;
+	}
+#else
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		edict->s.eType = ET_MODELANIM;
+	}
+	else {
+		edict->s.eType = ET_ITEM;
+	}
+#endif
+
 
 	// Set our default skill level 
 	_skillLevel = 1.0f;
@@ -486,6 +523,20 @@ void Item::ItemTouch( Event *ev )
 	}
 	
 	other = ev->GetEntity( 1 );
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - prevent player from picking up all the items if already in inventory - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		Sentient* sent = (Sentient*)other;
+		if (sent->coop_hasItem(this->model)) {
+			return;
+		}
+	}
+#endif
+
 	
 	e = new Event( EV_Item_Pickup );
 	e->AddEntity( other );

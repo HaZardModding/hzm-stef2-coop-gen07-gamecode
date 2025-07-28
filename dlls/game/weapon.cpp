@@ -47,6 +47,16 @@
 #include "ai_main.h"
 extern bot_state_t	*botstates[MAX_CLIENTS];
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
+
 #define TargetIdleTime 0.2
 
 Event EV_Weapon_Shoot
@@ -2782,23 +2792,71 @@ qboolean Weapon::Drop( void )
 	
 	// drop the weapon
 	PlaceItem();
-	if ( owner )
-	{
-		temp[ 0 ] = G_CRandom( 50.0f );
-		temp[ 1 ] = G_CRandom( 50.0f );
-		temp[ 2 ] = 250.0f;
-		velocity = owner->velocity * 0.5f + temp;
-		setAngles( owner->angles );
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Coop Specific Weapons Drop, can be targeted towards other players - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		this->setScale(0.45);
 	}
-	
-	avelocity = Vector( 0.0f, G_CRandom( 360.0f ), 0.0f );
+
+	if (owner && owner->getHealth() > 0 && owner->isSubclassOf(Player)) {
+		Vector locactionPlayer, locationTarget = Vector(0.0f,0.0f,0.0f);
+		Player* player = (Player*)(Entity*)owner;
+		Entity* targetEnt = player->GetTargetedEntity();
+		locactionPlayer	= player->origin;
+		if (targetEnt) {
+			locationTarget = targetEnt->origin;
+		}
+
+		if (CoopManager::Get().IsCoopEnabled() && targetEnt && targetEnt->getHealth() > 0 && targetEnt->isSubclassOf(Player) && VectorLength(locationTarget - locationTarget) < _COOP_SETTINGS_PLAYER_WEAPON_RANGE_THROW) {
+			Player* targetPlayer = (Player*)targetEnt;
+			this->origin = targetPlayer->origin;
+		}
+		else {
+			trace_t trace;
+			player->GetViewTrace(trace, MASK_PROJECTILE, _COOP_SETTINGS_PLAYER_WEAPON_RANGE_DROW);
+			this->origin = trace.endpos;
+		}
+	}
+	else {
+		if (owner)
+		{
+			temp[0] = G_CRandom(50.0f);
+			temp[1] = G_CRandom(50.0f);
+			temp[2] = 250.0f;
+			velocity = owner->velocity * 0.5f + temp;
+			setAngles(owner->angles);
+		}
+
+		avelocity = Vector(0.0f, G_CRandom(360.0f), 0.0f);
+
+		// Get rid of all of the ammo in the weapon
+		for (i = 0; i < MAX_FIREMODES; i++)
+		{
+			ammo_in_clip[i] = 0;
+		}
+	}
+#else
+	if (owner)
+	{
+		temp[0] = G_CRandom(50.0f);
+		temp[1] = G_CRandom(50.0f);
+		temp[2] = 250.0f;
+		velocity = owner->velocity * 0.5f + temp;
+		setAngles(owner->angles);
+	}
+
+	avelocity = Vector(0.0f, G_CRandom(360.0f), 0.0f);
 
 	// Get rid of all of the ammo in the weapon
-
-	for ( i = 0 ; i < MAX_FIREMODES ; i++ )
+	for (i = 0; i < MAX_FIREMODES; i++)
 	{
-		ammo_in_clip[ i ] = 0;
+		ammo_in_clip[i] = 0;
 	}
+#endif
 	
 	// FIXME - Make this work right if we need it
 	/*
@@ -2847,19 +2905,41 @@ qboolean Weapon::Drop( void )
 	
 	owner = NULL;
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Coop Specific Weapons Drop, without item spin or animation - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		if (multiplayerManager.inMultiplayer() && gi.Anim_NumForName(edict->s.modelindex, "idle_onground") >= 0)
+		{
+			animate->RandomAnimate("idle_onground");
+			edict->s.eType = ET_MODELANIM;
+		}
+
+		// Fade out dropped weapons, to keep down the clutter
+		PostEvent(EV_FadeOut, 30.0f);
+	}
+	else {
+		// Fade out dropped weapons, to keep down the clutter
+		PostEvent(EV_FadeOut, _COOP_SETTINGS_PLAYER_WEAPON_DROP_REMOVE);
+	}
+#else
 	if ( multiplayerManager.inMultiplayer() && gi.Anim_NumForName( edict->s.modelindex, "idle_onground" ) >= 0 )
 	{
 		animate->RandomAnimate( "idle_onground" );
 		edict->s.eType = ET_MODELANIM;
 	}
 
+	// Fade out dropped weapons, to keep down the clutter
+	PostEvent(EV_FadeOut, 30.0f);
+#endif
+
+
 	if ( multiplayerManager.inMultiplayer() )
 	{
 		edict->s.renderfx |= RF_FULLBRIGHT;
 	}
-
-	// Fade out dropped weapons, to keep down the clutter
-	PostEvent( EV_FadeOut, 30.0f );
 
 	Uninitialize();
 	return true;

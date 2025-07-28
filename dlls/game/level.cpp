@@ -40,7 +40,7 @@
 // COOP Generation 7.000 - Added Include - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-#include "../../coop/code/coop_game.hpp"
+#include "../../coop/code/coop_manager.hpp"
 #endif
 
 
@@ -212,7 +212,17 @@ void Level::EndIntermission()
 void Level::CleanUp( qboolean temp_restart )
 {
 	_cleanup = true;
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Level End Cleanup - chrissstrahl
+	// Executed if level is exited/changed/restarted - but not on first load/game start
+	//--------------------------------------------------------------
+	CoopManager::Get().LevelEndCleanup(temp_restart);
+#endif
 	
+
 	if ( multiplayerManager.inMultiplayer() )
 	{
 		multiplayerManager.cleanup( temp_restart );
@@ -411,8 +421,16 @@ void Level::Start( void )
 
 			gamescript->DelayedStart( 0.0f );
 		}
-	}
 
+
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Execute Coop Level start handle - chrissstrahl
+		// Executes coop main script function - among other things
+		//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		CoopManager::Get().LevelStart(gamescript);
+#endif
+	}	
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Various fixes for Maps and Level-Scripts - chrissstrahl
@@ -633,7 +651,7 @@ void Level::SpawnEntities( const char *themapname, const char *entities, int lev
 	// - We need this to be executed before any multiplayerManager gamemode related handeling
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	CoopGame::InitWorld();
+	CoopManager::Get().InitWorld();
 #endif
 
 	

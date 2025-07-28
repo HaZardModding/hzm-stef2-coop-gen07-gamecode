@@ -1710,6 +1710,28 @@ Event EV_NetworkDetail
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 -coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+		{ &EV_SetUserVar5, &Entity::SetUserVar5 },
+		{ &EV_SetUserVar6, &Entity::SetUserVar6 },
+		{ &EV_SetUserVar7, &Entity::SetUserVar7 },
+		{ &EV_SetUserVar8, &Entity::SetUserVar8 },
+		{ &EV_SetUserVar9, &Entity::SetUserVar9 },
+		{ &EV_SetUserVar10, &Entity::SetUserVar10 },
+		{ &EV_entity_coop_boosterNearbyPlayer, &Entity::coop_boosterNearbyPlayer },
+		{ &EV_entity_coop_removeViewmode, &Entity::coop_removeViewmode },
+		{ &EV_entity_coop_getEntNum, &Entity::coop_getEntNum },
+		{ &EV_entity_coop_isSpectator, &Entity::coop_isSpectator },
+		{ &EV_entity_coop_isEntityInsideOfEntity, &Entity::coop_isEntityInsideOfEntity },
+		{ &EV_entity_coop_traceHitsSky, &Entity::coop_traceHitsSky },
+		{ &EV_entity_coop_getLastAttacker, &Entity::coop_getLastAttacker },
+		{ &EV_entity_coop_makeSolidAsap, &Entity::coop_makeSolidAsap },
+#endif
+
+
+
 		{ &EV_DamageModifier,				&Entity::AddDamageModifier },
 		{ &EV_TikiNote,				        &Entity::TikiNote },
 		{ &EV_TikiTodo,				        &Entity::TikiTodo },
@@ -3297,6 +3319,21 @@ void Entity::Damage
 		{
 		inflictor = world;
 		}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	// coop_getLastAttacker - sets last attacker
+	//--------------------------------------------------------------
+	if (attacker != world) {
+		gameFixAPI_setLastInflictor(this, attacker);
+	}
+	else {
+		gameFixAPI_setLastInflictor(this, inflictor);
+	}
+#endif
+
 
 	ev = new Event( EV_Damage );
 	ev->AddFloat( damage );
@@ -10442,3 +10479,328 @@ bool Entity::isNetworkDetail( void )
 {
 	return _networkDetail;
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added coop script functions - chrissstrahl
+//--------------------------------------------------------------
+Event EV_SetUserVar5
+(
+	"uservar5",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar5(Event* ev){
+	entityVars.SetVariable("uservar5", ev->GetString(1));
+}
+
+Event EV_SetUserVar6
+(
+	"uservar6",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar6(Event* ev) {
+	entityVars.SetVariable("uservar6", ev->GetString(1));
+}
+
+Event EV_SetUserVar7
+(
+	"uservar7",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar7(Event* ev) {
+	entityVars.SetVariable("uservar7", ev->GetString(1));
+}
+
+Event EV_SetUserVar8
+(
+	"uservar8",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar8(Event* ev) {
+	entityVars.SetVariable("uservar8", ev->GetString(1));
+}
+
+Event EV_SetUserVar9
+(
+	"uservar9",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar9(Event* ev) {
+	entityVars.SetVariable("uservar9", ev->GetString(1));
+}
+
+Event EV_SetUserVar10
+(
+	"uservar10",
+	EV_DEFAULT,
+	"s",
+	"string_value",
+	"Sets an entity variable."
+);
+void Entity::SetUserVar10(Event* ev) {
+	entityVars.SetVariable("uservar10", ev->GetString(1));
+}
+
+Event EV_entity_coop_boosterNearbyPlayer
+(
+	"coop_boosterNearbyPlayer",
+	EV_DEFAULT,
+	"sfFF",
+	"typeOfBoost bostRange ammount maximum",
+	"Gives a boost to players within range (ammo,health,armor)"
+);
+void Entity::coop_boosterNearbyPlayer(Event* ev)
+{
+	Player* player = nullptr;
+	Entity* eTemp = nullptr;
+	str sBoostType;
+	float amount = 10.0f;
+	float maximum = 0;
+	float distance;
+
+	sBoostType = ev->GetString(1);
+	distance = ev->GetFloat(2);
+	if (ev->NumArgs() > 2) {
+		amount = ev->GetFloat(3);
+		if (ev->NumArgs() > 3) {
+			maximum = ev->GetFloat(4);
+		}
+	}
+
+	int i;
+	for (i = 0; i < maxclients->integer; i++) {
+		eTemp = g_entities[i].entity;
+		if (eTemp && eTemp->isClient() && eTemp->isSubclassOf(Player)) {
+			player = (Player*)eTemp;
+			if (player->health <= 0 || !WithinDistance((Entity*)player, distance)) {
+				continue;
+			}
+
+			if (!Q_stricmp(sBoostType.c_str(), "ammo")) {
+				bool bGiveAmmo = false;
+				if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma")) {
+					player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
+					player->GiveAmmo("Idryll", 10, 0, player->MaxAmmoCount("Idryll"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
+					player->GiveAmmo("Federation", 10, 0, player->MaxAmmoCount("Federation"));
+					bGiveAmmo = true;
+				}
+				if (bGiveAmmo) {
+					player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else if (!Q_stricmp(sBoostType.c_str(), "health")) {
+				float fHealthMax = player->max_health;
+				float fHealthToGive = 10.0f;
+				if (ev->NumArgs() > 2) {
+					fHealthToGive = amount;
+					if (ev->NumArgs() > 3) {
+						fHealthMax = maximum;
+					}
+				}
+
+				if ((fHealthToGive + player->health) > fHealthMax) {
+					fHealthToGive = (fHealthMax - player->health);
+				}
+
+				if (fHealthToGive) {
+					player->health = float(fHealthToGive + player->health);
+					player->Sound("sound/misc/mp_healthshard.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else {
+				float fArmorMax = 200.0f;
+				float fArmor = 10.0f;
+				if (ev->NumArgs() > 2) {
+					fArmor = amount;
+					if (ev->NumArgs() > 3) {
+						fArmorMax = maximum;
+					}
+				}
+
+				if ((player->GetArmorValue() + fArmor) > fArmorMax) {
+					fArmor = (fArmorMax - player->GetArmorValue());
+				}
+
+				if (fArmor) {
+					Event* armorEvent;
+					armorEvent = new Event(EV_Sentient_GiveArmor);
+					armorEvent->AddString("BasicArmor");
+					armorEvent->AddFloat(fArmor);
+					player->ProcessEvent(armorEvent);
+					player->Sound("sound/misc/mp_armorshard.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+		}
+	}
+}
+
+Event EV_entity_coop_removeViewmode
+(
+	"coop_removeViewmode",
+	EV_DEFAULT,
+	"s",
+	"viewModeName",
+	"Removes entity useing the specified view mode - opposite of .viewmode() ."
+);
+void Entity::coop_removeViewmode(Event* ev)
+{
+	removeAffectingViewModes(gi.GetViewModeMask(ev->GetString(1)));
+}
+Event EV_entity_coop_getLastAttacker
+(
+	"coop_getLastAttacker",
+	EV_SCRIPTONLY,
+	"@e",
+	"entity",
+	"Returns entity that did last attack or inflicted damage"
+);
+void Entity::coop_getLastAttacker(Event* ev)
+{
+	ev->ReturnEntity(gameFixAPI_getLastInflictor(this));
+}
+Event EV_entity_coop_traceHitsSky
+(
+	"coop_traceHitsSky",
+	EV_SCRIPTONLY,
+	"@vsf",
+	"vectorEndpoint tagName length ",
+	"Does a trace to check to see if it hits a SKYPORTAL surface, returns endpoint vector\n."
+	"Use this very rarely or a programmer will kill you!"
+);
+void Entity::coop_traceHitsSky(Event* ev)
+{
+	trace_t	trace;
+	Vector end;
+	Vector start;
+	Vector dir;
+	str tagName;
+	//str surface;
+	float length;
+	//Entity* entityToCheck;
+
+
+	// Get the event info
+
+	tagName = ev->GetString(1);
+	length = ev->GetFloat(2);
+	//surface = ev->GetString(3);
+	//entityToCheck = ev->GetEntity(3);
+
+	// Determine the start and end point of the trace
+	GetTag(tagName, &start, &dir);
+
+	end = start + dir * length;
+
+	// Do the actual trace
+	trace = G_Trace(start, vec_zero, vec_zero, end, NULL, MASK_SHOT, false, "traceHitsEntity");
+
+	// Determine if we hit this surface
+	if (trace.ent && trace.ent->entity && trace.surfaceFlags & SURF_SKY) {
+		ev->ReturnVector(trace.endpos);
+		return;
+	}
+	ev->ReturnVector(Vector(0, 0, 0));
+}
+
+Event EV_entity_coop_isEntityInsideOfEntity
+(
+	"coop_isEntityInsideOfEntity",
+	EV_SCRIPTONLY,
+	"@fe",
+	"returnInteger entity",
+	"Returns if given entity bounding-box is touching/inside-of each other"
+);
+void Entity::coop_isEntityInsideOfEntity(Event* ev)
+{
+	Entity* eIntruder = ev->GetEntity(1);
+
+	if (!eIntruder) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	if (!eIntruder || eIntruder == this ||
+		(eIntruder->absmin[0] > this->absmax[0]) ||
+		(eIntruder->absmin[1] > this->absmax[1]) ||
+		(eIntruder->absmin[2] > this->absmax[2]) ||
+		(eIntruder->absmax[0] < this->absmin[0]) ||
+		(eIntruder->absmax[1] < this->absmin[1]) ||
+		(eIntruder->absmax[2] < this->absmin[2]))
+	{
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat(1.0f);
+	return;
+}
+
+Event EV_entity_coop_getEntNum
+(
+	"coop_getEntNum",
+	EV_SCRIPTONLY,
+	"@f",
+	"returnedEntityNumber",
+	"Returns * number of entity by default within 0-1023, 1023 is world and 0 is Player in Singleplayer"
+);
+void Entity::coop_getEntNum(Event* ev)
+{
+	ev->ReturnFloat((float)this->entnum);
+}
+
+Event EV_entity_coop_isSpectator
+(
+	"coop_isSpectator",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-float-bool",
+	"Returns 1, if entity is a Player and is in Spectator, otherwhise it will return 0"
+);
+void Entity::coop_isSpectator(Event* ev)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !this->isSubclassOf(Player) || !multiplayerManager.inMultiplayer()) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator((Player*)this));
+}
+
+Event EV_entity_coop_makeSolidAsap
+(
+	"coop_makeSolidAsap",
+	EV_SCRIPTONLY,
+	"fF",
+	"float-bool optional-LevelTime",
+	"Sets MakeSolidAsap, 1 make solid as soon as possible, 0 don't, Optional Parameter 2 sets level time"
+);
+void Entity::coop_makeSolidAsap(Event* ev)
+{
+	float makeSolid = ev->GetFloat(1);
+	float atLevelTime = ev->GetFloat(2);
+
+	if (multiplayerManager.inMultiplayer()) {
+		gamefix_setMakeSolidAsap(this, makeSolid, atLevelTime);
+	}
+}
+#endif

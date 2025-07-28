@@ -1,51 +1,446 @@
 THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 
-Notice: Coop Mod operating in namespace CoopGame.
-Notice: Coop Mod execution logic:
-	//Executed exclusively only once upon first load of game dll
+Coop NEW script commands
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+$actor.coop_actorGetType() - Returns actor type inanimate, monster, civilian, enemy, friend, animal, teammate
+coop_getTimeStamp() - Returns unix Timestamp of server time
+coop_getStringVariable(varname) - Returns contents of script variable of type string
+coop_getVectorVariable(varname) - Returns contents of script variable of type vector
+coop_getFloatVariable(varname) - Returns contents of script variable of type float
+coop_setStringVariable(varname,value) - Sets contents of script variable of type string
+coop_setVectorVariable(varname,value) - Sets contents of script variable of type vector
+coop_setFloatVariable(varname,value) - Sets contents of script variable of type float
+coop_configstringRemove(text) - Removes configstring containing given value
+coop_configstringRemoveCombatSounds(actorname) - Removes configstring combat sounds for given actor name
+coop_subString(text,iStart,iLength) - Returns parcial string from text starting at iStart (starts at 0), with length of iLength
+coop_toLower(text) - Returns string where letters are turrned all into lower case
+coop_toUpper(text - Returns string where letters are turrned all into upper case
+coop_length(text) - Returns length of given string
+coop_find(text,find) - Returns location at which find is found inside of text, starts at 0, returns -1 if not found
+coop_isDigit(text) - Returns if text is a digit/number
+coop_getClassOf($entity) - Returns classname of entity
+coop_getPathnodeOrigin(pathnodetargetname) - Returns Pathnode origin vector by targetname if Pathnode it exists, otherwhise '0 0 0' is returned
+coop_getFloat(text) - Returns a float from a string
+coop_getVector(text) - Returns a vector from a string
+coop_getLevelParamater(parameterName) - Returns the value of a paramater, if it is attached to the mapname via $ - Used to load checkpoints (map1$checkpoint=turbolift)
+coop_getIniData(sCat,sKey,sFile) - get value from specific ini file
+coop_getIniDataPlayer(ePlayer,sCat,sKey,sFile) - get (player id based) value from specific ini file
+coop_setIniData(sCat,sKey,sValue) - set value into level ini file
+coop_setIniDataPlayer(ePlayer,sCat,sKey,sValue) - set (player id based) value into level ini file
+coop_getMapByServerIp() - Tries to fid the map for download from the last server ip the player was connected to
+$world.coop_getPhysicsVar(varname) - Rerturns gravity, airaccelerate, maxspeed
+$entity.coop_getLastActivatingEntity() - Returns puzzle last activating player
+$entity.coop_getEntNum() - Returns Entity number
+$entity.coop_isSpectator() - Checks if entity is spectator (if a player)
+$entity.coop_isEntityInsideOfEntity(eOther) - Check if entity is inside entity
+$entityModel.coop_traceHitsSky("tag_horizontal" , 99999) - Does a trace to check to see if it hits a SKYPORTAL surface, returns endpoint vector
+$entity.coop_getLastAttacker() - Returns last Attacker of this entity
+$entity.coop_removeViewmode(viewModeName) - Removes viewmode visibilty from entity
+$entity.coop_boosterNearbyPlayer(boostType,range,amount,max) - Boots player within range with ammo or health or armor
+$player.coop_playerKillThread(threadName) - sets thread to run when player gets killed
+$player.coop_getLanguage() - gets Language string of player (Deu/Eng)
+$player.coop_getName() - gets Player Multiplayer name
+$player.coop_getScore() - gets Player Multiplayer score
+$player.coop_getDeaths() - gets Player Multiplayer deaths
+$player.coop_getKills() - gets Player Multiplayer kills
+$player.coop_addScore(int) - adds to Player Multiplayer points
+$player.coop_getLastDamaged() - gets level time player got last hurt
+$player.coop_getTeamName() - gets player team name (Red/Blue)
+$player.coop_getTeamScore() - gets player team score
+$player.coop_getViewAngles() - gets player Viewangles
+$player.coop_getTargetedEntity() - gets entity player is currently targeting
+$player.coop_getViewtraceEndpos() - gets vector location of player their viewtrace
+$player.coop_getUserFov() - gets player field of view
+$player.coop_checkCrouch() - returns if the player is crouching
+$player.coop_checkJump() - returns if the player is pressing Jumping
+$player.coop_checkForward() - returns if the player is pressing Forward
+$player.coop_checkBackward() - returns if the player is pressing Backward
+$player.coop_checkLeft() - returns if the player is pressing Left
+$player.coop_checkRight() - returns if the player is pressing Right
+$player.coop_checkLeanRight() - returns if the player is pressing LeanRight
+$player.coop_checkLeanLeft() - returns if the player is pressing LeanLeft
+$player.coop_checkDropRune() - returns if the player is pressing DropRune
+$player.coop_checkReload() - returns if the player is pressing Reload
+$player.coop_checkUse() - returns if the player is pressing Use
+$player.coop_checkFire() - returns if the player is pressing Fire
+$player.coop_checkFirealt() - returns if the player ispressing  AltFire
+$player.coop_checkMenu() - returns if the player is in a menu
+$player.coop_checkRun() - returns if the player has running on 
+$player.coop_checkAnyButton() - returns if the player is pressing any of the common buttons
+$player.coop_checkThirdperson() - returns if the player is in thirdperson view
+$player.coop_getBackpackAttachOffset() - return player model attach backpack offset
+$player.coop_getBackpackAttachAngles() - return player model attach backpack angels
+$player.coop_getFlagAttachOffset() - return player model flag attach offset
+$player.coop_getFlagAttachAngles() - return player model flag attach angels
+$player.coop_getCoopClass() - gets coop class of player
+$player.coop_isTechnician() - checks if player is of class
+$player.coop_isMedic() - checks if player is of class
+$player.coop_isHeavyWeapons() - checks if player is of class
+$sentient.coop_hasItem(itemModelName) - checks if sentient has a the specific item
+missionfailed(reason) - fails the mission, forces a map reload
+
+
+NEW console commands:
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+dialogrunthread 		//certain exceptions allowed in multiplayer
+clientrunthread 		//certain exceptions allowed in multiplayer
+script			 		//certain exceptions allowed in multiplayer
+coopinstalled			//tell installed coop version
+coopcid					//tell client coop identification
+coopinput				//allowing player to send text to server
+coopradarscale			//allowing player to set the scale of the radar hud
+!follow					//allowing player to show up as green marker on the radar
+!leader					//allowing player to take the lead
+!kill					//comit suicide
+!origin					//allowing player to get position of objects and them self
+!stuck					//allowing player to get get them self unstuck
+!transport				//allowing player transport to other player
+!notransport			//allowing player to block players transporting to them
+!transferlife			//allowing player to block players transporting to them
+!ability				//allowing player to block players transporting to them
+!drop					//allowing player to drop a weapon - to give it to other players
+!skill					//allowing player to see and set skill level
+!info					//allowing player to retrive detailed informations from server
+!mapname				//allowing player to get map name
+
+!login					//Admin - login
+!logout					//Admin - logout
+!thread					//Admin - allowing player to run script thread
+!testspawn				//Admin - allowing to test current spawnlocations
+!noclip					//Admin - allowing to use noclip without cheats
+!showspawn				//Admin - allowing to see player spawnlocations without cheats
+!targetnames			//Admin - allowing player to see target and class names of Entities targeted
+!levelend				//Admin - allowing player to run level end script
+
+
+Coop Mod execution logic:
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+//Executed exclusively only once upon first load of game dll
 	extern "C" void G_InitGame( int startTime, int randomSeed )
-		void Init()
-		
-	//Executed each time a level is loaded
+		CoopManager::Init()
+			CoopManager::LoadSettingsFromINI()
+			CoopManager::LoadMapListFromINI()
+
+
+//Executed each time a level is initialised
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				MultiplayerManager::initMultiplayerGame()
+					ModeCoop::init
+					
+					
+//level script - world event
+	void World::SetScript( Event *ev )
+		CoopManager::LoadLevelScript
+
+//level script - world	
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				SpawnArgs::Spawn()
+					World::_newInstance()
+						World::World()
+							CoopManager::LoadLevelScript
+
+
+//Executed each time a level is initialised	- Items
+	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				MultiplayerManager::initItems
+					ModeCoop::initItems
+
+
+//Executed each time a level is loaded
 	void Level::SpawnEntities( const char *themapname, const char *entities, int levelTime )
-		void InitWorld()
-			void DetectMapType()
+		CoopManager::InitWorld()
+			CoopManager::DetectMapType()
+			CoopManager::LevelStart()
+		MultiplayerManager::initMultiplayerGame( void )
+
+
+//EVENT Sentity teleport
+	void Teleporter::Teleport( Event *ev )
+		void CoopManager::playerTransported
+	
+	
+//EVENT player disconnected
+	extern "C" void G_ClientDisconnect( gentity_t *ent )
+		void CoopManager::playerDisconnect(Player* player)
+		void CoopManager::playerLeft(Player* player)
+
+
+//EVENT player send coopinstalled command
+	void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer)
+		void CoopManager::playerSetup(Player* player)
+
+
+//EVENT player connecting and entering
+	void MultiplayerManager::addPlayer( Player *player )
+		void CoopManager::playerJoined(Player* player)
+		
+
+//EVENT player spawn
+		MultiplayerModeBase::ActivatePlayer(Player * player)
+			ModeTeamBase::respawnPlayer(Player * player)
+				ModeCoop::_giveInitialConditions
+
+
+//Executed continuously
+ 	G_RunFrame(int levelTime, int frameTime)
+	 	MultiplayerManager::update(float frameTime)
+			MultiplayerModeBase::update(float frameTime)
+				//if the match has started
+				ModeCoop::isEndOfMatch()
+				//during warmup time only
+				MultiplayerModeBase::shouldStartMatch()
+					ModeCoop::isEndOfMatch()
+
+//Executed continuously	
+ 	Player::EndFrame(Event * ev)
+	 	Player::UpdateStats()
+			MultiplayerManager::getInfoIcon(Player * player, int buttons)
+				ModeCoop::getInfoIcon(Player * player)
+
+//Executed continuously
+	G_ClientThink(gentity_s * ent, usercmd_s * ucmd)
+		Listener::ProcessEvent(const Event & event)
+			Listener::ProcessEvent(Event * event)
+				Player::ClientThink(Event * ev)
+					ModeCoop::clientThink
+	
+
+//Executed on Listen server
+ 	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				Player::Player()
+					Player::Init()
+						MultiplayerManager::addPlayer(Player * player)
+							ModeCoop::AddPlayer(Player * player)
+								ModeCoop::setupMultiplayerUI(Player* player)
+
+
+//Player killed
+	Player::Killed(Event * ev)
+		MultiplayerManager::playerKilled(Player * killedPlayer, Player * attackingPlayer, Entity * inflictor, int meansOfDeath)
+			ModeCoop::playerKilled(Player * killedPlayer, Player * attackingPlayer, Entity * inflictor, int meansOfDeath)
+			
+
+//Player Model Changed - changing model
+ 	G_ClientUserinfoChanged(gentity_s * ent, const char * userinfo)
+		MultiplayerManager::changePlayerModel(Player * player, const char * modelName, bool force)
+			ModeCoop::playerChangedModel
+				ModeCoop::updatePlayerSkin
+				
+//Player Model Changed - Entering the game
+ 	G_SpawnEntities(const char * mapname, const char * entities, int levelTime)
+		Level::NewMap(const char * temp_mapname, const char * entities, int levelTime)
+			Level::SpawnEntities(const char * themapname, const char * entities, int levelTime)
+				Player::Player()
+					Player::Init()
+						MultiplayerManager::addPlayer(Player * player)
+							ModeCoop::AddPlayer(Player * player)
+								ModeCoop::addPlayerToTeam(Player * player, Team * team)
+									ModeCoop::updatePlayerSkin(Player * player)
+
+
+//Player join team
+ 	Player::joinTeam(Event * ev)
+		MultiplayerManager::joinTeam(Player * player, const str & teamName)
+			ModeCoop::joinTeam(Player * player, const str & teamName)
+				ModeTeamBase::changeTeams(Player * player, Team * team)
+					ModeCoop::addPlayerToTeam(Player * player, Team * team)
+
+
+//Player score - pressing tab or getting killed
+ 	Player::Score(Event * ev)
+		MultiplayerManager::score(Player * player)
+			ModeCoop::score(const Player * player)
+
+
+//Player joining team
+ 	Player::joinTeam(Event * ev)
+		MultiplayerManager::joinTeam(Player * player, const str & teamName)
+			ModeCoop::canJoinTeam(Player * player, const str & teamName)
+
+
+//Player joining team
+	G_ConsoleCommand()
+		G_ProcessClientCommand(gentity_s * ent)
+			Listener::ProcessEvent(Event * event)
+				Player::joinTeam(Event * ev)
+					MultiplayerManager::joinTeam(Player * player, const str & teamName)
+						ModeCoop::joinTeam(Player * player, const str & teamName)
+							ModeCoop::canJoinTeam(Player * player, const str & teamName)
+
+
+//level end
+	Level::CleanUp( qboolean temp_restart )
+		CoopManager::LevelEndCleanup
+
+
+//game server ends
+	extern "C" void G_ShutdownGame( void )
+		CoopManager::LevelEndCleanup
 
 
 Added File: Coop_Changelog.txt
-Added File: coop_game.cpp
-Added File: coop_game.hpp
-Added File: coop_generalstrings.hpp
+Added File: base/coop/config/settings.ini
+Added File: base/coop/config/maplist.ini
+Added File: base/coop/config/playerskins.ini
+Added File: base/coop/config/spawninventory.cfg
+
+Added: spawninventory.cfg is used in					@ModeCoop::init
+Added: Support for *.script	file extension				@CoopManager::LoadLevelScript
+Added: Support for coop/maps/ Level-Script directory	@CoopManager::LoadLevelScript
+Disabled: Team Skin Color								@ModeCoop::updatePlayerSkin
+Disabled: Team indicator arrow							@ModeCoop::getInfoIcon
+Disabled: mp_pointlimit during init						@ModeCoop::init
+Disabled: mp_timelimit during init						@ModeCoop::init
+				
+
 
 Changes to stock files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
+dlls\game\actor.cpp
+	Added: Event EV_COOP_Actor_GetActorType
+	Added: void Actor::COOP_GetActorType(Event* ev) 
+
+dlls\game\item.hpp
+	Added: Item::Item()
+		Items don't respawn in coop
+		Items don't rotate and bob in coop
+
+dlls\game\ammo.hpp
+	Added: Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean )
+		Sharing of ammo if a player can pick up Ammo
+
+dlls\game\program.hpp
+	Changed: MAX_STATEMENTS from 16384 to 32768
+
+dlls\game\program.cpp
+    Added: def_t* coop_getDefForVarname(const char* varname)
+    Added: const char* coop_getVariableValueAsString(const char* varname)
+    Added: Vector coop_getVectorVariableValue(const char* varname)
+    Added: float coop_getFloatVariableValue(const char* varname)
+    Added: str coop_getStringVariableValue(const char* varname)
+    Added: void coop_setVectorVariableValue(const char* varname, Vector vSet)
+    Added: void coop_setFloatVariableValue(const char* varname, float fSet)
+    Added: void coop_setStringVariableValue(const char* varname, char const* sSet)
+	
+dlls\game\player.cpp
+	Added: int Player::coop_getCoopVersion()
+	Added: void Player::coop_getCoopVersion(Event* ev)
+	Added: bool Player::coop_hasCoopInstalled()
+	Added: unsigned int Player::coop_getObjectiveState()
+	Added: void Player::coop_setObjectiveState( unsigned int flag, bool set)
+	Added: bool Player::coop_getObjectivesCycle()
+	Added: void Player::coop_setObjectivesCycle()
+	Added: void Player::coop_setObjectivesPrintedTitleLast()
+	Added: float Player::coop_getObjectivesPrintedTitleLast()
+	Added: void Player::coop_hudsAdd(Player* player, str hudName)
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	void Player::ClientThink( Event *ev )
+		Added: ModeCoop::Get().clientThink(this)
+
+dlls\game\Sentient.cpp
+	Added: void Sentient::coop_hasItem(Event* ev)
+	Added: bool Sentient::coop_hasItem(str sItemModel)
+
 dlls\game\g_main.cpp
 	extern "C" void G_InitGame
-		Added: CoopGame::Init();
-		
+		Added: CoopGame::Init()		
 		
 dlls\game\level.cpp
 	void Level::SpawnEntities
-		Added: CoopGame::InitWorld();
+		Added: CoopGame::InitWorld()
 		
+dlls\game\mp_manager.cpp
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	void MultiplayerManager::initMultiplayerGame( void )
+		Added: Execution of @ModeCoop::ModeCoop() replacing ModeTeamDeathmatch on Coop maps
+	void MultiplayerManager::cleanup( qboolean restart )
+		Added: CHECK	_multiplayerGame != &ModeCoop::Get() 
+		
+dlls\game\mp_modeBase.cpp
+	Added: #include coop_manager.hpp
+	Added: #include coop_gametype.hpp
+	bool MultiplayerModeBase::shouldStartMatch( void )
+	
+dlls\game\mp_modeTeamBase.cpp
+	Added: #include "../../coop/code/coop_manager.hpp"
+	Added: #include "../../coop/code/coop_gametype.hpp"
+	void ModeTeamBase::respawnPlayer( Player *player )
+		Disabled: KillBox during coop in
+	
+dlls\game\worldspawn.cpp
+	Added: World::coop_getPhysicsVar( Event *ev )
+	
+dlls\game\puzzleobject.cpp
+	Added: PuzzleObject::coop_getLastActivatingEntity(Event* ev)
+
+dlls\game\globalcmd.cpp
+	Added: coop_getVectorVariable(Event* ev)
+	Added: coop_getFloatVariable(Event* ev)
+	Added: coop_getStringVariable(Event* ev)
+	Added: coop_setVectorVariable(Event* ev)
+	Added: coop_setFloatVariable(Event* ev)
+	Added: coop_setStringVariable(Event* ev)
+	Added: coop_configstrRemove(Event* ev)
+	Added: coop_configstrRemoveCombatSounds(Event* ev)
+	Added: coop_subString(Event* ev)
+	Added: coop_toLower(Event* ev)
+	Added: coop_toUpper(Event* ev)
+	Added: coop_length(Event* ev)
+	Added: coop_find(Event* ev)
+	Added: coop_isDigit(Event* ev)
+	Added: coop_getTimeStamp(Event* ev)
+	Added: coop_getFloat(Event* ev)
+	Added: coop_getVector(Event* ev)
+	Added: coop_getClassOf(Event* ev)
+	Added: coop_getPathnodeOrigin(Event* ev)
+	Added: coop_getLevelParamater(Event* ev)
+	Added: coop_getIniData(Event* ev)
+	Added: coop_getIniDataPlayer(Event* ev)
+	Added: coop_setIniDataPlayer(Event* ev)
+	Added: coop_setIniData(Event* ev)
+	Added: coop_getMapByServerIp(Event* ev)
+	Added: coop_objectiveUpdate(Event* ev)
+	
+dlls\game\doors.cpp
+	Added: void Door::coop_getDoorState(Event* ev)
+	
+dlls\game\entity.cpp
+	Added: void Entity::coop_getEntNum(Event* ev)
+	Added: void Entity::coop_isSpectator(Event* ev)
+	Added: void Entity::coop_isEntityInsideOfEntity(Event* ev)
+	Added: void Entity::coop_traceHitsSky(Event* ev)
+	Added: void Entity::coop_getLastAttacker(Event* ev)
+
 
 Changes to Coop Mod files
 /////////////////////////////////////////
 /////////////////////////////////////////
 /////////////////////////////////////////
-coop_game.hpp
-	Added: coop_MapFlags struct for detailed map infomations
-
-coop_game.cpp
+coop_manager.cpp
 	Added: void Init() - Executed exclusively only once upon first load of game dll
 	Added: void InitWorld() - Executed each time a level is loaded
 	Added: void DetectMapType() - Executed once upon each level load - populates: coop_MapFlags struct
-	Added: void Allowed() - Sets Coop to being allowed
-	Added: void AllowedNot() - Sets Coop to NOT being allowed
-	Added: bool IsAllowed() - Returns status whether Coop is allowed
-    Added: bool IsSupported() - Returns whether Coop is supported on teh current level or not
+
+coop_config.cpp
+	Added: CoopSettings::LoadSettingsFromFile
 	
 coop_generalstrings.hpp
-	Added: various coop specific constexpr auto
+	

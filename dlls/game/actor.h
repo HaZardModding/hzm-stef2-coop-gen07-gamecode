@@ -88,6 +88,14 @@ enum SteeringDirectionPreference
 };
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+extern Event EV_COOP_Actor_GetActorType;
+#endif
+
+
 //------------------------- CLASS ------------------------------
 //
 // Name:			Actor
@@ -99,9 +107,17 @@ enum SteeringDirectionPreference
 //--------------------------------------------------------------
 class Actor : public Sentient
 {
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Coop Specific Actor Stuff - chrissstrahl
+		//--------------------------------------------------------------
+#ifdef ENABLE_COOP
 	public:
+		void		coop_getActorType(Event* ev);
+		str			coop_getBranchDialogName();
+#endif
 
 
+	public:
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: Warning C26495: The Variable ? was not initialized. A Membervariable needs always to be initialized (type.6) - chrissstrahl
 		//--------------------------------------------------------------

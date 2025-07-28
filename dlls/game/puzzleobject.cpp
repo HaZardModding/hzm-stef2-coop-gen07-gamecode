@@ -181,6 +181,16 @@ puzzleobject_solvedthread	 <thread name>	- the name of the thread called when th
 ******************************************************************************/
 CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_PuzzleObject_coop_setItemUsedThread, & PuzzleObject::coop_setItemUsedThread }, //This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
+	{ &EV_PuzzleObject_coop_setUsedStartThread, &PuzzleObject::coop_setUsedStartThread }, //thread called when puzzle is started to be used
+	{ &EV_PuzzleObject_coop_getLastActivatingEntity, &PuzzleObject::coop_getLastActivatingEntity },
+#endif
+
+
 	{ &EV_PuzzleObject_SetOpenDistance,		&PuzzleObject::setOpenDistance		},
 	{ &EV_PuzzleObject_AnimationDone,		&PuzzleObject::animationDone		},
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
@@ -641,11 +651,43 @@ void PuzzleObject::useEvent(Event* event)
 
 void PuzzleObject::normalUse( void )
 {
-	if ( !_itemUsedThread.length() )
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	str usedStartThread = "";
+	ScriptVariable* entityData = entityVars.GetVariable("coop_usedStartThread");
+	if (entityData) {
+		usedStartThread = entityData->stringValue();
+	}
+
+	if (usedStartThread.length() && !_itemUsedThread.length()) {
+		return;
+	}
+
+	Entity *ent = gameFixAPI_getActivator(this);
+	if (ent && ent->isSubclassOf(Player) && _hudOn) {
+		gi.SendServerCommand(ent->entnum, va("stufftext \"popmenu %s 1\"\n", _hudName.c_str()));
+		entityVars.SetVariable("_activator", (float)ent->entnum);
+	}	
+
+	// let script take it from here
+	if (_itemUsedThread.length() > 0) {
+		ExecuteThread(_itemUsedThread.c_str(), true, this);
+	}
+
+	//thread called when puzzle is started to be used
+	if (usedStartThread.length() > 0) {
+		ExecuteThread(usedStartThread.c_str(), true, this);
+	}
+#else
+	if (!_itemUsedThread.length())
 		return;
 
 	// let script take it from here
 	ExecuteThread( _itemUsedThread, true, this );
+#endif
+
 
 	_puzzleState = PUZZLE_STATE_ACTIVE_OPEN;
 	animate->RandomAnimate( "puzzle_openon" );
@@ -696,6 +738,13 @@ void PuzzleObject::timedPuzzleSolved( void )
 {
 	hideTimerHud();
 	ProcessEvent( EV_PuzzleObject_Solved );
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Activate all targeted entities - chrissstrahl
+	//--------------------------------------------------------------
+	gamefix_entityActivateTarget(this, gameFixAPI_getActivator((Entity*)this),true);
+
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
@@ -816,4 +865,49 @@ void PuzzleObject::becomeModBarInSkill( Event* ev )
 		_timeToUse = 2.0f;
 	}
 }
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+Event EV_PuzzleObject_coop_getLastActivatingEntity
+(
+	"coop_getLastActivatingEntity",
+	EV_DEFAULT,
+	"@e",
+	"entity",
+	"Returns last entity activating this puzzle"
+);
+void PuzzleObject::coop_getLastActivatingEntity(Event* ev)
+{
+	ev->ReturnEntity(gameFixAPI_getActivator((Entity*)this));
+}
+
+Event EV_PuzzleObject_coop_setItemUsedThread
+(
+	"puzzleobject_itemusedthread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"The thread to call when the item is used"
+);
+void PuzzleObject::coop_setItemUsedThread(Event* event)
+{
+	_itemUsedThread = event->GetString(1);
+}
+
+Event EV_PuzzleObject_coop_setUsedStartThread
+(
+	"puzzleobject_usedStartThread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"The thread to call when the puzzle is used, works on any puzzle type"
+);
+void PuzzleObject::coop_setUsedStartThread(Event* event)
+{
+	entityVars.SetVariable("coop_usedStartThread",event->GetString(1));
+}
+#endif
+
 

@@ -30,6 +30,15 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_gametype.hpp"
+#endif
+
+
 // Setup constants
 const float	MultiplayerModeBase::_defaultStartinghealth = 100.0f;
 const int	MultiplayerModeBase::_defaultPointsPerKill = 1;
@@ -162,7 +171,17 @@ void MultiplayerModeBase::init( int maxPlayers )
 	_maxPlayers = maxPlayers;
 	_playerGameData = new MultiplayerPlayerGameData[ _maxPlayers ];
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		multiplayerManager.cacheMultiplayerFiles("mp_general");
+	}
+#else
 	multiplayerManager.cacheMultiplayerFiles( "mp_general" );
+#endif
 }
 
 void MultiplayerModeBase::initItems( void )
@@ -970,35 +989,56 @@ bool MultiplayerModeBase::shouldStartMatch( void )
 
 	timeRemaining = (int)(_matchStartTime + mp_warmUpTime->value - multiplayerManager.getTime() + 1.0f);
 
-	if ( ( timeRemaining > 0 ) && ( timeRemaining < 6 ) && ( timeRemaining != _lastTimeRemaining ) )
-	{
+
+
+
+	if ((timeRemaining > 0) && (timeRemaining < 6) && (timeRemaining != _lastTimeRemaining)) {
 		_lastTimeRemaining = timeRemaining;
 
-		multiplayerManager.centerPrintAllClients( va( "%d", _lastTimeRemaining ), CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.centerPrintAllClients(va("%d", _lastTimeRemaining), CENTERPRINT_IMPORTANCE_NORMAL);
 
-		switch( timeRemaining )
-		{
-		case 1 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_1.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
-			break;
-		case 2 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_2.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
-			break;
-		case 3 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_3.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
-			break;
-		case 4 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_4.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
-			break;
-		case 5 :
-			multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_5.mp3", CHAN_AUTO, DEFAULT_VOL, 
-					DEFAULT_MIN_DIST, NULL, 0.5f  );
-			break;
+
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Don't play count down in coop - chrissstrahl
+		//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		if (!CoopManager::Get().IsCoopEnabled()) {
+#endif
+
+
+			switch (timeRemaining)
+			{
+			case 1:
+				multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_1.mp3", CHAN_AUTO, DEFAULT_VOL,
+					DEFAULT_MIN_DIST, NULL, 0.5f);
+				break;
+			case 2:
+				multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_2.mp3", CHAN_AUTO, DEFAULT_VOL,
+					DEFAULT_MIN_DIST, NULL, 0.5f);
+				break;
+			case 3:
+				multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_3.mp3", CHAN_AUTO, DEFAULT_VOL,
+					DEFAULT_MIN_DIST, NULL, 0.5f);
+				break;
+			case 4:
+				multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_4.mp3", CHAN_AUTO, DEFAULT_VOL,
+					DEFAULT_MIN_DIST, NULL, 0.5f);
+				break;
+			case 5:
+				multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_5.mp3", CHAN_AUTO, DEFAULT_VOL,
+					DEFAULT_MIN_DIST, NULL, 0.5f);
+				break;
+			}
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Don't play count down in coop - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
 		}
+#endif
+
+
 	}
 
 	// Make sure we have done our warm up already
@@ -1106,11 +1146,20 @@ void MultiplayerModeBase::startMatch( void )
 		}
 	}
 
-
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+		// Tell everyone the match started
+		multiplayerManager.centerPrintAllClients("$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH);
+		multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f);
+	}
+#else
 	// Tell everyone the match started
-
-	multiplayerManager.centerPrintAllClients( "$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH );
-	multiplayerManager.broadcastSound( "localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f );
+	multiplayerManager.centerPrintAllClients("$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH);
+	multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f);
+#endif
 }
 
 void MultiplayerModeBase::restartMatch( void )

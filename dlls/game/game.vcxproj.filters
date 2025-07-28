@@ -40,6 +40,9 @@
     <Filter Include="Coop Files">
       <UniqueIdentifier>{36d7a832-20bd-4831-a31e-e8e998715d72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Coop Files\Header Files">
+      <UniqueIdentifier>{d91cb1cc-c1be-4c2e-9853-669b325720ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="changePosture.cpp">
@@ -531,7 +534,25 @@
     <ClCompile Include="..\..\Shared\qcommon\gameplaymanager.cpp">
       <Filter>_qCommon_</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\coop\code\coop_game.cpp">
+    <ClCompile Include="..\..\coop\code\coop_config.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_manager.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_gametype.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\rpg_gametype.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_objectives.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_armory.cpp">
+      <Filter>Coop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_radar.cpp">
       <Filter>Coop Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1115,11 +1136,29 @@
     <ClInclude Include="..\..\Shared\qcommon\tiki_script.h">
       <Filter>_qCommon_</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\coop\code\coop_game.hpp">
-      <Filter>Coop Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp">
-      <Filter>Coop Files</Filter>
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_manager.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_config.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\rpg_gametype.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_gametype.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_objectives.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_armory.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_radar.hpp">
+      <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

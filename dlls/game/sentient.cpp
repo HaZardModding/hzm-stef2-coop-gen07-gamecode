@@ -40,6 +40,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "item.h"
+#endif
+
+
 Event EV_Sentient_BeginAttack
 (
 	"beginattack",
@@ -569,6 +577,14 @@ Event EV_Sentient_CacheStateMachineAnims
 
 CLASS_DECLARATION( Entity, Sentient, NULL )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_Sentient_coop_hasItem,&Sentient::coop_hasItem},
+#endif
+
+
 	{ &EV_Sentient_BeginAttack,					&Sentient::BeginAttack					},
 	{ &EV_Sentient_EndAttack,					&Sentient::EndAttack					},
 	{ &EV_Sentient_Attack,						&Sentient::FireWeapon					},
@@ -5232,3 +5248,33 @@ void Sentient::freeConditionals( Container<Conditional *> &conditionalsToDelete 
 
 	conditionalsToDelete.FreeObjectList();
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+//--------------------------------------------------------------
+Event EV_Sentient_coop_hasItem
+(
+	"coop_hasItem",
+	EV_SCRIPTONLY,
+	"@fs",
+	"trueOrFalse ItemModelName",
+	"Checks if Sentient has a item with that model name"
+);
+void Sentient::coop_hasItem(Event* ev)
+{
+	str sItemModel = ev->GetString(1);
+	ev->ReturnFloat(coop_hasItem(sItemModel));
+}
+bool Sentient::coop_hasItem(str sItemModel)
+{
+	if (this->isSubclassOf(Sentient) && sItemModel.length()) {
+		if (this->HasItem(sItemModel.c_str())) {
+			return true;
+		}
+	}
+	return false;
+}
+#endif
+

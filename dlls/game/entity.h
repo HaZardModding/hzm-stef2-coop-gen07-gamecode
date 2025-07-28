@@ -371,9 +371,53 @@ MorphInfo *CreateMorphInfo( void );
 
 typedef SafePtr<Entity> EntityPtr;
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 -coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_SetUserVar5;
+extern Event EV_SetUserVar6;
+extern Event EV_SetUserVar7;
+extern Event EV_SetUserVar8;
+extern Event EV_SetUserVar9;
+extern Event EV_SetUserVar10;
+extern Event EV_entity_coop_boosterNearbyPlayer;
+extern Event EV_entity_coop_removeViewmode;
+extern Event EV_entity_coop_getEntNum;
+extern Event EV_entity_coop_isSpectator;
+extern Event EV_entity_coop_isEntityInsideOfEntity;
+extern Event EV_entity_coop_traceHitsSky;
+extern Event EV_entity_coop_getLastAttacker;
+extern Event EV_entity_coop_makeSolidAsap;
+#endif
+
+
 class Program;
 class Entity : public Listener
 	{
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 -coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+public:
+	void SetUserVar5(Event* ev);
+	void SetUserVar6(Event* ev);
+	void SetUserVar7(Event* ev);
+	void SetUserVar8(Event* ev);
+	void SetUserVar9(Event* ev);
+	void SetUserVar10(Event * ev);
+	void coop_boosterNearbyPlayer(Event* ev);
+	void coop_removeViewmode(Event* ev);
+	void coop_getEntNum(Event* ev);
+	void coop_isSpectator(Event* ev);
+	void coop_isEntityInsideOfEntity(Event* ev);
+	void coop_traceHitsSky(Event* ev);
+	void coop_getLastAttacker(Event* ev);
+	void coop_makeSolidAsap(Event* ev);
+#endif
+
+
 	private:
 		Container<EntityPtr>	_lastTouchedList ;
 		str						_archetype;

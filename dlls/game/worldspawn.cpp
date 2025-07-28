@@ -37,6 +37,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 WorldPtr  world;
 
 #define DEFAULT_ENTITY_FADE_DIST  3000
@@ -460,6 +468,15 @@ Event EV_World_CanShakeCamera
 
 CLASS_DECLARATION( Entity, World, "worldspawn" )
 {
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	{ &EV_World_coop_getPhysicsVar, & World::coop_getPhysicsVar },
+	{ &EV_World_coop_loadMap, & World::coop_loadMap },
+#endif
+
+
 	{ &EV_World_SetSoundtrack,				&World::SetSoundtrack },
 	{ &EV_World_SetSkipThread,				&World::SetSkipThread },
 	{ &EV_World_SetNextMap,					&World::SetNextMap },
@@ -590,6 +607,15 @@ World::World()
 	level.nextmap = "";
 	level.level_name = level.mapname;
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - We have our own script handle - chrissstrahl
+// - Allow scripts to use .scr and .script, prefer .script
+// - Load Scripts for coop from base/coop/maps/ first, if that fails try base/maps/
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopManager::Get().LoadLevelScript(level.mapname);
+#else
 	// Set up the mapname as the default script
 	mapname = "maps/";
 	mapname += level.mapname;
@@ -617,6 +643,8 @@ World::World()
 	{
 		level.SetGameScript( "" );
 	}
+#endif
+
 
 	level.consoleThread = Director.CreateThread();
 
@@ -1059,11 +1087,21 @@ void World::SetScript( Event *ev )
 
 	text = ev->GetString( 1 );
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - We have our own script handle - chrissstrahl
+// - Allow scripts to use .scr and .script, prefer .script
+// - Load Scripts for coop from base/coop/maps/ first, if that fails try base/maps/
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	CoopManager::Get().LoadLevelScript(text);
+#else
 	gi.DPrintf( "Adding script: '%s'\n", text.c_str() );
 	scriptname = "maps/" + text;
 
 	// just set the script, we will start it in G_Spawn
 	level.SetGameScript( scriptname.c_str() );
+#endif
 }
 
 void World::SetWaterColor( Event *ev )
@@ -1818,3 +1856,66 @@ Entity * TargetList::GetNextEntity( Entity * ent )
 	else
 		return list.ObjectAt( temp_index );
 }
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+Event EV_World_coop_getPhysicsVar
+(
+	"coop_getPhysicsVar",
+	EV_SCRIPTONLY,
+	"@fs",
+	"return-float physicsvar-name",
+	"returns gravity, airaccelerate, maxspeed Physics values"
+);
+void World::coop_getPhysicsVar(Event* ev)
+{
+	float fValue = -1;
+	str sName = ev->GetString(1);
+	if (sName.length()) {
+		fValue = getPhysicsVar(sName.c_str());
+		if (fValue == -1) {
+			sName.tolower();
+
+			if (sName == "maxspeed") { sName = "sv_maxspeed"; }
+			else if (sName == "airaccelerate") { sName = "sv_airaccelerate"; }
+			else if (sName == "gravity") { sName = "sv_gravity"; }
+			else { gi.Printf("getPhysicsVar - unknown Physics Var Name: %s\nKnown names are: maxspeed, airaccelerate and gravity\n", sName.c_str()); }
+			cvar_t* cvar = gi.cvar_get(sName.c_str());
+
+			if (cvar) {
+				ev->ReturnFloat((float)cvar->integer);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(fValue);
+}
+
+Event EV_World_coop_loadMap
+(
+	"loadMap",
+	EV_CONSOLE,
+	"s",
+	"mapname",
+	"event to load maps (with delay) after coop mission failure"
+);
+void World::coop_loadMap(Event* ev)
+{
+	str command = ev->GetString(1);
+	if (command.length()) {
+		if (sv_cheats->integer == 1) {
+#ifdef __linux__
+			gi.SendConsoleCommand(va("map %s \n", command.c_str()));
+#else
+			gi.SendConsoleCommand(va("devmap %s \n", command.c_str()));
+#endif	
+		}
+		else {
+			gi.SendConsoleCommand(va("map %s \n", command.c_str()));
+		}
+	}
+}
+#endif

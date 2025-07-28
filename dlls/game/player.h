@@ -78,6 +78,56 @@ extern Event EV_Player_Weapon;
 extern Event EV_Player_gamefix_messageOfTheDay;
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_Player_coop_setKillThread;
+extern Event EV_Player_coop_getLanguage;
+extern Event EV_Player_coop_getName;
+extern Event EV_Player_coop_getScore;
+extern Event EV_Player_coop_getDeaths;
+extern Event EV_Player_coop_getKills;
+extern Event EV_Player_coop_addScore;
+extern Event EV_Player_coop_getLastDamaged;
+extern Event EV_Player_coop_getTeamName;
+extern Event EV_Player_coop_getTeamScore;
+extern Event EV_Player_coop_getViewangles;
+extern Event EV_Player_coop_getTargetedEntity;
+extern Event EV_Player_coop_getViewtraceEndpos;
+extern Event EV_Player_coop_getUserFov;
+extern Event EV_Player_coop_checkCrouch;
+extern Event EV_Player_coop_checkJump;
+extern Event EV_Player_coop_checkForward;
+extern Event EV_Player_coop_checkBackward;
+extern Event EV_Player_coop_checkLeft;
+extern Event EV_Player_coop_checkRight;
+extern Event EV_Player_coop_checkLeanRight;
+extern Event EV_Player_coop_checkLeanLeft;
+extern Event EV_Player_coop_checkDropRune;
+extern Event EV_Player_coop_checkRun;
+extern Event EV_Player_coop_checkReload;
+extern Event EV_Player_coop_checkUse;
+extern Event EV_Player_coop_checkThirdperson;
+extern Event EV_Player_coop_checkFire;
+extern Event EV_Player_coop_checkFirealt;
+extern Event EV_Player_coop_checkAnyButton;
+extern Event EV_Player_coop_checkMenu;
+extern Event EV_Player_coop_getBackpackAttachOffset;
+extern Event EV_Player_coop_getBackpackAttachAngles;
+extern Event EV_Player_coop_getFlagAttachOffset;
+extern Event EV_Player_coop_getFlagAttachAngles;
+extern Event EV_Player_coop_setCamera;
+extern Event EV_Player_coop_widgetCommand;
+extern Event EV_Player_coop_runThread;
+extern Event EV_Player_coop_hasLanguageGerman;
+extern Event EV_Player_coop_hasLanguageEnglish;
+extern Event EV_Player_coop_getCoopClass;
+extern Event EV_Player_coop_isTechnician;
+extern Event EV_Player_coop_isMedic;
+extern Event EV_Player_coop_isHeavyWeapons;
+extern Event EV_Player_coop_getCoopVersion;
+
+
 #define HEAD_TAG        0
 #define TORSO_TAG       1
 #define L_ARM_TAG       2
@@ -205,6 +255,80 @@ class Player : public Sentient
 	//--------------------------------------------------------------
 	public:
 		void gamefix_messageOfTheDayEvent(Event* ev);
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+	//--------------------------------------------------------------
+	public:
+		void coop_playerKillThread(Event* ev);
+		void coop_getLanguage(Event* ev);
+		void coop_getName(Event* ev);
+		void coop_getScore(Event* ev);
+		void coop_getDeaths(Event* ev);
+		void coop_getKills(Event* ev);
+		void coop_addScore(Event* ev);
+		float coop_getLastDamaged(void);
+		void coop_getLastDamagedEvent(Event* ev);
+		void coop_getTeamName(Event* ev);
+		void coop_getTeamScore(Event* ev);
+		void coop_getViewAngles(Event* ev);
+		void coop_getTargetedEntity(Event* ev);
+		Vector coop_getViewtraceEndpos(void);
+		void coop_getViewtraceEndposEvent(Event* ev);
+		void coop_getUserFov(Event* ev);
+		void coop_checkCrouch(Event* ev);
+		void coop_checkJump(Event* ev);
+		void coop_checkForward(Event* ev);
+		void coop_checkBackward(Event* ev);
+		void coop_checkLeft(Event* ev);
+		void coop_checkRight(Event* ev);
+		void coop_checkLeanRight(Event* ev);
+		void coop_checkLeanLeft(Event* ev);
+		void coop_checkDropRune(Event* ev);
+		void coop_checkRun(Event* ev);
+		void coop_checkReload(Event* ev);
+		void coop_checkUse(Event* ev);
+		bool coop_checkThirdperson();
+		void coop_checkThirdperson(Event* ev);
+		void coop_checkFire(Event* ev);
+		void coop_checkFirealt(Event* ev);
+		void coop_checkAnyButton(Event* ev);
+		void coop_checkMenu(Event* ev);
+		void coop_getBackpackAttachOffset(Event* ev);
+		void coop_getBackpackAttachAngles(Event* ev);
+		void coop_getFlagAttachOffset(Event* ev);
+		void coop_getFlagAttachAngles(Event* ev);
+		void coop_setCamera(Event* ev);
+		void coop_widgetCommandEvent(Event* ev);
+		void coop_widgetCommand(str sWidget, str sParameters);
+		void coop_runThreadEvent(Event* ev);
+		CThread* coop_runThread(const str& thread_name);
+		void coop_hasLanguageGermanEvent(Event* ev);
+		bool coop_hasLanguageGerman();
+		bool coop_hasLanguageEnglish();
+		void coop_hasLanguageEnglishEvent(Event* ev);
+		void coop_getCoopClass(Event* ev);
+		void coop_isTechnician(Event* ev);
+		void coop_isMedic(Event* ev);
+		void coop_isHeavyWeapons(Event* ev);
+		int coop_getCoopVersion();
+		void coop_getCoopVersion(Event* ev);
+		bool coop_hasCoopInstalled();
+		bool coop_isAdmin();
+
+		unsigned int coop_getObjectiveState();
+		void coop_setObjectiveState(unsigned int states, bool set);
+		bool coop_getObjectivesCycle();
+		void coop_setObjectivesCycle();
+		void coop_setObjectivesPrintedTitleLast();
+		float coop_getObjectivesPrintedTitleLast();
+
+		void coop_hudsAdd(Player* player, str hudName);
+
+		Actor* coop_getBranchDialogActor(void);
+#endif
 
 
 	public:

@@ -48,7 +48,7 @@
 // COOP Generation 7.000 - Added Include - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-#include "../../coop/code/coop_game.hpp"
+#include "../../coop/code/coop_manager.hpp"
 #endif
 
 
@@ -175,7 +175,16 @@ extern "C" void G_ShutdownGame( void )
 		//--------------------------------------------------------------
 		gamefix_shutdownGame();
 
-		
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Game Shutdown - chrissstrahl
+		// Executed if game is exited/shutdown
+		//--------------------------------------------------------------
+		CoopManager::Get().Shutdown();
+#endif
+
+
 		// close the player log file if necessary
 		ClosePlayerLogFile();
 		
@@ -241,7 +250,7 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 	// COOP Generation 7.000 - Added: Init Code - chrissstrahl
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
-	CoopGame::Init();
+	CoopManager::Get().Init();
 #endif
 	
 	// Install our own error handler, since we can't
@@ -1909,6 +1918,14 @@ extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 			GameplayManager::getTheGameplayManager()->processPendingMessages();
 			G_SentInitialMessages( );
 		}
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerEntered(ent);
+#endif
 	}
 	
 	catch( const char *error )
@@ -2211,6 +2228,14 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		gameFixAPI_initPersistant(clientNum,(bool)isBot);
 
 
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerConnect(clientNum);
+#endif
+
+
 		ent = &g_entities[ clientNum ];
 		gi.getUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 		
@@ -2263,6 +2288,7 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 			//--------------------------------------------------------------
 			if (!client) {
 				gi.Error(ERR_DROP, "G_ClientConnect: client [%s] was NULL", clientNum);
+				return "G_ClientConnect: client was NULL";
 			}
 
 
@@ -2344,8 +2370,17 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 
 
 		Player *player;
-		
 		player = ( Player * )ent->entity;
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerDisconnect(player);
+#endif
+
+
 		player->Disconnect();
 		
 		delete ent->entity;

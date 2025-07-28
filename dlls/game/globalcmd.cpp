@@ -36,6 +36,15 @@
 #include "mp_manager.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_objectives.hpp"
+#endif
+
+
 Event EV_ProcessCommands
 ( 
 	"processCommands",
@@ -1111,6 +1120,50 @@ Event EV_ScriptThread_DisconnectPathnodes
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_ScriptThread_coop_getVectorVariable, &CThread::coop_getVectorVariable },
+	{ &EV_ScriptThread_coop_getFloatVariable, &CThread::coop_getFloatVariable },
+	{ &EV_ScriptThread_coop_getStringVariable, &CThread::coop_getStringVariable },
+	{ &EV_ScriptThread_coop_setVectorVariable, &CThread::coop_setVectorVariable },
+	{ &EV_ScriptThread_coop_setFloatVariable, &CThread::coop_setFloatVariable },
+	{ &EV_ScriptThread_coop_setStringVariable, &CThread::coop_setStringVariable },
+
+	{ &EV_ScriptThread_coop_configstrRemove,				&CThread::coop_configstrRemove },
+	{ &EV_ScriptThread_coop_configstrRemoveCombatSounds,	&CThread::coop_configstrRemoveCombatSounds },
+
+	{ &EV_ScriptThread_coop_subString, &CThread::coop_subString },
+	{ &EV_ScriptThread_coop_toLower, &CThread::coop_toLower },
+	{ &EV_ScriptThread_coop_toUpper, &CThread::coop_toUpper },
+	{ &EV_ScriptThread_coop_length, &CThread::coop_length },
+	{ &EV_ScriptThread_coop_find, &CThread::coop_find },
+
+	{ &EV_ScriptThread_coop_isDigit, &CThread::coop_isDigit },
+
+	{ &EV_ScriptThread_coop_getTimeStamp, &CThread::coop_getTimeStamp },
+	{ &EV_ScriptThread_coop_getFloat, &CThread::coop_getFloat },
+	{ &EV_ScriptThread_coop_getVector, &CThread::coop_getVector },
+
+	{ &EV_ScriptThread_coop_getClassOf, &CThread::coop_getClassOf },
+	{ &EV_ScriptThread_coop_getPathnodeOrigin, &CThread::coop_getPathnodeOrigin },
+
+	{ &EV_ScriptThread_coop_getLevelParamater, &CThread::coop_getLevelParamater },
+
+	{ &EV_ScriptThread_coop_getIniData, &CThread::coop_getIniData },
+	{ &EV_ScriptThread_coop_getIniDataPlayer, &CThread::coop_getIniDataPlayer },
+	{ &EV_ScriptThread_coop_setIniDataPlayer, &CThread::coop_setIniDataPlayer },
+	{ &EV_ScriptThread_coop_setIniData, &CThread::coop_setIniData },
+
+	{ &EV_ScriptThread_coop_getMapByServerIp, &CThread::coop_getMapByServerIp },
+
+	{ &EV_ScriptThread_coop_objectiveUpdate, &CThread::coop_objectiveUpdate },
+
+	{ &EV_ScriptThread_coop_missionFailed, &CThread::coop_missionFailed },
+#endif
+
+
 	{ &EV_ScriptThread_Execute,						&CThread::ExecuteFunc },
 	{ &EV_MoveDone,									&CThread::ObjectMoveDone },
 	{ &EV_ScriptThread_Callback,					&CThread::ScriptCallback },
@@ -4263,3 +4316,887 @@ void CThread::connectPathnodes( Event *ev )
 {
 	thePathManager.connectNodes( ev->GetString( 1 ), ev->GetString( 2 ) );
 }
+
+
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef WIN32
+
+void coop_winShellExecuteOpen(str sResource)
+{
+	//we might want some kind of security check here, allowing only hzm and other sites and only base folder
+	str sHzm = "hazardmodding.com";
+	str sRes = gamefix_getCvar("fs_basepath").c_str();
+	str sForbiddenFileTypes[]{ "com","exe","bat","sh","ink","link","pif","reg","vbs","scr","phy","msi","cpl","js","wsf","ps1","jse","vbe" };
+
+	if (!gamefix_findString(sResource, "http://",false) && !gamefix_findString(sResource, "https://",false)) {
+		//disallow certain filetypes
+		int iArrayLength = sizeof(sForbiddenFileTypes) / sizeof(str);
+
+		int i;
+		for (i = 0; i < iArrayLength; i++) {
+			if (Q_stricmp(gamefix_getExtension(sResource).c_str(),sForbiddenFileTypes[i].c_str()) == 0) {
+				return;
+			}
+		}
+
+		if (gamefix_findString(sResource, ".\\") != -1 || gamefix_findString(sResource, "./") != -1 || gamefix_findString(sResource, "%") != -1) {
+			return;
+		}
+
+		sResource = va("%s\\%s", sRes.c_str(), sResource.c_str());
+		gi.Printf(va("File: %s\n", sResource.c_str()));
+	}
+	else {
+		gi.Printf(va("URL: %s\n", sResource.c_str()));
+	}
+	ShellExecuteA(NULL, "open", sResource.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+}
+#endif
+
+Event EV_ScriptThread_coop_getMapByServerIp
+(
+	"coop_getMapByServerIp",
+	EV_SCRIPTONLY,
+	"",
+	"",
+	"Sends Server IP data to HaZardModding Website to detect a missing map - works only on windows client host"
+);
+void CThread::coop_getMapByServerIp(Event* ev)
+{
+#ifdef WIN32
+	str sServerIp = gamefix_getCvar("cl_currentServerAddress");
+	if (sServerIp == "") {
+		gamefix_printAllClients("getMapByServerIp - connect first to a server until you get disconnected with a error message\n");
+		gi.Printf("getMapByServerIp - connect first to a server until you get disconnected with a error message\n");
+		return;
+	}
+
+	str sServerIpEncoded = "";
+	int i;
+	for (i = 0; i < sServerIp.length(); i++) {
+		if (sServerIp[i] == ':') {
+			sServerIpEncoded += "P";
+		}
+		else {
+			sServerIpEncoded += sServerIp[i];
+		}
+	}
+	//[b60014] chrissstrahl - use cvar to allow testing on a local server
+	if (gamefix_getCvarInt("coop_dlSvLocal") == 1) {
+		coop_winShellExecuteOpen(va("http://localhost/gameq/?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
+	else {
+		coop_winShellExecuteOpen(va("http://findmap.hazardmodding.com?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
+	coop_winShellExecuteOpen("base");
+#else
+	gi.Printf("getMapByServerIp - works only on windows when a mp map is loaded\n");
+#endif
+}
+
+Event EV_ScriptThread_coop_setIniDataPlayer
+(
+	"coop_setIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@fesss",
+	"returnsuccsess player category keyname value",
+	"sets data for player to current map ini"
+);
+
+void CThread::coop_setIniDataPlayer(Event* ev)
+{
+	if (ev->NumArgs() < 4) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	//allow writing
+	str sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+
+	Entity* ent = ev->GetEntity(1);
+	if (!ent->isSubclassOf(Player)) {
+		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKeyname = ev->GetString(4);
+	if (!sKeyname.length()) {
+		Player* player = (Player*)ent;
+		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
+		DEBUG_LOG("coop_setIniDataPlayer - Grab Player[%d] Coop ID - Feature not Implemented", player->entnum);
+		ev->ReturnString("NOT_IMPLEMENTED");
+		return;
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnFloat(0.0f);
+			G_ExitWithError(va("coop_setIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str fileContents;
+	gamefix_getFileContents(sFilename, fileContents, true);
+
+	str sCategoryname = ev->GetString(2);
+	if (!sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKey = ev->GetString(3);
+	if (!sKey.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sValue = ev->GetString(4);
+
+	// Get current section content (if any)
+	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
+
+	// Set (or replace) key within section
+	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
+
+
+	/*
+	/DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", sectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("%s=%s\n", sKey.c_str(), sValue.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	*/
+
+
+	// Update section in full file content
+	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
+
+	// Write back to disk
+	ev->ReturnFloat( gamefix_setFileContents(sFilename, newFileContents) );
+}
+
+Event EV_ScriptThread_coop_setIniData
+(
+	"coop_setIniData",
+	EV_SCRIPTONLY,
+	"@fsss",
+	"returndbool category keyname value",
+	"sets data to map-specific ini file"
+);
+
+void CThread::coop_setIniData(Event* ev)
+{
+	if (ev->NumArgs() < 3) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	//allow writing
+	str sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnFloat(0.0f);
+			G_ExitWithError(va("coop_setIniData - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str fileContents;
+	gamefix_getFileContents(sFilename, fileContents, true);
+
+	str sCategoryname = ev->GetString(1);
+	if (!sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sKey = ev->GetString(2);
+	if (!sKey.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniData");
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	str sValue = ev->GetString(3);
+
+	// Get current section content (if any)
+	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
+
+
+
+	// Set (or replace) key within section
+	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
+	
+
+	/*
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", sectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("%s=%s\n", sKey.c_str(),sValue.c_str() );
+	DEBUG_LOG("------------\n");
+	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
+	DEBUG_LOG("------------\n");
+	*/
+
+
+	// Update section in full file content
+	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
+
+	// Write back to disk
+	ev->ReturnFloat( gamefix_setFileContents(sFilename, newFileContents) );
+}
+
+Event EV_ScriptThread_coop_getIniDataPlayer
+(
+	"coop_getIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@sesSS",
+	"returndatastring player category keyname filename",
+	"gets data for player from current map ini or given ini file"
+);
+
+void CThread::coop_getIniDataPlayer(Event* ev)
+{
+	if (ev->NumArgs() < 2) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	Entity* ent = ev->GetEntity(1);
+	if (!ent->isSubclassOf(Player)) {
+		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sCategoryname = ev->GetString(2);
+	if ( !sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniDataPlayer");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sKeyname = ev->GetString(3);
+	if (!sKeyname.length()) {
+		Player* player = (Player*)ent;
+		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
+		DEBUG_LOG("coop_getIniDataPlayer - Grab Player(%d) Coop ID - Feature not Implemented", player->entnum);
+		ev->ReturnString("NOT_IMPLEMENTED");
+		return;
+	}
+
+	str sFilename = ev->GetString(4);
+	if (!sFilename.length()) {
+		sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM; i++) {
+		if (gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[i].c_str(), sFilename.c_str(), false) != -1) {
+			ev->ReturnString("");
+			G_ExitWithError(va("coop_getIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str contents;
+	if (!gamefix_getFileContents(sFilename, contents, true)) {
+		gi.Printf(_COOP_WARNING_FILE_failed, sFilename.c_str());
+		ev->ReturnString("");
+		return;
+	}
+
+	str section_contents;
+	str key_contents;
+	// Boot section - settings usually managed during first load of dll and game init - requires server reboot
+	section_contents = gamefix_iniSectionGet(sFilename, contents, sCategoryname.c_str());
+	key_contents = gamefix_iniKeyGet(sFilename, section_contents, sKeyname, "");
+
+	ev->ReturnString(key_contents.c_str());
+	return;
+}
+
+Event EV_ScriptThread_coop_getIniData
+(
+	"coop_getIniData",
+	EV_SCRIPTONLY,
+	"@sssS",
+	"returndatastring category keyname filename",
+	"Gets data from current map ini or given ini file"
+);
+
+void CThread::coop_getIniData( Event* ev )
+{
+	if (ev->NumArgs() < 3) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW,"coop_getIniData");
+		ev->ReturnString("");
+		return;
+	}
+	
+	str sCategoryname = ev->GetString(1);
+	str sKeyname		= ev->GetString(2);
+
+	if (!sKeyname.length() || !sCategoryname.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniData");
+		ev->ReturnString("");
+		return;
+	}
+
+	str sFilename		= ev->GetString(3);
+	if (!sFilename.length()) {
+		sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	for (int i = 0; i < _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM; i++) {
+		if(gamefix_findString(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[i].c_str(),sFilename.c_str(),false) != -1){
+			ev->ReturnString("");
+			G_ExitWithError(va("getIniData - Accsess Violation on reading file: %s\n", sFilename.c_str()));
+		}
+	}
+
+	str contents;
+	if (!gamefix_getFileContents(sFilename, contents, true)) {
+		gi.Printf(_COOP_WARNING_FILE_failed, sFilename.c_str());
+		ev->ReturnString("");
+		return;
+	}
+
+	str section_contents;
+	str key_contents;
+	// Boot section - settings usually managed during first load of dll and game init - requires server reboot
+	section_contents	= gamefix_iniSectionGet(sFilename, contents, sCategoryname.c_str());
+	key_contents		= gamefix_iniKeyGet(sFilename, section_contents, sKeyname, "");
+	
+	ev->ReturnString(key_contents.c_str());
+	return;
+}
+
+Event EV_ScriptThread_coop_getLevelParamater
+(
+	"coop_getLevelParamater",
+	EV_SCRIPTONLY,
+	"@ss",
+	"returnString parametername",
+	"Returns the value of a paramater, if it is attached to the mapname via $"
+);
+void CThread::coop_getLevelParamater(Event* ev)
+{
+	str varname = ev->GetString(1);
+	cvar_t* cvar = gi.cvar_get("mapname");
+	if (!cvar || !varname.length()) {
+		ev->ReturnString("");
+		return;
+	}
+
+	//make sure this is handled as part of the variable name
+	varname += "=";
+
+	int iVarPos;
+	str s = cvar->string;
+	iVarPos = gamefix_findString(s,varname.tolower());
+	
+	//not found
+	if (iVarPos < 0) {
+		ev->ReturnString("");
+		return;
+	}
+
+	//
+	str sValue = gamefix_getStringLength(s, (iVarPos + varname.length()), MAX_QPATH);
+	iVarPos = gamefix_findString(sValue, "?");
+	if (iVarPos > 0) {
+		sValue = gamefix_getStringUntil(sValue,0, iVarPos);
+	}
+	ev->ReturnString(sValue.c_str());
+}
+
+Event EV_ScriptThread_coop_getPathnodeOrigin
+(
+	"coop_getPathnodeOrigin",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnOrigin pathnodeTargetName",
+	"Returns Pathnode origin vector by targetname if Pathnode it exists, otherwhise '0 0 0' is returned"
+);
+void CThread::coop_getPathnodeOrigin(Event* ev)
+{
+	Vector vOrigin = Vector(0, 0, 0);
+	if (ev->NumArgs() > 0) {
+		str sTargetname = ev->GetString(1);
+		if (sTargetname && sTargetname.length()) {
+			PathNode* node = thePathManager.FindNode(sTargetname.c_str());
+			if (node) {
+				vOrigin = node->origin;
+			}
+			else {
+				gi.Printf("coop_getPathnodeOrigin - No info_pathnode with targetname %s found\n");
+			}
+		}
+	}
+	ev->ReturnVector(vOrigin);
+}
+
+
+Event EV_ScriptThread_coop_getClassOf
+(
+	"coop_getClassOf",
+	EV_SCRIPTONLY,
+	"@se",
+	"returnString entity",
+	"Returns classname of given entity"
+);
+void CThread::coop_getClassOf(Event* ev)
+{
+	Entity* e = ev->GetEntity(1);
+	str s = "";
+	if (e) {
+		s = e->getClassname();
+	}
+	
+	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_getTimeStamp
+(
+	"coop_getTimeStamp",
+	EV_SCRIPTONLY,
+	"@s",
+	"unix-timestamp-string",
+	"Grabs the real time unix timstamp from server and returns it as string"
+);
+void CThread::coop_getTimeStamp(Event* ev)
+{
+	ev->ReturnString(va("%d",gamefix_getTimeStamp()));
+}
+
+Event EV_ScriptThread_coop_getVector
+(
+	"coop_getVector",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnVector string",
+	"Returns the given string as vector, if possible"
+);
+void CThread::coop_getVector(Event* ev)
+{
+	ev->ReturnVector(ev->GetVector(1));
+}
+
+Event EV_ScriptThread_coop_getFloat
+(
+	"coop_getFloat",
+	EV_SCRIPTONLY,
+	"@fs",
+	"returned-float string",
+	"Returns the float found in a string, for example:  'time 1.5'"
+);
+void CThread::coop_getFloat(Event* ev)
+{
+	assert(ev);
+	str s = ev->GetString(1);
+	float fResult = 0.0f;
+
+	if (s && s.length()) {
+		char current;
+		bool containsPeriod = false;
+		str sConstruct = "";
+
+		for (int i = 0; i < s.length(); i++) {
+			current = s[i];
+
+			// Skip invalid characters
+			if (!isdigit(current) && current != '.')
+				continue;
+
+			if (current == '.') {
+				if (containsPeriod) {
+					// Stop if a second dot appears
+					break;
+				}
+				containsPeriod = true;
+			}
+
+			sConstruct += current;
+
+			// Limit total length to 7 characters
+			if (sConstruct.length() >= 7)
+				break;
+		}
+
+		// Make sure float doesn't end in a dot
+		if (sConstruct.length() && sConstruct[sConstruct.length() - 1] == '.')
+			sConstruct += "0";
+
+		if (sConstruct.length())
+			fResult = atof(sConstruct.c_str());
+	}
+
+	ev->ReturnFloat(fResult);
+}
+
+Event EV_ScriptThread_coop_isDigit
+(
+	"coop_isDigit",
+	EV_SCRIPTONLY,
+	"@fs",
+	"returnFloat string",
+	"Returns if given char is a digit"
+);
+void CThread::coop_isDigit(Event* ev)
+{
+	str s = ev->GetString(1);
+	char c = s[0];
+	int i = isdigit(c);
+	if (i != 0) {
+		i = 1;
+	}
+	else {
+		i = 0;
+	}
+	ev->ReturnFloat(i);
+}
+
+Event EV_ScriptThread_coop_find
+(
+	"coop_find",
+	EV_SCRIPTONLY,
+	"@fss",
+	"retunedFloat sSource sFind",
+	"Returns position at wich sFind is found, starts at 0, if not found returns -1"
+);
+void CThread::coop_find(Event* ev)
+{
+	str sSource = ev->GetString(1);
+	str sFind = ev->GetString(2);
+
+	int iFind = gamefix_findString(sSource, sFind);
+	ev->ReturnFloat(iFind);
+}
+
+Event EV_ScriptThread_coop_length
+(
+	"coop_length",
+	EV_SCRIPTONLY,
+	"@fs",
+	"retunedFloat string",
+	"Returns length of given string."
+);
+void CThread::coop_length(Event* ev)
+{
+	str s = ev->GetString(1);
+	ev->ReturnFloat(s.length());
+}
+
+Event EV_ScriptThread_coop_toLower
+(
+	"coop_toLower",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns given string in lower case letters."
+);
+void CThread::coop_toLower(Event* ev)
+{
+	str s = ev->GetString(1);
+	s = s.tolower();
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+Event EV_ScriptThread_coop_toUpper
+(
+	"coop_toUpper",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns given string in upper case letters."
+);
+void CThread::coop_toUpper(Event* ev)
+{
+	str s = ev->GetString(1);
+	s = s.toupper();
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+
+Event EV_ScriptThread_coop_subString
+(
+	"coop_subString",
+	EV_SCRIPTONLY,
+	"@ssff",
+	"retunedString sSource iStart iLength",
+	"Returns a string Starting from iStart with given iLength"
+);
+void CThread::coop_subString(Event* ev)
+{
+	if (ev->NumArgs() < 1) {
+		ev->ReturnString("");
+		return;
+	}
+
+	str s = ev->GetString(1);
+
+	if (!s.length()) {
+		ev->ReturnString("");
+		return;
+	}
+	int iLength = ev->GetInteger(3);
+
+	if (iLength < 1) {
+		ev->ReturnString("");
+		return;
+	}
+
+	int iStart = ev->GetInteger(2);
+
+	if (iStart < 0 || iStart > s.length()) {
+		ev->ReturnString("");
+		return;
+	}
+	
+	s = gamefix_getStringLength(s,iStart, iLength);
+	ev->ReturnString(s.length() ? va("%s", s.c_str()) : "");
+}
+
+Event EV_ScriptThread_coop_configstrRemoveCombatSounds
+(
+	"coop_configstringRemoveCombatSounds",
+	EV_SCRIPTONLY,
+	"s",
+	"string-actorname",
+	"Removes associated /sound/dialog/combat/ configstrings for the given actorname, to fix oversize of cl_parsegamestate"
+);
+void CThread::coop_configstrRemoveCombatSounds(Event* ev)
+{
+	if (ev->NumArgs() < 1) {
+		return;
+	}
+
+	str sActorname = ev->GetString(1);
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !sActorname.length()) {
+		return;
+	}
+
+	sActorname = sActorname.tolower();
+	char* s;
+	int iNum = 0;
+	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+		s = gi.getConfigstring(i);
+		str ss = "";
+		ss += s;
+
+		if (ss.length()) {
+			if( gamefix_findStringCase(ss,va("/sound/dialog/combat/%s_", sActorname.c_str()),false,0,true) != -1) {
+				iNum++;
+				//gi.Printf(va("#REMOVED COMBAT SOUND: #%i: %s\n", i, ss.c_str()));
+				gi.setConfigstring(i, "");
+			}
+		}
+	}
+
+	gi.Printf("coop_configstrRemoveCombatSounds(%s) removed %i items\n", sActorname.c_str(), iNum);
+}
+
+Event EV_ScriptThread_coop_configstrRemove
+(
+	"coop_configstringRemove",
+	EV_SCRIPTONLY,
+	"s",
+	"string",
+	"Removes configstrings that contain the given string, to fix oversize of cl_parsegamestate"
+);
+void CThread::coop_configstrRemove(Event* ev)
+{
+	if (ev->NumArgs() < 1) { return; }
+	str sRem = ev->GetString(1);
+	if (!sRem.length()) { return; }
+
+	int iRem = 0;
+	char* s;
+	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+		s = gi.getConfigstring(i);
+		str ss = "";
+		ss += s;
+
+		if (ss.length() > 0) {
+			//if this is a dialog try to handle german and english localized strings as well
+			if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
+				//regular dialog
+				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle deu version of dialog
+				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle eng version of dialog
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+			else {
+				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+		}
+	}
+	gi.Printf("coop_configstrRemove(%s) removed %i items\n", sRem.c_str(), iRem);
+}
+
+Event EV_ScriptThread_coop_getStringVariable
+(
+	"coop_getStringVariable",
+	EV_SCRIPTONLY,
+	"@ss",
+	"retunedString string",
+	"Returns level script code (string) variable by given name"
+);
+void CThread::coop_getStringVariable(Event* ev)
+{
+	str s = program->coop_getStringVariableValue(ev->GetString(1));
+	ev->ReturnString(s.c_str());
+}
+
+Event EV_ScriptThread_coop_getVectorVariable
+(
+	"coop_getVectorVariable",
+	EV_SCRIPTONLY,
+	"@vs",
+	"retunedVector string",
+	"Returns level script code (vector) variable by given name"
+);
+void CThread::coop_getVectorVariable(Event* ev)
+{
+	Vector v;
+	v = program->coop_getVectorVariableValue(ev->GetString(1));			
+	ev->ReturnVector(v);
+}
+
+Event EV_ScriptThread_coop_getFloatVariable
+(
+	"coop_getFloatVariable",
+	EV_SCRIPTONLY,
+	"@fs",
+	"retunedFloat string",
+	"Returns level script code (float) variable by given name"
+);
+void CThread::coop_getFloatVariable(Event* ev)
+{
+	float f;
+	f = program->coop_getFloatVariableValue(ev->GetString(1));
+	ev->ReturnFloat(f);
+}
+
+Event EV_ScriptThread_coop_setStringVariable
+(
+	"coop_setStringVariable",
+	EV_SCRIPTONLY,
+	"ss",
+	"variablename string",
+	"Sets string on global script string variable located by given name"
+);
+void CThread::coop_setStringVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	const char* sSet = ev->GetString(2);
+	program->coop_setStringVariableValue(varname, sSet);
+}
+
+Event EV_ScriptThread_coop_setVectorVariable
+(
+	"coop_setVectorVariable",
+	EV_SCRIPTONLY,
+	"sv",
+	"variablename vector",
+	"Sets vector on global script vector variable located by given name"
+);
+void CThread::coop_setVectorVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	Vector vSet = ev->GetVector(2);
+	program->coop_setVectorVariableValue(varname, vSet);
+}
+
+Event EV_ScriptThread_coop_setFloatVariable
+(
+	"coop_setFloatVariable",
+	EV_SCRIPTONLY,
+	"sf",
+	"variablename float",
+	"Sets float on global script float variable located by given name"
+);
+void CThread::coop_setFloatVariable(Event* ev)
+{
+	const char* varname = ev->GetString(1);
+	float fSet = ev->GetFloat(2);
+	program->coop_setFloatVariableValue(varname, fSet);
+}
+
+Event EV_ScriptThread_coop_objectiveUpdate
+(
+	"coop_objectiveUpdate",
+	EV_SCRIPTONLY,
+	"sff",
+	"itemState itemNumber itemShowNow",
+	"Updates Objective item - incomplete, complete, failed - 1 to 8 - show item now or wait for other items to update"
+);
+void CThread::coop_objectiveUpdate(Event* ev)
+{
+	str itemStatus = ev->GetString(1);
+	int itemNumber = (int)ev->GetFloat(2);
+	bool itemShow = (bool)(int)ev->GetFloat(2);
+	coop_objectivesUpdate(itemStatus, itemNumber, itemShow);
+}
+
+Event EV_ScriptThread_coop_missionFailed
+(
+	"missionfailed",
+	EV_SCRIPTONLY,
+	"S",
+	"reason",
+	"Displays the mission failed screen on the client side"
+);
+void CThread::coop_missionFailed(Event* ev)
+{
+	str reason = "DefaultFailure";
+	if (ev->NumArgs() > 0)
+		reason = ev->GetString(1);
+
+	G_MissionFailed(reason);
+}
+#endif

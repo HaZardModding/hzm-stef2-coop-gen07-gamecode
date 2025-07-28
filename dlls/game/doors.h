@@ -36,12 +36,30 @@ extern Event EV_Door_SetSpeed;
 extern Event EV_Door_Lock;
 extern Event EV_Door_Unlock;
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - coop specific script function - chrissstrahl
+//--------------------------------------------------------------
+extern Event EV_Door_coop_getState;
+#endif
+
+
 class Door;
 
 typedef SafePtr<Door> DoorPtr;
 
 class Door : public ScriptSlave
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - coop specific script function - chrissstrahl
+	//--------------------------------------------------------------
+public:
+	void coop_getDoorState(Event* ev);
+#endif
+
+
 	protected:
 		str			sound_stop;
 		str			sound_move;
