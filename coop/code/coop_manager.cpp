@@ -86,7 +86,7 @@ bool CoopManager::IncludedScriptCoop() {
 str CoopManager::playerScriptCallValidateThreadname(str threadName)
 {
     str threadToCall = "";
-    for (int i = 0; i < strlen(threadName); i++) {
+    for (unsigned int i = 0; i < strlen(threadName); i++) {
         if (threadName[i] == '"' ||
             threadName[i] == '%' ||
             threadName[i] == ';' ||
@@ -711,7 +711,7 @@ void CoopManager::playerAdminThink(Player* player) {
 }
 
 void CoopManager::playerMoveToSpawn(Player* player) {
-    Entity* spawnPoint = multiplayerManager.coop_getMultiplayerGame()->getSpawnPoint(player);
+    Entity* spawnPoint = multiplayerManager.gameFixAPI_getMultiplayerGame()->getSpawnPoint(player);
     if (!spawnPoint) {
         spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
     }
