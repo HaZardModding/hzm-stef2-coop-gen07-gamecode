@@ -128,7 +128,7 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
         //command match
         if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
             //dialog active check
-            if (entUsed && entUsed->isSubclassOf(Actor) && threadListTemp.command.tolower() == "dialogrunthread") {
+            if (entUsed && entUsed->isSubclassOf(Actor) && Q_stricmpn(threadListTemp.command.c_str(), "dialogrunthread", strlen(threadListTemp.command.c_str()))) {
                 Actor* actor = (Actor*)entUsed;
                 str sDialogName = actor->coop_getBranchDialogName();
                 if (!strlen(sDialogName)) {
@@ -136,14 +136,14 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
                 }
             }
             //thread match
-            if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread)) == 0) {
+            if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread.c_str())) == 0) {
                 //item check
                 if (strlen(threadListTemp.item) && threadListTemp.item != "None") {
                     str itemName = "";
                     weaponhand_t	hand = WEAPON_ANY;
                     player->getActiveWeaponName(hand, itemName);
                     //mismatch - just skip
-                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), strlen(threadListTemp.item)) != 0) {
+                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), strlen(threadListTemp.item.c_str())) != 0) {
                         return false;
                     }
                 }
