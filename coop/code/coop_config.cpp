@@ -163,6 +163,11 @@ void CoopSettings::playerScriptThreadsAllow()
 	dialogrunthread_entDeck8IGM.command = "dialogrunthread";
 	dialogrunthread_entDeck8IGM.thread = "entDeck8IGM";
 	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_entDeck8IGM);
+
+	CoopSettings_clientThreads_s dialogrunthread_careerOption;
+	dialogrunthread_careerOption.command = "dialogrunthread";
+	dialogrunthread_careerOption.thread = "careerOption";
+	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_careerOption);
 }
 
 void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
