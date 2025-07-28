@@ -40,4 +40,5 @@ public:
 	/* virtual */ void					setupMultiplayerUI(Player* player);
 	/* virtual */ void					score(const Player* player);
 	/* virtual */ bool					checkGameType(const char* rule);
+	/* virtual */ void					ActivatePlayer(Player* player);
 };

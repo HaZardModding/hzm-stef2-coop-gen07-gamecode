@@ -657,3 +657,26 @@ bool ModeCoop::checkGameType(const char* gameType)
 	else
 		return false;
 }
+
+void ModeCoop::ActivatePlayer(Player* player)
+{
+	if (!player){
+		warning("ModeCoop::ActivatePlayer", "NULL Player\n");
+		return;
+	}
+
+	// Make the player enter the game
+	if (!_gameStarted) {
+		multiplayerManager.makePlayerSpectator(player);
+		return;
+
+	}
+
+	multiplayerManager.playerEnterArena(player->entnum, _startingHealth);
+	multiplayerManager.changePlayerModel(player, player->client->pers.mp_playermodel);
+
+	_giveInitialConditions(player);
+	multiplayerManager.allowFighting(true);
+	player->takedamage = DAMAGE_YES;
+	multiplayerManager.playerSpawned(player);
+}
