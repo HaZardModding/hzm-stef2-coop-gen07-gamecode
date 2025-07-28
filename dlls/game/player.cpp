@@ -8840,6 +8840,17 @@ void Player::FinishMove( void )
 
 void Player::UpdateStats( void )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Coop specific stats handle - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled() && CoopManager::Get().IsCoopLevel()) {
+		coop_updateStats();
+		return;
+	}
+#endif
+
+
 	//--------------------------------------------------------------
 	// GAMEFIX - Fixed: Warning C4456: Declaration of i hides previous local declaration. - chrissstrahl
 	//--------------------------------------------------------------
@@ -15636,5 +15647,435 @@ bool Player::coop_isAdmin()
 	}
 	return false;
 }
+
+void Player::coop_updateStats()
+{
+	// Deathmatch stats for arena mode
+	if (multiplayerManager.inMultiplayer())
+	{
+		//client->ps.stats[STAT_RED_TEAM_SCORE] = multiplayerManager.getTeamPoints("Red");
+		//client->ps.stats[STAT_BLUE_TEAM_SCORE] = multiplayerManager.getTeamPoints("Blue");
+
+		client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
+		client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
+		client->ps.stats[STAT_DEATHS] = multiplayerManager.getDeaths(this);
+		client->ps.stats[STAT_MP_SPECTATING_ENTNUM] = multiplayerManager.getStat(this, STAT_MP_SPECTATING_ENTNUM);
+
+		//They have multiple use cases (changed with each modifier), I listed one for each so a general idea can be derived
+		/*client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat(this, STAT_MP_GENERIC1); //_redDestructionObject
+		client->ps.stats[STAT_MP_GENERIC2] = multiplayerManager.getStat(this, STAT_MP_GENERIC2); //_blueDestructionObject
+		client->ps.stats[STAT_MP_GENERIC3] = multiplayerManager.getStat(this, STAT_MP_GENERIC3); //_blueBombPlace
+		client->ps.stats[STAT_MP_GENERIC5] = multiplayerManager.getStat(this, STAT_MP_GENERIC5); //ctfflag
+		client->ps.stats[STAT_MP_GENERIC6] = multiplayerManager.getStat(this, STAT_MP_GENERIC6); //oneFlag
+		client->ps.stats[STAT_MP_GENERIC7] = multiplayerManager.getStat(this, STAT_MP_GENERIC7); //bomber get name
+		client->ps.stats[STAT_MP_GENERIC8] = multiplayerManager.getStat(this, STAT_MP_GENERIC8); //CONTROL_POINT_GAMMA
+		client->ps.stats[STAT_MP_MODE_ICON] = multiplayerManager.getIcon(this, STAT_MP_MODE_ICON);
+		client->ps.stats[STAT_MP_TEAM_ICON] = multiplayerManager.getIcon(this, STAT_MP_TEAM_ICON);
+		client->ps.stats[STAT_MP_TEAMHUD_ICON] = multiplayerManager.getIcon(this, STAT_MP_TEAMHUD_ICON);
+		client->ps.stats[STAT_MP_SPECIALTY_ICON] = multiplayerManager.getIcon(this, STAT_MP_SPECIALTY_ICON);
+		client->ps.stats[STAT_MP_OTHERTEAM_ICON] = multiplayerManager.getIcon(this, STAT_MP_OTHERTEAM_ICON);
+		*/
+
+		if (multiplayerManager.inMultiplayer())
+			edict->s.infoIcon = multiplayerManager.getInfoIcon(this, last_ucmd.buttons);
+		else
+			edict->s.infoIcon = 0;
+
+		client->ps.stats[STAT_MP_AWARD_ICON] = multiplayerManager.getIcon(this, STAT_MP_AWARD_ICON);
+		client->ps.stats[STAT_MP_AWARD_COUNT] = multiplayerManager.getStat(this, STAT_MP_AWARD_COUNT);
+
+		client->ps.stats[STAT_MP_STATE] = multiplayerManager.getStat(this, STAT_MP_STATE);
+
+		if (_holdableItem)
+			client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = _holdableItem->getIcon();
+		else
+			client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = -1;
+
+		if (_rune)
+			client->ps.stats[STAT_MP_RUNE_ICON] = _rune->getIcon();
+		else
+			client->ps.stats[STAT_MP_RUNE_ICON] = -1;
+
+		if (_powerup)
+			client->ps.stats[STAT_MP_POWERUP_ICON] = _powerup->getIcon();
+		else
+			client->ps.stats[STAT_MP_POWERUP_ICON] = -1;
+
+		client->ps.stats[STAT_TIMELEFT_SECONDS] = multiplayerManager.getStat(this, STAT_TIMELEFT_SECONDS);
+	}
+
+	// Use my health/armor as the default to display
+	int count;
+	float healthToDisplay = health;
+	float armorToDisplay = GetArmorValue();
+
+	if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this, SPECTATOR_TYPE_FOLLOW))
+	{
+		Player* playerSpectating;
+		playerSpectating = multiplayerManager.getPlayerSpectating(this);
+
+		if (playerSpectating) {
+			// Display the health/armor of the player we are spectating instead of ours
+			healthToDisplay = playerSpectating->getHealth();
+			armorToDisplay = playerSpectating->GetArmorValue();
+		}
+	}
+
+	// Round health a little so that it doesn't mislead the player when it gets changed to an int
+
+	if ((healthToDisplay < 1.0f) && (healthToDisplay > 0.0f))
+	{
+		client->ps.stats[STAT_HEALTH] = 1;
+	}
+	else
+	{
+		client->ps.stats[STAT_HEALTH] = (int)healthToDisplay;
+	}
+
+
+	if (health <= 0.0f)
+	{
+		Vector damageAngles = damage_from * -1;
+		damageAngles = damageAngles.toAngles();
+		client->ps.stats[STAT_DEAD_YAW] = (int)damageAngles[YAW];
+	}
+	else
+	{
+		client->ps.stats[STAT_DEAD_YAW] = 0;
+	}
+
+	//ArmorValue Stat Update
+	client->ps.stats[STAT_ARMOR_LEVEL] = (int)armorToDisplay;
+
+	Weapon* leftweapon = GetActiveWeapon(WEAPON_LEFT);
+	Weapon* rightweapon = GetActiveWeapon(WEAPON_RIGHT);
+	Weapon* dualweapon = GetActiveWeapon(WEAPON_DUAL);
+
+	client->ps.stats[STAT_AMMO_LEFT] = 0;
+	client->ps.stats[STAT_AMMO_RIGHT] = 0;
+	client->ps.stats[STAT_CLIPAMMO_LEFT] = 0;
+	client->ps.stats[STAT_CLIPAMMO_RIGHT] = 0;
+	client->ps.stats[STAT_NUM_SHOTS_LEFT] = 0;
+	client->ps.stats[STAT_MAX_NUM_SHOTS_LEFT] = 0;
+	client->ps.stats[STAT_NUM_SHOTS_RIGHT] = 0;
+	client->ps.stats[STAT_MAXAMMO_LEFT] = 0;
+	client->ps.stats[STAT_MAXAMMO_RIGHT] = 0;
+	client->ps.stats[STAT_MAXCLIPAMMO_LEFT] = 0;
+	client->ps.stats[STAT_MAXCLIPAMMO_RIGHT] = 0;
+
+	client->ps.stats[STAT_AMMO_TYPE1] = 0;
+	client->ps.stats[STAT_AMMO_TYPE2] = 0;
+	client->ps.stats[STAT_AMMO_TYPE3] = 0;
+	client->ps.stats[STAT_AMMO_TYPE4] = 0;
+
+	if (_powerup)
+		client->ps.stats[STAT_POWERUPTIME] = static_cast<int>(_powerup->getTimeLeft());
+	else
+		client->ps.stats[STAT_POWERUPTIME] = 0;
+
+	client->ps.stats[STAT_ACCUMULATED_PAIN] = (int)accumulated_pain;
+
+	client->ps.activeItems[ITEM_NAME_AMMO_LEFT] = -1;
+	client->ps.activeItems[ITEM_NAME_AMMO_RIGHT] = -1;
+	client->ps.activeItems[ITEM_NAME_WEAPON_LEFT] = -1;
+	client->ps.activeItems[ITEM_NAME_WEAPON_RIGHT] = -1;
+	client->ps.activeItems[ITEM_NAME_WEAPON_DUAL] = -1;
+#ifndef DEDICATED	
+	//
+	// mission objectives
+	//
+	client->ps.stats[STAT_NUM_OBJECTIVES] = gi.MObjective_GetNumActiveObjectives();
+	client->ps.stats[STAT_COMPLETE_OBJECTIVES] = gi.MObjective_GetNumCompleteObjectives();
+	client->ps.stats[STAT_FAILED_OBJECTIVES] = gi.MObjective_GetNumFailedObjectives();
+	client->ps.stats[STAT_INCOMPLETE_OBJECTIVES] = gi.MObjective_GetNumIncompleteObjectives();
+#endif
+
+	// misc stats
+	if (client->ps.stats[STAT_SHOTS_FIRED] > 0)
+		client->ps.stats[STAT_ACCURACY] = (int)((float)((float)client->ps.stats[STAT_SHOTS_HIT] / (float)client->ps.stats[STAT_SHOTS_FIRED]) * 100.0f);
+	else
+		client->ps.stats[STAT_ACCURACY] = 100;
+
+	client->ps.stats[STAT_MISSION_DURATION] = (int)level.timeInLevel;
+
+	client->ps.stats[STAT_WEAPON_GENERIC1] = 0;
+	client->ps.stats[STAT_WEAPON_GENERIC2] = 0;
+
+	if (dualweapon)
+	{
+		// Left is PRIMARY
+		if (dualweapon->GetClipSize(FIRE_MODE1) > 0)
+		{
+			//set the max ammo to contain the number of clips and the max number of clips.
+			client->ps.stats[STAT_AMMO_LEFT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE1)) / dualweapon->GetClipSize(FIRE_MODE1);
+			client->ps.stats[STAT_MAXAMMO_LEFT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE1)) / dualweapon->GetClipSize(FIRE_MODE1);
+
+			client->ps.stats[STAT_CLIPAMMO_LEFT] = dualweapon->ClipAmmo(FIRE_MODE1);
+			client->ps.stats[STAT_MAXCLIPAMMO_LEFT] = dualweapon->GetClipSize(FIRE_MODE1);
+
+			if (dualweapon->ammorequired[FIRE_MODE1] != 0)
+			{
+				client->ps.stats[STAT_NUM_SHOTS_LEFT] = dualweapon->ClipAmmo(FIRE_MODE1) / dualweapon->ammorequired[FIRE_MODE1];
+				client->ps.stats[STAT_MAX_NUM_SHOTS_LEFT] = dualweapon->GetClipSize(FIRE_MODE1) / dualweapon->ammorequired[FIRE_MODE1];
+			}
+		}
+		else
+		{
+			client->ps.stats[STAT_AMMO_LEFT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_MAXAMMO_LEFT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE1));
+
+			client->ps.stats[STAT_CLIPAMMO_LEFT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_MAXCLIPAMMO_LEFT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE1));
+
+			if (dualweapon->ammorequired[FIRE_MODE1] != 0)
+			{
+				client->ps.stats[STAT_NUM_SHOTS_LEFT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE1)) / dualweapon->ammorequired[FIRE_MODE1];
+				client->ps.stats[STAT_MAX_NUM_SHOTS_LEFT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE1)) / dualweapon->ammorequired[FIRE_MODE1];
+			}
+
+
+		}
+
+
+
+		client->ps.activeItems[ITEM_NAME_AMMO_LEFT] = AmmoIndex(dualweapon->GetAmmoType(FIRE_MODE1));
+
+		// Right is AlTERNATE
+		client->ps.stats[STAT_AMMO_RIGHT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE2));
+		client->ps.stats[STAT_MAXAMMO_RIGHT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE2));
+
+		if (dualweapon->GetClipSize(FIRE_MODE2) > 0)
+		{
+			client->ps.stats[STAT_CLIPAMMO_RIGHT] = dualweapon->ClipAmmo(FIRE_MODE2);
+			client->ps.stats[STAT_MAXCLIPAMMO_RIGHT] = dualweapon->GetClipSize(FIRE_MODE2);
+
+			if (dualweapon->ammorequired[FIRE_MODE2] != 0)
+				client->ps.stats[STAT_NUM_SHOTS_RIGHT] = dualweapon->ClipAmmo(FIRE_MODE2) / dualweapon->ammorequired[FIRE_MODE2];
+		}
+		else
+		{
+			client->ps.stats[STAT_CLIPAMMO_RIGHT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE2));
+			client->ps.stats[STAT_MAXCLIPAMMO_RIGHT] = MaxAmmoCount(dualweapon->GetAmmoType(FIRE_MODE2));
+
+			if (dualweapon->ammorequired[FIRE_MODE2] != 0)
+				client->ps.stats[STAT_NUM_SHOTS_RIGHT] = AmmoCount(dualweapon->GetAmmoType(FIRE_MODE2)) / dualweapon->ammorequired[FIRE_MODE2];
+
+		}
+
+		client->ps.activeItems[ITEM_NAME_AMMO_RIGHT] = AmmoIndex(dualweapon->GetAmmoType(FIRE_MODE2));
+		client->ps.activeItems[ITEM_NAME_WEAPON_DUAL] = dualweapon->getIndex();
+
+		//Send the # for all ammo groups
+		//This should be fixed since its a poor implementation.
+
+		for (int i = 1; i <= ammo_inventory.NumObjects(); i++) {
+			if (ammo_inventory.ObjectAt(i)->getName() == "Plasma") {
+				client->ps.stats[STAT_AMMO_TYPE1] = ammo_inventory.ObjectAt(i)->getAmount();
+			}
+			else if (ammo_inventory.ObjectAt(i)->getName() == "Fed") {
+				client->ps.stats[STAT_AMMO_TYPE2] = ammo_inventory.ObjectAt(i)->getAmount();
+			}
+			else if (ammo_inventory.ObjectAt(i)->getName() == "Idryll") {
+				client->ps.stats[STAT_AMMO_TYPE3] = ammo_inventory.ObjectAt(i)->getAmount();
+			}
+			else if (ammo_inventory.ObjectAt(i)->getName() == "Phaser") {
+				client->ps.stats[STAT_AMMO_TYPE4] = ammo_inventory.ObjectAt(i)->getAmount();
+			}
+		}
+
+		client->ps.stats[STAT_WEAPON_GENERIC1] = dualweapon->getStat(STAT_WEAPON_GENERIC1);
+		client->ps.stats[STAT_WEAPON_GENERIC2] = dualweapon->getStat(STAT_WEAPON_GENERIC2);
+	}
+	else
+	{
+		if (leftweapon)
+		{
+			client->ps.stats[STAT_AMMO_LEFT] = AmmoCount(leftweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_MAXAMMO_LEFT] = MaxAmmoCount(leftweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_CLIPAMMO_LEFT] = leftweapon->ClipAmmo(FIRE_MODE1);
+			client->ps.stats[STAT_MAXCLIPAMMO_LEFT] = leftweapon->GetClipSize(FIRE_MODE1);
+			client->ps.activeItems[ITEM_NAME_AMMO_LEFT] = AmmoIndex(leftweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.activeItems[ITEM_NAME_WEAPON_LEFT] = leftweapon->getIndex();
+
+		}
+
+		if (rightweapon)
+		{
+			client->ps.stats[STAT_AMMO_RIGHT] = AmmoCount(rightweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_MAXAMMO_RIGHT] = MaxAmmoCount(rightweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.stats[STAT_CLIPAMMO_RIGHT] = rightweapon->ClipAmmo(FIRE_MODE1);
+			client->ps.stats[STAT_MAXCLIPAMMO_RIGHT] = rightweapon->GetClipSize(FIRE_MODE1);
+			client->ps.activeItems[ITEM_NAME_AMMO_RIGHT] = AmmoIndex(rightweapon->GetAmmoType(FIRE_MODE1));
+			client->ps.activeItems[ITEM_NAME_WEAPON_RIGHT] = rightweapon->getIndex();
+
+		}
+	}
+
+
+	//
+	// set boss health and name
+	//
+
+	if (bosshealth->value > 0.0f)
+	{
+		client->ps.stats[STAT_BOSSHEALTH] = (int)(bosshealth->value * 100.0f);
+
+		if (((bosshealth->value * 100.0f) > 0) && (client->ps.stats[STAT_BOSSHEALTH] == 0))
+		{
+			client->ps.stats[STAT_BOSSHEALTH] = 1;
+		}
+
+		client->ps.stats[STAT_BOSSNAME_CONFIGINDEX] = G_FindConfigstringIndex(bossname->string, CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true) + CS_GENERAL_STRINGS;
+		//client->ps.stats[ STAT_BOSSNAME_CONFIGINDEX ] = gi.soundindex( bossname->string ) + CS_SOUNDS;
+	}
+	else
+	{
+		client->ps.stats[STAT_BOSSHEALTH] = 0;
+	}
+
+	if (_itemText.length() > 0)
+	{
+		client->ps.stats[STAT_ITEMICON] = _itemIcon;
+
+		client->ps.stats[STAT_ITEMTEXT] = G_FindConfigstringIndex(_itemText.c_str(), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true) + CS_GENERAL_STRINGS;
+		//client->ps.stats[ STAT_BOSSNAME_CONFIGINDEX ] = gi.soundindex( bossname->string ) + CS_SOUNDS;
+	}
+	else
+	{
+		client->ps.stats[STAT_ITEMTEXT] = -1;
+	}
+
+	if (_voteText.length() > 0)
+	{
+		client->ps.stats[STAT_VOTETEXT] = G_FindConfigstringIndex(_voteText.c_str(), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true) + CS_GENERAL_STRINGS;
+	}
+	else
+	{
+		client->ps.stats[STAT_VOTETEXT] = -1;
+	}
+
+	if (specialMoveEndTime > 0.0f)
+	{
+		float beginTime = specialMoveEndTime - specialMoveChargeTime;
+		float timeElapsed = specialMoveCharge - beginTime;
+		float percentElapsed = timeElapsed / specialMoveChargeTime;
+		float finalValue = percentElapsed * 100.0f;
+		if (finalValue > 100.0f)
+			finalValue = 100.0f;
+		client->ps.stats[STAT_SPECIALMOVETIMER] = (int)finalValue;
+	}
+	else
+		client->ps.stats[STAT_SPECIALMOVETIMER] = 0;
+
+	client->ps.stats[STAT_POINTS] = points;
+
+	client->ps.stats[STAT_SECRETS_TOTAL] = level.total_secrets;
+	client->ps.stats[STAT_SECRETS_FOUND] = level.found_secrets;
+	client->ps.stats[STAT_ITEMS_TOTAL] = level.total_specialItems;
+	client->ps.stats[STAT_ITEMS_FOUND] = level.found_specialItems;
+
+
+	// Set cinematic stuff
+
+	client->ps.stats[STAT_CINEMATIC] = 0;
+
+	if (level.cinematic)
+		client->ps.stats[STAT_CINEMATIC] = (1 << 0);
+
+	if (actor_camera)
+		client->ps.stats[STAT_CINEMATIC] += (1 << 1);
+
+	// Go through all the player's weapons and send over the indexes of the names
+	memset(client->ps.inventory_name_index, 0, sizeof(client->ps.inventory_name_index));
+	memset(client->ps.ammo_in_clip, 0, sizeof(client->ps.ammo_in_clip));
+
+	count = inventory.NumObjects();
+
+	if (count > MAX_INVENTORY)
+	{
+		count = MAX_INVENTORY;
+		warning("Player::UpdateStats", "Max inventory exceeded\n");
+	}
+
+	Weapon* weapon;
+	Ammo* ammo;
+	int		ammoRequired;
+
+	for (int i = 1; i <= count; i++) {
+		int temp_entnum = inventory.ObjectAt(i);
+		Item* item = (Item*)G_GetEntity(temp_entnum);
+
+		if (item)
+		{
+			client->ps.inventory_name_index[i - 1] = item->getIndex();
+			if (item->isSubclassOf(Weapon))
+			{
+				weapon = (Weapon*)item;
+				ammo = FindAmmoByName(weapon->GetAmmoType(FIRE_MODE1));
+				if (ammo == 0)
+					continue;
+				client->ps.inventory_weapon_ammo_index[i - 1] = ammo->getIndex();
+
+				ammoRequired = weapon->GetRequiredAmmo(FIRE_MODE1);
+				client->ps.inventory_weapon_required_ammo[i - 1] = ammoRequired;
+
+				client->ps.ammo_in_clip[i - 1] = weapon->getAmmoInClip(FIRE_MODE1);
+			}
+		}
+	}
+
+	// Go through all the player's ammo and send over the names/amounts
+	memset(client->ps.ammo_amount, 0, sizeof(client->ps.ammo_amount));
+	count = ammo_inventory.NumObjects();
+
+	assert(count < MAX_AMMO);
+	if (count > MAX_AMMO)
+	{
+		gi.Error(ERR_DROP, "Player::UpdateStats : Exceeded MAX_AMMO\n");
+	}
+
+	for (int i = 1; i <= count; i++) {
+		Ammo* temp_ammo = ammo_inventory.ObjectAt(i);
+
+
+		if (temp_ammo)
+		{
+			client->ps.ammo_amount[i - 1] = temp_ammo->getAmount();
+			client->ps.max_ammo_amount[i - 1] = temp_ammo->getMaxAmount();
+			client->ps.ammo_name_index[i - 1] = temp_ammo->getIndex();
+		}
+	}
+
+	// Do letterbox
+
+	// Check for letterbox fully out
+	if ((level.m_letterbox_time <= 0.0f) && (level.m_letterbox_dir == letterbox_in))
+	{
+		client->ps.stats[STAT_LETTERBOX] = (int)(level.m_letterbox_fraction * MAX_LETTERBOX_SIZE);
+		return;
+	}
+	else if ((level.m_letterbox_time <= 0.0f) && (level.m_letterbox_dir == letterbox_out))
+	{
+		client->ps.stats[STAT_LETTERBOX] = 0;
+		return;
+	}
+
+	float frac;
+
+	level.m_letterbox_time -= level.frametime;
+
+	frac = level.m_letterbox_time / level.m_letterbox_time_start;
+
+	if (frac > 1.0f)
+		frac = 1.0f;
+	if (frac < 0.0f)
+		frac = 0.0f;
+
+	if (level.m_letterbox_dir == letterbox_in)
+		frac = 1.0f - frac;
+
+	client->ps.stats[STAT_LETTERBOX] = (int)((float)(frac * level.m_letterbox_fraction) * MAX_LETTERBOX_SIZE);
+}
+
 
 #endif

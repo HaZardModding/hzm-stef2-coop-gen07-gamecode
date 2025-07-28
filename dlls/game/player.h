@@ -328,6 +328,7 @@ class Player : public Sentient
 		void coop_hudsAdd(Player* player, str hudName);
 
 		Actor* coop_getBranchDialogActor(void);
+		void coop_updateStats();
 #endif
 
 
