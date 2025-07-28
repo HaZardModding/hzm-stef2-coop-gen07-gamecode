@@ -3773,25 +3773,38 @@ str MultiplayerManager::getPlaceName( Player *player )
 
 void MultiplayerManager::setTeamHud( Player *player, const str &teamHudName )
 {
-	str command;
-
-	if ( teamHudName == _playerData[ player->entnum ]._teamHud )
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
+	//--------------------------------------------------------------
+	if (!gameFixAPI_isSpectator_stef2(player) && teamHudName == _playerData[player->entnum]._teamHud)
 		return;
 
-	// Remove the old team hud
 
-	if ( _playerData[ player->entnum ]._teamHud.length() > 0 )
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
+	//--------------------------------------------------------------
+	if (!gameFixAPI_isSpectator_stef2(player)) {
+		gamefix_playerDelayedServerCommand(player->entnum, "ui_removehud mp_teamspec");
+	}
+
+
+	// Remove the old team hud
+	if (_playerData[player->entnum]._teamHud.length() > 0)
 	{
-		command = va( "stufftext \"ui_removehud %s\"\n", _playerData[ player->entnum ]._teamHud.c_str() );
-		gi.SendServerCommand( player->entnum, command.c_str() );
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
+		//--------------------------------------------------------------
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_removehud %s", _playerData[player->entnum]._teamHud.c_str()));
 	}
 
 	// Add the new team hud
 
 	if ( teamHudName.length() > 0 )
 	{
-		command = va( "stufftext \"ui_addhud %s\"\n", teamHudName.c_str() );
-		gi.SendServerCommand( player->entnum, command.c_str() );
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
+		//--------------------------------------------------------------
+		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", teamHudName.c_str()));
 	}
 
 	_playerData[ player->entnum ]._teamHud = teamHudName;
@@ -4397,4 +4410,16 @@ void MultiplayerManager::setNextTauntTime(Player* player)
 float MultiplayerManager::getMatchStartTime()
 {
 	return _multiplayerGame->getMatchStartTime();
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Access to _multiplayerGame - chrissstrahl
+//--------------------------------------------------------------
+MultiplayerModeBase* MultiplayerManager::gameFixAPI_getMultiplayerGame()
+{
+	if (_multiplayerGame) {
+		return _multiplayerGame;
+	}
+	gi.Error(ERR_DROP, "gameFixAPI_getMultiplayerGame() _multiplayerGame was nullptr\n");
+	return nullptr;
 }

@@ -99,6 +99,7 @@ class MultiplayerManager : public Class
 	   //--------------------------------------------------------------
 	   // GAMEFIX - Added: Functions and Variables - chrissstrahl
 	   //--------------------------------------------------------------
+	   MultiplayerModeBase*		MultiplayerManager::gameFixAPI_getMultiplayerGame();
 	   int						gamefixEF2_voteStartedByClient = -1;
 	   bool						gamefixEF2_updateDynamicLights = false;
 	   Camera*					gamefixEF2_currentCamera = nullptr;

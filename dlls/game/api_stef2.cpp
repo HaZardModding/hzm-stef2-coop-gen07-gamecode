@@ -362,24 +362,20 @@ void gameFixAPI_playerScore(Player* player)
 }
 void gameFixAPI_playerClientThink(Player* player)
 {
-	if (multiplayerManager.inMultiplayer()) {
+	if (gameFixAPI_inMultiplayer()) {
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
 		// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+		// This is something that has to do how things for singleplayer are handled - touching that is not recommended
 		//--------------------------------------------------------------
-		if (dedicated->integer == 0) {
-			if (gameFixAPI_isWindowsServer()){
-				if (!gamefix_client_persistant_t[player->entnum].hudsAdded) {
-					if (gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck < level.time) {
-						if (!gameFixAPI_isHost(player)) {
-							gamefix_client_persistant_t[player->entnum].hudsAdded = true;
-							return;
-						}
-						gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck = (level.time + 0.2);
-						if (gamefix_getCvar("loadingstatus") == "$$LoadingMedia$$") {
-							gamefix_client_persistant_t[player->entnum].hudsAdded = true;
-							gameFixAPI_playerSetupUi(player);
-						}
+		if (!gamefix_client_persistant_t[player->entnum].hudsAdded) {
+			if (gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck < level.time) {
+				gamefix_client_persistant_t[player->entnum].hudsAddedLastCheck = (level.time + 0.2);
+				if (gameFixAPI_playerReadyForSetupUi(player)) {
+					MultiplayerModeBase *currentGametype = multiplayerManager.gameFixAPI_getMultiplayerGame();
+					if (currentGametype) {
+						currentGametype->setupMultiplayerUI(player);
+						gamefix_client_persistant_t[player->entnum].hudsAdded = true;
 					}
 				}
 			}
@@ -388,47 +384,23 @@ void gameFixAPI_playerClientThink(Player* player)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Fixed: Huds not inizialising correctly on listen server for host - chrissstrahl
-// Host is still in the loading screen while the hud is added only after respawn or team switch huds become visible
+// GAMEFIX - Checks: If player is ready to have huds added - this is for windows listen server host - chrissstrahl
+// Only the host can already be on the server to early - this is a issue only occuring once on the first map loaded
 //--------------------------------------------------------------
-void gameFixAPI_playerSetupUi(Player* player)
+bool gameFixAPI_playerReadyForSetupUi(Player* player)
 {
-	gi.SendServerCommand(player->entnum, "stufftext \"ui_removehuds all\"\n");
-
-	str teamHud = "";
-	if (multiplayerManager.inMultiplayer()) {
-		Team* team = multiplayerManager.getPlayersTeam(player);
-		if (!team) {
-			if (multiplayerManager.isPlayerSpectator(player)) {
-				teamHud = "mp_teamspec";
-			}
-		}
-		else {
-			str teamColor;
-			teamColor = team->getName();
-			teamColor = teamColor.tolower();
-			if (multiplayerManager.isPlayerSpectator(player)) {
-				teamHud = va("mp_team%sspec", teamColor.c_str());
-			}
-			else {
-				teamHud = va("mp_team%s", teamColor.c_str());
+	if (!gameFixAPI_isDedicatedServer()) {
+		if (gameFixAPI_isWindowsServer()) {
+			if (gameFixAPI_isHost(player)) {
+				str loadingStatus = gamefix_getCvar("loadingstatus");
+				if (loadingStatus != "$$RunningFirstGameFrames$$" && loadingStatus != "$$LoadingMedia$$") {
+					return false;
+				}
 			}
 		}
 	}
 
-	if (teamHud.length()) {
-		gamefix_playerDelayedServerCommand(player->entnum, va("ui_addhud %s", teamHud.c_str()));
-	}
-
-	gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_console");
-	gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud mp_teamhud");
-
-	if (mp_timelimit->integer) {
-		gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer enable");
-	}
-	else {
-		gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
-	}
+	return true;
 }
 
 //--------------------------------------------------------------

@@ -107,6 +107,7 @@ void				gamefix_messageOfTheDay(Player* player);
 
 void				gamefix_setMakeSolidAsap(Entity* solidMe, bool makeSolid, float atLevelTime);
 bool				gamefix_getMakeSolidAsap(Entity* solidMe);
+bool				gamefix_makeSolidAsapThink(Entity* eCheck);
 float				gamefix_getMakeSolidAsapTime(Entity* eCheck);
 
 Entity*				gamefix_returnInfoPlayerStart(str info);
@@ -153,7 +154,7 @@ void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText);
 void				gamefix_playerDelayedServerCommand(int entNum, const char* commandText, float delayInSeconds);
 void				gamefix_playerHandleDelayedServerCommand(void);
 void				gamefix_playerClearDelayedServerCommand(int entNum);
-void				gamefix_playerSetupUi(Player* player);
+bool				gamefix_playerReadyForSetupUi(Player* player);
 
 void				gamefix_aiTurnOff();
 void				gamefix_aiTurnOn();
@@ -175,6 +176,9 @@ void				gamefix_vstrLocalLanguage(gentity_t* ent);
 str					gamefix_getLocalizedString(Player* player, const str sEnglish,const str sGerman);
 str					gamefix_localizeStringForPlayer(Player* player, char unlocal[MAX_QPATH]);
 void				gamefix_printAllClients(const str text);
+
+float				gamefix_getEntityVarFloat(Entity* e, str sVarName);
+int					gamefix_getEntityVarInt(Entity* e, str sVarName);
 
 int					gamefix_getCvarInt(str cvarName);
 float				gamefix_getCvarFloat(str cvarName);
