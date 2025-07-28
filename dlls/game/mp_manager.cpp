@@ -3951,9 +3951,18 @@ void MultiplayerManager::setTeamHud( Player *player, const str &teamHudName )
 		gamefix_playerDelayedServerCommand(player->entnum, va("ui_removehud %s", _playerData[player->entnum]._teamHud.c_str()));
 	}
 
+
 	// Add the new team hud
 
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - We don't want team Hud in Coop unless while in Spectator - chrissstrahl
+		//--------------------------------------------------------------
+	if (teamHudName.length() > 0 && !CoopManager::Get().IsCoopEnabled() || gameFixAPI_isSpectator_stef2(player))
+#else
 	if ( teamHudName.length() > 0 )
+#endif
 	{
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: Issues with the Teamhud not updating for the host player - chrissstrahl
