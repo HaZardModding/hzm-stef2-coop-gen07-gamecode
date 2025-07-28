@@ -513,6 +513,7 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 
 World::World()
 {
+	const char  *text;
 	str         mapname;
 	int		   i;
 
