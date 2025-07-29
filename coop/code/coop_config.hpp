@@ -36,6 +36,7 @@ constexpr auto _COOP_SETTINGS_CAT_vote = "vote";
 constexpr auto _COOP_SETTINGS_CAT_gameplay = "gameplay";
 constexpr auto _COOP_SETTINGS_CAT_score = "score";
 
+constexpr auto _COOP_SETTINGS_server_configname = "server";
 
 constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_TRIES = 5;
 constexpr auto _COOP_SETTINGS_ADMIN_LOGIN_AUTH_STRING_LENGTH_MIN = 3;
@@ -102,6 +103,7 @@ public:
 	int scoreKilledEnemy = 0;
 	int scoreKilledBoss = 0;
 
+	void serverConfigCheck();
 	void playerCommandsAllow();
 	void playerScriptThreadsAllow();
 	void LoadSettingsFromFile(const str& iniFilePath = _COOP_FILE_settings);

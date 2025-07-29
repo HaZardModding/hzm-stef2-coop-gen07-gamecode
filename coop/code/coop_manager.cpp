@@ -192,6 +192,8 @@ void CoopManager::Init() {
         gi.Printf(_COOP_INFO_INIT_game);
         DEBUG_LOG(_COOP_INFO_INIT_game);
 
+        coopSettings.serverConfigCheck();
+
         LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();

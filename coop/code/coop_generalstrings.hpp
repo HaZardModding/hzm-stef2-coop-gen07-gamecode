@@ -20,6 +20,8 @@ constexpr auto _COOP_INFO_INIT_gamedone = "==== HaZardModding Coop Mod Gen7 GAME
 constexpr auto _COOP_INFO_INIT_world = "==== HaZardModding Coop Mod Gen7 WORLD - %s ====\n";
 constexpr auto _COOP_INFO_INIT_status = "==== HaZardModding Coop Mod Gen7 STAUS - %s ====\n";
 
+constexpr auto _COOP_INFO_INIT_server_config = "Server config '%s.cfg' remapped to '%s.cfg'\n";
+
 constexpr auto _COOP_INFO_usedCommand_noclip = "^8Command: ^5noclip ^8toggled.\n";
 constexpr auto _COOP_INFO_usedCommand_stuck1 = "^5Coop^2: You have been moved to your spawn location.\n";
 constexpr auto _COOP_INFO_usedCommand_stuck1_deu = "^5Coop^2: Sie wurden zu Ihrem Spawnpunkt geschoben.\n";

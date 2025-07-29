@@ -5,6 +5,20 @@ CoopSettings coopSettings;
 Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowList;
 
 
+void CoopSettings::serverConfigCheck()
+{
+	//make sure dedicated server is not using the same config as the player on windows
+	if ( gameFixAPI_inSingleplayer() || !gameFixAPI_isWindowsServer() || gameFixAPI_isDedicatedServer()) {
+		return;
+	}
+
+	str userName = gamefix_getCvar("username");
+	if (Q_stricmp(userName.c_str(), gamefix_getCvar("config").c_str()) == 0 && Q_stricmp(userName.c_str(), "server") != 0) {
+		gi.Printf(va(_COOP_INFO_INIT_server_config, userName.c_str(), _COOP_SETTINGS_server_configname));
+		gi.cvar_set("config", _COOP_SETTINGS_server_configname);
+	}
+}
+
 void CoopSettings::playerCommandsAllow()
 {
 	//client console commands that will not be flood filtered
