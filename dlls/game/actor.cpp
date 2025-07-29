@@ -6146,13 +6146,26 @@ qboolean Actor::EntityInRange ( Entity *ent,	float range, float min_height, floa
    Vector   delta , cent , enemyCent;
 	float    height_diff;
 
-
 	// Make sure the entity is alive
-
-	if ( !IsEntityAlive( ent ) )
-      {
+	if (!IsEntityAlive(ent)) {
 		return false;
-      }
+	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Multiplayer Followtarget validation - chrissstrahl
+	//--------------------------------------------------------------
+	if (gamefix_checkNotarget(ent)) {
+		return false;
+	}
+	if (gameFixAPI_inMultiplayer()) {
+		if (gameFixAPI_isSpectator_stef2(ent) || gameFixAPI_isDead(ent)) {
+			return false;
+		}
+	}
+#endif
+
 
 	cent = centroid;
 	enemyCent = ent->centroid;
