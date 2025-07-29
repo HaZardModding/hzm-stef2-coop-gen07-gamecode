@@ -151,6 +151,8 @@ public:
     void playerAddMissionHuds(Player* player);
     void playerRemoveMissionHuds(Player* player);
 
+    bool playerItemPickup(Entity* player, Item *item);
+
     void playerMoveToSpawn(Player* player);
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
     void playerTargetnames(Player *player, Entity* viewTrace);

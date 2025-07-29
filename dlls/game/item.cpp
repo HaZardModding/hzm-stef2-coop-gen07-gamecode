@@ -529,11 +529,8 @@ void Item::ItemTouch( Event *ev )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - prevent player from picking up all the items if already in inventory - chrissstrahl
 	//--------------------------------------------------------------
-	if (CoopManager::Get().IsCoopEnabled()) {
-		Sentient* sent = (Sentient*)other;
-		if (sent->coop_hasItem(this->model)) {
-			return;
-		}
+	if (!CoopManager::Get().playerItemPickup(other,this)) {
+		return;
 	}
 #endif
 

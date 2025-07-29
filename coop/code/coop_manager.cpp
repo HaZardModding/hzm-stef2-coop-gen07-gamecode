@@ -699,6 +699,42 @@ void CoopManager::playerRemoveMissionHuds(Player* player)
     }
 }
 
+bool CoopManager::playerItemPickup(Entity* player, Item* item)
+{
+    //allow to pick up item if all other players have that item
+    if (!player || !item || !player->isSubclassOf(Player)) {
+        return false;
+    }
+
+    if (!IsCoopEnabled()) {
+        return true;
+    }
+
+    if (!item->isSubclassOf(Weapon)) {
+        return true;
+    }
+
+    Sentient* sent = (Sentient*)player;
+    if (!sent->coop_hasItem(item->model)) {
+        return true;
+    }
+
+    Player* other = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        other = gamefix_getPlayer(i);
+
+        if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
+            continue;
+        }
+        
+        if (!(Sentient*)other->coop_hasItem(item->model)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void CoopManager::playerAdminThink(Player* player) {
     if (getPlayerData_coopAdmin(player)) {
         return;
