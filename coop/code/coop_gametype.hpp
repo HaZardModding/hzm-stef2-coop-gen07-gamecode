@@ -41,4 +41,5 @@ public:
 	/* virtual */ void					score(const Player* player);
 	/* virtual */ bool					checkGameType(const char* rule);
 	/* virtual */ void					ActivatePlayer(Player* player);
+	/* virtual */ void					playerDead(Player* player);
 };

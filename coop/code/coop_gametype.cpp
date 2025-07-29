@@ -680,3 +680,19 @@ void ModeCoop::ActivatePlayer(Player* player)
 	player->takedamage = DAMAGE_YES;
 	multiplayerManager.playerSpawned(player);
 }
+
+void ModeCoop::playerDead(Player* player)
+{
+	if (!player) {
+		warning("MultiplayerModeBase::playerDead", "NULL Player\n");
+		return;
+	}
+
+	if (gamefix_getEntityVarInt(world,"coop_noBeamout") != 0 ||
+		gamefix_getEntityVarInt(player, "coop_noBeamout") != 0) {
+		return;
+	}
+	
+	player->ProcessEvent(EV_Player_DeadBody);
+	player->hideModel();
+}
