@@ -44,6 +44,7 @@
 // COOP Generation 7.000 - Added Include - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
 #include "item.h"
 #endif
 
@@ -2549,6 +2550,18 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 					return;
 					}
 				}
+
+
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.000 - Check if Sentient does handle stasis - chrissstrahl
+			// We don't want team-players teammates and friendlies to freeze
+			//--------------------------------------------------------------
+			if (!CoopManager::Get().sentientHandleStasis(this,attacker)) {
+				return;
+			}
+#endif
+
 
 			startStasis();
 			PostEvent( EV_StopStasis, damage );

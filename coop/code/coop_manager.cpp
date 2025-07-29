@@ -192,8 +192,6 @@ void CoopManager::Init() {
         gi.Printf(_COOP_INFO_INIT_game);
         DEBUG_LOG(_COOP_INFO_INIT_game);
 
-        coopSettings.serverConfigCheck();
-
         LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
@@ -265,6 +263,8 @@ void CoopManager::InitWorld() {
     try {
         gi.Printf(_COOP_INFO_INIT_world, level.mapname.c_str());
         DEBUG_LOG(_COOP_INFO_INIT_world, level.mapname.c_str());
+
+        coopSettings.serverConfigCheck();
 
         SetMapType();
 
@@ -1043,6 +1043,52 @@ void CoopManager::playerChangedClass(Player* player) {
     }
 }
 
+bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
+{
+    if (!attacked || !attacker) {
+        return false;
+    }
+
+    if (attacked == attacker) {
+        return false;
+    }
+
+    if (IsCoopEnabled()) {
+        if (!attacker->isSubclassOf(Sentient)) {
+            return true;
+        }
+
+        if (attacked->isSubclassOf(Player) && attacker->isSubclassOf(Player)) {
+            Player* attackerPlayer = (Player*)attacker;
+            Player* attackedPlayer = (Player*)attacked;
+            Team* teamAttacker;
+            Team* teamAttacked;
+            teamAttacker = multiplayerManager.getPlayersTeam(attackerPlayer);
+            teamAttacked = multiplayerManager.getPlayersTeam(attackedPlayer);
+
+            //different teams
+            if (teamAttacker && teamAttacked) {
+                if (teamAttacker != teamAttacked) {
+                    return true;
+                }
+                return true;
+            }
+            return true;
+        }
+        if (attacked->isSubclassOf(Actor) && attacker->isSubclassOf(Player)) {
+            Actor *attackedActor = (Actor*)attacked;
+            if (attackedActor->actortype == IS_TEAMMATE ||
+                attackedActor->actortype == IS_CIVILIAN ||
+                attackedActor->actortype == IS_FRIEND )
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 //used to minimize the usage of configstrings due to cl_parsegamestate issue
 int CoopManager::configstringRemove(str sRem)
 {
@@ -1062,7 +1108,7 @@ int CoopManager::configstringRemove(str sRem)
             if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
                 //regular dialog
                 if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
@@ -1072,7 +1118,7 @@ int CoopManager::configstringRemove(str sRem)
                 memset(unlocal, 0, sizeof(unlocal));
                 Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
                 if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
@@ -1081,14 +1127,14 @@ int CoopManager::configstringRemove(str sRem)
                 memset(unlocal, 0, sizeof(unlocal));
                 Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
                 if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
             }
             else {
                 if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-                    //gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }

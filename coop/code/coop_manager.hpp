@@ -7,6 +7,7 @@
 
 extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
+extern Event EV_World_coop_configstrRemove;
 
 
 //windows/linux+other handle
@@ -166,6 +167,8 @@ public:
     void playerBecameSpectator(Player* player);
     void playerChangedModel(Player* player);
     void playerChangedClass(Player* player);
+
+    bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
     int configstringRemove(str sRem);
     void configstringCleanup();
