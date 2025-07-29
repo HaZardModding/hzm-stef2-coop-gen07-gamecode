@@ -467,22 +467,25 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
 void CoopManager::MissionFailed(const str & reason) {
     if (g_gametype->integer == GT_SINGLE_PLAYER) { return; }
 
+    str sReason = reason;
+    if (reason.length() == 0) {
+        sReason = "DefaultFailure";
+    }
+
+    //-- Intentionally no $$ wanted
+    if (sReason[0] == '#') {
+        sReason = gamefix_getStringUntil(sReason, 1, 120);
+    }
+    //-- If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
+    else if (gamefix_findString(sReason.c_str(), "$$") == -1 && gamefix_findString(sReason.c_str(), " ") == -1) {
+        sReason = va("$$%s$$", sReason.c_str());
+    }
+
     gentity_t* other;
-    int j;
-    for (j = 0; j < game.maxclients; j++) {
+    for (int j = 0; j < game.maxclients; j++) {
         other = &g_entities[j];
         if (other->inuse && other->client && other->entity) {
             Player* player = (Player*)other->entity;
-            str sReason = reason;
-            //Intentionally no $$ wanted
-            if (reason.length() && reason[0] == '#') {
-                sReason = gamefix_getStringUntil(sReason,1,999);
-            }
-            //If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
-            else if (gamefix_findString(sReason.c_str(), "$$") == -1 && gamefix_findString(sReason.c_str(), " ") == -1) {
-                sReason = va("$$%s$$", sReason.c_str());
-            }
-
             //show hud for coop clients and text for others
             if (player->coop_hasCoopInstalled()) {
                 gamefix_playerDelayedServerCommand(player->entnum, va("set ui_failureReason %s\n", sReason.c_str()));
@@ -496,13 +499,13 @@ void CoopManager::MissionFailed(const str & reason) {
     }
 }
 
-str CoopManager::MissionFailureString(const str& reason)
+str CoopManager::MissionFailureConfigString(const str& reason)
 {
     str newReason = reason;
     //if # is used it means set string without $$
     if (reason[0] == '#') {
-        newReason = gamefix_getStringUntil(reason, 1, 999);
-        newReason = va("\n\n  %s^0", newReason.c_str());
+        newReason = gamefix_getStringUntil(reason, 1, 120);
+        newReason = va("\n\n%s^0", newReason.c_str());
     }
     return newReason;
 }
@@ -662,6 +665,38 @@ void CoopManager::playerClIdSet(Player* player)
     setPlayerData_coopClientId(player, sId);
     gi.SendServerCommand(player->entnum, va("stufftext \"seta coop_cId 0;set coop_cId coopcid %s\"\n", sId.c_str()));
     DEBUG_LOG("# CId NEW CREATED: %s\n", sId.c_str());
+}
+
+void CoopManager::playerAddMissionHuds(Player* player)
+{
+    str hudName = "";
+    str hudCommand = "";
+    for (int iHuds = 0; iHuds < _COOP_SETTINGS_MISSION_HUDS_MAX; iHuds++) {
+        hudName = gamefix_getEntityVarString(world, va("coop_registredHud%d", iHuds));
+        if (!hudName.length()) {
+            continue;
+        }
+        gamefix_playerDelayedServerCommand(player->entnum,va("ui_addhud %s", hudName.c_str()));
+
+        //execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
+        hudCommand = gamefix_getEntityVarString(world, va("coop_registredHud%d_command", iHuds));
+        if (hudCommand.length()) {
+            gamefix_playerDelayedServerCommand(player->entnum, va("%s", hudCommand.c_str()));
+        }
+    }
+}
+
+void CoopManager::playerRemoveMissionHuds(Player* player)
+{
+    str hudName = "";
+    str hudCommand = "";
+    for (int iHuds = 0; iHuds < _COOP_SETTINGS_MISSION_HUDS_MAX; iHuds++) {
+        hudName = gamefix_getEntityVarString(world, va("coop_registredHud%d", iHuds));
+        if (!hudName.length()) {
+            continue;
+        }
+        gamefix_playerDelayedServerCommand(player->entnum,va("ui_removehud %s", hudName.c_str()));
+    }
 }
 
 void CoopManager::playerAdminThink(Player* player) {
@@ -903,10 +938,13 @@ void CoopManager::playerEntered(gentity_t* ent) {
 }
 
 //Executed on death - Always (Multiplayer + Singleplayer)
-void CoopManager::playerDied(Player *player){
-    if (player) {
-        ExecuteThread("coop_justDied", true, player);
+void CoopManager::playerDied(Player *player) {
+    if (!player) {
+        return;
     }
+
+    playerRemoveMissionHuds(player);
+    ExecuteThread("coop_justDied", true, player);
 }
 //Executed when player gets transported - Always (Multiplayer + Singleplayer)
 void CoopManager::playerTransported(Entity *entity){
@@ -927,11 +965,11 @@ void CoopManager::playerSpawned(Player* player) {
     if (!player)
         return;
 
-    coop_armoryEquipPlayer(player);
-
     if (!gameFixAPI_isSpectator_stef2(player)) {
+        coop_armoryEquipPlayer(player);
         coop_radarReset(player);
         gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
+        playerAddMissionHuds(player);
     }
 
     gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);

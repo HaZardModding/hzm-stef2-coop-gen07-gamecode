@@ -2398,7 +2398,7 @@ void G_MissionFailed( const str& reason )
 	// COOP Generation 7.000 - Modify Mission Failure String in config strings for hud/menu of clients - chrissstrahl
 	//--------------------------------------------------------------
 	str sNewFailureReason = reason;
-	sNewFailureReason = CoopManager::Get().MissionFailureString(reason);
+	sNewFailureReason = CoopManager::Get().MissionFailureConfigString(reason);
 	// Set our failure reason in the config string
 	gi.failedcondition(sNewFailureReason.c_str());
 #else

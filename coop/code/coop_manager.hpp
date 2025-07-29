@@ -123,7 +123,7 @@ public:
     void LevelStart(CThread* gamescript);
     void LevelEndCleanup(qboolean temp_restart);
     void MissionFailed(const str& reason);
-    str MissionFailureString(const str& reason);
+    str MissionFailureConfigString(const str& reason);
     void MissionFailureLoadMap();
 
     str IncludeScriptReplace(str sLex);
@@ -148,6 +148,8 @@ public:
     void playerCoopDetected(const gentity_t* ent, const char* coopVer);
     void playerClIdDetected(const gentity_t* ent, const char* clientId);
     void playerClIdSet(Player* player);
+    void playerAddMissionHuds(Player* player);
+    void playerRemoveMissionHuds(Player* player);
 
     void playerMoveToSpawn(Player* player);
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
