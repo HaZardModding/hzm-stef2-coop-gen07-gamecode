@@ -1,5 +1,28 @@
 THE FOLLOWING CODE NEEDS TO BE CHECK BEFORE ANY RELASE
 
+Standard entity variables
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+level.total_specialItems - this is a stock game feature, contains the number of secret ships on the level
+level.found_specialItems - this is a stock game feature, contains the number of secret ships found
+level.total_secrets - this is a stock game feature, contains the number of secrets on the level
+level.found_secrets - this is a stock game feature, contains the number of secrets found
+level.total_enemies_spawned - this is a stock game feature, contains the number of enemies spawned
+level.holster_active - this is a stock game feature, set to 1 if player has weapon holstered (Singleplayer)
+
+
+Coop entity variables
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+world	coop_failureReason - string - Can be used to set reason why the mission failed - script internal
+world	coop_NextMapToLoad - string - Can be used to set next map to load - script internal
+player	_spArmoryEquiped - bool-float - player sucessfully equiped in singleplayer - gamedll
+world	coop_noBeamout - bool-float - don't beam players out on death - script, gamedll
+player	coop_noBeamout - bool-float - don't beam this player out on death - script, gamedll
+
+
 Coop NEW script commands
 /////////////////////////////////////////
 /////////////////////////////////////////
