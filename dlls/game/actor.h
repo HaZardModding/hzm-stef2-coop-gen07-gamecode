@@ -92,7 +92,8 @@ enum SteeringDirectionPreference
 // COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-extern Event EV_COOP_Actor_GetActorType;
+extern Event EV_Actor_coop_getActorType;
+extern Event EV_Actor_coop_branchDialogFailsafe;
 #endif
 
 
@@ -107,13 +108,15 @@ extern Event EV_COOP_Actor_GetActorType;
 //--------------------------------------------------------------
 class Actor : public Sentient
 {
+
+#ifdef ENABLE_COOP
 		//--------------------------------------------------------------
 		// COOP Generation 7.000 - Coop Specific Actor Stuff - chrissstrahl
 		//--------------------------------------------------------------
-#ifdef ENABLE_COOP
 	public:
 		void		coop_getActorType(Event* ev);
 		str			coop_getBranchDialogName();
+		void		coop_branchDialogFailsafe(Event* ev);
 #endif
 
 

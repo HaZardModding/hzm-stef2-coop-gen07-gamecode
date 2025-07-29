@@ -1576,20 +1576,14 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 		Player* player = (Player*)ent->entity;
 		Actor* actor = player->coop_getBranchDialogActor();
 		if (actor && gi.argc()) {
+
+			//cancel any old failsafes
+			actor->CancelEventsOfType(EV_Actor_coop_branchDialogFailsafe);
+
 			str sGivenThread = gi.argv(1);
 			str sDialogName = actor->coop_getBranchDialogName();
 			if (sDialogName.length() && sGivenThread.length()) {
-				
-				/* Pretty sure we don't need this
-				Player* other = nullptr;
-				for (int i = 0; i < gameFixAPI_maxClients(); i++) {
-					other = gamefix_getPlayer(i);
-					if (!other) {
-						continue;
-					}
-					other->clearBranchDialogActor();
-				}*/	
-				
+
 				player->clearBranchDialogActor();
 
 				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "dialogrunthread", sGivenThread, (Entity*)actor)) {

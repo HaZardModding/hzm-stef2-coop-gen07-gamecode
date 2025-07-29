@@ -2897,10 +2897,13 @@ CLASS_DECLARATION( Sentient, Actor, "monster_generic" )
 		{ &EV_Actor_SetDeathKnockbackValues,			&Actor::SetDeathKnockbackValues					},
 
 
+#ifdef ENABLE_COOP
 		//--------------------------------------------------------------
-		// GAMEUPGRADE [b60018] chrissstrahl
+		// COOP Generation 7.000 - Coop specific event functions - chrissstrahl
 		//--------------------------------------------------------------
-		{ &EV_COOP_Actor_GetActorType,						&Actor::coop_getActorType },
+		{ &EV_Actor_coop_getActorType,						&Actor::coop_getActorType },
+		{ &EV_Actor_coop_branchDialogFailsafe,				&Actor::coop_branchDialogFailsafe },
+#endif
 
 
 		//Game Specific Events
@@ -11631,6 +11634,24 @@ void Actor::BranchDialog(Event* ev)
 		gameFixAPI_setActivator((Entity*)this,(Entity*)player);
 	}
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run _failsafe script function for this dialog if timeout is hit - chrissstrahl
+	//--------------------------------------------------------------
+	if (gameFixAPI_inMultiplayer()) {
+		//cancel any old failsafes
+		CancelEventsOfType(EV_Actor_coop_branchDialogFailsafe);
+
+		//Actor post failsave event
+		Event* dialogFailsave = new Event(EV_Actor_coop_branchDialogFailsafe);
+		dialogFailsave->AddEntity((Entity*)player); //player that did talk
+		dialogFailsave->AddString(va("%s_failsafe", ev->GetString(1))); //thread to execute on failure
+		PostEvent(dialogFailsave, _COOP_SETTINGS_DIALOG_FAILSAFE_TIMEOUT);
+	}
+#endif
+
+
 	player->setBranchDialogActor(this);
 
 	_branchDialogName = ev->GetString(1);
@@ -20228,7 +20249,7 @@ void Actor::SetIgnoreWatchTarget( bool ignore )
 // COOP Generation 7.000 - Coop Specific Actor Events - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-Event EV_COOP_Actor_GetActorType
+Event EV_Actor_coop_getActorType
 (
 	"coop_actorGetType",
 	EV_DEFAULT,
@@ -20274,5 +20295,32 @@ void Actor::coop_getActorType(Event* ev)
 str Actor::coop_getBranchDialogName()
 {
 	return _branchDialogName;
+}
+
+Event EV_Actor_coop_branchDialogFailsafe
+(
+	"coop_branchDialogFailsafe",
+	EV_DEFAULT,
+	"es",
+	"entity_player string_thread",
+	"Sets failsafe thread for player activaing Branch Dialog"
+);
+void Actor::coop_branchDialogFailsafe(Event* ev)
+{
+	if (_branchDialogName.length()) {
+		ExecuteThread(va("%s_failsafe", _branchDialogName.c_str()));
+	}
+
+	Entity* ent = ev->GetEntity(1);
+	if (ent && ent->isSubclassOf(Player)) {
+		Player* player = (Player*)ent;
+		player->clearBranchDialogActor();
+		gi.SendServerCommand(ent->entnum, "stufftext popmenu branchdialog 1\n");
+	}
+
+	//cancel any old failsafes
+	CancelEventsOfType(EV_Actor_coop_branchDialogFailsafe);
+
+	clearBranchDialog();
 }
 #endif
