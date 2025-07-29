@@ -48,6 +48,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 Container<Actor *> SleepList;                   //All actors in the level that are asleep
 Container<Actor *> ActiveList;                  //All actors in the level that are active
 Container<Sentient *> TeamMateList;             //Global list of all teammates
@@ -11265,7 +11273,22 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		}
 
 		dialog_length = max(dialog_length, lengthNew);
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Added: Removal of configstring, to prevent MAX_CONFIGSTRINGS error - chrissstrahl
+		//--------------------------------------------------------------
+		if (gameFixAPI_inMultiplayer() && CoopManager::Get().IsCoopEnabled()) {
+			Event* deleteConfigString = new Event(EV_World_coop_configstrRemove);
+			deleteConfigString->AddString(real_dialog);
+			world->PostEvent(deleteConfigString, dialog_length + 0.1);
+		}
+#endif
+	
+	
 	}
+
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Function to manage Actor-Dialog in Multiplayer - chrissstrahl

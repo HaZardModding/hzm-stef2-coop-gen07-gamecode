@@ -630,6 +630,21 @@ int gamefix_getEntityVarInt(Entity* e, str sVarName)
 }
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Function to return string value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+str gamefix_getEntityVarString(Entity* e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->stringValue();
+		}
+	}
+	return "";
+}
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Function to return interger value from cVar - chrissstrahl
 //--------------------------------------------------------------
 int gamefix_getCvarInt(str cvarName)

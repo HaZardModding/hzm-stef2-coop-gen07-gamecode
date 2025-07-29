@@ -474,6 +474,7 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 #ifdef ENABLE_COOP
 	{ &EV_World_coop_getPhysicsVar, & World::coop_getPhysicsVar },
 	{ &EV_World_coop_loadMap, & World::coop_loadMap },
+	{ &EV_World_coop_configstrRemove, & World::configstringRemove },
 #endif
 
 
@@ -1917,5 +1918,22 @@ void World::coop_loadMap(Event* ev)
 			gi.SendConsoleCommand(va("map %s \n", command.c_str()));
 		}
 	}
+}
+
+Event EV_World_coop_configstrRemove
+(
+	"coop_configstrRemove",
+	EV_CODEONLY,
+	"s",
+	"string",
+	"Removes configstrings that contain the given string, to fix oversize of cl_parsegamestate"
+);
+void World::configstringRemove(Event* ev)
+{
+	str removeString = ev->GetString(1);
+	if (removeString.length() == 0) {
+		return;
+	}
+	CoopManager::Get().configstringRemove(removeString);
 }
 #endif

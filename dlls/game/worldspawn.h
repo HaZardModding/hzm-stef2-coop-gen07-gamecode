@@ -180,6 +180,7 @@ inline void WeatherInfo::Archive( Archiver &arc )
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 	extern Event EV_World_coop_getPhysicsVar;
+	extern Event EV_World_coop_configstrRemove;
 #endif
 
 
@@ -192,6 +193,7 @@ class World : public Entity
 public:
 	void coop_loadMap(Event* ev);
 	void coop_getPhysicsVar(Event* ev);
+	void configstringRemove(Event* ev);
 #endif
 
 
