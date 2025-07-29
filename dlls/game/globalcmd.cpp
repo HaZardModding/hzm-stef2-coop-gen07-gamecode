@@ -5030,51 +5030,7 @@ void CThread::coop_configstrRemove(Event* ev)
 	str sRem = ev->GetString(1);
 	if (!sRem.length()) { return; }
 
-	int iRem = 0;
-	char* s;
-	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
-		s = gi.getConfigstring(i);
-		str ss = "";
-		ss += s;
-
-		if (ss.length() > 0) {
-			//if this is a dialog try to handle german and english localized strings as well
-			if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
-				//regular dialog
-				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
-					gi.setConfigstring(i, "");
-					iRem++;
-				}
-
-				//handle deu version of dialog
-				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
-				memset(unlocal, 0, sizeof(unlocal));
-				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
-				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
-					gi.setConfigstring(i, "");
-					iRem++;
-				}
-
-				//handle eng version of dialog
-				memset(unlocal, 0, sizeof(unlocal));
-				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
-				if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
-					gi.setConfigstring(i, "");
-					iRem++;
-				}
-			}
-			else {
-				if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
-					gi.setConfigstring(i, "");
-					iRem++;
-				}
-			}
-		}
-	}
+	int iRem = CoopManager::Get().configstringRemove(sRem);
 	gi.Printf("coop_configstrRemove(%s) removed %i items\n", sRem.c_str(), iRem);
 }
 
