@@ -191,6 +191,317 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 	}
 }
 
+void ModeCoop::handleKill(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath, bool goodKill)
+{
+	if (!killedPlayer) {
+		return;
+	}
+
+	// Record the death
+	_playerGameData[killedPlayer->entnum]._numDeaths++;
+	_playerGameData[killedPlayer->entnum]._lastKillerOfPlayerMOD = meansOfDeath;
+	
+	// Save off some important info
+	if (attackingPlayer) {
+		_playerGameData[attackingPlayer->entnum]._numKills++;
+		_playerGameData[killedPlayer->entnum]._lastKillerOfPlayer = attackingPlayer->entnum;
+
+		//Killed by different team or in deathmatch
+		if (goodKill) {
+			addPoints(attackingPlayer->entnum, multiplayerManager.getPointsForKill(killedPlayer, attackingPlayer, inflictor, meansOfDeath, _defaultPointsPerKill));
+			_playerGameData[killedPlayer->entnum]._lastKillerOfPlayer = attackingPlayer->entnum;
+		}
+		else {
+			addPoints(killedPlayer->entnum, -_COOP_SETTINGS_PLAYER_PENALTY_BADKILL);
+		}
+	}
+
+	//suicide
+	if (	!inflictor && !attackingPlayer ||
+			!inflictor && attackingPlayer == killedPlayer ||
+			inflictor && inflictor->entnum == killedPlayer->entnum)
+	{
+		//addPoints(killedPlayer->entnum, -_defaultPointsPerTakenAwayForSuicide);
+		_playerGameData[killedPlayer->entnum]._lastKillerOfPlayer = killedPlayer->entnum;
+	}
+
+	// Print out an obituary
+	obituary(killedPlayer, attackingPlayer, inflictor, meansOfDeath);
+}
+
+void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath)
+{
+	const char* s1 = NULL, * s2 = NULL;
+	str printString;
+	bool suicide;
+	bool printSomething;
+	char color;
+	bool sameTeam;
+
+	// Client killed himself
+
+	suicide = false;
+	printSomething = false;
+
+	sameTeam = false;
+
+	if (attackingPlayer && (killedPlayer != attackingPlayer))
+	{
+		Team* killedPlayersTeam;
+		Team* attackingPlayersTeam;
+
+		killedPlayersTeam = multiplayerManager.getPlayersTeam(killedPlayer);
+
+		attackingPlayersTeam = multiplayerManager.getPlayersTeam(attackingPlayer);
+
+		if (killedPlayersTeam && attackingPlayersTeam && (killedPlayersTeam == attackingPlayersTeam))
+		{
+			sameTeam = true;
+		}
+	}
+
+	if (killedPlayer == attackingPlayer || !attackingPlayer)
+	{
+		suicide = true;
+		printSomething = true;
+
+		switch (meansOfDeath)
+		{
+		case MOD_SUICIDE:
+			s1 = "$$MOD_SUICIDE$$";
+			break;
+		case MOD_DROWN:
+			s1 = "$$MOD_DROWN$$";
+			break;
+		case MOD_LAVA:
+			s1 = "$$MOD_LAVA$$";
+			break;
+		case MOD_SLIME:
+			s1 = "$$MOD_SLIME$$";
+			break;
+		case MOD_FALLING:
+			s1 = "$$MOD_FALLING$$";
+			break;
+		default:
+			s1 = "$$PleaseInsertCD$$";
+			break;
+		}
+	}
+
+	// Killed by another player
+
+	if (attackingPlayer && attackingPlayer->isClient() && (killedPlayer != attackingPlayer))
+	{
+		printSomething = true;
+
+		switch (meansOfDeath)
+		{
+		case MOD_CRUSH:
+		case MOD_CRUSH_EVERY_FRAME:
+			s1 = "$$MOD_CRUSH$$";
+			break;
+		case MOD_TELEFRAG:
+			s1 = "$$MOD_TELEFRAG$$";
+			break;
+		case MOD_EXPLODEWALL:
+		case MOD_EXPLOSION:
+		case MOD_POO_EXPLOSION:
+			s1 = "$$MOD_EXPLOSION$$";
+			break;
+		case MOD_ELECTRICWATER:
+		case MOD_ELECTRIC:
+		case MOD_CIRCLEOFPROTECTION:
+			s1 = "$$MOD_ELECTRIC$$";
+			break;
+		case MOD_IMPACT:
+		case MOD_THROWNOBJECT:
+			s1 = "$$MOD_IMPACT$$";
+			s2 = "$$MOD_IMPACT2$$";
+			break;
+		case MOD_BEAM:
+			s1 = "$$MOD_BEAM$$";
+			break;
+		case MOD_ROCKET:
+			s1 = "$$MOD_ROCKET$$";
+			s2 = "$$MOD_ROCKET2$$";
+			break;
+		case MOD_GAS_BLOCKABLE:
+		case MOD_GAS:
+			s1 = "$$MOD_GAS$$";
+			break;
+		case MOD_ACID:
+			s1 = "$$MOD_ACID$$";
+			break;
+		case MOD_SWORD:
+			s1 = "$$MOD_SWORD$$";
+			break;
+		case MOD_PLASMA:
+		case MOD_PLASMABEAM:
+		case MOD_PLASMASHOTGUN:
+			s1 = "$$MOD_ASSULT_RIFLE$$";
+			break;
+		case MOD_RADIATION:
+			s1 = "$$MOD_PLASMA$$";
+			break;
+		case MOD_STING:
+		case MOD_STING2:
+			s1 = "$$MOD_STING$$";
+			break;
+		case MOD_BULLET:
+		case MOD_FAST_BULLET:
+			s1 = "$$MOD_BULLET$$";
+			break;
+		case MOD_VEHICLE:
+			s1 = "$$MOD_VEHICLE$$";
+			break;
+		case MOD_FIRE:
+		case MOD_FIRE_BLOCKABLE:
+		case MOD_ON_FIRE:
+			s1 = "$$MOD_FIRE$$";
+			break;
+		case MOD_LIFEDRAIN:
+			s1 = "$$MOD_LIFEDRAIN$$";
+			break;
+		case MOD_FLASHBANG:
+			s1 = "$$MOD_FLASHBANG$$";
+			break;
+		case MOD_AXE:
+			s1 = "$$MOD_AXE$$";
+			s2 = "$$MOD_AXE2$$";
+			break;
+		case MOD_CHAINSWORD:
+			s1 = "$$MOD_CHAINSWORD$$";
+			break;
+		case MOD_FIRESWORD:
+			s1 = "$$MOD_FIRESWORD$$";
+			break;
+		case MOD_ELECTRICSWORD:
+			s1 = "$$MOD_ELECTRICSWORD$$";
+			s2 = "$$MOD_ELECTRICSWORD2$$";
+			break;
+		case MOD_LIGHTSWORD:
+			s1 = "$$MOD_LIGHTSWORD$$";
+			s2 = "$$MOD_LIGHTSWORD2$$";
+			break;
+		case MOD_IMPALE:
+			s1 = "$$MOD_IMPALE$$";
+			break;
+		case MOD_UPPERCUT:
+			s1 = "$$MOD_UPPERCUT$$";
+			break;
+		case MOD_POISON:
+			s1 = "$$MOD_POISON$$";
+			break;
+		case MOD_PHASER:
+			s1 = "$$MOD_PHASER$$";
+			break;
+		case MOD_COMP_RIFLE:
+			s1 = "$$MOD_COMP_RIFLE$$";
+			break;
+			//case MOD_ASSULT_RIFLE:
+
+			//case MOD_IMOD:
+			//	s1 = "$$MOD_IMOD$$";
+			//	break;
+
+		case MOD_VAPORIZE:
+		case MOD_VAPORIZE_COMP:
+		case MOD_VAPORIZE_DISRUPTOR:
+		case MOD_VAPORIZE_PHOTON:
+			s1 = "$$MOD_VAPORIZE$$";
+			break;
+		default:
+			s1 = "$$MOD_DEFAULT$$";
+			break;
+		}
+	}
+
+	if (printSomething)
+	{
+		Player* currentPlayer;
+
+		// Print to the dedicated console
+
+		if (dedicated->integer)
+		{
+			if (killedPlayer) {
+				if (suicide)
+				{
+					printString = va("%s %s", killedPlayer->client->pers.netname, s1);
+				}
+				else if (s2)
+				{
+					printString = va("%s %s %s %s", killedPlayer->client->pers.netname, s1, attackingPlayer->client->pers.netname, s2);
+				}
+				else
+				{
+					printString = va("%s %s %s", killedPlayer->client->pers.netname, s1, attackingPlayer->client->pers.netname);
+				}
+			}
+
+			if (sameTeam)
+			{
+				printString += " ($$SameTeam$$)";
+			}
+
+			printString += "\n";
+
+			gi.Printf(printString.c_str());
+		}
+
+		// Print to all of the players
+		for (unsigned int i = 0; i < _maxPlayers; i++)
+		{
+			currentPlayer = multiplayerManager.getPlayer(i);
+
+			if (!currentPlayer)
+				continue;
+
+			// Figure out which color to use 
+			if (killedPlayer && (unsigned)killedPlayer->entnum == i)
+				color = COLOR_RED;
+			else if (attackingPlayer && (unsigned)attackingPlayer->entnum == i)
+				color = COLOR_GREEN;
+			else
+				color = COLOR_NONE;
+
+			// Build the death string
+			if (killedPlayer) {
+				if (suicide)
+				{
+					printString = va("%s ^%c%s^8", killedPlayer->client->pers.netname, color, s1);
+				}
+				else if (s2)
+				{
+					printString = va("%s ^%c%s^8 %s ^%c%s^8", killedPlayer->client->pers.netname, color, s1, attackingPlayer->client->pers.netname, color, s2);
+				}
+				else
+				{
+					printString = va("%s ^%c%s^8 %s", killedPlayer->client->pers.netname, color, s1, attackingPlayer->client->pers.netname);
+				}
+			}
+
+
+			if (sameTeam)
+			{
+				printString += " (^";
+				printString += COLOR_RED;
+				printString += "$$SameTeam$$^8)";
+			}
+
+			printString += "\n";
+
+			// Print out the death string
+			if (gi.GetNumFreeReliableServerCommands(currentPlayer->edict - g_entities) > 32)
+			{
+				multiplayerManager.HUDPrint(currentPlayer->entnum, printString.c_str());
+			}
+
+			//multiplayerManager.HUDPrintAllClients( printString.c_str() );
+		}
+	}
+}
+
 int ModeCoop::getTeamPoints(Player* player)
 {
 	// Return the points for this team

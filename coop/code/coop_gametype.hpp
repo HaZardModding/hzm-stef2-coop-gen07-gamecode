@@ -35,6 +35,8 @@ public:
 	/* virtual */ Entity*				getSpawnPoint(Player* player);
 
 	/* virtual */ void					playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
+	/* virtial */ void					handleKill(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath, bool goodKill);
+	/* virtual */ void					obituary(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
 	/* virtual */ bool					isEndOfMatch(void);
 	/* virtual */ int					getTeamPoints(Player* player);
 	/* virtual */ void					setupMultiplayerUI(Player* player);
