@@ -1058,7 +1058,59 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
         multiplayerManager.addPoints(player->entnum, -_COOP_SETTINGS_PLAYER_PENALTY_BADKILL);
     }
     else {
-        multiplayerManager.addPoints(player->entnum, 1);
+        int multiplicator = 1;
+        int pointsEarned = 1;
+        str type = actor->getArchetype();
+        if (type == "Lurker") {
+            multiplicator = 2;
+        }
+        if (type == "CruiserTurret") {
+            multiplicator = 2;
+        }
+        if (type == "Crab") {
+            multiplicator = 2;
+        }
+        if (type == "Chewer") {
+            multiplicator = 3;
+        }
+        if (type == "NausicaanBaseMale") {
+            multiplicator = 3;
+        }
+        if (type == "Basher") {
+            multiplicator = 4;
+        }
+        if (type == "Quadraped") {
+            multiplicator = 5;
+        }
+        if (type == "Predator") {
+            multiplicator = 5;
+        }
+        if (type == "BorgBoss") {
+            multiplicator = 5;
+        }
+        if (type == "KlingonBoss") {
+            multiplicator = 5;
+        }
+        if (type == "RomulanInformantBoss") {
+            multiplicator = 5;
+        }
+        if (type == "Commander") {
+            multiplicator = 10;
+        }
+        if (type == "BugQueen") {
+            multiplicator = 10;
+        }
+        if (type == "CrabBoss") {
+            multiplicator = 10;
+        }
+        //BugFemale
+        //BugFemaleNoSack
+        //BugMale
+        //BugSack
+        //BugSmall
+        //BugSmallExplosive
+        
+        multiplayerManager.addPoints(player->entnum, pointsEarned * multiplicator);
     }
 }
 
