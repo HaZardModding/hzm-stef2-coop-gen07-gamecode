@@ -15,7 +15,8 @@ constexpr auto _COOP_FILE_mrm = "mom_mrm.scr";
 
 constexpr auto _COOP_FILE_maplist = "co-op/config/maplist.ini";
 constexpr auto _COOP_FILE_settings = "co-op/config/settings.ini";
-constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/playerskins.ini";
+constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/skinlist.ini";
+constexpr auto _COOP_FILE_score = "co-op/config/scorelist.ini";
 constexpr auto _COOP_FILE_spawninventory = "co-op/config/spawninventory.cfg";
 
 constexpr auto _COOP_UI_NAME_communicator = "coop_com";
@@ -34,7 +35,8 @@ constexpr auto _COOP_SETTINGS_CAT_boot = "boot";
 constexpr auto _COOP_SETTINGS_CAT_level = "level";
 constexpr auto _COOP_SETTINGS_CAT_vote = "vote";
 constexpr auto _COOP_SETTINGS_CAT_gameplay = "gameplay";
-constexpr auto _COOP_SETTINGS_CAT_score = "score";
+constexpr auto _COOP_SCORELIST_CAT_actornames = "actornames";
+constexpr auto _COOP_SCORELIST_CAT_targetnames = "targetnames";
 
 constexpr auto _COOP_SETTINGS_server_configname = "server";
 
@@ -68,9 +70,16 @@ constexpr auto _COOP_SETTINGS_DIALOG_FAILSAFE_TIMEOUT = 45.0f;
 const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[] = { "co-op/config/settings.ini" };
 const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[0]);
 
-const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[]{ "co-op/config/settings.ini","co-op/config/maplist.ini","co-op/config/playerskins.ini","co-op/config/maplist.ini" };
+const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[]{_COOP_FILE_settings,_COOP_FILE_maplist,_COOP_FILE_validPlayerModels,_COOP_FILE_score };
 const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_WRITE[0]);
 
+
+struct CoopSettings_killScoreActornames_s {
+	str name = "";
+	int points = 1;
+};
+extern Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillActornameList;
+extern Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillTargetnameList;
 
 struct CoopSettings_clientThreads_s {
 	str command = "";
@@ -81,8 +90,6 @@ struct CoopSettings_clientThreads_s {
 	str type = "";
 	bool activatingPlayerRequired = false;
 };
-
-extern CoopSettings_clientThreads_s CoopSettings_clientThreads_t;
 extern Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowList;
 
 class CoopSettings {
@@ -108,5 +115,6 @@ public:
 	void playerCommandsAllow();
 	void playerScriptThreadsAllow();
 	void LoadSettingsFromFile(const str& iniFilePath = _COOP_FILE_settings);
+	void loadScoreList();
 };
 extern CoopSettings coopSettings;

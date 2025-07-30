@@ -3,6 +3,8 @@
 
 CoopSettings coopSettings;
 Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowList;
+Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillActornameList;
+Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillTargetnameList;
 
 
 void CoopSettings::serverConfigCheck()
@@ -215,13 +217,74 @@ void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
 		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_gameplay);
 		rpgSpawnWeapons = gamefix_iniKeyGet(iniFilePath, section_contents, "rpg_spawnWeapons", "false") == "true";
 		coopLastManStandingLifes = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "coop_lastManStandingLifes", "0"));
+	}
+	catch (const char* error) {
+		gi.Printf(_COOP_ERROR_fatal, error);
+		G_ExitWithError(error);
+	}
+}
 
-		// Score section - settings usually handled on the fly
-		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_score);
-		scoreKilledPlayer = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "killedPlayer", "-10"));
-		scoreKilledFriendly = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "killedFriendly", "-10"));
-		scoreKilledEnemy = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "killedEnemy", "1"));
-		scoreKilledBoss = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "killedBoss", "10"));
+void CoopSettings::loadScoreList() {
+	try {
+		str contents = "";
+		str section_contents = "";
+
+		// Score - points to give and take
+		if (!gamefix_getFileContents(_COOP_FILE_score, contents, true)) {
+			gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_score);
+			return;
+		}
+
+		str key = "";
+		str value = "";
+		str lineValue;
+		Container<str> tempLinesContainer;
+
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_score, contents, _COOP_SCORELIST_CAT_actornames);
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects();i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_score, lineValue, key, value)) {
+				CoopSettings_killScoreActornames_s addActorNameKillScore;
+				addActorNameKillScore.name = key;
+				if (value.length()) {
+					int setpoints = atoi(value.c_str());
+					addActorNameKillScore.points = setpoints;
+				}
+				CoopSettings_scoreKillActornameList.AddObject(addActorNameKillScore);
+			}
+		}
+
+		tempLinesContainer.FreeObjectList();
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_score, contents, _COOP_SCORELIST_CAT_targetnames);
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_score, lineValue, key, value)) {
+				CoopSettings_killScoreActornames_s addActorNameKillScore;
+				addActorNameKillScore.name = key;
+				if (value.length()) {
+					int setpoints = atoi(value.c_str());
+					addActorNameKillScore.points = setpoints;
+				}
+				CoopSettings_scoreKillTargetnameList.AddObject(addActorNameKillScore);
+			}
+		}
+		tempLinesContainer.FreeObjectList();
+
+		return;
 	}
 	catch (const char* error) {
 		gi.Printf(_COOP_ERROR_fatal, error);

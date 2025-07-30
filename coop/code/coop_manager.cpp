@@ -9,7 +9,6 @@
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 coopManager_mapSettings_s coopManager_mapSettings_t;
 
-
 CoopManager& CoopManager::Get() {
     static CoopManager instance;
     return instance;
@@ -195,6 +194,8 @@ void CoopManager::Init() {
         LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
+
+        coopSettings.loadScoreList();
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
@@ -1058,59 +1059,39 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
         multiplayerManager.addPoints(player->entnum, -_COOP_SETTINGS_PLAYER_PENALTY_BADKILL);
     }
     else {
-        int multiplicator = 1;
+        //use - scorelist with actor names
         int pointsEarned = 1;
-        str type = actor->getArchetype();
-        if (type == "Lurker") {
-            multiplicator = 2;
+        bool foundMatch = false;
+
+        str actorTargetName = actor->targetname;
+        if(actorTargetName.length()) {
+            for (int i = 1; i <= CoopSettings_scoreKillTargetnameList.NumObjects(); i++) {
+                CoopSettings_killScoreActornames_s addTargetnameKillScore;
+                addTargetnameKillScore = CoopSettings_scoreKillTargetnameList.ObjectAt(i);
+                if (addTargetnameKillScore.name == actorTargetName) {
+                    pointsEarned = addTargetnameKillScore.points;
+                    foundMatch = true;
+                    break;
+                }
+            }
         }
-        if (type == "CruiserTurret") {
-            multiplicator = 2;
+
+        if (!foundMatch) {
+            str actorArcheType = actor->getArchetype();
+            if (actorArcheType.length()) {
+                for (int i = 1; i <= CoopSettings_scoreKillActornameList.NumObjects(); i++) {
+                    CoopSettings_killScoreActornames_s addActorNameKillScore;
+                    addActorNameKillScore = CoopSettings_scoreKillActornameList.ObjectAt(i);
+                    if (addActorNameKillScore.name == actorArcheType) {
+                        pointsEarned = addActorNameKillScore.points;
+                        foundMatch = true;
+                        break;
+                    }
+                }            
+            }
         }
-        if (type == "Crab") {
-            multiplicator = 2;
-        }
-        if (type == "Chewer") {
-            multiplicator = 3;
-        }
-        if (type == "NausicaanBaseMale") {
-            multiplicator = 3;
-        }
-        if (type == "Basher") {
-            multiplicator = 4;
-        }
-        if (type == "Quadraped") {
-            multiplicator = 5;
-        }
-        if (type == "Predator") {
-            multiplicator = 5;
-        }
-        if (type == "BorgBoss") {
-            multiplicator = 5;
-        }
-        if (type == "KlingonBoss") {
-            multiplicator = 5;
-        }
-        if (type == "RomulanInformantBoss") {
-            multiplicator = 5;
-        }
-        if (type == "Commander") {
-            multiplicator = 10;
-        }
-        if (type == "BugQueen") {
-            multiplicator = 10;
-        }
-        if (type == "CrabBoss") {
-            multiplicator = 10;
-        }
-        //BugFemale
-        //BugFemaleNoSack
-        //BugMale
-        //BugSack
-        //BugSmall
-        //BugSmallExplosive
-        
-        multiplayerManager.addPoints(player->entnum, pointsEarned * multiplicator);
+
+        multiplayerManager.addPoints(player->entnum, pointsEarned);
     }
 }
 
