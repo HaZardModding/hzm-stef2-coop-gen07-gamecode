@@ -7207,6 +7207,17 @@ void Actor::Killed( Event *ev )
 	attacker = ev->GetEntity( 1 );
 	damage   = ev->GetFloat( 2 );
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Hack, set last Attacker as enemy - chrissstrahl
+	//--------------------------------------------------------------
+	if (attacker && attacker->isSubclassOf(Player)) {
+		CoopManager::Get().playerKilledActor((Player*)attacker, this);
+	}
+#endif
+
+
 	if ( ev->NumArgs() > 4 )
 		fallingDeath = ev->GetBoolean( 5 );
 	else

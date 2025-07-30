@@ -2112,3 +2112,14 @@ float MultiplayerModeBase::getMatchStartTime()
 {
 	return _matchStartTime;
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: Access to player kill count - chrissstrahl
+//--------------------------------------------------------------
+void MultiplayerModeBase::addKills(int entnum, int kills)
+{
+	_playerGameData[entnum]._numKills += kills;
+}
+#endif

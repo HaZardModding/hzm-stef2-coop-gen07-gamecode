@@ -4586,3 +4586,17 @@ MultiplayerModeBase* MultiplayerManager::gameFixAPI_getMultiplayerGame()
 	gi.Error(ERR_DROP, "gameFixAPI_getMultiplayerGame() _multiplayerGame was nullptr\n");
 	return nullptr;
 }
+
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: Access to player kill count - chrissstrahl
+//--------------------------------------------------------------
+void MultiplayerManager::addKill(int entnum, int kills)
+{
+	if (!_multiplayerGame) {
+		return;
+	}
+	_multiplayerGame->addKills(entnum, kills);
+}
+#endif

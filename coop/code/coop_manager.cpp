@@ -1043,6 +1043,25 @@ void CoopManager::playerChangedClass(Player* player) {
     }
 }
 
+void CoopManager::playerKilledActor(Player* player, Actor* actor) {
+    if (!player || !actor || !player->isSubclassOf(Player)) {
+        return;
+    }
+
+    //HACK, set attacker as enemy, so we can retrive it
+    actor->enemyManager->SetCurrentEnemy((Entity*)player);
+    
+    //change player statistics
+    multiplayerManager.addKill(player->entnum, 1);
+
+    if (actor->actortype == IS_CIVILIAN || actor->actortype == IS_FRIEND || actor->actortype == IS_TEAMMATE) {
+        multiplayerManager.addPoints(player->entnum, -_COOP_SETTINGS_PLAYER_PENALTY_BADKILL);
+    }
+    else {
+        multiplayerManager.addPoints(player->entnum, 1);
+    }
+}
+
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
 {
     if (!attacked || !attacker) {

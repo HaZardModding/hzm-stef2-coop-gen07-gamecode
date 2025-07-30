@@ -167,6 +167,7 @@ public:
     void playerBecameSpectator(Player* player);
     void playerChangedModel(Player* player);
     void playerChangedClass(Player* player);
+    void playerKilledActor(Player* player, Actor* actor);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 

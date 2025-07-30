@@ -67,6 +67,14 @@ public:
 class MultiplayerModeBase : public Class
 	{
 	public:
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Added: Functions for coop - chrissstrahl
+		//--------------------------------------------------------------
+		void addKills(int entnum, int kills);
+#endif
+
+
 		//--------------------------------------------------------------
 		// GAMEFIX - Added: Access to _matchStartTime - chrissstrahl
 		//--------------------------------------------------------------
