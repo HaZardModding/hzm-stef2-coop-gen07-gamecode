@@ -126,7 +126,15 @@ void EnemyManager::FindHighestHateEnemy()
 	if ( IsLockedOnCurrentEnemy() )
 		return;
 	
-	
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - pick the closest player and best to attack player from them all - chrissstrahl
+	//--------------------------------------------------------------
+	float distanceLast = 999999.9f;
+#endif
+
+
 	for ( int i = _hateList.NumObjects() ; i > 0 ; i-- )
 	{
 		hateFactor = 100;
@@ -153,7 +161,24 @@ void EnemyManager::FindHighestHateEnemy()
 		
 		if ( listIndex.hate >= hateValue && listIndex.hate > 0.0 )
 		{
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.000 - pick the closest player and best to attack player from them all - chrissstrahl
+			//--------------------------------------------------------------
+			if (listIndex.enemy->isSubclassOf(Player)) {
+				if (listIndex.lastDistance < distanceLast) {
+					_currentEnemy = listIndex.enemy;
+					distanceLast = listIndex.lastDistance;
+				}
+			}
+			else {
+				_currentEnemy = listIndex.enemy;
+			}
+#else
 			_currentEnemy = listIndex.enemy;
+#endif
+
+
 			hateValue = listIndex.hate;
 		}
 		
