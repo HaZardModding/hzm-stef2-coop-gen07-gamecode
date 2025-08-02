@@ -1001,13 +1001,18 @@ qboolean G_ScriptCmd( const gentity_t *ent )
 		// make tricorderpuzzel an other default gamplay components from singleplayer work
 		//--------------------------------------------------------------
 		if (gameFixAPI_inMultiplayer()) {
-			if (argc > 1 && Q_stricmp("thread", gi.argv(1)) == 0) {
-				str ssds = gi.argv(2);
-				if (CoopManager::Get().playerScriptCallExecute(ent->entity, "script", ssds, nullptr)) {
-					return true;
+			if (ent->entity && ent->entity->isSubclassOf(Player)) {
+				if (argc > 1 && Q_stricmp("thread", gi.argv(1)) == 0) {
+					str ssds = gi.argv(2);
+					if (CoopManager::Get().playerScriptCallExecute(ent->entity, "script", ssds, nullptr)) {
+						return true;
+					}
+				}
+				Player* player = (Player*)ent->entity;
+				if (!player->coop_isAdmin()) {
+					return false;
 				}
 			}
-			return false;
 		}
 #endif
 
