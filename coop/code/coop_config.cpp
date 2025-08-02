@@ -3,8 +3,8 @@
 
 CoopSettings coopSettings;
 Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowList;
-Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillActornameList;
-Container<CoopSettings_killScoreActornames_s> CoopSettings_scoreKillTargetnameList;
+Container<CoopSettings_killScore_s> CoopSettings_scoreKillList;
+Container<CoopSettings_deathmessage_s> CoopSettings_deathList;
 
 
 void CoopSettings::serverConfigCheck()
@@ -230,8 +230,8 @@ void CoopSettings::loadScoreList() {
 		str section_contents = "";
 
 		// Score - points to give and take
-		if (!gamefix_getFileContents(_COOP_FILE_score, contents, true)) {
-			gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_score);
+		if (!gamefix_getFileContents(_COOP_FILE_scorelist, contents, true)) {
+			gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_scorelist);
 			return;
 		}
 
@@ -240,7 +240,7 @@ void CoopSettings::loadScoreList() {
 		str lineValue;
 		Container<str> tempLinesContainer;
 
-		section_contents = gamefix_iniSectionGet(_COOP_FILE_score, contents, _COOP_SCORELIST_CAT_actornames);
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "actornames");
 		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
 
 		for (int i = 1; i <= tempLinesContainer.NumObjects();i++) {
@@ -250,19 +250,20 @@ void CoopSettings::loadScoreList() {
 			}
 
 			//extract - key and value
-			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_score, lineValue, key, value)) {
-				CoopSettings_killScoreActornames_s addActorNameKillScore;
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_killScore_s addActorNameKillScore;
+				addActorNameKillScore.type = "actornames";
 				addActorNameKillScore.name = key;
 				if (value.length()) {
 					int setpoints = atoi(value.c_str());
 					addActorNameKillScore.points = setpoints;
 				}
-				CoopSettings_scoreKillActornameList.AddObject(addActorNameKillScore);
+				CoopSettings_scoreKillList.AddObject(addActorNameKillScore);
 			}
 		}
 
 		tempLinesContainer.FreeObjectList();
-		section_contents = gamefix_iniSectionGet(_COOP_FILE_score, contents, _COOP_SCORELIST_CAT_targetnames);
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "targetnames");
 		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
 
 		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
@@ -272,19 +273,157 @@ void CoopSettings::loadScoreList() {
 			}
 
 			//extract - key and value
-			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_score, lineValue, key, value)) {
-				CoopSettings_killScoreActornames_s addActorNameKillScore;
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_killScore_s addActorNameKillScore;
+				addActorNameKillScore.type = "targetnames";
 				addActorNameKillScore.name = key;
 				if (value.length()) {
 					int setpoints = atoi(value.c_str());
 					addActorNameKillScore.points = setpoints;
 				}
-				CoopSettings_scoreKillTargetnameList.AddObject(addActorNameKillScore);
+				CoopSettings_scoreKillList.AddObject(addActorNameKillScore);
 			}
 		}
-		tempLinesContainer.FreeObjectList();
+	}
+	catch (const char* error) {
+		gi.Printf(_COOP_ERROR_fatal, error);
+		G_ExitWithError(error);
+	}
+}
 
-		return;
+
+
+void CoopSettings::loadDeathList() {
+	try {
+		str mapName = level.mapname.c_str();
+		mapName = mapName.tolower();
+		
+		str contents = "";
+		str section_contents = "";
+
+		// Deathlist - Message to print if player gets killed
+		if (!gamefix_getFileContents(_COOP_FILE_deathlist, contents, true)) {
+			gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_deathlist);
+			return;
+		}
+
+		//actornames - specific to current level
+		str key = "";
+		str value = "";
+		str lineValue = "";
+		Container<str> tempLinesContainer;
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, va("actornames@%s", mapName.c_str()));
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_deathmessage_s deathMessage;
+				deathMessage.type = "actornames";
+				deathMessage.name = key;
+				if (value.length()) {
+					deathMessage.text = value;
+				}
+				CoopSettings_deathList.AddObject(deathMessage);
+			}
+		}
+
+		//targetnames
+		tempLinesContainer.FreeObjectList();
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "targetnames");
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_deathmessage_s deathMessage;
+				deathMessage.type = "targetnames";
+				deathMessage.name = key;
+				if (value.length()) {
+					deathMessage.text = value;
+				}
+				CoopSettings_deathList.AddObject(deathMessage);
+			}
+		}
+
+		//models
+		tempLinesContainer.FreeObjectList();
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "models");
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_deathmessage_s deathMessage;
+				deathMessage.type = "models";
+				deathMessage.name = key;
+				if (value.length()) {
+					deathMessage.text = value;
+				}
+				CoopSettings_deathList.AddObject(deathMessage);
+			}
+		}
+
+		//actornames
+		tempLinesContainer.FreeObjectList();
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "actornames");
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_deathmessage_s deathMessage;
+				deathMessage.type = "actornames";
+				deathMessage.name = key;
+				if (value.length()) {
+					deathMessage.text = value;
+				}
+				CoopSettings_deathList.AddObject(deathMessage);
+			}
+		}
+
+		//classes
+		tempLinesContainer.FreeObjectList();
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_scorelist, contents, "classes");
+		gamefix_listSeperatedItems(tempLinesContainer, section_contents, "\n");
+
+		for (int i = 1; i <= tempLinesContainer.NumObjects(); i++) {
+			lineValue = tempLinesContainer.ObjectAt(i);
+			if (!lineValue.length()) {
+				continue;
+			}
+
+			//extract - key and value
+			if (gamefix_iniExtractKeyAndValueFromLine(_COOP_FILE_scorelist, lineValue, key, value)) {
+				CoopSettings_deathmessage_s deathMessage;
+				deathMessage.type = "classes";
+				deathMessage.name = key;
+				if (value.length()) {
+					deathMessage.text = value;
+				}
+				CoopSettings_deathList.AddObject(deathMessage);
+			}
+		}
 	}
 	catch (const char* error) {
 		gi.Printf(_COOP_ERROR_fatal, error);
