@@ -2538,6 +2538,19 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 	if ( meansofdeath == MOD_STASIS )
 	{
 
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - Check if Sentient does handle stasis - chrissstrahl
+		// We don't want team-players teammates and friendlies to freeze
+		// Or get annoyed and attack us
+		//--------------------------------------------------------------
+		if (!CoopManager::Get().sentientHandleStasis(this, attacker)) {
+			return;
+		}
+#endif
+
+
 		if ( damage > 0.0f )
 		{
 			//Stupid last minute hack to make sure we can't stasis people who will break
@@ -2550,18 +2563,6 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 					return;
 					}
 				}
-
-
-#ifdef ENABLE_COOP
-			//--------------------------------------------------------------
-			// COOP Generation 7.000 - Check if Sentient does handle stasis - chrissstrahl
-			// We don't want team-players teammates and friendlies to freeze
-			//--------------------------------------------------------------
-			if (!CoopManager::Get().sentientHandleStasis(this,attacker)) {
-				return;
-			}
-#endif
-
 
 			startStasis();
 			PostEvent( EV_StopStasis, damage );

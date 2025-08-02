@@ -438,9 +438,13 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 		str className = inflictor->getClassname();
 		str modelName = inflictor->model;
 		str targetName = inflictor->targetname;
-		str typeName = inflictor->getArchetype();
+		str typeName = inflictor->getName();
 		bool foundText = false;
 		bool isTiki = true;
+
+		if (typeName.length() == 0) {
+			typeName = inflictor->getArchetype();
+		}
 
 		//not a tiki model, but a BSP model
 		if (modelName.length()) {
@@ -573,7 +577,9 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 
 	if (killedPlayer == attackingPlayer || !attackingPlayer)
 	{
-		multiplayerManager.centerPrint(killedPlayer->entnum, va("^%c$$YouKilledYourself$$^%c", COLOR_RED, COLOR_NONE), CENTERPRINT_IMPORTANCE_NORMAL);
+		//multiplayerManager.centerPrint(killedPlayer->entnum, va("^%c$$YouKilledYourself$$^%c", COLOR_RED, COLOR_NONE), CENTERPRINT_IMPORTANCE_NORMAL);
+		multiplayerManager.HUDPrintAllClients(va("%s ^%c$$MOD_SUICIDE$$^%c\n", killedPlayer->client->pers.netname, COLOR_RED, COLOR_NONE));
+		return;
 	}
 
 	if (printSomething)
