@@ -599,15 +599,23 @@ qboolean SensoryPerception::InFOV( const Vector &pos, float check_fov, float che
 	}
 
 	
-	if ( check_fov == 360.0f )
-		return qfalse;
+	if (check_fov == 360.0f) {
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Return value being bool instead of qboolean. - Fixed: Needs to be qtrue not qfalse - chrissstrahl
+		//--------------------------------------------------------------
+		return qtrue;
+	}
+
 	temp = act->EyePosition();
 	delta = pos - act->EyePosition();
 	
+	// special case for straight up and down
 	if ( !delta.x && !delta.y )
-	{
-		// special case for straight up and down
-		return qfalse;
+	{	
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Return value being bool instead of qboolean. - Fixed: Needs to be qtrue not qfalse - chrissstrahl
+		//--------------------------------------------------------------
+		return qtrue;
 	}
 	
 	// give better vertical vision
