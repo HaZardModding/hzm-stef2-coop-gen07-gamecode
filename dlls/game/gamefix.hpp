@@ -204,6 +204,7 @@ str					gamefix_iniKeySet(const str& file, const str& section_contents, const st
 str					gamefix_iniKeyDelete(const str& file, const str& section_contents, const str& key);
 str					gamefix_iniFindSectionByKey(const str& file, const str& file_contents, const str& key);
 str					gamefix_iniFindSectionByValue(const str& file, const str& file_contents, const str& value);
+bool				gamefix_iniExtractKeyAndValueFromLine(const str& file, const str& line, str& key, str& value);
 
 bool				gamefix_containsNonANSI(const unsigned char* buffer, size_t length);
 char*				gamefix_convertUtf8UmlautsToAnsi(const char* utf8_str);
