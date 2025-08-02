@@ -238,8 +238,6 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 	char color;
 	bool sameTeam;
 
-	// Client killed himself
-
 	suicide = false;
 	printSomething = false;
 
@@ -260,7 +258,7 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 		}
 	}
 
-	if (killedPlayer == attackingPlayer || !attackingPlayer)
+	if (killedPlayer == attackingPlayer || !attackingPlayer && !inflictor || inflictor == killedPlayer /* && meansOfDeath != MOD_FALLING*/)
 	{
 		suicide = true;
 		printSomething = true;
@@ -283,13 +281,14 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 			s1 = "$$MOD_FALLING$$";
 			break;
 		default:
-			s1 = "$$PleaseInsertCD$$";
+			s1 = "$$MOD_SUICIDE$$";
 			break;
 		}
 	}
 
-	// Killed by another player
 
+
+	// Killed by another player
 	if (attackingPlayer && attackingPlayer->isClient() && (killedPlayer != attackingPlayer))
 	{
 		printSomething = true;
@@ -414,6 +413,167 @@ void ModeCoop::obituary(Player* killedPlayer, Player* attackingPlayer, Entity* i
 			s1 = "$$MOD_DEFAULT$$";
 			break;
 		}
+	}
+	
+	//Killed by ACTOR or something else
+	//go through the list by priority from very specialized to very broad
+	//this allowes to use different text for each map
+	else if(inflictor) {
+		//grab owner if possible
+		if (inflictor->isSubclassOf(Projectile)) {
+			Projectile* proj = (Projectile*)inflictor;
+			if (proj->owner > -1 && proj->owner < maxentities->integer) {
+				unsigned int ownerNumber = proj->owner;
+				Entity* ent = G_GetEntity(ownerNumber);
+				if (ent) {
+					inflictor = ent;
+				}
+			}
+		}
+
+		str mapName = level.mapname;
+		mapName = mapName.tolower();
+		str killmessageEng = "???";
+		str killmessageDeu = "";
+		str className = inflictor->getClassname();
+		str modelName = inflictor->model;
+		str targetName = inflictor->targetname;
+		str typeName = inflictor->getArchetype();
+		bool foundText = false;
+		bool isTiki = true;
+
+		//not a tiki model, but a BSP model
+		if (modelName.length()) {
+			if (modelName[0] == '*') {
+				isTiki = false;
+			}
+		}
+
+		foundText = CoopManager::Get().entityUservarGetKillMessage(inflictor, killmessageEng, killmessageDeu);
+		if (!foundText) {
+			foundText = CoopManager::Get().entityUservarGetName(inflictor, killmessageEng, killmessageDeu);
+		}
+
+		//NOTHING FOUND - USE DATA EXTRACTED FROM deathlist.ini
+		//NOTHING FOUND - USE DATA EXTRACTED FROM deathlist.ini
+		//NOTHING FOUND - USE DATA EXTRACTED FROM deathlist.ini
+
+		if (!foundText && inflictor->isSubclassOf(Actor)) {
+			//actorname specified for this map 
+			for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+				if (CoopSettings_deathList.ObjectAt(i).type == va("actornames@%s", mapName.c_str()) && CoopSettings_deathList.ObjectAt(i).name == typeName) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+		}
+		
+		if (!foundText && inflictor->isSubclassOf(Projectile)) {
+			//projectiles specified for this map 
+			for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+				if (CoopSettings_deathList.ObjectAt(i).type == va("projectiles@%s", mapName.c_str()) && CoopSettings_deathList.ObjectAt(i).name == modelName) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+			//projectiles specified in general
+			for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+				if (CoopSettings_deathList.ObjectAt(i).type == "projectiles" && CoopSettings_deathList.ObjectAt(i).name == modelName) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+		}
+
+		//targetnames specified for this map 
+		for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == va("targetnames@%s", mapName.c_str()) && CoopSettings_deathList.ObjectAt(i).name == targetName) {
+				killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+				foundText = true;
+				break;
+			}
+		}
+		//models specified for this map - only check tikis (excludes bsp models like *41)
+		for (int i = 1; !foundText && isTiki && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == va("models@%s", mapName.c_str()) && CoopSettings_deathList.ObjectAt(i).name == modelName) {
+				killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+				foundText = true;
+				break;
+			}
+		}
+		//class specified for this map 
+		for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == va("classes@%s", mapName.c_str())) {
+				if (CoopSettings_deathList.ObjectAt(i).name == className) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+		}
+
+		//targetnames specified
+		for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == "targetnames" && CoopSettings_deathList.ObjectAt(i).name == targetName) {
+				killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+				foundText = true;
+				break;
+			}
+		}
+		//models specified - only check tikis (excludes bsp models like *41)
+		for (int i = 1; !foundText && isTiki && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == "models" && CoopSettings_deathList.ObjectAt(i).name == modelName) {
+				killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+				foundText = true;
+				break;
+			}
+		}
+		if (!foundText && inflictor->isSubclassOf(Actor)) {
+			//actorname specified
+			for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+				if (CoopSettings_deathList.ObjectAt(i).type == "actornames" && CoopSettings_deathList.ObjectAt(i).name == typeName) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+		}
+		//class specified - very broad
+		for (int i = 1; !foundText && i <= CoopSettings_deathList.NumObjects(); i++) {
+			if (CoopSettings_deathList.ObjectAt(i).type == "classes") {
+				if (CoopSettings_deathList.ObjectAt(i).name == className) {
+					killmessageEng = CoopSettings_deathList.ObjectAt(i).text;
+					foundText = true;
+					break;
+				}
+			}
+		}
+		
+		//tell players
+		if (foundText) {
+			Player* player = nullptr;
+			for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+				player = gamefix_getPlayer(i);
+				if (!player) {
+					continue;
+				}
+				if (player->coop_hasLanguageGerman() && killmessageDeu.length()) {
+					multiplayerManager.HUDPrint(i, va("%s - %s\n", killedPlayer->client->pers.netname, killmessageDeu.c_str()));
+				}
+				else {
+					multiplayerManager.HUDPrint(i, va("%s - %s\n", killedPlayer->client->pers.netname, killmessageEng.c_str()));
+				}
+			}
+			return;
+		}
+	}
+
+	if (killedPlayer == attackingPlayer || !attackingPlayer)
+	{
+		multiplayerManager.centerPrint(killedPlayer->entnum, va("^%c$$YouKilledYourself$$^%c", COLOR_RED, COLOR_NONE), CENTERPRINT_IMPORTANCE_NORMAL);
 	}
 
 	if (printSomething)

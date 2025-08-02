@@ -1091,6 +1091,17 @@ void MultiplayerManager::playerKilled( Player *killedPlayer, Player *attackingPl
 
 	_awardSystem->playerKilled( killedPlayer, attackingPlayer, inflictor, meansOfDeath );
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Don't execute this in Coop - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		return;
+	}
+#endif
+
+
 	// Tell the players what happened
 
 	if ( killedPlayer == attackingPlayer || !attackingPlayer )

@@ -154,6 +154,104 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
     return false;
 }
 
+bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessageEng, str& killmessageDeu)
+{
+    int uservarsNumHandeled = 4;
+
+    if (!inflictor) {
+        killmessageEng = "Inflictor-Missing-???";
+        killmessageDeu = "Inflictor-Fehlt-???";
+        return true;
+    }
+    killmessageEng = "";
+    killmessageDeu = "";
+
+    str entityValue="";
+    ScriptVariable* entityData = nullptr;
+    for (int i = 1; i <= uservarsNumHandeled; i++) {
+        entityData = inflictor->entityVars.GetVariable(va("uservar%d", i));       
+        if (!entityData) {
+            continue;
+        }
+
+        entityValue = entityData->stringValue();
+        if (Q_stricmpn("killmessage", entityValue.c_str(), 11) == 0) {
+            //"uservar1" "killmessage AbC"
+            if (entityValue.length() > 12) {
+                killmessageEng = "";
+                for (int j = 12; j < entityValue.length(); j++) {
+                    killmessageEng += entityValue[j];
+                }
+            }
+        }
+
+        entityValue = entityData->stringValue();
+        if (Q_stricmpn("killmessage_de", entityValue.c_str(), 14) == 0) {
+            //"uservar1" "killmessage_de AbC"
+            if (entityValue.length() > 15) {
+                killmessageDeu = "";
+                for (int j = 15; j < entityValue.length(); j++) {
+                    killmessageDeu += entityValue[j];
+                }
+            }
+        }
+    }
+    if (!killmessageDeu.length() && killmessageEng.length()) {
+        killmessageDeu = killmessageEng;
+    }
+
+    if (!killmessageEng.length() && killmessageDeu.length()) {
+        killmessageEng = killmessageDeu;
+    }
+
+    if (killmessageEng.length()) {
+        return true;
+    }
+    return false;
+}
+
+bool CoopManager::entityUservarGetName(Entity* inflictor, str& killmessageEng, str& killmessageDeu)
+{
+    int uservarsNumHandeled = 4;
+
+    if (!inflictor) {
+        killmessageEng = "Inflictor-Missing-???";
+        killmessageDeu = "Inflictor-Fehlt-???";
+        return true;
+    }
+    killmessageEng = "";
+    killmessageDeu = "";
+
+    str entityValue = "";
+    ScriptVariable* entityData = nullptr;
+    for (int i = 1; i <= uservarsNumHandeled; i++) {
+        entityData = inflictor->entityVars.GetVariable(va("uservar%d", i));
+        if (!entityData) {
+            continue;
+        }
+
+        entityValue = entityData->stringValue();
+        if (Q_stricmpn("name", entityValue.c_str(), 4) == 0) {
+            //"uservar1" "killmessage AbC"
+            if (entityValue.length() > 5) {
+                killmessageEng = "";
+                for (int j = 6; j < entityValue.length(); j++) {
+                    killmessageEng += entityValue[j];
+                }
+            }
+        }
+
+        if (!killmessageDeu.length() && killmessageEng.length()) {
+            killmessageDeu = killmessageEng;
+        }
+
+        if (killmessageEng.length()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
     playerAdminThink(player);
@@ -194,8 +292,6 @@ void CoopManager::Init() {
         LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
-
-        coopSettings.loadScoreList();
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
@@ -287,6 +383,8 @@ void CoopManager::InitWorld() {
         if (coopEnabled) {
             coopSettings.playerCommandsAllow();
             coopSettings.playerScriptThreadsAllow();
+            coopSettings.loadScoreList();
+            coopSettings.loadDeathList();
 
             gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
         }
@@ -461,8 +559,9 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
         }
     }
 
-
     if (coopEnabled) {
+        CoopSettings_deathList.FreeObjectList();
+        CoopSettings_scoreKillList.FreeObjectList();
         CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
     }
 }
@@ -1061,36 +1160,19 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
     else {
         //use - scorelist with actor names
         int pointsEarned = 1;
-        bool foundMatch = false;
 
+        str actorArcheType = actor->getArchetype();
         str actorTargetName = actor->targetname;
         if(actorTargetName.length()) {
-            for (int i = 1; i <= CoopSettings_scoreKillTargetnameList.NumObjects(); i++) {
-                CoopSettings_killScoreActornames_s addTargetnameKillScore;
-                addTargetnameKillScore = CoopSettings_scoreKillTargetnameList.ObjectAt(i);
-                if (addTargetnameKillScore.name == actorTargetName) {
-                    pointsEarned = addTargetnameKillScore.points;
-                    foundMatch = true;
+            for (int i = 1; i <= CoopSettings_scoreKillList.NumObjects(); i++) {
+                CoopSettings_killScore_s addKillScore;
+                addKillScore = CoopSettings_scoreKillList.ObjectAt(i);
+                if (addKillScore.name == actorTargetName && addKillScore.type == "targetnames" || addKillScore.name == actorArcheType && addKillScore.type == "actornames") {
+                    pointsEarned = addKillScore.points;
                     break;
                 }
             }
         }
-
-        if (!foundMatch) {
-            str actorArcheType = actor->getArchetype();
-            if (actorArcheType.length()) {
-                for (int i = 1; i <= CoopSettings_scoreKillActornameList.NumObjects(); i++) {
-                    CoopSettings_killScoreActornames_s addActorNameKillScore;
-                    addActorNameKillScore = CoopSettings_scoreKillActornameList.ObjectAt(i);
-                    if (addActorNameKillScore.name == actorArcheType) {
-                        pointsEarned = addActorNameKillScore.points;
-                        foundMatch = true;
-                        break;
-                    }
-                }            
-            }
-        }
-
         multiplayerManager.addPoints(player->entnum, pointsEarned);
     }
 }

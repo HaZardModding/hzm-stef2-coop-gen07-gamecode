@@ -134,6 +134,8 @@ public:
     str playerScriptCallValidateThreadname(str threadName);
     bool playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed);
 
+    bool entityUservarGetKillMessage(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
+    bool entityUservarGetName(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);
 
