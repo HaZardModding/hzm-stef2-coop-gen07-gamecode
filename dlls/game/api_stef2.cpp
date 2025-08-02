@@ -1977,11 +1977,6 @@ bool gameFixAPI_callvoteIniHandle(Player* player ,const str &command, const str 
 //--------------------------------------------------------------
 void gameFixAPI_shutdownGame()
 {
-	gameFixAPI_maplistContainer.FreeObjectList();
-	gameFixAPI_maplistContainer.FreeObjectList();
-	gamefix_fileContentTokenized.FreeObjectList();
-	gameFixAPI_AllowedCmdsContainer.FreeObjectList();
-
 	/* int i = 0;
 	while (i < 89) {
 		gi.Printf("%d: %s\n",i,gamefix_defaultMaps_t[i].mapname.c_str());
