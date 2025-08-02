@@ -845,8 +845,15 @@ float BasicArmor::ResolveDamage( float damage , int meansOfDeath , const Vector 
 
 
 	if ( ( meansOfDeath == MOD_ARMOR_PIERCING ) || ( meansOfDeath == MOD_IMOD_PRIMARY ) || 
-		 ( meansOfDeath == MOD_IMOD_SECONDARY ) || ( meansOfDeath == MOD_DEATH_QUAD ) )
+		 ( meansOfDeath == MOD_IMOD_SECONDARY ) || ( meansOfDeath == MOD_DEATH_QUAD ) ||
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Armor protecting against certain types, unlogically - chrissstrahl
+		//--------------------------------------------------------------
+		(meansOfDeath == MOD_DROWN) ||
+		(meansOfDeath == MOD_GAS) || (meansOfDeath == MOD_POISON) || (meansOfDeath == MOD_STASIS) ||
+		(damage < 0))	//positive damage (healing)
 		return damage;
+
 
 	// Determine which cutoff values to use
 
