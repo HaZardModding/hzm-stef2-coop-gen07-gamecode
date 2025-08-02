@@ -145,8 +145,8 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 
 	//respawn at regular spawn or respawn location - KILLED BY TRIGGER
 	if(inflictor) {
-		if (/* coop_checkStringInUservarsOf(ePurp, "badspot") */
-			!Q_stricmp(inflictor->getClassname(), "TriggerHurt"))
+		if ( Q_stricmp(inflictor->getClassname(), "TriggerHurt") == 0	||
+			CoopManager::Get().entityUservarContains(inflictor, "badspot") > 0)
 		{
 			CoopManager::Get().setPlayerData_respawnLocationSpawn(killedPlayer, true);
 		}

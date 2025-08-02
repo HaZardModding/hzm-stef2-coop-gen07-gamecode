@@ -156,7 +156,7 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
 
 bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessageEng, str& killmessageDeu)
 {
-    int uservarsNumHandeled = 4;
+    int uservarsNumHandeled = 10;
 
     if (!inflictor) {
         killmessageEng = "Inflictor-Missing-???";
@@ -212,7 +212,7 @@ bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessag
 
 bool CoopManager::entityUservarGetName(Entity* inflictor, str& killmessageEng, str& killmessageDeu)
 {
-    int uservarsNumHandeled = 4;
+    int uservarsNumHandeled = 10;
 
     if (!inflictor) {
         killmessageEng = "Inflictor-Missing-???";
@@ -250,6 +250,28 @@ bool CoopManager::entityUservarGetName(Entity* inflictor, str& killmessageEng, s
         }
     }
     return false;
+}
+
+int CoopManager::entityUservarContains(Entity* ent, const str &find)
+{
+    int uservarsNumHandeled = 10;
+
+    str entityValue = "";
+    ScriptVariable* entityData = nullptr;
+    for (int i = 1; i <= uservarsNumHandeled; i++) {
+        entityData = ent->entityVars.GetVariable(va("uservar%d", i));
+        if (!entityData) {
+            continue;
+        }
+
+        entityValue = entityData->stringValue();
+        if (gamefix_findString(entityValue.c_str(), find.c_str(), false)) {
+            return i;
+        }
+    }
+
+    //return value 1-10 is true
+    return 0;
 }
 
 void CoopManager::ClientThink(Player *player) {

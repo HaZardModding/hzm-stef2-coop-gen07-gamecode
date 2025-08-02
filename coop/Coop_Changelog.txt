@@ -21,6 +21,7 @@ world	coop_NextMapToLoad - string - Can be used to set next map to load - script
 player	_spArmoryEquiped - bool-float - player sucessfully equiped in singleplayer - gamedll
 world	coop_noBeamout - bool-float - don't beam players out on death - script, gamedll
 player	coop_noBeamout - bool-float - don't beam this player out on death - script, gamedll
+entity	uservar1-10 - "badspot" string value - player can not respawn here, if killed by this entity, needs to respawn at last dedicated spawn spot
 
 
 Coop NEW script commands

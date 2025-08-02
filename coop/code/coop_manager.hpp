@@ -136,6 +136,7 @@ public:
 
     bool entityUservarGetKillMessage(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     bool entityUservarGetName(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
+    int entityUservarContains(Entity* ent, const str &find);
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);
 
