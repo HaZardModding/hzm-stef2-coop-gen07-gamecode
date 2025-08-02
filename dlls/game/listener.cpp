@@ -938,7 +938,16 @@ void Event::operator delete( void *ptr )
 }
 
 #if defined( GAME_DLL )
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Changed eventlimit so we have no issues with level coop_iceStation - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#define INITIALLY_ALLOCATED_EVENTS 7000
+#else
 #define INITIALLY_ALLOCATED_EVENTS 6000
+#endif
+
+
 #elif defined ( CGAME_DLL )
 #define INITIALLY_ALLOCATED_EVENTS 512
 #elif defined ( UI_LIB )
