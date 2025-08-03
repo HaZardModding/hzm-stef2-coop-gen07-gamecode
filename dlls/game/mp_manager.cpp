@@ -2025,7 +2025,7 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	str iniContents;
 	str iniContentsSection;
 	Container<str> iniSectionNames;
-	gameFixAPI_callvoteIniGet(iniFileName, command, iniContents, iniContentsSection, iniSectionNames);
+	gameFixAPI_callvoteIniGet(_COOP_FILE_voteList, command, iniContents, iniContentsSection, iniSectionNames);
 	
 
 	//--------------------------------------------------------------
@@ -2047,7 +2047,7 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 		)
 	{
 		HUDPrint( player->entnum, "$$InvalidVote$$\n" );
-		HUDPrint( player->entnum, "$$VoteCommands$$: restart, nextmap, map <mapname>, mp_gametype <n> and kick <player>.\n" );
+		HUDPrint( player->entnum, "$$VoteCommands$$ restart, nextmap, map <mapname>, mp_gametype <n> and kick <player>.\n" );
 
 
 		//--------------------------------------------------------------
