@@ -16,6 +16,7 @@ constexpr auto _COOP_FILE_mrm = "mom_mrm.scr";
 constexpr auto _COOP_FILE_maplist = "co-op/config/maplist.ini";
 constexpr auto _COOP_FILE_settings = "co-op/config/settings.ini";
 constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/skinlist.ini";
+constexpr auto _COOP_FILE_voteList = "co-op/config/votelist.ini";
 constexpr auto _COOP_FILE_scorelist = "co-op/config/scorelist.ini";
 constexpr auto _COOP_FILE_deathlist = "co-op/config/deathlist.ini";
 constexpr auto _COOP_FILE_spawninventory = "co-op/config/spawninventory.cfg";
