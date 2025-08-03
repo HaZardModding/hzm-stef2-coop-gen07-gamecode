@@ -281,6 +281,20 @@ void CoopManager::ClientThink(Player *player) {
     coop_radarUpdate(player);
 }
 
+bool CoopManager::callvoteManager(const str& _voteString) { 
+    if (!_voteString.length()) {
+        return false;
+    }
+    Container<str> voteStringList;
+    gamefix_listSeperatedItems(voteStringList, _voteString," ");
+
+    if (voteStringList.NumObjects() >= 2) {
+
+    }
+
+    return false;
+}
+
 //return player quanity based on certain parameters
 int CoopManager::getNumberOfPlayers(bool noDead, bool noSpectator) {
     int iNumberOfPlayer = 0;

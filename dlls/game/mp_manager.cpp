@@ -2288,7 +2288,21 @@ void MultiplayerManager::checkVote( void )
 			}
 
 
-			gi.SendConsoleCommand( va("%s\n", _voteString.c_str() ) );
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.000 - Try to run coop vote specific functions first - chrissstrahl
+			//--------------------------------------------------------------
+			if (CoopManager::Get().IsCoopEnabled()) {
+				if (!CoopManager::Get().callvoteManager(_voteString)) {
+					gi.SendConsoleCommand(va("%s\n", _voteString.c_str()));
+				}
+			}
+			else {
+				gi.SendConsoleCommand(va("%s\n", _voteString.c_str()));
+			}
+#else
+			gi.SendConsoleCommand(va("%s\n", _voteString.c_str()));
+#endif
 
 
 			//--------------------------------------------------------------
