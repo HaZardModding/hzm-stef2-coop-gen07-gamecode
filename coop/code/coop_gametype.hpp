@@ -34,6 +34,7 @@ public:
 	/* virtual */ void					joinTeam(Player* player, const str& teamName);
 	/* virtual */ Entity*				getSpawnPoint(Player* player);
 
+	/* virtual */ float					playerDamaged(Player* damagedPlayer, Player* attackingPlayer, float damage, int meansOfDeath);
 	/* virtual */ void					playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);
 	/* virtial */ void					handleKill(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath, bool goodKill);
 	/* virtual */ void					obituary(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath);

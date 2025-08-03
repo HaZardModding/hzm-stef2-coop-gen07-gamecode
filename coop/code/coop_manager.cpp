@@ -289,10 +289,44 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     gamefix_listSeperatedItems(voteStringList, _voteString," ");
 
     if (voteStringList.NumObjects() >= 2) {
-
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_ff") == 0) {
+            float firedlyFireVal = atof(voteStringList.ObjectAt(2));
+            coopSettings.setSetting_friendlyFireMultiplicator(firedlyFireVal);
+            callvoteUpdateUi("Friendly Fire",va("%.2f", firedlyFireVal), "coopGpoFF");
+            return true;
+        }
     }
 
     return false;
+}
+
+extern qboolean G_SetWidgetTextOfPlayer(const gentity_t* ent, const char* widgetName, const char* widgetText);
+void CoopManager::callvoteUpdateUiPlayer(Player *player, str sValue, str sWidget)
+{
+    if (!player) {
+        return;
+    }
+    if (player->coop_hasCoopInstalled()) {
+        gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand %s title %s", sWidget.c_str(), sValue.c_str()));
+    }
+}
+
+void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
+{
+    if (!CoopManager::Get().IsCoopEnabled()) {
+        return;
+    }
+
+    Player* player = NULL;
+    for (int i = 0; i < maxclients->integer; i++) {
+        player = (Player*)g_entities[i].entity;
+        if (player && player->client && player->isSubclassOf(Player)) {
+            multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
+            if (player->coop_hasCoopInstalled()) {
+                callvoteUpdateUiPlayer(player, sValue, sWidget);
+            }
+        }
+    }
 }
 
 //return player quanity based on certain parameters
@@ -748,7 +782,16 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     }
     
     setPlayerData_coopVersion(player,iVer);
-   
+
+    //populate ui
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %d",skill->integer));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %.2f",coopSettings.getSetting_friendlyFireMultiplicator()));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %s", "NOT_IMPL"));
     //run coop setup
     DEBUG_LOG("# COOP DETECTED: %d (WAITED: %d)\n", iVer, getPlayerData_coopSetupTries(player));
 }

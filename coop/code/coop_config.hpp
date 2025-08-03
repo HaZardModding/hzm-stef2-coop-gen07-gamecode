@@ -112,10 +112,15 @@ public:
 	bool rpgSpawnWeapons = false;
 	int  coopLastManStandingLifes = 0;
 
+	float friendlyFireMultiplicator = 0;
+
 	int scoreKilledPlayer = 0;
 	int scoreKilledFriendly = 0;
 	int scoreKilledEnemy = 0;
 	int scoreKilledBoss = 0;
+
+	float getSetting_friendlyFireMultiplicator();
+	float setSetting_friendlyFireMultiplicator(float newValue);
 
 	void serverConfigCheck();
 	void playerCommandsAllow();

@@ -103,6 +103,31 @@ void ModeCoop::_giveInitialConditions(Player* player)
 	}
 }
 
+float ModeCoop::playerDamaged(Player* damagedPlayer, Player* attackingPlayer, float damage, int meansOfDeath)
+{
+	// Always take telefrag damage
+
+	if (meansOfDeath == MOD_TELEFRAG)
+		return damage;
+
+	// Player can always hurt himself
+
+	if (damagedPlayer == attackingPlayer)
+		return damage;
+
+	//return friendly fire multiplicator settings
+	if (coopSettings.getSetting_friendlyFireMultiplicator() != 0.0f) {
+		return damage * coopSettings.getSetting_friendlyFireMultiplicator();
+	}
+
+	// If on same team and not allowing team damage
+	if ((_playerGameData[damagedPlayer->entnum]._currentTeam == _playerGameData[attackingPlayer->entnum]._currentTeam) &&
+		(!multiplayerManager.checkFlag(MP_FLAG_FRIENDLY_FIRE)))
+		return 0;
+	else
+		return damage;
+}
+
 void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entity* inflictor, int meansOfDeath)
 {
 	Team* team;

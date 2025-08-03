@@ -140,7 +140,9 @@ public:
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);
 
-    bool CoopManager::callvoteManager(const str& _voteString);
+    bool callvoteManager(const str& _voteString);
+    void callvoteUpdateUi(str sText, str sValue, str sWidget);
+    void callvoteUpdateUiPlayer(Player* player, str sValue, str sWidget);
 
     int getNumberOfPlayers(bool noDead, bool noSpectator);
     Entity* getSpawnSpecific(int spotNumber);

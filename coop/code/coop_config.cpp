@@ -6,6 +6,22 @@ Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowLis
 Container<CoopSettings_killScore_s> CoopSettings_scoreKillList;
 Container<CoopSettings_deathmessage_s> CoopSettings_deathList;
 
+float CoopSettings::getSetting_friendlyFireMultiplicator()
+{
+	return friendlyFireMultiplicator;
+}
+
+float CoopSettings::setSetting_friendlyFireMultiplicator(float newValue)
+{
+	if (newValue < -1) {
+		newValue = -1;
+	}
+	if (newValue > 2) {
+		newValue = 2;
+	}
+	friendlyFireMultiplicator = newValue;
+	return friendlyFireMultiplicator;
+}
 
 void CoopSettings::serverConfigCheck()
 {
