@@ -117,6 +117,7 @@ class Actor : public Sentient
 		void		coop_getActorType(Event* ev);
 		str			coop_getBranchDialogName();
 		void		coop_branchDialogFailsafe(Event* ev);
+		void		coop_followPlayer();
 #endif
 
 

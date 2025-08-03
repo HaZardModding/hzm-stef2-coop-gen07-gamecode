@@ -13204,6 +13204,17 @@ void Actor::UseEvent( Event *ev )
 	if ( entity->isSubclassOf( Equipment ) )
 		return;
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Set Activator, so we know who last used actor - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		gameFixAPI_setActivator((Entity*)this, entity);
+	}
+#endif
+	
+
 	last_used_time = level.time;
 
 	AddStateFlag( STATE_FLAG_USED );
@@ -19645,6 +19656,16 @@ const str Actor::FindDialog( Sentient *user, DialogType_t dialogType , const str
 
 			if (good_dialog)
 				{
+
+
+#ifdef ENABLE_COOP
+				//--------------------------------------------------------------
+				// COOP Generation 7.000 - Allow Teammate to follow player - chrissstrahl
+				//--------------------------------------------------------------
+				coop_followPlayer();
+#endif
+
+
 				// Found a good dialog now get the real sound name from the alias
 				the_dialog = NULL;
 				the_dialog = gi.Alias_FindDialog( edict->s.modelindex, dialog_node->alias_name, dialog_node->random_flag, entnum);
@@ -20333,5 +20354,24 @@ void Actor::coop_branchDialogFailsafe(Event* ev)
 	CancelEventsOfType(EV_Actor_coop_branchDialogFailsafe);
 
 	clearBranchDialog();
+}
+
+void Actor::coop_followPlayer()
+{
+	if (!CoopManager::Get().IsCoopEnabled()) {
+		return;
+	}
+
+	Entity* activator = gameFixAPI_getActivator(this);
+	
+	if (!multiplayerManager.inMultiplayer() || !activator || !activator->isSubclassOf(Player) || !GetActorFlag(ACTOR_FLAG_AI_ON) || personality->GetTendency("follow") < 1.0f) {
+		return;
+	}
+
+	multiplayerManager.HUDPrint(activator->entnum, "^5INFO^8: Teammate is now following you!\n");
+	Event* followThisPlayer;
+	followThisPlayer = new Event(EV_Actor_SetFollowTarget);
+	followThisPlayer->AddEntity(activator);
+	ProcessEvent(followThisPlayer);
 }
 #endif
