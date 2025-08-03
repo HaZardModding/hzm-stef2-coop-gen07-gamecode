@@ -153,6 +153,7 @@ public:
     void playerSetup(Player* player);
     void playerSetupClId(Player* player);
     void playerSetupCoop(Player* player);
+    void playerSetupCoopUi(Player* player);
     void playerCoopDetected(const gentity_t* ent, const char* coopVer);
     void playerClIdDetected(const gentity_t* ent, const char* clientId);
     void playerClIdSet(Player* player);

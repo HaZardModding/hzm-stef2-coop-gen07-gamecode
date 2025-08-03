@@ -374,6 +374,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 
 	if (!CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
 		coop_objectivesSetup(player);
+		CoopManager::Get().playerSetupCoopUi(player);
 		return;
 	}
 	
