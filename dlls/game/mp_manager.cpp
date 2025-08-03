@@ -928,7 +928,10 @@ void MultiplayerManager::removePlayer( Player *player )
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Votes that pass will not count towards player max vote limit  - chrissstrahl
 	//--------------------------------------------------------------
-	gamefixEF2_voteStartedByClient = -1;
+	if (gamefixEF2_voteStartedByClient == player->entnum) {
+		gamefixEF2_voteStartedByClient = -1;
+	}
+
 
 
 	// Inform the game about the player being removed
