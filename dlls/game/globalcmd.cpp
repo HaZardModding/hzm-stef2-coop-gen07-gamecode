@@ -4403,35 +4403,48 @@ Event EV_ScriptThread_coop_setIniDataPlayer
 (
 	"coop_setIniDataPlayer",
 	EV_SCRIPTONLY,
-	"@fesss",
-	"returnsuccsess player category keyname value",
+	"@fess",
+	"returnsuccsess player category value",
 	"sets data for player to current map ini"
 );
 
 void CThread::coop_setIniDataPlayer(Event* ev)
 {
-	if (ev->NumArgs() < 4) {
+	if (ev->NumArgs() < 3) {
 		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
 		ev->ReturnFloat(0.0f);
 		return;
 	}
 
-	//allow writing
+	Entity* ent = ev->GetEntity(1);
+	str sCategoryname = ev->GetString(2);
+	str valueData = ev->GetString(3);
+	str keyName = "";
 	str sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
 
-	Entity* ent = ev->GetEntity(1);
-	if (!ent->isSubclassOf(Player)) {
+	if (!ent || !ent->isSubclassOf(Player)) {
 		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_setIniDataPlayer");
 		ev->ReturnFloat(0.0f);
 		return;
 	}
 
-	str sKeyname = ev->GetString(4);
-	if (!sKeyname.length()) {
-		Player* player = (Player*)ent;
-		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
-		DEBUG_LOG("coop_setIniDataPlayer - Grab Player[%d] Coop ID - Feature not Implemented", player->entnum);
-		ev->ReturnString("NOT_IMPLEMENTED");
+	Player* player = (Player*)ent;
+	keyName = CoopManager::Get().getPlayerData_coopClientId(player);
+	if (!keyName.length()) {
+			DEBUG_LOG("coop_setIniDataPlayer - Player[%d] has no Client ID", player->entnum);
+			gi.Printf("coop_setIniDataPlayer - Player[%d] has no Client ID\n", player->entnum);
+			
+			if (gameFixAPI_inMultiplayer()) {
+				player->hudPrint("No Client ID found, reconnect to fix.\n");
+			}
+
+			ev->ReturnFloat(0.0f);
+			return;
+	}
+
+	if (!sCategoryname.length() || !keyName.length()) {
+		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
+		ev->ReturnFloat(0.0f);
 		return;
 	}
 
@@ -4447,39 +4460,11 @@ void CThread::coop_setIniDataPlayer(Event* ev)
 	str fileContents;
 	gamefix_getFileContents(sFilename, fileContents, true);
 
-	str sCategoryname = ev->GetString(2);
-	if (!sCategoryname.length()) {
-		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
-		ev->ReturnFloat(0.0f);
-		return;
-	}
-
-	str sKey = ev->GetString(3);
-	if (!sKey.length()) {
-		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_setIniDataPlayer");
-		ev->ReturnFloat(0.0f);
-		return;
-	}
-
-	str sValue = ev->GetString(4);
-
 	// Get current section content (if any)
 	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
 
 	// Set (or replace) key within section
-	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
-
-
-	/*
-	/DEBUG_LOG("------------\n");
-	DEBUG_LOG("'%s'\n", sectionContents.c_str());
-	DEBUG_LOG("------------\n");
-	DEBUG_LOG("%s=%s\n", sKey.c_str(), sValue.c_str());
-	DEBUG_LOG("------------\n");
-	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
-	DEBUG_LOG("------------\n");
-	*/
-
+	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, keyName, valueData);
 
 	// Update section in full file content
 	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
@@ -4538,23 +4523,10 @@ void CThread::coop_setIniData(Event* ev)
 
 	// Get current section content (if any)
 	str sectionContents = gamefix_iniSectionGet(sFilename, fileContents, sCategoryname.c_str());
-
-
-
+	
 	// Set (or replace) key within section
 	str newSectionContents = gamefix_iniKeySet(sFilename, sectionContents, sKey, sValue);
 	
-
-	/*
-	DEBUG_LOG("------------\n");
-	DEBUG_LOG("'%s'\n", sectionContents.c_str());
-	DEBUG_LOG("------------\n");
-	DEBUG_LOG("%s=%s\n", sKey.c_str(),sValue.c_str() );
-	DEBUG_LOG("------------\n");
-	DEBUG_LOG("'%s'\n", newSectionContents.c_str());
-	DEBUG_LOG("------------\n");
-	*/
-
 
 	// Update section in full file content
 	str newFileContents = gamefix_iniSectionSet(sFilename, fileContents, sCategoryname, newSectionContents);
@@ -4567,8 +4539,8 @@ Event EV_ScriptThread_coop_getIniDataPlayer
 (
 	"coop_getIniDataPlayer",
 	EV_SCRIPTONLY,
-	"@sesSS",
-	"returndatastring player category keyname filename",
+	"@sesS",
+	"returndatastring player category filename",
 	"gets data for player from current map ini or given ini file"
 );
 
@@ -4581,29 +4553,36 @@ void CThread::coop_getIniDataPlayer(Event* ev)
 	}
 
 	Entity* ent = ev->GetEntity(1);
+	str sCategoryname = ev->GetString(2);
+	str keyName = "";
+	str sFilename = ev->GetString(3);
+
 	if (!ent->isSubclassOf(Player)) {
 		gi.Printf("%s - Error: Paramater 1 needs to be of class Player\n", "coop_getIniDataPlayer");
 		ev->ReturnString("");
 		return;
 	}
 
-	str sCategoryname = ev->GetString(2);
 	if ( !sCategoryname.length()) {
 		gi.Printf(_COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW, "coop_getIniDataPlayer");
 		ev->ReturnString("");
 		return;
 	}
 
-	str sKeyname = ev->GetString(3);
-	if (!sKeyname.length()) {
-		Player* player = (Player*)ent;
-		sKeyname = ""; //get player coop id - NOT_IMPLEMENTED yet
-		DEBUG_LOG("coop_getIniDataPlayer - Grab Player(%d) Coop ID - Feature not Implemented", player->entnum);
-		ev->ReturnString("NOT_IMPLEMENTED");
+	keyName = CoopManager::Get().getPlayerData_coopClientId((Player*)ent);
+	if (!keyName.length()) {
+		DEBUG_LOG("coop_getIniDataPlayer - Player[%d] has no Client ID", ent->entnum);
+		gi.Printf("coop_getIniDataPlayer - Player[%d] has no Client ID\n", ent->entnum);
+
+		if (gameFixAPI_inMultiplayer()) {
+			Player* player = (Player*)ent;
+			player->hudPrint("No Client ID found, reconnect to fix.\n");
+		}
+
+		ev->ReturnString("");
 		return;
 	}
-
-	str sFilename = ev->GetString(4);
+	
 	if (!sFilename.length()) {
 		sFilename = va("co-op/ini/%s.ini", level.mapname.c_str());
 	}
@@ -4623,15 +4602,13 @@ void CThread::coop_getIniDataPlayer(Event* ev)
 		ev->ReturnString("");
 		return;
 	}
-
+	
 	str section_contents;
 	str key_contents;
-	// Boot section - settings usually managed during first load of dll and game init - requires server reboot
 	section_contents = gamefix_iniSectionGet(sFilename, contents, sCategoryname.c_str());
-	key_contents = gamefix_iniKeyGet(sFilename, section_contents, sKeyname, "");
+	key_contents = gamefix_iniKeyGet(sFilename, section_contents, keyName, "");
 
 	ev->ReturnString(key_contents.c_str());
-	return;
 }
 
 Event EV_ScriptThread_coop_getIniData
