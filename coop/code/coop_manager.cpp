@@ -295,6 +295,30 @@ bool CoopManager::callvoteManager(const str& _voteString) {
             callvoteUpdateUi("Friendly Fire",va("%.2f", firedlyFireVal), "coopGpoFF");
             return true;
         }
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_airaccelerate") == 0) {
+            unsigned int airAccellerate = atoi(voteStringList.ObjectAt(2));
+            sv_airaccelerate->integer = airAccellerate;
+            callvoteUpdateUi("Air Accelerate",va("%d", airAccellerate), "coopGpoAa");
+            return true;
+        }
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_maxspeed") == 0) {
+            unsigned int maxSpeed = atoi(voteStringList.ObjectAt(2));
+            callvoteUpdateUi("Movement Speed",va("%d", maxSpeed), "coopGpoMvSpd");
+            world->setPhysicsVar("maxspeed", maxSpeed);
+            return true;
+        }
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_skill") == 0) {
+            unsigned int skillValue = atoi(voteStringList.ObjectAt(2));
+            callvoteUpdateUi("Difficulty",va("%d", skillValue), "coopGpoSkill");
+            skill->integer = skillValue;
+            return true;
+        }
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_awards") == 0) {
+            bool awards = (bool)atoi(voteStringList.ObjectAt(2));
+            callvoteUpdateUi("Coop Awards",va("%d", awards), "coopGpoAw");
+            coopSettings.setSetting_awards(awards);
+            return true;
+        }
     }
 
     return false;
@@ -451,6 +475,10 @@ void CoopManager::InitWorld() {
 
 
         if (coopEnabled) {
+            if (world) {
+                world->setPhysicsVar("maxSpeed",coopSettings.getSetting_maxSpeed());
+            }
+
             coopSettings.playerCommandsAllow();
             coopSettings.playerScriptThreadsAllow();
             coopSettings.loadScoreList();
@@ -769,8 +797,8 @@ void CoopManager::playerSetupCoopUi(Player* player) {
     }
     //populate ui
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %d", skill->integer));
-    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %s", "NOT_IMPL"));
-    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %s", "NOT_IMPL"));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", coopSettings.getSetting_awards()));
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", coopSettings.getSetting_maxSpeed()));
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %.2f", coopSettings.getSetting_friendlyFireMultiplicator()));
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %s", "NOT_IMPL"));
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %s", "NOT_IMPL"));
@@ -1261,6 +1289,10 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
             }
         }
         multiplayerManager.addPoints(player->entnum, pointsEarned);
+
+        if (coopSettings.getSetting_awards()) {
+            multiplayerManager.gameFixAPI_getMultiplayerAwardSystem()->coop_awardEnemyKilled(player,(Entity*)actor);
+        }
     }
 }
 

@@ -66,6 +66,8 @@ constexpr auto _COOP_SETTINGS_PLAYER_WEAPON_DROP_REMOVE = 120.0f;
 constexpr auto _COOP_SETTINGS_PLAYER_BLOCK_NOTSOLID_TIME = 7.0f;
 constexpr auto _COOP_SETTINGS_PLAYER_PENALTY_BADKILL = 4;
 constexpr auto _COOP_SETTINGS_DIALOG_FAILSAFE_TIMEOUT = 45.0f;
+constexpr auto _COOP_SETTINGS_MOVEMENT_SPEED_DEFAULT = 400;
+constexpr auto _COOP_SETTINGS_DAMAGE_MULTIPLAYER_DEFAULT = 0.25f;
 
 const str _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[] = { "co-op/config/settings.ini" };
 const size_t _COOP_SETTINGS_FORBIDDEN_FILES_INI_READ_NUM = sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ) / sizeof(_COOP_SETTINGS_FORBIDDEN_FILES_INI_READ[0]);
@@ -112,13 +114,19 @@ public:
 	bool rpgSpawnWeapons = false;
 	int  coopLastManStandingLifes = 0;
 
-	float friendlyFireMultiplicator = 0;
+	float friendlyFireMultiplicator = _COOP_SETTINGS_DAMAGE_MULTIPLAYER_DEFAULT;
+	int moveSpeed = _COOP_SETTINGS_MOVEMENT_SPEED_DEFAULT;
+	bool awards = false;
 
 	int scoreKilledPlayer = 0;
 	int scoreKilledFriendly = 0;
 	int scoreKilledEnemy = 0;
 	int scoreKilledBoss = 0;
 
+	int getSetting_awards();
+	int setSetting_awards(bool newValue);
+	int getSetting_maxSpeed();
+	int setSetting_maxSpeed(int newValue);
 	float getSetting_friendlyFireMultiplicator();
 	float setSetting_friendlyFireMultiplicator(float newValue);
 

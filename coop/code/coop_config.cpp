@@ -6,6 +6,34 @@ Container<CoopSettings_clientThreads_s> CoopSettings_playerScriptThreadsAllowLis
 Container<CoopSettings_killScore_s> CoopSettings_scoreKillList;
 Container<CoopSettings_deathmessage_s> CoopSettings_deathList;
 
+int CoopSettings::getSetting_awards()
+{
+	return awards;
+}
+
+int CoopSettings::setSetting_awards(bool newValue)
+{
+	awards = newValue;
+	return awards;
+}
+
+int CoopSettings::getSetting_maxSpeed()
+{
+	return moveSpeed;
+}
+
+int CoopSettings::setSetting_maxSpeed(int newValue)
+{
+	if (newValue < 200) {
+		newValue = 200;
+	}
+	if (newValue > 600) {
+		newValue = 600;
+	}
+	moveSpeed = newValue;
+	return moveSpeed;
+}
+
 float CoopSettings::getSetting_friendlyFireMultiplicator()
 {
 	return friendlyFireMultiplicator;
