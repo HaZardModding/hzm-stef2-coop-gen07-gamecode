@@ -2403,7 +2403,7 @@ void G_MissionFailed( const str& reason )
 	gi.failedcondition(sNewFailureReason.c_str());
 #else
 	// Set our failure reason in the config string
-	gi.failedcondition(sNewFailureReason.c_str() );
+	gi.failedcondition(reason.c_str() );
 #endif
 
 
