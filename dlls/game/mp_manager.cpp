@@ -2024,11 +2024,11 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Support for ini based vote commands - chrissstrahl
 	//--------------------------------------------------------------
-	str iniFileName = "callvote.ini";
+	str iniFileName = "co-op/ini/votelist.ini";
 	str iniContents;
 	str iniContentsSection;
 	Container<str> iniSectionNames;
-	gameFixAPI_callvoteIniGet(_COOP_FILE_voteList, command, iniContents, iniContentsSection, iniSectionNames);
+	gameFixAPI_callvoteIniGet(iniFileName, command, iniContents, iniContentsSection, iniSectionNames);
 	
 
 	//--------------------------------------------------------------
