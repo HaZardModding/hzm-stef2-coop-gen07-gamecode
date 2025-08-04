@@ -802,3 +802,103 @@ int AwardSystem::getLastAwardCount( Player *player )
 	return 0;
 }
 
+
+#ifdef ENABLE_COOP
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added: Award System for Coop - chrissstrahl
+//--------------------------------------------------------------
+void AwardSystem::coop_awardEnemyKilled(Player* player, Entity* eKilled)
+{
+	if (!player || !eKilled)
+		return;
+
+	if (!coopSettings.getSetting_awards())
+		return;
+
+	MultiplayerPlayerAwardData* attackerAwardData;
+	attackerAwardData = &_playerAwardData[player->entnum];
+
+	// Test for impressive award (multiple kills at same time)
+	//   and test for excellent award (multiple kills within 2 seconds)
+
+	if (attackerAwardData->_lastKillTime == level.time)
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Impressive$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_impress.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+
+		attackerAwardData->_numImpressives++;
+
+		attackerAwardData->_numImpressiveAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _impressiveIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+	else if ((attackerAwardData->_lastKillTime > 0.0f) && (attackerAwardData->_lastKillTime + _maxExcellentTime > level.time))
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Excellent$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_excell.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+
+		attackerAwardData->_numExcellentAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _excellentIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+
+	// Modify some of the attacker's stats
+
+	attackerAwardData->_lastKillTime = level.time;
+	attackerAwardData->_killStreak++;
+
+	attackerAwardData->_numKills++;
+
+	//hzm coop mod chrissstrahl - diabled for testing
+	//if ( meansOfDeath == MOD_EXPLOSION )
+	//{
+		//attackerAwardData->_numKillsWithExplosives++;
+	//}
+
+	// See if this is the highest kill streak for this player
+
+	if (attackerAwardData->_killStreak > attackerAwardData->_highestKillStreak)
+		attackerAwardData->_highestKillStreak = attackerAwardData->_killStreak;
+
+	// See if we should give a kill streak award
+
+	if (attackerAwardData->_killStreak == _minKillsForChampion)
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Champion$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_champ.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+		attackerAwardData->_numChampionAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _championIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+	else if (attackerAwardData->_killStreak == _minKillsForMaster)
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Master$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_master.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+		attackerAwardData->_numMasterAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _masterIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+	else if (attackerAwardData->_killStreak == _minKillsForExpert)
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Expert$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_expert.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+		attackerAwardData->_numExpertAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _expertIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+	else if (attackerAwardData->_killStreak == _minKillsForAce)
+	{
+		//multiplayerManager.centerPrint( player->entnum , "$$Ace$$\n" , CENTERPRINT_IMPORTANCE_NORMAL );
+		multiplayerManager.playerSound(player->entnum, "localization/sound/dialog/dm/comp_ace.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, 1.0f);
+		attackerAwardData->_numAceAwards++;
+
+		attackerAwardData->_lastAwardIconIndex = _aceIconIndex;
+		attackerAwardData->_lastAwardTime = multiplayerManager.getTime();
+	}
+}
+#endif

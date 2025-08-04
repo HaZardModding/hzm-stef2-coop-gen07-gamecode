@@ -168,6 +168,14 @@ public:
 	void						playerEventNotification( const char *eventName, const char *eventItemName, Player *eventPlayer );
 
 	virtual void				matchOver( void );
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Award System for Coop - chrissstrahl
+	//--------------------------------------------------------------
+	void coop_awardEnemyKilled(Player* player, Entity* eKilled);
+#endif
 };
 
 #endif // __MP_AWARDSYSTEM_HPP__

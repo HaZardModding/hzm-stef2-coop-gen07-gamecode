@@ -4604,6 +4604,18 @@ float MultiplayerManager::getMatchStartTime()
 }
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Access to _awardSystem - chrissstrahl
+//--------------------------------------------------------------
+AwardSystem* MultiplayerManager::gameFixAPI_getMultiplayerAwardSystem()
+{
+	if (_awardSystem) {
+		return _awardSystem;
+	}
+	gi.Error(ERR_DROP, "gameFixAPI_getMultiplayerAwardSystem() _awardSystem was nullptr\n");
+	return nullptr;
+}
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Access to _multiplayerGame - chrissstrahl
 //--------------------------------------------------------------
 MultiplayerModeBase* MultiplayerManager::gameFixAPI_getMultiplayerGame()

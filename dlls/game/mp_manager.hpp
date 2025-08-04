@@ -107,6 +107,7 @@ class MultiplayerManager : public Class
 	   //--------------------------------------------------------------
 	   // GAMEFIX - Added: Functions and Variables - chrissstrahl
 	   //--------------------------------------------------------------
+	   AwardSystem*				gameFixAPI_getMultiplayerAwardSystem();
 	   MultiplayerModeBase*		gameFixAPI_getMultiplayerGame();
 	   int						gamefixEF2_voteStartedByClient = -1;
 	   bool						gamefixEF2_updateDynamicLights = false;
