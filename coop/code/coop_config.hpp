@@ -1,4 +1,6 @@
 #pragma once
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "coop_generalstrings.hpp"
 
@@ -138,3 +140,5 @@ public:
 	void loadDeathList();
 };
 extern CoopSettings coopSettings;
+
+#endif
