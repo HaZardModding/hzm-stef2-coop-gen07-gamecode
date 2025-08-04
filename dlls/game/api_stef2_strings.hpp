@@ -37,7 +37,7 @@ constexpr auto _GFixEF2_MSG_FUNC_FinishMissionFailed = "^1=/\\=^3 Mission Failed
 constexpr auto _GFixEF2_MSG_FUNC_callvote_singleplayer_not_allowed = "^3Singleplayer^8 levels ^3not allowed^8 on the server!^8 'seta gfix_allowSpMaps 1' to allow.\n";
 constexpr auto _GFixEF2_MSG_FUNC_callvote_mpMaplist = "Cvar mp_useMapList needs to be 1 and mp_mapList needs to be populated\n";
 constexpr auto _GFixEF2_MSG_FUNC_callVote_specificVotes = "Server Specific: %s.\n";
-constexpr auto _GFixEF2_MSG_FUNC_callVote_ini_err_cmdEmpty = "callvote.ini error key 'command' has no value!\n";
+constexpr auto _GFixEF2_MSG_FUNC_callVote_ini_err_cmdEmpty = ".ini error (callvote) key 'command' has no value!\n";
 constexpr auto _GFixEF2_MSG_FUNC_callVote_cmd_req_arg_range = "$$InvalidVote$$ %s requires argument (%s) range: %s.\n";
 constexpr auto _GFixEF2_MSG_FUNC_callVote_cmd_req_arg_length = "$$InvalidVote$$ %s requires argument (%s) max length: %s. But was empty\n";
 constexpr auto _GFixEF2_MSG_FUNC_callVote_cmd_req_cvar_be = "Vote %s requires Cvar^3 %s ^8to be^3 %s^8.\n";

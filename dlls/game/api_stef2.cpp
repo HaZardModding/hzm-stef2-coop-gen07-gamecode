@@ -1703,8 +1703,14 @@ void gameFixAPI_callvoteIniHudPrintSectionNames(Player* player, Container<str>& 
 	int iNumSections = iniSectionNames.NumObjects();
 	str sectionNamesGlued;
 	while (i <= iNumSections) {
-		sectionNamesGlued = "-> ";
+		sectionNamesGlued = "";
 		while ( i <= iNumSections && (sectionNamesGlued.length() + iniSectionNames.ObjectAt(i).length()) < maxLineLength) {
+			//exclude - categories category
+			if (Q_stricmp("categories", iniSectionNames.ObjectAt(i).c_str()) == 0) {
+				i++;
+				continue;
+			}
+
 			if (sectionNamesGlued.length() > 3) {
 				sectionNamesGlued += ", ";
 			}
@@ -1713,7 +1719,7 @@ void gameFixAPI_callvoteIniHudPrintSectionNames(Player* player, Container<str>& 
 			i++;
 		}
 		if (sectionNamesGlued.length() > 3) {
-			gamefix_playerDelayedServerCommand(player->entnum, va("hudprint %s\n", sectionNamesGlued.c_str()));
+			gamefix_playerDelayedServerCommand(player->entnum, va("hudprint From ini: %s\n", sectionNamesGlued.c_str()));
 		}
 	}
 }
@@ -1732,18 +1738,34 @@ bool gameFixAPI_callvoteIniHandle(Player* player ,const str &command, const str 
 	float minBound = -99999.0f;
 	float maxBound = 99999.0f;
 	int totalLength = MAX_QPATH;
-	str argNew = arg;
-	argNew = gamefix_filterChars(arg, "%;'<>\"´`");
-	str argumentsValid = gamefix_iniKeyGet(file, contentsSections, "arguments", "");
-	str commandNew = gamefix_iniKeyGet(file, contentsSections, "command","");
-	str length = gamefix_iniKeyGet(file, contentsSections, "length", va("%d", totalLength));
-	str extension = gamefix_iniKeyGet(file, contentsSections, "extension", "");
-	str range = gamefix_iniKeyGet(file, contentsSections, "range", "");
-	str argumentType = gamefix_iniKeyGet(file, contentsSections, "argument", "");
-	str restartRequired = gamefix_iniKeyGet(file, contentsSections, "restartrequired", "");
-	str restartForced = gamefix_iniKeyGet(file, contentsSections, "restart", "");
-	str requiredCvar = gamefix_iniKeyGet(file, contentsSections, "requiredcvar", "");
-	str requiredCvarRange = gamefix_iniKeyGet(file, contentsSections, "requiredcvarrange", "");
+	str argNew = gamefix_filterChars(arg, "%;'<>\"´`");
+	str argumentsValid = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "arguments", ""), "%;'<>\"´`");
+	str commandNew = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "command",""), ";'<>\"´`");
+	str length = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "length", va("%d", totalLength)), "%;'<>\"´`");
+	str extension = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "extension", ""), "%;'<>\"´`");
+	str range = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "range", ""), "%;'<>\"´`");
+	str argumentType = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "argument", ""), "%;'<>\"´`");
+	str restartRequired = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "restartrequired", ""), "%;'<>\"´`");
+	str restartForced = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "restart", ""), "%;'<>\"´`");
+	str requiredCvar = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "requiredcvar", ""), "%;'<>\"´`");
+	str requiredCvarRange = gamefix_filterChars(gamefix_iniKeyGet(file, contentsSections, "requiredcvarrange", ""), "%;'<>\"´`");
+
+
+	//verify command has valid ammount of format specifies (%)
+	int specifierPos = gamefix_findChar(commandNew.c_str(), '%');
+	if (specifierPos != -1) {
+		if (gamefix_countCharOccurrences(commandNew.c_str(), '%') > 1) {
+			gameFixAPI_hudPrint(player, "Ini (callvote) to many format specifiers in 'command'\n");
+			return false;
+		}
+		
+		if ((specifierPos + 1) < commandNew.length()) {
+			if (commandNew[specifierPos + 1] != 's' && commandNew[specifierPos + 1] != 'S') {
+				gameFixAPI_hudPrint(player, "Ini (callvote) bad format specifier in 'command' only a single (percentsign)s allowed\n");
+				return false;
+			}
+		}
+	}
 
 	//default to false
 	if (!restartForced.length() || Q_stricmp(restartForced.c_str(), "true") != 0) {
@@ -1963,10 +1985,37 @@ bool gameFixAPI_callvoteIniHandle(Player* player ,const str &command, const str 
 		filePath.BackSlashesToSlashes();
 		filePath = gamefix_stripDoubleChar(filePath,"/");
 
-		if (!gi.FS_Exists(va("%s", filePath.c_str()))) {
+		//certain files we don't want the users to execute
+		if (gamefix_findStringCase(voteCommand, "server", false, 0, false) != -1) {
+			gameFixAPI_hudPrint(player, va("Can't execute cfg, illegal phrase found: %s\n","server"));
+			return false;
+		}
+		if (gamefix_findStringCase(voteCommand,gamefix_getCvar("username"), false, 0, false) != -1) {
+			gameFixAPI_hudPrint(player, va("Can't execute cfg, illegal phrase found: %s\n", gamefix_getCvar("username").c_str()));
+			return false;
+		}
+		str configRaw = gamefix_getStringUntilChar(gamefix_getCvar("config"),'.',0);
+		if (gamefix_findStringCase(voteCommand, configRaw, false, 0, false) != -1) {
+			gameFixAPI_hudPrint(player, va("Can't execute cfg, illegal phrase found: %s\n", gamefix_getCvar("config").c_str()));
+			return false;
+		}
+
+		//fix path - execute only from inside cfg
+		if (gamefix_findStringCase(filePath,"cfg/", false, 0, false) == -1) {
+			filePath = va("cfg/%s",filePath.c_str());
+		}
+
+		//fix file extension
+		if (gamefix_findStringCase(gamefix_getExtension(filePath),".cfg",false,0,true) == -1) {
+			filePath = va("%s.cfg", filePath.c_str());
+		}
+
+		if (!gi.FS_Exists(filePath.c_str())) {
 			gameFixAPI_hudPrint(player, va(_GFixEF2_INFO_GAMEFIX_couldNotBeFoundOnServer, filePath.c_str()));
 			return false;
 		}
+
+		voteCommand = va("exec %s", filePath.c_str());
 	}
 
 	return true;
