@@ -4,6 +4,9 @@
 //
 // CONTAINING OBJECTIVES RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/gamefix.hpp"
 
 #include "coop_manager.hpp"
@@ -812,3 +815,5 @@ void coop_objectives_reset()
 	for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItemShow[i] = 0; }
 	for (int i = 0; i < _COOP_SETTINGS_OBJECTIVES_MAX; i++) { coopObjectives_t.objectiveItemCompletedAt[i] = -999.0f; }
 }
+
+#endif

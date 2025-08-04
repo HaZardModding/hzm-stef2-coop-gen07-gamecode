@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/mp_modeBase.hpp"
@@ -289,3 +292,5 @@ private:
 
     // Possibly other future flags...
 };
+
+#endif

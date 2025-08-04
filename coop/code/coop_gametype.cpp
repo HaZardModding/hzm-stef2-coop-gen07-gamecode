@@ -1,6 +1,9 @@
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Gamemode based on mp_modeTeamDM - chrissstrahl
 //--------------------------------------------------------------
+
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/player.h"
@@ -1198,3 +1201,5 @@ void ModeCoop::playerDead(Player* player)
 	player->ProcessEvent(EV_Player_DeadBody);
 	player->hideModel();
 }
+
+#endif

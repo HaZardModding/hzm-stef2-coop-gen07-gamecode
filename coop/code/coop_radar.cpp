@@ -4,6 +4,9 @@
 //
 // CONTAINING PLAYER RADAR RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+
+#ifdef ENABLE_COOP
+
 #include "coop_radar.hpp"
 #include "coop_manager.hpp"
 #include "../../dlls/game/gamefix.hpp"
@@ -318,3 +321,5 @@ void coop_radarUpdate(Player* player)
 		}
 	}
 }
+
+#endif

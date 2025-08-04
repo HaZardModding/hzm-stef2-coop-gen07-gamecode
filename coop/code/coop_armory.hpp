@@ -6,6 +6,8 @@
 //-----------------------------------------------------------------------------------
 #pragma once
 
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 
 
@@ -15,4 +17,4 @@ void coop_armoryEquipPlayerSingleplayer(Player* player);
 str coop_armoryReturnWeaponName( str sTikiName );
 str coop_armoryReturnWeaponTiki( str sWeaponName );
 
-
+#endif

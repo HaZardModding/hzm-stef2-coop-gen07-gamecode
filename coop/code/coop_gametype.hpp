@@ -2,6 +2,9 @@
 // COOP Generation 7.000 - Gamemode based on mp_modeTeamDM - chrissstrahl
 //--------------------------------------------------------------
 #pragma once
+
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_modeTeamDm.hpp"  // Inherit from team deathmatch
 
@@ -46,3 +49,5 @@ public:
 	/* virtual */ void					ActivatePlayer(Player* player);
 	/* virtual */ void					playerDead(Player* player);
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/gamefix.hpp"
 #include "../../dlls/game/mp_manager.hpp"
 #include "coop_manager.hpp"
@@ -341,3 +343,5 @@ str coop_armoryReturnWeaponName( str sTikiName )
 	}
 	return sWeaponName;
 }
+
+#endif
