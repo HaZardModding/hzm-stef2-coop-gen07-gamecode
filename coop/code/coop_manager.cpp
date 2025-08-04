@@ -1,3 +1,5 @@
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/gamefix.hpp"
 #include "../../dlls/game/level.h"
 #include "../../dlls/game/mp_manager.hpp"
@@ -856,17 +858,18 @@ void CoopManager::playerClIdDetected(const gentity_t* ent, const char* clientId)
     DEBUG_LOG("# CId RECIVED: %s (WAITED %d)\n", sId.c_str(), getPlayerData_coopSetupTries(player));
 
     str sClientId = "";
-    sId = gamefix_filterChars(sId, ";[]=");
+    sId = gamefix_filterChars(sId, ";[]=%");
     sId = gamefix_trimWhitespace(sId,false);
 
     DEBUG_LOG("# CId CHECK VS INI NOT IMPLEMENTED\n");
 
     sClientId = sId;
-//sClientId = coop_checkPlayerCoopIdExistInIni(player, sId);
+    //sClientId = coop_checkPlayerCoopIdExistInIni(player, sId);
     if (sClientId.length()) {
         //prevent players from cheating lms by reconnecting
-//player->coop_lmsCheckReconnectHack();
+        //player->coop_lmsCheckReconnectHack();
         setPlayerData_coopClientIdDone(player,true);
+        setPlayerData_coopClientId(player, sId);
     }
 }
 
@@ -2167,3 +2170,5 @@ void CoopManager::setPlayerData_coopClassLocked(Player* player, bool status)
     }
     coopManager_client_persistant_t[player->entnum].coopClassLocked = status;
 }
+
+#endif
