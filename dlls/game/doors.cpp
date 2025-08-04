@@ -867,47 +867,63 @@ void Door::TryOpen( Event *ev )
 		return;
 	}
 
-	if ( !CanBeOpenedBy( other ) )
-	{
-		Item        *item;
-		ClassDef		*cls;
 
-		if ( other->isClient() )
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: print out to hud/chat in multiplayer - chrissstrahl
+	// made this multiplayer compatible - taken from trigger.cpp
+	//--------------------------------------------------------------
+	if (key.length())
+	{
+		if (!other->isSubclassOf(Sentient))
 		{
-			cls = getClass( key.c_str() );
-			if ( !cls )
+			return;
+		}
+		if (!(((Sentient*)other)->HasItem(key.c_str())))
+		{
+			qboolean    setModel;
+			Item* item;
+			ClassDef* cls;
+			str         dialog;
+
+			cls = FindClass(key.c_str(), &setModel);
+			if (!cls || !checkInheritance("Item", cls->classname))
 			{
-				//--------------------------------------------------------------
-				// GAMEFIX - Changed: message to always print - chrissstrahl
-				//--------------------------------------------------------------
-				gi.Printf( "No item named '%s' exists in game\n", key.c_str() );
+				gi.WDPrintf("No item named '%s'\n", key.c_str());
 				return;
 			}
-			item = ( Item * )cls->newInstance();
-			item->CancelEventsOfType( EV_Item_DropToFloor );
-			item->CancelEventsOfType( EV_Remove );
+			item = (Item*)cls->newInstance();
+			if (setModel)
+			{
+				item->setModel(key.c_str());
+			}
+			item->CancelEventsOfType(EV_Item_DropToFloor);
+			item->CancelEventsOfType(EV_Remove);
 			item->ProcessPendingEvents();
-
-			gi.centerprintf ( other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$UnlockItem$$%s", item->getName().c_str() );
-
-			//--------------------------------------------------------------
-			// GAMEFIX - Added: print out to hud/chat in multiplayer - chrissstrahl
-			// - Make sure it doesn't spam, this could cycle out a reliable command otherwhise
-			//--------------------------------------------------------------
-			if(g_gametype->integer != GT_SINGLE_PLAYER) {
-				static float fLastTime = 0.0f;
-				if ((fLastTime + 1) < level.time) {
-					fLastTime = level.time;
-
-					Player* player = (Player*)other;
-					player->hudPrint(va("$$UnlockItem$$%s\n", item->getName().c_str()));
+			dialog = item->GetDialogNeeded();
+			if (dialog.length() > 1)
+			{
+				activator->Sound(dialog);
+			}
+			else
+			{
+				if (g_gametype->integer != GT_SINGLE_PLAYER) {
+					static float fLastTime = 0.0f;
+					if ((fLastTime + 1.5) < level.time) {
+						fLastTime = level.time;
+						Player* player;
+						player = (Player*)other;
+						player->hudPrint(va("$$ItemNeeded$$^5%s^8\n", item->getName().c_str()));
+					}
+				}
+				else {
+					gi.centerprintf(other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$ItemNeeded$$%s", item->getName().c_str());
 				}
 			}
-			
 			delete item;
+			return;
 		}
-		return;
 	}
+
 
 	// once we're opened by an item, we no longer need that item to open the door
 	key = "";
