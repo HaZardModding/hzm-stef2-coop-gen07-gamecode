@@ -2024,7 +2024,7 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Support for ini based vote commands - chrissstrahl
 	//--------------------------------------------------------------
-	str iniFileName = "co-op/ini/votelist.ini";
+	str iniFileName = "co-op/config/votelist.ini";
 	str iniContents;
 	str iniContentsSection;
 	Container<str> iniSectionNames;
