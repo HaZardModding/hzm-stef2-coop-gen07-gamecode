@@ -1,4 +1,7 @@
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/gamefix.hpp"
+#include "coop_manager.hpp"
 #include "coop_config.hpp"
 
 CoopSettings coopSettings;
@@ -49,6 +52,40 @@ float CoopSettings::setSetting_friendlyFireMultiplicator(float newValue)
 	}
 	friendlyFireMultiplicator = newValue;
 	return friendlyFireMultiplicator;
+}
+
+int CoopSettings::getSetting_difficulty()
+{
+	return difficulty;
+}
+
+int CoopSettings::setSetting_difficulty(int newValue)
+{
+	if (newValue < 0) {
+		newValue = 0;
+	}
+	if (newValue > 3) {
+		newValue = 3;
+	}
+	difficulty = newValue;
+	return difficulty;
+}
+
+int CoopSettings::getSetting_airaccelerate()
+{
+	return airaccelerate;
+}
+
+int CoopSettings::setSetting_airaccelerate(int newValue)
+{
+	if (newValue < 0) {
+		newValue = 0;
+	}
+	if (newValue > 4) {
+		newValue = 3;
+	}
+	airaccelerate = newValue;
+	return airaccelerate;
 }
 
 void CoopSettings::serverConfigCheck()
@@ -230,37 +267,78 @@ void CoopSettings::playerScriptThreadsAllow()
 	CoopSettings_playerScriptThreadsAllowList.AddObject(dialogrunthread_careerOption);
 }
 
-void CoopSettings::LoadSettingsFromFile(const str& iniFilePath) {
+void CoopSettings::saveSettings() {
+	//grab gameplay options
+	str fileContents;
+	gamefix_getFileContents(_COOP_FILE_settings, fileContents, true);
+	str sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay);
+
+	str newSectionContents;
+	float f1 = coopSettings.getSetting_friendlyFireMultiplicator();
+	int i2 =  coopSettings.getSetting_maxSpeed();
+	int i3 =  coopSettings.getSetting_difficulty();
+	int i4 = coopSettings.getSetting_airaccelerate();
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, sectionContents, "friendlyFireMultiplicator", va("%.2f",f1 ));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "moveSpeed", va("%d",i2));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "difficulty", va("%d",i3));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "airaccelerate", va("%d", i4));
+	
+	str awardsString = "false";
+	if (coopSettings.getSetting_awards()) {
+		awardsString = "true";
+	}
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "awards", awardsString);
+
+	// Update section in full file content
+	str newFileContents = gamefix_iniSectionSet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay, newSectionContents);
+	if (!gamefix_setFileContents(_COOP_FILE_settings, newFileContents)) {
+		gi.Printf("CoopSettings::saveSettings() - Could not write: %s\n", _COOP_FILE_settings);
+		DEBUG_LOG("CoopSettings::saveSettings() - Could not write: %s", _COOP_FILE_settings);
+	}
+}
+
+
+void CoopSettings::loadSettings() {
 	try {
 		str contents;
-		if (!gamefix_getFileContents(iniFilePath, contents, true)) {
-			gi.Printf(_COOP_WARNING_FILE_failed, iniFilePath.c_str());
+		if (!gamefix_getFileContents(_COOP_FILE_settings, contents, true)) {
+			gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_settings);
 			return;
 		}
 
 		str sTemp;
 		str section_contents;
 
+		//grab gameplay options 
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+		friendlyFireMultiplicator	= setSetting_friendlyFireMultiplicator(atof(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "friendlyFireMultiplicator", "0.0")));
+		moveSpeed					= setSetting_maxSpeed(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "moveSpeed", "300")));
+		awards						= setSetting_awards(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "awards", "false") == "true");
+		difficulty					= setSetting_difficulty(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "difficulty", "1")));
+		airaccelerate				= setSetting_airaccelerate(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "airaccelerate", "1")));
+
+		//overwrite game settings
+		if (gameFixAPI_inMultiplayer()) {
+			skill->integer = difficulty;
+			sv_airaccelerate->integer = airaccelerate;
+			world->setPhysicsVar("maxspeed", moveSpeed);
+		}
+
+
+		//lets review that some other time
+		if ( 1 ) {
+			return;
+		}
+
 		// Boot section - settings usually managed during first load of dll and game init - requires server reboot
-		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_boot);
-		coopEnabled = gamefix_iniKeyGet(iniFilePath, section_contents, "coop_enabled", "false") == "true";
-		rpgEnabled = gamefix_iniKeyGet(iniFilePath, section_contents, "rpg_enabled", "false") == "true";
-
-		// Level section - settings usually managed each map load
-		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_level);
-		levelPrefixCoop = gamefix_iniKeyGet(iniFilePath, section_contents, "autoDetect_level_prefix_coop", "coop_");
-		levelPrefixRpg = gamefix_iniKeyGet(iniFilePath, section_contents, "autoDetect_level_prefix_rpg", "rpg_");
-
-		// Vote section - vote system related settings
-		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_vote);
-		voteRefundOnSuccess = gamefix_iniKeyGet(iniFilePath, section_contents, "voteRefundOnSuccsess", "false") == "true";
-		sTemp = gamefix_iniKeyGet(iniFilePath, section_contents, "voteAllowedCommands", "");
-		gamefix_listSeperatedItems(voteAllowedCommands, sTemp, " "); // using space as separator
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_boot);
+		coopEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "coop_enabled", "false") == "true";
+		rpgEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "rpg_enabled", "false") == "true";
 
 		// Gameplay section - settings usually handled on the fly
-		section_contents = gamefix_iniSectionGet(iniFilePath, contents, _COOP_SETTINGS_CAT_gameplay);
-		rpgSpawnWeapons = gamefix_iniKeyGet(iniFilePath, section_contents, "rpg_spawnWeapons", "false") == "true";
-		coopLastManStandingLifes = atoi(gamefix_iniKeyGet(iniFilePath, section_contents, "coop_lastManStandingLifes", "0"));
+		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+		rpgSpawnWeapons = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "rpg_spawnWeapons", "false") == "true";
+		coopLastManStandingLifes = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "coop_lastManStandingLifes", "0"));
 	}
 	catch (const char* error) {
 		gi.Printf(_COOP_ERROR_fatal, error);
@@ -334,8 +412,6 @@ void CoopSettings::loadScoreList() {
 		G_ExitWithError(error);
 	}
 }
-
-
 
 void CoopSettings::loadDeathList() {
 	try {
@@ -474,3 +550,5 @@ void CoopSettings::loadDeathList() {
 		G_ExitWithError(error);
 	}
 }
+
+#endif

@@ -119,6 +119,8 @@ public:
 	float friendlyFireMultiplicator = _COOP_SETTINGS_DAMAGE_MULTIPLAYER_DEFAULT;
 	int moveSpeed = _COOP_SETTINGS_MOVEMENT_SPEED_DEFAULT;
 	bool awards = false;
+	short int difficulty = 0;
+	short int airaccelerate = 2;
 
 	int scoreKilledPlayer = 0;
 	int scoreKilledFriendly = 0;
@@ -131,11 +133,16 @@ public:
 	int setSetting_maxSpeed(int newValue);
 	float getSetting_friendlyFireMultiplicator();
 	float setSetting_friendlyFireMultiplicator(float newValue);
+	int getSetting_difficulty();
+	int setSetting_difficulty(int newValue);
+	int getSetting_airaccelerate();
+	int setSetting_airaccelerate(int newValue);
 
 	void serverConfigCheck();
 	void playerCommandsAllow();
 	void playerScriptThreadsAllow();
-	void LoadSettingsFromFile(const str& iniFilePath = _COOP_FILE_settings);
+	void saveSettings();
+	void loadSettings();
 	void loadScoreList();
 	void loadDeathList();
 };

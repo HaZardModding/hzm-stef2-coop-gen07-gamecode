@@ -298,21 +298,22 @@ bool CoopManager::callvoteManager(const str& _voteString) {
             return true;
         }
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_airaccelerate") == 0) {
-            unsigned int airAccellerate = atoi(voteStringList.ObjectAt(2));
-            sv_airaccelerate->integer = airAccellerate;
-            callvoteUpdateUi("Air Accelerate",va("%d", airAccellerate), "coopGpoAa");
+            unsigned int airaccelerate = atoi(voteStringList.ObjectAt(2));
+            sv_airaccelerate->integer = coopSettings.setSetting_airaccelerate(airaccelerate);;
+            callvoteUpdateUi("Air Accelerate",va("%d", airaccelerate), "coopGpoAa");
             return true;
         }
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_maxspeed") == 0) {
             unsigned int maxSpeed = atoi(voteStringList.ObjectAt(2));
             callvoteUpdateUi("Movement Speed",va("%d", maxSpeed), "coopGpoMvSpd");
-            world->setPhysicsVar("maxspeed", maxSpeed);
+            world->setPhysicsVar("maxspeed", coopSettings.setSetting_maxSpeed(maxSpeed));
             return true;
         }
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_skill") == 0) {
             unsigned int skillValue = atoi(voteStringList.ObjectAt(2));
             callvoteUpdateUi("Difficulty",va("%d", skillValue), "coopGpoSkill");
-            skill->integer = skillValue;
+            float f1 = coopSettings.getSetting_friendlyFireMultiplicator();
+            skill->integer = coopSettings.setSetting_difficulty(skillValue);
             return true;
         }
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_awards") == 0) {
@@ -385,7 +386,6 @@ void CoopManager::Init() {
         gi.Printf(_COOP_INFO_INIT_game);
         DEBUG_LOG(_COOP_INFO_INIT_game);
 
-        LoadSettingsFromINI();
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
 
@@ -423,18 +423,6 @@ void CoopManager::LoadPlayerModelsFromINI() {
             }
             i++;
         }
-    }
-}
-
-//executed once, only on game server start/load
-//loads coop settings from ini
-void CoopManager::LoadSettingsFromINI() {
-    str contents;
-    if (gamefix_getFileContents(_COOP_FILE_settings, contents, true)) {
-        enemyKillPoints = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "enemyKillPoints", "0"));
-        playerKillPenalty = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, contents, "playerKillPenalty", "0"));
-        friendlyFire = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "friendlyFire", "false") == "true";
-        giveSpawnItems = gamefix_iniKeyGet(_COOP_FILE_settings, contents, "giveSpawnItems", "false") == "true";
     }
 }
 
@@ -481,6 +469,7 @@ void CoopManager::InitWorld() {
                 world->setPhysicsVar("maxSpeed",coopSettings.getSetting_maxSpeed());
             }
 
+            coopSettings.loadSettings();
             coopSettings.playerCommandsAllow();
             coopSettings.playerScriptThreadsAllow();
             coopSettings.loadScoreList();
@@ -663,6 +652,9 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
         CoopSettings_deathList.FreeObjectList();
         CoopSettings_scoreKillList.FreeObjectList();
         CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
+
+        //save settings to ini
+        coopSettings.saveSettings();
     }
 }
 

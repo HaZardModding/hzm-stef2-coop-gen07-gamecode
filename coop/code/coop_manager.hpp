@@ -276,7 +276,6 @@ private:
     CoopManager() = default;
 
     void LoadPlayerModelsFromINI();
-    void LoadSettingsFromINI();
     void LoadMapListFromINI();
 
     MapFlags mapFlags;
