@@ -1680,18 +1680,8 @@ bool gamefix_getFileContents(str sFile, str& contents, bool tokenize) {
 //--------------------------------------------------------------
 bool gamefix_setFileContents(str sFile, str& contents)
 {
-	//verify the file was actually written
-	bool fileExisted = false;
-	if (gi.FS_Exists(sFile.c_str())) {
-		fileExisted = true;
-		gi.FS_DeleteFile(sFile.c_str());
-		if (gi.FS_Exists(sFile.c_str())) {
-			gi.Printf("Could not delete %s!\n",sFile.c_str());
-			return false;
-		}
-	}
-
 	gi.FS_WriteFile(sFile.c_str(), contents.c_str(), contents.length());
+	//verify the file was actually written
 	if (!gi.FS_Exists(sFile.c_str())) {
 		gi.Printf("Failed to write file %s\n", sFile.c_str());
 		return false;
