@@ -21,7 +21,19 @@ extern Event EV_World_coop_configstrRemove;
 #define DEBUG_LOG(...) do { gi.printf(va(__VA_ARGS__));} while (0)
 #endif
 
-
+struct coopManager_clientIniData_s
+{
+	str clientId = "";
+	str mapName = "";
+	int health = 0;
+	int armor = 0;
+	int phaser = 0;
+	int plasma = 0;
+	int fed = 0;
+	int idryll = 0;
+	int deathTime = 0;
+	int lmsDeaths = 0;
+};
 
 struct coopManager_client_persistant_s
 {
@@ -89,6 +101,7 @@ class CoopManager {
 public:
     str coopManager_maplist_contents = "";
     Container<str> coopManager_validPlayerModels;
+    Container<coopManager_clientIniData_s> CoopManager_clientIniData;
 
     class MapFlags {
     public:
@@ -117,6 +130,7 @@ public:
     void DisableCoop();
     bool IsCoopLevel();
     bool IsRpgEnabled() const;
+    bool IsSameEnviroment(str levelCurrent, str levelOther);
 
     void Init();
     void InitWorld();
@@ -163,6 +177,9 @@ public:
     void playerAddMissionHuds(Player* player);
     void playerRemoveMissionHuds(Player* player);
 
+	bool playerDataReset(Player* player);
+	bool playerDataSave(Player* player);
+	bool playerDataRestore(Player* player);
     bool playerItemPickup(Entity* player, Item *item);
 
     void playerMoveToSpawn(Player* player);
@@ -184,6 +201,8 @@ public:
 
     int configstringRemove(str sRem);
     void configstringCleanup();
+	void loadClientIniData();
+	void saveClientIniData();
 
     // Configurable systems
     bool ShouldGiveSpawnItems() const;

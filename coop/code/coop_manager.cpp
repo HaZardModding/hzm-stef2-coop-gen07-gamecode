@@ -33,6 +33,14 @@ bool CoopManager::IsRpgEnabled() const {
     return rpgEnabled;
 }
 
+bool CoopManager::IsSameEnviroment(str levelCurrent, str levelOther) {
+    if (gi.areSublevels(gamefix_cleanMapName(levelCurrent).c_str(), gamefix_cleanMapName(levelOther).c_str()) || strcmp(gamefix_cleanMapName(levelCurrent).c_str(), gamefix_cleanMapName(levelOther).c_str()) == 0) {
+        return true;
+    }
+       
+    return false;
+}
+
 //check if specific coop files are included
 //this is required because certain global_scripts
 //need to be included differehtly then
@@ -312,7 +320,6 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_skill") == 0) {
             unsigned int skillValue = atoi(voteStringList.ObjectAt(2));
             callvoteUpdateUi("Difficulty",va("%d", skillValue), "coopGpoSkill");
-            float f1 = coopSettings.getSetting_friendlyFireMultiplicator();
             skill->integer = coopSettings.setSetting_difficulty(skillValue);
             return true;
         }
@@ -345,10 +352,10 @@ void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
     }
 
     Player* player = NULL;
-    for (int i = 0; i < maxclients->integer; i++) {
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
         player = (Player*)g_entities[i].entity;
         if (player && player->client && player->isSubclassOf(Player)) {
-            multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
+            gameFixAPI_hudPrint(player, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
             if (player->coop_hasCoopInstalled()) {
                 callvoteUpdateUiPlayer(player, sValue, sWidget);
             }
@@ -469,6 +476,8 @@ void CoopManager::InitWorld() {
                 world->setPhysicsVar("maxSpeed",coopSettings.getSetting_maxSpeed());
             }
 
+			CoopManager::Get().loadClientIniData();
+
             coopSettings.loadSettings();
             coopSettings.playerCommandsAllow();
             coopSettings.playerScriptThreadsAllow();
@@ -545,6 +554,7 @@ void CoopManager::SetMapType() {
     mapFlags.multiplayerOnly = struct_currentMap.multiplayerOnly;
     mapFlags.singleplayerOnly = struct_currentMap.singleplayerOnly;
     mapFlags.stockMap = struct_currentMap.stockMap;
+	mapFlags.cleanName = struct_currentMap.cleanName;
     mapFlags.scriptIncludedCoopMain = false;
     mapFlags.scriptIncludedCoopNoscript = false;
     mapFlags.scriptIncludedCoopMom = false;
@@ -649,6 +659,9 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
     }
 
     if (coopEnabled) {
+		//make sure to save client data to ini file
+        saveClientIniData();
+
         CoopSettings_deathList.FreeObjectList();
         CoopSettings_scoreKillList.FreeObjectList();
         CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
@@ -862,6 +875,7 @@ void CoopManager::playerClIdDetected(const gentity_t* ent, const char* clientId)
         //player->coop_lmsCheckReconnectHack();
         setPlayerData_coopClientIdDone(player,true);
         setPlayerData_coopClientId(player, sId);
+        playerDataRestore(player);
     }
 }
 
@@ -908,6 +922,168 @@ void CoopManager::playerRemoveMissionHuds(Player* player)
         }
         gamefix_playerDelayedServerCommand(player->entnum,va("ui_removehud %s", hudName.c_str()));
     }
+}
+
+bool CoopManager::playerDataReset(Player* player) {
+
+    if (!player ||
+        gameFixAPI_isBot(player)) {
+        return false;
+    }
+
+	//grab data of player and update or create data
+	int clientContainerPos = -1;
+    for (int i = 1; i <= CoopManager_clientIniData.NumObjects(); i++) {
+        if (CoopManager_clientIniData.ObjectAt(i).clientId == getPlayerData_coopClientId(player)) {
+            clientContainerPos = i;
+            break;
+        }
+    }
+	
+    //get data into the right format
+    coopManager_clientIniData_s clientIniData;
+	clientIniData.clientId = getPlayerData_coopClientId(player);
+    clientIniData.health = 0;
+    clientIniData.armor = 0;
+    clientIniData.phaser = 0;
+	clientIniData.plasma = 0;
+	clientIniData.fed = 0;
+	clientIniData.idryll = 0;
+	clientIniData.deathTime = 0; //TODO: implement lms deathTime <- they should be updated anyway
+    clientIniData.mapName = "";
+	clientIniData.lmsDeaths = 0; //TODO: implement lms deaths <- they should be updated anyway
+
+	DEBUG_LOG("CoopManager::playerDataSave - Saving data for %s\n", player->client->pers.netname);
+
+    //if data found, update
+    if (clientContainerPos > 0) {
+        CoopManager_clientIniData.SetObjectAt(clientContainerPos, clientIniData);
+        return true;
+    }
+
+    //if no data found, create new
+    CoopManager_clientIniData.AddObject(clientIniData);
+    return true;
+}
+
+bool CoopManager::playerDataSave(Player* player) {
+
+    if (!player ||
+        gameFixAPI_isSpectator_stef2((Entity*)player) ||
+        gameFixAPI_isDead((Entity*)player) ||
+        gameFixAPI_isBot(player)) {
+        return false;
+    }
+
+    //not a mission or custom coop map do not restore
+    if (!IsCoopLevel()) {
+        return false;
+    }
+    if (!mapFlags.coopSpMission &&
+        !mapFlags.coopMap &&
+        !mapFlags.rpgMap) {
+        return false;
+    }
+
+	//grab data of player and update or create data
+	int clientContainerPos = -1;
+    for (int i = 1; i <= CoopManager_clientIniData.NumObjects(); i++) {
+		//no id, don't save, the player is probably already disconnected
+        if (!getPlayerData_coopClientId(player).length()) {
+			return false;
+        }
+
+        if (CoopManager_clientIniData.ObjectAt(i).clientId == getPlayerData_coopClientId(player)) {
+            clientContainerPos = i;
+            break;
+        }
+    }
+	
+    //get data into the right format
+    Sentient* sentPlayer = (Sentient*)player;
+    coopManager_clientIniData_s clientIniData;
+	clientIniData.clientId = getPlayerData_coopClientId(player);
+    clientIniData.health = sentPlayer->health;
+    clientIniData.armor = sentPlayer->GetArmorValue();
+    clientIniData.phaser = sentPlayer->AmmoCount("Phaser");
+	clientIniData.plasma = sentPlayer->AmmoCount("Plasma");
+	clientIniData.fed = sentPlayer->AmmoCount("Fed");
+	clientIniData.idryll = sentPlayer->AmmoCount("Idryll");
+	clientIniData.deathTime = 0; //TODO: implement lms deathTime
+	clientIniData.mapName = level.mapname;
+	clientIniData.lmsDeaths = 0; //TODO: implement lms deaths
+
+	DEBUG_LOG("CoopManager::playerDataSave - Saving data for %s\n", player->client->pers.netname);
+
+	//if data found, update
+    if (clientContainerPos > 0) {
+        CoopManager_clientIniData.RemoveObjectAt(clientContainerPos);
+    }
+    
+    //if no data found, create new
+    CoopManager_clientIniData.AddObject(clientIniData);
+    return true;
+}
+
+bool CoopManager::playerDataRestore(Player* player) {
+
+    if (!player ||
+        gameFixAPI_isSpectator_stef2((Entity*)player) ||
+        gameFixAPI_isDead((Entity*)player) ||
+        gameFixAPI_isBot(player)) {
+        return false;
+    }
+
+    //not a mission or custom coop map do not restore
+    if (!IsCoopLevel()) {
+        return false;
+    }
+    if (!mapFlags.coopSpMission &&
+        !mapFlags.coopMap &&
+        !mapFlags.rpgMap) {
+        return false;
+    }
+
+    if (!getPlayerData_coopClientId(player).length()) {
+		return false;
+    }
+
+    //grab data of player and applay to player
+    coopManager_clientIniData_s clientIniData;
+    for (int i = 1; i <= CoopManager_clientIniData.NumObjects(); i++) {
+        clientIniData = CoopManager_clientIniData.ObjectAt(i);
+        if (getPlayerData_coopClientId(player) == CoopManager_clientIniData.ObjectAt(i).clientId) {
+
+			//different map, do not restore
+            if (!IsSameEnviroment(clientIniData.mapName,level.mapname)) {
+                return false;
+            }
+
+            //apply data to player
+			Sentient* sentPlayer = (Sentient*)player;
+            sentPlayer->SetHealth(clientIniData.health);
+            
+            float curArmor = sentPlayer->GetArmorValue();
+            Event* armorEvent;
+            armorEvent = new Event(EV_Sentient_GiveArmor);
+            armorEvent->AddString("BasicArmor");
+            armorEvent->AddInteger(clientIniData.armor - curArmor);
+            player->ProcessEvent(armorEvent);
+            //sentPlayer->SetMyArmorAmount();
+
+            sentPlayer->GiveAmmo("Phaser", ((clientIniData.phaser) - player->AmmoCount("Phaser")), false, -1);
+            sentPlayer->GiveAmmo("Plasma", ((clientIniData.plasma) - player->AmmoCount("Plasma")), false, -1);
+            sentPlayer->GiveAmmo("Fed", ((clientIniData.fed) - player->AmmoCount("Fed")), false, -1);
+            sentPlayer->GiveAmmo("Idryll", ((clientIniData.idryll) - player->AmmoCount("Idryll")), false, -1);
+            //sentPlayer-> (clientIniData.deathTime);
+            //sentPlayer-> (clientIniData.lmsDeaths);
+
+            DEBUG_LOG("Data restored for %s\n",player->client->pers.netname);
+			return true;
+        }
+    }
+	gi.Printf("CoopManager::playerDataRestore - No data found for player %s\n", player->client->pers.netname);
+	return false;
 }
 
 bool CoopManager::playerItemPickup(Entity* player, Item* item)
@@ -1140,6 +1316,9 @@ void CoopManager::playerDisconnect(Player* player) {
     }
     DEBUG_LOG("# playerDisconnect\n");
 
+    //update player data, so that it can be written to ini
+    playerDataSave(player);
+
     coop_radarReset(player);
 
     setPlayerData_coopClientIdDone(player, false);
@@ -1163,7 +1342,10 @@ void CoopManager::playerLeft(Player* player) {
         ExecuteThread("coop_justLeft", true, player);
     }
 
-    //reset player data on a l
+	//update player data, so that it can be written to ini
+    playerDataSave(player);
+
+    //reset player data
     playerReset(player);
 
     DEBUG_LOG("# playerLeft\n");
@@ -1191,6 +1373,9 @@ void CoopManager::playerDied(Player *player) {
         return;
     }
 
+	//reset player data
+    playerDataReset(player);
+
     playerRemoveMissionHuds(player);
     ExecuteThread("coop_justDied", true, player);
 }
@@ -1215,6 +1400,9 @@ void CoopManager::playerSpawned(Player* player) {
 
     if (!gameFixAPI_isSpectator_stef2(player)) {
         coop_armoryEquipPlayer(player);
+
+        playerDataRestore(player);
+
         coop_radarReset(player);
         gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
         playerAddMissionHuds(player);
@@ -1490,6 +1678,124 @@ void CoopManager::configstringCleanup()
     configstringRemove("localization/sound/dialog/dm/comp_third.mp3");
     configstringRemove("localization/sound/dialog/dm/comp_didnotrank.mp3");
     configstringRemove("localization/sound/dialog/dm/comp_matover.mp3");
+}
+
+void CoopManager::loadClientIniData()
+{
+	CoopManager_clientIniData.FreeObjectList();
+
+    str fileContents;
+    if (!gamefix_getFileContents(_COOP_FILE_userlist, fileContents, true)) {
+        return;
+    }
+
+    str sectionContents = gamefix_iniSectionGet(_COOP_FILE_userlist, fileContents, _COOP_USERLIST_CAT_session);
+    if (!sectionContents.length()) {
+        return;
+    }
+
+    str lineData = "";
+	Container<str> tempLinesContainer;
+    gamefix_listSeperatedItems(tempLinesContainer, sectionContents, "\n");
+
+    for (int temp = 1; temp <= tempLinesContainer.NumObjects(); temp++) {
+        lineData = tempLinesContainer.ObjectAt(temp);
+        lineData = gamefix_trimWhitespace(lineData,true);
+        if (!lineData.length()) {
+            continue;
+        }
+
+        //grab value
+        str lineKey;
+        str lineValue;
+        int valueStart = gamefix_findString(lineData.c_str(), "=");
+        if (valueStart < 5) { //clientid has at least 5 chars
+            continue;
+        }
+
+        lineKey = gamefix_trimWhitespace(lineData.substr(0, valueStart),true);
+        lineValue = gamefix_getStringLength(lineData,valueStart + 1,999);
+        lineValue = gamefix_trimWhitespace(lineValue,true);
+        if (!lineKey.length() || !lineValue.length()) {
+            continue;
+        }
+
+		//add data to container
+        Container<str> tempValueContainer;
+        gamefix_listSeperatedItems(tempValueContainer, lineValue, " ");
+        
+        coopManager_clientIniData_s clientIniData;
+        clientIniData.clientId = lineKey;
+        for (int i = 1; i <= tempValueContainer.NumObjects();i++) {
+            switch (i)
+            {
+            case 1:
+                clientIniData.health = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 2:
+                clientIniData.armor = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 3:
+                clientIniData.phaser = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 4:
+                clientIniData.plasma = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 5:
+                clientIniData.fed = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 6:
+                clientIniData.idryll = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 7:
+                clientIniData.deathTime = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            case 8:
+                clientIniData.mapName = tempValueContainer.ObjectAt(i);
+				break;
+            case 9:
+                clientIniData.lmsDeaths = atoi(tempValueContainer.ObjectAt(i));
+				break;
+            default:
+				gi.Error(ERR_FATAL, "CoopManager::loadClientIniData() - too many values in line '%s' in file '%s'", lineKey.c_str(), _COOP_FILE_userlist);
+                break;
+            }
+        }
+        CoopManager_clientIniData.AddObject(clientIniData);
+    }
+}
+
+
+void CoopManager::saveClientIniData()
+{
+	str fileContents = "";
+    if (!gamefix_getFileContents(_COOP_FILE_userlist, fileContents, true)) {
+        gi.Printf("Info: %s not found, creating...\n", _COOP_FILE_userlist);
+	}
+
+    str sectionContents = ""; //va("", _COOP_USERLIST_CAT_session);
+    coopManager_clientIniData_s clientIniData;
+    for (int i = 1; i <= CoopManager_clientIniData.NumObjects(); i++) {
+        clientIniData = CoopManager_clientIniData.ObjectAt(i);
+        sectionContents += va("%s=%d %d %d %d %d %d %d %s %d\n",
+        clientIniData.clientId.c_str(),
+        clientIniData.health,
+        clientIniData.armor,
+        clientIniData.phaser,
+        clientIniData.plasma,
+        clientIniData.fed,
+        clientIniData.idryll,
+        clientIniData.deathTime,
+        clientIniData.mapName.c_str(),
+        clientIniData.lmsDeaths);
+    }
+    
+    fileContents = gamefix_iniSectionSet(_COOP_FILE_userlist, fileContents, _COOP_USERLIST_CAT_session, sectionContents);
+    if (!gamefix_setFileContents(_COOP_FILE_userlist, fileContents)) {
+        gi.Printf("ERROR: Could not create file %s !\n", _COOP_FILE_userlist);
+    }
+
+    CoopManager_clientIniData.FreeObjectList();
 }
 
 //not yet in use
@@ -1794,7 +2100,7 @@ void CoopManager::setPlayerData_coopClientIdDone(Player* player, bool state) {
 str CoopManager::getPlayerData_coopClientId(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClientId() nullptr player");
-        return false;
+        return "";
     }
     return coopManager_client_persistant_t[player->entnum].coopClientId;
 }
