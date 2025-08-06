@@ -274,14 +274,10 @@ void CoopSettings::saveSettings() {
 	str sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay);
 
 	str newSectionContents;
-	float f1 = coopSettings.getSetting_friendlyFireMultiplicator();
-	int i2 =  coopSettings.getSetting_maxSpeed();
-	int i3 =  coopSettings.getSetting_difficulty();
-	int i4 = coopSettings.getSetting_airaccelerate();
-	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, sectionContents, "friendlyFireMultiplicator", va("%.2f",f1 ));
-	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "moveSpeed", va("%d",i2));
-	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "difficulty", va("%d",i3));
-	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "airaccelerate", va("%d", i4));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, sectionContents, "friendlyFireMultiplicator", va("%.2f", coopSettings.getSetting_friendlyFireMultiplicator()));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "moveSpeed", va("%d",coopSettings.getSetting_maxSpeed()));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "difficulty", va("%d",coopSettings.getSetting_difficulty()));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "airaccelerate", va("%d", coopSettings.getSetting_airaccelerate()));
 	
 	str awardsString = "false";
 	if (coopSettings.getSetting_awards()) {
@@ -311,6 +307,11 @@ void CoopSettings::loadSettings() {
 
 		//grab gameplay options 
 		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+
+		if (!section_contents.length()) {
+			return;
+		}
+
 		friendlyFireMultiplicator	= setSetting_friendlyFireMultiplicator(atof(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "friendlyFireMultiplicator", "0.0")));
 		moveSpeed					= setSetting_maxSpeed(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "moveSpeed", "300")));
 		awards						= setSetting_awards(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "awards", "false") == "true");
