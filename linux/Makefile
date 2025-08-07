@@ -30,6 +30,7 @@ BD=debug$(ARCH)$(GLIBC)
 BR=release$(ARCH)$(GLIBC)
 CMDIR=$(MOUNT_DIR)/Shared/qcommon
 GDIR=$(MOUNT_DIR)/dlls/game
+GDIRCOOP=$(MOUNT_DIR)/coop/code
 DLLINC = $(MOUNT_DIR)/DLLs
 SHAREINC = $(MOUNT_DIR)/Shared
 EXECINC  = $(MOUNT_DIR)/Executable
@@ -126,7 +127,6 @@ build_release:
 build_debug:
 	$(MAKE) targets B=$(BD) CFLAGS="$(DEBUG_CFLAGS)"
 
-    
 #Build both debug and release builds
 #all:build_debug build_release
 all:build_debug
@@ -136,14 +136,23 @@ targets:makedirs $(TARGETS)
 makedirs: 
 	@if [ ! -d $(B) ]; then mkdir $(B);fi; \
 	if [ ! -d $(B)/game ]; then mkdir $(B)/game;fi
+	if [ ! -d $(B)/coop/code ]; then mkdir $(B)/coop/code;fi
 
 #############################################################################
 # GAME
 #############################################################################
 
 GOBJ =\
-    $(B)/game/gamefix.o \
-    $(B)/game/api_stef2.o \
+	$(B)/coop/code/coop_armory.o \
+	$(B)/coop/code/coop_config.o \
+	$(B)/coop/code/coop_gametype.o \
+	$(B)/coop/code/coop_manager.o \
+	$(B)/coop/code/coop_objectives.o \
+	$(B)/coop/code/coop_radar.o \
+	$(B)/coop/code/rpg_gametype.o \
+	\
+	$(B)/game/gamefix.o \
+	$(B)/game/api_stef2.o \
 	\
     $(B)/game/changePosture.o \
     $(B)/game/closeInOnEnemy.o \
@@ -310,6 +319,23 @@ GOBJ =\
 
 $(B)/ef2game$(ARCH).$(SHLIBEXT) : $(GOBJ)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GOBJ)
+
+$(B)/coop/code/coop_armory.o : $(GDIRCOOP)/coop_armory.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_config.o : $(GDIRCOOP)/coop_config.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_gametype.o : $(GDIRCOOP)/coop_gametype.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_manager.o : $(GDIRCOOP)/coop_manager.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_objectives.o : $(GDIRCOOP)/coop_objectives.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_radar.o : $(GDIRCOOP)/coop_radar.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/rpg_gametype.o : $(GDIRCOOP)/rpg_gametype.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/:
+	mkdir -p $@
 
 $(B)/game/gamefix.o : $(GDIR)/gamefix.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/api_stef2.o : $(GDIR)/api_stef2.cpp; $(DO_GAME_SHLIB_CC)
