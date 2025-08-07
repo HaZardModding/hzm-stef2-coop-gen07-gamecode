@@ -4627,6 +4627,25 @@ MultiplayerModeBase* MultiplayerManager::gameFixAPI_getMultiplayerGame()
 	return nullptr;
 }
 
+//--------------------------------------------------------------
+// GAMEFIX - Added: Access to Callvote Player has Voted variable - chrissstrahl
+//--------------------------------------------------------------
+bool MultiplayerManager::gameFixAPI_getPlayerHasVoted(Player* player)
+{
+	if (!player) {
+		return false;
+	}
+	if (!_multiplayerGame) {
+		gi.Error(ERR_DROP, "gameFixAPI_getPlayerHasVoted() _multiplayerGame was nullptr\n");
+		return false;		
+	}
+	if (!_playerData) {
+		gi.Error(ERR_DROP, "gameFixAPI_getPlayerHasVoted() _playerData was nullptr\n");
+		return false;
+	}
+	return multiplayerManager._playerData[player->entnum]._voted;
+}
+
 
 #ifdef ENABLE_COOP
 //--------------------------------------------------------------
