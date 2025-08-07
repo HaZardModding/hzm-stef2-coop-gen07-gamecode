@@ -20,6 +20,15 @@
 #include "player.h"
 #include "object.h"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 //====================
 //Player::ActorInfo
 //====================
@@ -550,6 +559,16 @@ void ClosePlayerLogFile( void )
 
 void Player::SkipCinematic( Event *ev )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Added: Cinematic Skip Feature - chrissstrahl
+	//--------------------------------------------------------------
+	if (!CoopManager::Get().callvoteSkipCinematicPlayer(this)) {
+		return;
+	}
+#endif
+
+
 	if ( level.cinematic && ( world->skipthread.length() > 1 ) )
 	{
 		str skipthread;

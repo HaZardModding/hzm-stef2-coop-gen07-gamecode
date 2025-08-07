@@ -2501,6 +2501,14 @@ void G_StartCinematic( void )
 			player->cinematicStarted();
 		}
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Keep Track of skipping for player skipcinematic callvote - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().setSkippingCinematics(false);
+#endif
 }
 
 void G_StopCinematic( void )
@@ -2531,6 +2539,14 @@ void G_StopCinematic( void )
 	if(multiplayerManager.inMultiplayer()){
 		multiplayerManager.gamefixEF2_currentCamera = nullptr;
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Keep Track of skipping for player skipcinematic callvote - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().setSkippingCinematics(false);
+#endif
 }
 
 int G_NumClients( void )

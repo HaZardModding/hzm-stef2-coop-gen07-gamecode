@@ -8,6 +8,8 @@
 #include "coop_radar.hpp"
 #include "coop_manager.hpp"
 
+extern qboolean G_SetWidgetTextOfPlayer(const gentity_t* ent, const char* widgetName, const char* widgetText);
+
 coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 coopManager_mapSettings_s coopManager_mapSettings_t;
 
@@ -40,6 +42,16 @@ bool CoopManager::IsSameEnviroment(str levelCurrent, str levelOther) {
        
     return false;
 }
+
+bool CoopManager::getSkippingCinematics() {
+    return skippingCinematics;
+}
+
+void CoopManager::setSkippingCinematics(bool skipping) {
+    skippingCinematics = skipping;
+}
+
+
 
 //check if specific coop files are included
 //this is required because certain global_scripts
@@ -298,6 +310,16 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     Container<str> voteStringList;
     gamefix_listSeperatedItems(voteStringList, _voteString," ");
 
+    if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "skipcinematic") == 0) {
+        if (level.cinematic && (world->skipthread.length() > 0)) {
+            G_ClearFade();
+            str skipthread = world->skipthread;
+            world->skipthread = "";
+            ExecuteThread(skipthread);
+            return true;
+        }
+        return false;
+    }
     if (voteStringList.NumObjects() >= 2) {
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_ff") == 0) {
             float firedlyFireVal = atof(voteStringList.ObjectAt(2));
@@ -334,7 +356,6 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     return false;
 }
 
-extern qboolean G_SetWidgetTextOfPlayer(const gentity_t* ent, const char* widgetName, const char* widgetText);
 void CoopManager::callvoteUpdateUiPlayer(Player *player, str sValue, str sWidget)
 {
     if (!player) {
@@ -360,6 +381,42 @@ void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
                 callvoteUpdateUiPlayer(player, sValue, sWidget);
             }
         }
+    }
+}
+
+bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
+{
+    if (!player || !level.cinematic || (world->skipthread.length() <= 0)) {
+        return false;
+    }
+    if (g_gametype->integer == GT_SINGLE_PLAYER) {
+        return true;
+    }
+
+    //player presses long or repeatedly ESC
+    if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && !getSkippingCinematics()) {
+        setSkippingCinematics(true);
+        setPlayerData_cinematicEscapePressLastTime(player,level.time);
+        multiplayerManager.callVote(player, "skipcinematic", "");
+        return false;
+    }
+
+    //player presses long ESC and a cinematic skip vote is active
+    else {
+        //check if player has voted, if not make him vote yes for skip, if a vote is active, then exit
+        if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && getSkippingCinematics())
+        {
+            if (level.cinematic && world->skipthread.length() > 0 && !multiplayerManager.gameFixAPI_getPlayerHasVoted(player)) {
+                multiplayerManager.vote(player, "y");
+            }
+            setPlayerData_cinematicEscapePressLastTime(player,level.time);
+            return false;
+        }
+
+        //if ESC is pressed only shortly or if no skip is active, show/hide menu
+        setPlayerData_cinematicEscapePressLastTime(player,level.time);
+		gamefix_playerDelayedServerCommand(player->entnum, "pushmenu ingame_multiplayer");
+        return false;
     }
 }
 
@@ -453,6 +510,8 @@ void CoopManager::InitWorld() {
         DEBUG_LOG(_COOP_INFO_INIT_world, level.mapname.c_str());
 
         coopSettings.serverConfigCheck();
+
+        skippingCinematics = false;
 
         SetMapType();
 
@@ -646,6 +705,7 @@ void CoopManager::LevelStart(CThread* gamescript) {
 //Cleans up stuff while world and entities still exist - Not executed if game server is quit
 void CoopManager::LevelEndCleanup(qboolean temp_restart) {
     coop_objectives_reset();
+    setSkippingCinematics(false);
 
     Player* player = nullptr;
     for (int i = 0; i < gameFixAPI_maxClients(); i++) {
@@ -1289,6 +1349,7 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_lastValidViewAngle(player, Vector(0.0f, 0.0f, 0.0f));
     setPlayerData_lastSpawned(player, -1.0f);
     setPlayerData_objectives_reset(player);
+    setPlayerData_cinematicEscapePressLastTime(player,0.0f);
 
     //see also will be cleaned up in: playerLeft
 }
@@ -2081,6 +2142,21 @@ void CoopManager::setPlayerData_radarScale(Player* player, int radarScale)
     coopManager_client_persistant_t[player->entnum].radarScale = radarScale;
 }
 
+
+float CoopManager::getPlayerData_cinematicEscapePressLastTime(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_cinematicEscapePressLastTime() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].cinematicEscapePressLastTime;
+}
+void CoopManager::setPlayerData_cinematicEscapePressLastTime(Player* player, float lastTime) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_cinematicEscapePressLastTime() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].cinematicEscapePressLastTime = lastTime;
+}
 
 
 bool CoopManager::getPlayerData_coopClientIdDone(Player* player) {

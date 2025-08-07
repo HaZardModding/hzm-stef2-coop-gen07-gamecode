@@ -18,7 +18,7 @@ extern Event EV_World_coop_configstrRemove;
 #include <windows.h>
 #define DEBUG_LOG(...) do { OutputDebugStringA(va(__VA_ARGS__)); } while(0)
 #else
-#define DEBUG_LOG(...) do { gi.printf(va(__VA_ARGS__));} while (0)
+#define DEBUG_LOG(...) do { gi.Printf(va(__VA_ARGS__));} while (0)
 #endif
 
 struct coopManager_clientIniData_s
@@ -53,6 +53,8 @@ struct coopManager_client_persistant_s
     str         coopAdminAuthString = "";
     bool        coopAdminAuthStarted = false;
     int         coopAdminAuthStringLengthLast = 0;
+
+	float       cinematicEscapePressLastTime = 0.0f;
 
     bool        targetedShow = false;
     int         targetedLastEntNum = -1;
@@ -131,6 +133,8 @@ public:
     bool IsCoopLevel();
     bool IsRpgEnabled() const;
     bool IsSameEnviroment(str levelCurrent, str levelOther);
+    bool getSkippingCinematics();
+    void setSkippingCinematics(bool skipping);
 
     void Init();
     void InitWorld();
@@ -160,6 +164,7 @@ public:
     bool callvoteManager(const str& _voteString);
     void callvoteUpdateUi(str sText, str sValue, str sWidget);
     void callvoteUpdateUiPlayer(Player* player, str sValue, str sWidget);
+    bool callvoteSkipCinematicPlayer(Player* player);
 
     int getNumberOfPlayers(bool noDead, bool noSpectator);
     Entity* getSpawnSpecific(int spotNumber);
@@ -245,6 +250,10 @@ public:
     void setPlayerData_radarScale(Player* player, int radarScale);
 
  
+    float getPlayerData_cinematicEscapePressLastTime(Player* player);
+    void setPlayerData_cinematicEscapePressLastTime(Player* player,float lastTime);
+
+
     bool getPlayerData_coopClientIdDone(Player* player);
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);
@@ -301,6 +310,8 @@ private:
 
     bool coopEnabled = false;
     bool rpgEnabled = false;
+
+    bool skippingCinematics = false;
 
     bool friendlyFire = false;
     bool giveSpawnItems = false;
