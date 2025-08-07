@@ -34,9 +34,9 @@ class PuzzleObject : public Entity
 	// COOP Generation 7.000 - coop specific script function - chrissstrahl
 	//--------------------------------------------------------------
 public:
-	void PuzzleObject::coop_getLastActivatingEntity(Event* ev);
-	void PuzzleObject::coop_setItemUsedThread(Event* ev);
-	void PuzzleObject::coop_setUsedStartThread(Event* ev);
+	void coop_getLastActivatingEntity(Event* ev);
+	void coop_setItemUsedThread(Event* ev);
+	void coop_setUsedStartThread(Event* ev);
 #endif
 
 
