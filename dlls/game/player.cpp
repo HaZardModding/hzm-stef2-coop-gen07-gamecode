@@ -11161,6 +11161,16 @@ void Player::PlayerShowModel( Event *ev )
 
 void Player::showModel( void )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Make sure players are not visible during cienamtics - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled() && level.cinematic) {
+		return;
+	}
+#endif
+
+
 	Entity::showModel();
 }
 

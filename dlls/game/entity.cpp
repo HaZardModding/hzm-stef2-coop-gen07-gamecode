@@ -60,6 +60,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 // Player events
 Event EV_ClientMove
 	(
@@ -2403,6 +2411,18 @@ void Entity::setModel( const char *mdl )
 			player->SetAnim( "stand_idle", legs, true );
 			player->SetAnim( "stand_idle", torso, true );
 			player->LoadStateTable();
+
+
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.000 - Make sure players are not visible during cinematics - chrissstrahl
+			//--------------------------------------------------------------
+			if (CoopManager::Get().IsCoopEnabled() && level.cinematic) {
+				player->Entity::hideModel();
+			}
+#endif
+
+
 			}
 		}
 }
