@@ -1559,9 +1559,10 @@ void gamefix_playerHandleDelayedServerCommand(void)
 				}
 				sCmd += " \"" + sText + "\"\n";
 
-				if (sText.length() > 287) {
-					sNewText = gamefix_getStringUntil(sText, 0, 286);
-					gi.Printf("gamefix_playerDelayedServerCommand: String too long, was cut down to 286\n");
+				int max_safe_length_text = 420; //tested 440
+				if (sText.length() > max_safe_length_text) {
+					sNewText = gamefix_getStringUntil(sText, 0, max_safe_length_text);
+					gi.Printf("gamefix_playerDelayedServerCommand: String too long, was cut down to %d\n", max_safe_length_text);
 				}
 				else {
 					sNewText = sText;
