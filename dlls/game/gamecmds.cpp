@@ -2724,11 +2724,11 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	str s, s2;
 	//[b60014] chrissstrahl printout the info to menu
 	if (CoopManager::Get().getPlayerData_coopVersion(player) >= 60014) {
-		str sInfoPrint = va("Ver.: %i, C-Id: %i\n", CoopManager::Get().getPlayerData_coopVersion(player), player->entnum);
+		str sInfoPrint = va("Ver.: %i, Player-Id: %i\n", CoopManager::Get().getPlayerData_coopVersion(player), player->entnum);
 		int iTemp_do_delete_me_upon_completing_all_implementatiosn = 1;
 		sInfoPrint += va("Class: %s - Lives: %d of %d\n", CoopManager::Get().getPlayerData_coopClass(player).c_str(), iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives() - player->coopPlayer.lmsDeaths*/, iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives()*/);
-		sInfoPrint += va("Lang.: %s, Entered: %.2f ", gamefix_getLanguage(player).c_str(), player->client->pers.enterTime);
-		sInfoPrint += va("Pers.Id: %s\n", "notImplemented" /*player->coop_getId().c_str()*/);
+		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", gamefix_getLanguage(player).c_str(), player->client->pers.enterTime);
+		sInfoPrint += va("Personal Id: %s\n", CoopManager::Get().getPlayerData_coopClientId(player).c_str());
 
 		sInfoPrint += "\nSERVER Info:\n";
 
@@ -2744,7 +2744,7 @@ qboolean coop_playerInfo(const gentity_t* ent)
 		else
 			s2 = "VeryHard";
 
-		sInfoPrint += va("Lang: %s Skill: %s FF: %.2f\n", s.c_str(), s2.c_str(), 0.0f /*game.coop_friendlyFire*/);
+		sInfoPrint += va("Lang: %s Skill: %s FF: %.2f\n", s.c_str(), s2.c_str(), coopSettings.getSetting_friendlyFireMultiplicator());
 
 #ifdef WIN32
 		str sys2 = "Win";
@@ -2752,7 +2752,7 @@ qboolean coop_playerInfo(const gentity_t* ent)
 		str sys2 = "Lin";
 #endif
 		sInfoPrint += va("%d %s [%s %s]\n", _COOP_THIS_VERSION, sys2.c_str(), __DATE__, __TIME__);
-		sInfoPrint += va("Map: %s ", level.mapname.c_str());
+		sInfoPrint += va("Map: %s\n", level.mapname.c_str());
 		//[b60021] chrissstrahl - added mapchecksum printout
 		str sChecksum = "ERROR";
 		cvar_t* var;
@@ -2762,28 +2762,21 @@ qboolean coop_playerInfo(const gentity_t* ent)
 				sChecksum = var->string;
 			}
 		}
-		sInfoPrint += va(" %s\n", sChecksum.c_str());
+		sInfoPrint += va("Mapchecksum: %s\n", sChecksum.c_str());
 		sInfoPrint = gamefix_replaceForLabelText(sInfoPrint);
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
-
-		player->hudPrint("!info - Not fully implemented\n");
 		return true;
 	}
 
 	//coop not installed
 	player->hudPrint(_COOP_INFO_usedCommand_info1);
-	if (player->coop_hasCoopInstalled() == true) {
-		player->hudPrint(va("^5Coop Version^8: %i\n", CoopManager::Get().getPlayerData_coopVersion(player)));
-	}
-	else {
-		player->hudPrint("^5Coop Version^8: None detected\n");
-	}
+	player->hudPrint(va("^5Coop Version^8: %i\n", CoopManager::Get().getPlayerData_coopVersion(player)));
 	player->hudPrint(va("^5Coop Class^8: %s, ", CoopManager::Get().getPlayerData_coopClass(player).c_str()));
 	player->hudPrint(va("^5Language^8: %s, ", gamefix_getLanguage(player).c_str()));
-	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
+	player->hudPrint(va("^5Player-Id^8: %d\n", player->entnum));
 
 	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));
-	player->hudPrint(va("^5Personal Id^8: %s\n", "notImplemneted" /*player->coop_getId().c_str()*/));
+	player->hudPrint(va("^5Personal Id^8: %s\n", CoopManager::Get().getPlayerData_coopClientId(player).c_str()));
 
 	player->hudPrint("===SERVER Informations ===\n");
 	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
@@ -2803,7 +2796,7 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	player->hudPrint(va("^5Dificulty:^8 %d %s\n", skill->integer, s.c_str()));
 
 
-	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %.2f\n", 0.0f /*game.coop_friendlyFire*/));
+	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %.2f\n", coopSettings.getSetting_friendlyFireMultiplicator()));
 #ifdef WIN32
 	str sys = "Windows";
 #else
