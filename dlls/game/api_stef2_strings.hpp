@@ -53,7 +53,7 @@ constexpr auto _GFixEF2_WARN_EVENT_CTHREAD_triggerEntity_FAILED = "triggerEntity
 constexpr auto _GFixEF2_WARN_EVENT_CTHREAD_fakePlayer_ONLYSP = "WARNING: fakeplayer script command can only be used in Singleplayer\n";
 constexpr auto _GFixEF2_WARN_EVENT_CTHREAD_sendClientCommand_FAILED = "SendClientCommand: Given Entity does not exist!\n";
 constexpr auto _GFixEF2_WARN_EVENT_CTHREAD_getNumFreeRelSVCmds_FAILED = "GetNumFreeReliableServerCommands: Given Entity does not exist!\n";
-constexpr auto _GFixEF2_WARN_CALLVOTE_map_NOTSTOCK = "^3WARNING^8: ^3Some players might not have map:^5 %s ^3-> They will get dropped!\n";
+constexpr auto _GFixEF2_WARN_CALLVOTE_map_NOTSTOCK = "^3WARNING^8: ^3Some players might not have map:^5 %s\n";
 
 constexpr auto _GFixEF2_ERR_FUNC_SensoryInFov_act_NULL = "SensoryPerception::InFOV -- actor is NULL\n";
 constexpr auto _GFixEF2_ERR_LEVEL_InfoPlayerDeathmatch_AT_ZERO = "info_player_deathmatch ($%s) is at (0 0 0)\n";
