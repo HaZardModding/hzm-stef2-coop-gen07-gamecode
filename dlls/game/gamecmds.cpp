@@ -2724,17 +2724,19 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	str s, s2;
 	//[b60014] chrissstrahl printout the info to menu
 	if (CoopManager::Get().getPlayerData_coopVersion(player) >= 60014) {
-		str sInfoPrint = va("Ver.: %i, Player-Id: %i\n", CoopManager::Get().getPlayerData_coopVersion(player), player->entnum);
+		str sInfoPrint = va("Vers: %i - Client: %i\n", CoopManager::Get().getPlayerData_coopVersion(player), player->entnum);
 		int iTemp_do_delete_me_upon_completing_all_implementatiosn = 1;
 		sInfoPrint += va("Class: %s - Lives: %d of %d\n", CoopManager::Get().getPlayerData_coopClass(player).c_str(), iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives() - player->coopPlayer.lmsDeaths*/, iTemp_do_delete_me_upon_completing_all_implementatiosn /*coop_lmsGetLives()*/);
-		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", gamefix_getLanguage(player).c_str(), player->client->pers.enterTime);
+		sInfoPrint += va("Lang: %s - Entered: %.2f\n", gamefix_getLanguage(player).c_str(), player->client->pers.enterTime);
 		sInfoPrint += va("Personal Id: %s\n", CoopManager::Get().getPlayerData_coopClientId(player).c_str());
 
-		sInfoPrint += "\nSERVER Info:\n";
-
-		//[b60022] chrissstrahl - updated to use the cvar
-		s = local_language->string;
-
+		sInfoPrint += "\nSERVER:\n";
+#ifdef WIN32
+		str sys2 = "Win";
+#else
+		str sys2 = "Lin";
+#endif
+		sInfoPrint += va("%d %s [%s %s]\n", _COOP_THIS_VERSION, sys2.c_str(), __DATE__, __TIME__);
 		if (skill->integer == 0)
 			s2 = "Easy";
 		else if (skill->integer == 1)
@@ -2744,16 +2746,8 @@ qboolean coop_playerInfo(const gentity_t* ent)
 		else
 			s2 = "VeryHard";
 
-		sInfoPrint += va("Lang: %s Skill: %s FF: %.2f\n", s.c_str(), s2.c_str(), coopSettings.getSetting_friendlyFireMultiplicator());
-
-#ifdef WIN32
-		str sys2 = "Win";
-#else
-		str sys2 = "Lin";
-#endif
-		sInfoPrint += va("%d %s [%s %s]\n", _COOP_THIS_VERSION, sys2.c_str(), __DATE__, __TIME__);
+		sInfoPrint += va("Lang: %s - Skill: %s - FriendlyFire: %.2f\n", local_language->string, s2.c_str(), coopSettings.getSetting_friendlyFireMultiplicator());
 		sInfoPrint += va("Map: %s\n", level.mapname.c_str());
-		//[b60021] chrissstrahl - added mapchecksum printout
 		str sChecksum = "ERROR";
 		cvar_t* var;
 		var = gi.cvar("sv_mapchecksum", "", 0);
@@ -2762,7 +2756,7 @@ qboolean coop_playerInfo(const gentity_t* ent)
 				sChecksum = var->string;
 			}
 		}
-		sInfoPrint += va("Mapchecksum: %s\n", sChecksum.c_str());
+		sInfoPrint += va("sv_mapchecksum: %s\n", sChecksum.c_str());
 		sInfoPrint = gamefix_replaceForLabelText(sInfoPrint);
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
 		return true;
@@ -2770,20 +2764,14 @@ qboolean coop_playerInfo(const gentity_t* ent)
 
 	//coop not installed
 	player->hudPrint(_COOP_INFO_usedCommand_info1);
-	player->hudPrint(va("^5Coop Version^8: %i\n", CoopManager::Get().getPlayerData_coopVersion(player)));
-	player->hudPrint(va("^5Coop Class^8: %s, ", CoopManager::Get().getPlayerData_coopClass(player).c_str()));
-	player->hudPrint(va("^5Language^8: %s, ", gamefix_getLanguage(player).c_str()));
-	player->hudPrint(va("^5Player-Id^8: %d\n", player->entnum));
-
-	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));
+	player->hudPrint(va("^5Version^8: %i, \n", CoopManager::Get().getPlayerData_coopVersion(player)));
+	player->hudPrint(va("^5Class^8: %s, ", CoopManager::Get().getPlayerData_coopClass(player).c_str()));
+	player->hudPrint(va("^5Lang^8: %s, ^5Client:^8 %d, ^5Entered:^8 %.2f", gamefix_getLanguage(player).c_str(), player->entnum, player->client->pers.enterTime));
 	player->hudPrint(va("^5Personal Id^8: %s\n", CoopManager::Get().getPlayerData_coopClientId(player).c_str()));
 
-	player->hudPrint("===SERVER Informations ===\n");
+	player->hudPrint("===SERVER ===\n");
 	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
-
-	//[b60022] chrissstrahl - updated to use the cvar
-	s = local_language->string;
-	player->hudPrint(va("^5Language:^8 %s, ", s.c_str()));
+	player->hudPrint(va("^5Language:^8 %s",local_language->string));
 
 	if (skill->integer == 0)
 		s = " [$$Easy$$]";
@@ -2794,8 +2782,6 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	else
 		s = " [$$VeryHard$$]";
 	player->hudPrint(va("^5Dificulty:^8 %d %s\n", skill->integer, s.c_str()));
-
-
 	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %.2f\n", coopSettings.getSetting_friendlyFireMultiplicator()));
 #ifdef WIN32
 	str sys = "Windows";
@@ -2803,12 +2789,6 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	str sys = "Linux";
 #endif
 	player->hudPrint(va("^5HZM Coop Mod [ %i ]^8 [ %s ] - ^3Compiled:^8 %s %s\n", _COOP_THIS_VERSION, sys.c_str(), __DATE__, __TIME__));
-
-
-	//player->hudPrint( "^3For more, Mission Info type:^5 !status\n" );
-	//player->hudPrint( va( "^5Monsters killed^8: %i\n" , player->client->pers.enterTime ) );
-	//add more from heuristics! - chrissstrahl - //hzm unfinished, //hzm upgrademe
-	player->hudPrint("==================\n");
 	return true;
 }
 
