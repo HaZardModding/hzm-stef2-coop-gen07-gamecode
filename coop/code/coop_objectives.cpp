@@ -642,7 +642,7 @@ void coop_objectivesUpdate( str sObjectiveState, int iObjectiveNumber, int  bSho
 
 	//TEST
 	gentity_t* gentity;
-	Player* player = NULL;
+	Player* player = nullptr;
 	gentity = &g_entities[0];
 	if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
 		player = (Player*)gentity->entity;

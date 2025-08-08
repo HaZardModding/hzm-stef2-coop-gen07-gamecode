@@ -372,10 +372,10 @@ void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
         return;
     }
 
-    Player* player = NULL;
+    Player* player = nullptr;
     for (int i = 0; i < gameFixAPI_maxClients(); i++) {
-        player = (Player*)g_entities[i].entity;
-        if (player && player->client && player->isSubclassOf(Player)) {
+        player = GetPlayer(i);
+        if (player) {
             gameFixAPI_hudPrint(player, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
             if (player->coop_hasCoopInstalled()) {
                 callvoteUpdateUiPlayer(player, sValue, sWidget);
