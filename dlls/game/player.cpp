@@ -14351,11 +14351,37 @@ void Player::setValidPlayerModel( Event *ev )
 
 void Player::setVoteText( const str &voteText )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Show overlaying skipvote text - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		if (sv_cinematic->integer) {
+			char* locPrintText = (char*)va("%s",voteText.c_str());
+			gamefix_replaceSubstring(locPrintText, " ", "^0_^8");
+			gi.SendServerCommand(entnum, va("stufftext \"locationprint 220 455 %s\"", locPrintText));		
+		}
+	}
+#endif
+
+
 	_voteText = voteText;
 }
 
 void Player::clearVoteText( void )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Clear overlaying skipvote text - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		if (sv_cinematic->integer) {
+			gamefix_playerDelayedServerCommand(entnum, "locationprint -1111 -1111 ^0 0");
+		}
+	}
+#endif
+
+
 	_voteText = "";
 }
 

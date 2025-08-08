@@ -2263,6 +2263,30 @@ void MultiplayerManager::checkVote( void )
 		return;
 	}
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Silently cancel vote if cinematic ends while vote is still going - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled()) {
+		if(!sv_cinematic->integer && gamefix_findStringCase(_voteString,"skipcinematic",true, 0, true) != -1) {
+			gamefixEF2_voteStartedByClient = -1;
+			_voteTime = 0.0f;
+
+			// Clear all the player's vote text
+			for (i = 0; i < gameFixAPI_maxClients(); i++) {
+				Player* currentPlayer = getPlayer(i);
+				if (currentPlayer) {
+					currentPlayer->clearVoteText();
+				}
+			}
+			
+			return;
+		}
+	}
+#endif
+
+
 	// Make sure time hasn't run out for this vote
 
 	if ( level.time - _voteTime >= _maxVoteTime )
