@@ -362,6 +362,9 @@ void coop_objectivesNotify( Player* player )
 		return;
 	}
 
+	//let player know that there is a newer version of the coop mod
+	CoopManager::Get().playerUpdateNoticeUi(player);
+
 	player->coop_hudsAdd( player , "objectivenotifytext" );
 	player->Sound( "snd_objectivechanged" , CHAN_LOCAL );
 	player->coop_hudsAdd( player , "coop_notify" );//SYMBOL->(|!|)
@@ -375,7 +378,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 	if ( !player )
 		return;
 
-	if (!CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
+	if (!CoopManager::Get().getPlayerData_coopSetupDone(player) || !CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
 		coop_objectivesSetup(player);
 		CoopManager::Get().playerSetupCoopUi(player);
 		return;
@@ -383,7 +386,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 	
 
 	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() /* && coopSetupDone*/ ) {
-		if (!player->coop_getObjectivesCycle() && (CoopManager::Get().getPlayerData_lastSpawned(player) + 3.0f) < level.time) {
+		if (!player->coop_getObjectivesCycle() /* && (CoopManager::Get().getPlayerData_lastSpawned(player) + 3.0f) < level.time*/) {
 			player->coop_setObjectivesCycle();
 
 			coop_objectivesNotify( player );

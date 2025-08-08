@@ -894,6 +894,8 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
 
     setPlayerData_coopVersion(player,iVer);
 
+    setPlayerData_coopUpdateNoticeSend(player,false);
+
     //run coop setup
     DEBUG_LOG("# COOP DETECTED: %d (WAITED: %d)\n", iVer, getPlayerData_coopSetupTries(player));
 }
@@ -973,6 +975,10 @@ void CoopManager::playerAddMissionHuds(Player* player)
 
 void CoopManager::playerRemoveMissionHuds(Player* player)
 {
+    if (!player) {
+        return;
+    }
+
     str hudName = "";
     str hudCommand = "";
     for (int iHuds = 0; iHuds < _COOP_SETTINGS_MISSION_HUDS_MAX; iHuds++) {
@@ -982,6 +988,30 @@ void CoopManager::playerRemoveMissionHuds(Player* player)
         }
         gamefix_playerDelayedServerCommand(player->entnum,va("ui_removehud %s", hudName.c_str()));
     }
+}
+
+void CoopManager::playerUpdateNoticeUi(Player* player)
+{
+    if( !player || player->coop_getCoopVersion() > 0 || getPlayerData_coopUpdateNoticeSend(player) || gameFixAPI_isSpectator_stef2(player)) {
+        return;
+	}
+
+    if (player->coop_getCoopVersion() >= _COOP_THIS_VERSION) {
+        return;
+    }
+
+    setPlayerData_coopUpdateNoticeSend(player, true);
+    gamefix_playerDelayedServerCommand(player->entnum,"pushmenu okDialog");
+    
+    const char* infoText;
+    if (player->coop_hasLanguageGerman()) {
+        infoText = _COOP_INFO_VERSION_pleaseUpdate_deu;
+    }
+    else {
+        infoText = _COOP_INFO_VERSION_pleaseUpdate;
+    }
+
+    gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand OkDialogTitle labeltext %s~Server:^%d~Client:^%d", gamefix_replaceForLabelText(infoText).c_str(), _COOP_THIS_VERSION, player->coop_getCoopVersion()));
 }
 
 bool CoopManager::playerDataReset(Player* player) {
@@ -1382,6 +1412,7 @@ void CoopManager::playerDisconnect(Player* player) {
 
     coop_radarReset(player);
 
+    setPlayerData_coopUpdateNoticeSend(player,false);
     setPlayerData_coopClientIdDone(player, false);
     setPlayerData_coopAdmin(player,false);
     setPayerData_coopAdminAuthAttemps_reset(player);
@@ -2156,6 +2187,21 @@ void CoopManager::setPlayerData_cinematicEscapePressLastTime(Player* player, flo
         return;
     }
     coopManager_client_persistant_t[player->entnum].cinematicEscapePressLastTime = lastTime;
+}
+
+bool CoopManager::getPlayerData_coopUpdateNoticeSend(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopUpdateNoticeSend() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopUpdateNoticeSend;
+}
+void CoopManager::setPlayerData_coopUpdateNoticeSend(Player* player, bool state) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopUpdateNoticeSend() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopUpdateNoticeSend = state;
 }
 
 

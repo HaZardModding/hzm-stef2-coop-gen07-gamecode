@@ -55,6 +55,7 @@ struct coopManager_client_persistant_s
     int         coopAdminAuthStringLengthLast = 0;
 
 	float       cinematicEscapePressLastTime = 0.0f;
+    bool        coopUpdateNoticeSend = false;
 
     bool        targetedShow = false;
     int         targetedLastEntNum = -1;
@@ -181,6 +182,7 @@ public:
     void playerClIdSet(Player* player);
     void playerAddMissionHuds(Player* player);
     void playerRemoveMissionHuds(Player* player);
+    void playerUpdateNoticeUi(Player* player);
 
 	bool playerDataReset(Player* player);
 	bool playerDataSave(Player* player);
@@ -252,6 +254,8 @@ public:
  
     float getPlayerData_cinematicEscapePressLastTime(Player* player);
     void setPlayerData_cinematicEscapePressLastTime(Player* player,float lastTime);
+    bool getPlayerData_coopUpdateNoticeSend(Player* player);
+    void setPlayerData_coopUpdateNoticeSend(Player* player, bool state);
 
 
     bool getPlayerData_coopClientIdDone(Player* player);

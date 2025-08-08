@@ -86,6 +86,9 @@ constexpr auto _COOP_INFO_adminLogin_loginStartedEnter = "Login Started - Please
 constexpr auto _COOP_INFO_adminLogin_logoutDone = "^3You are now logged out.\n";
 constexpr auto _COOP_INFO_adminLogin_logoutAlready = "^3You are already logged out.\n";
 
+constexpr auto _COOP_INFO_VERSION_pleaseUpdate = "Please update your Co-Op Mod!";
+constexpr auto _COOP_INFO_VERSION_pleaseUpdate_deu = "Bitte Co-Op Mod aktualisieren!";
+
 
 constexpr auto _COOP_WARNING_SCRIPT_ERROR_PARAMETER_TOO_FEW = "%s - too few parameters\n";
 
