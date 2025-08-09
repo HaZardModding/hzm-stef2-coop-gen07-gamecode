@@ -80,19 +80,7 @@ Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - item is picked up if any player could use it - give ammo to all players - chrissstrahl
 	//--------------------------------------------------------------
-	if (CoopManager::Get().IsCoopEnabled()) {
-		Player* coopPlayer = NULL;
-		for (int i = 0; i < maxclients->integer; i++) {
-			coopPlayer = (Player*)g_entities[i].entity;
-			//skip the player who picked the ammo up
-			if (coopPlayer == player) {
-				continue;
-			}
-			if (coopPlayer && coopPlayer->client && coopPlayer->isSubclassOf(Player) && !gameFixAPI_isSpectator_stef2(coopPlayer) && !gameFixAPI_isBot(coopPlayer)) {
-				amountUsed += coopPlayer->GiveAmmo(item_name, (int)amount, true);
-			}
-		}
-	}
+	CoopManager::Get().playerSharePickedUpAmmo((Player*)player, item_name,(int)amount, amountUsed);
 #endif
 
 

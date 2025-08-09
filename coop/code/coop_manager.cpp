@@ -1674,6 +1674,30 @@ bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
     return true;
 }
 
+void CoopManager::playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed)
+{
+    if (!IsCoopEnabled() || !IsCoopLevel()) {
+        return;
+    }
+
+    Player* coopPlayer = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        coopPlayer = GetPlayer(i);
+
+       
+        if (!coopPlayer || gameFixAPI_isBot(coopPlayer) || gameFixAPI_isSpectator_stef2(coopPlayer)) {
+            continue;
+        }
+
+        //skip the player who picked the ammo up
+        if (coopPlayer == player) {
+            continue;
+        }
+
+        amountUsed += coopPlayer->GiveAmmo(itemName, (int)amount, true);
+    }
+}
+
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
 {
     if (!attacked || !attacker) {

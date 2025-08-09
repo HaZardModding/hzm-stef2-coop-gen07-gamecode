@@ -207,6 +207,7 @@ public:
     void playerChangedClass(Player* player);
     void playerKilledActor(Player* player, Actor* actor);
     bool playerDamagedCoop(Player* damagedPlayer, Damage& damage);
+    void playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
