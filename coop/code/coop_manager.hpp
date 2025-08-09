@@ -227,7 +227,7 @@ public:
     int getPlayerData_coopSetupTries(Player* player);
     void setPlayerData_coopSetupTries_update(Player* player);
     void setPlayerData_coopSetupTries_reset(Player* player);
-    int getPlayerData_coopSetupNextCheckTime(Player* player);
+    float getPlayerData_coopSetupNextCheckTime(Player* player);
     void setPlayerData_coopSetupNextCheckTime_update(Player* player);
     void setPlayerData_coopSetupNextCheckTime_reset(Player* player);
     int getPlayerData_coopAdminAuthAttemps(Player* player);

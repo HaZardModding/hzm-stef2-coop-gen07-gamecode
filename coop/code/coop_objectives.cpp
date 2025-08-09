@@ -362,9 +362,6 @@ void coop_objectivesNotify( Player* player )
 		return;
 	}
 
-	//let player know that there is a newer version of the coop mod
-	CoopManager::Get().playerUpdateNoticeUi(player);
-
 	player->coop_hudsAdd( player , "objectivenotifytext" );
 	player->Sound( "snd_objectivechanged" , CHAN_LOCAL );
 	player->coop_hudsAdd( player , "coop_notify" );//SYMBOL->(|!|)

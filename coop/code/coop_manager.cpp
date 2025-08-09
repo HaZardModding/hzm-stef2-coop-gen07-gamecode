@@ -834,7 +834,7 @@ void CoopManager::playerSetup(Player* player) {
         return;
     }
 
-    if (getPlayerData_coopSetupNextCheckTime(player) > level.time) {
+    if (getPlayerData_coopSetupNextCheckTime(player) >= level.time) {
         return;
     }
 
@@ -912,18 +912,20 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     }   
     
     int iVer =  atoi(coopVer);
+    setPlayerData_coopVersion(player, iVer);
     setPlayerData_coopSetupDone(player, true);
+    setPlayerData_coopUpdateNoticeSend(player, false);
+
     if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
-        DEBUG_LOG("# COOP DETECTED = OUTDATED =: %d\n", iVer);
+        //let player know that there is a newer version of the coop mod
+        CoopManager::Get().playerUpdateNoticeUi(player);
+
+        DEBUG_LOG("# COOP OUTDATED: %d for %s (WAITED: %d)\n", iVer, player->client->pers.netname, getPlayerData_coopSetupTries(player));
         return;
     }
 
-    setPlayerData_coopVersion(player,iVer);
-
-    setPlayerData_coopUpdateNoticeSend(player,false);
-
     //run coop setup
-    DEBUG_LOG("# COOP DETECTED: %d (WAITED: %d)\n", iVer, getPlayerData_coopSetupTries(player));
+    DEBUG_LOG("# COOP DETECTED: %d for %s (WAITED: %d)\n", iVer, player->client->pers.netname, getPlayerData_coopSetupTries(player));
 }
 
 //called by console command "coopcid"
@@ -945,20 +947,18 @@ void CoopManager::playerClIdDetected(const gentity_t* ent, const char* clientId)
 
     if (!sId.length()) {
         gi.Printf(va("COOPDEBUG: coop_cId - Bad or Empty: Rejected! For: %s\n", player->client->pers.netname));
+        DEBUG_LOG("COOPDEBUG: coop_cId - Bad or Empty: Rejected! For: %s\n", player->client->pers.netname);
         return;
     }
-
-    DEBUG_LOG("# CId RECIVED: %s (WAITED %d)\n", sId.c_str(), getPlayerData_coopSetupTries(player));
 
     str sClientId = "";
     sId = gamefix_filterChars(sId, ";[]=%");
     sId = gamefix_trimWhitespace(sId,false);
 
-    DEBUG_LOG("# CId CHECK VS INI NOT IMPLEMENTED\n");
-
     sClientId = sId;
-    //sClientId = coop_checkPlayerCoopIdExistInIni(player, sId);
     if (sClientId.length()) {
+        //client id will be saved to CoopManager_clientIniData if the level changes or the player disconnects
+        
         //prevent players from cheating lms by reconnecting
         //player->coop_lmsCheckReconnectHack();
         setPlayerData_coopClientIdDone(player,true);
@@ -1018,13 +1018,9 @@ void CoopManager::playerRemoveMissionHuds(Player* player)
 
 void CoopManager::playerUpdateNoticeUi(Player* player)
 {
-    if( !player || player->coop_getCoopVersion() > 0 || getPlayerData_coopUpdateNoticeSend(player) || gameFixAPI_isSpectator_stef2(player)) {
+    if( !player || player->coop_getCoopVersion() >= _COOP_THIS_VERSION || player->coop_getCoopVersion() == 0 || getPlayerData_coopUpdateNoticeSend(player)) {
         return;
 	}
-
-    if (player->coop_getCoopVersion() >= _COOP_THIS_VERSION) {
-        return;
-    }
 
     setPlayerData_coopUpdateNoticeSend(player, true);
     gamefix_playerDelayedServerCommand(player->entnum,"pushmenu okDialog");
@@ -1194,11 +1190,12 @@ bool CoopManager::playerDataRestore(Player* player) {
             //sentPlayer-> (clientIniData.deathTime);
             //sentPlayer-> (clientIniData.lmsDeaths);
 
-            DEBUG_LOG("Data restored for %s\n",player->client->pers.netname);
+            DEBUG_LOG("# DATA RESTORED for %s (WAITED: %d)\n",player->client->pers.netname, getPlayerData_coopSetupTries(player));
 			return true;
         }
     }
-	gi.Printf("CoopManager::playerDataRestore - No data found for player %s\n", player->client->pers.netname);
+	//gi.Printf("CoopManager::playerDataRestore - No data found for player %s\n", player->client->pers.netname);
+	DEBUG_LOG("CoopManager::playerDataRestore - No data found for player %s\n", player->client->pers.netname);
 	return false;
 }
 
@@ -1443,7 +1440,7 @@ void CoopManager::playerDisconnect(Player* player) {
     setPlayerData_coopAdmin(player,false);
     setPayerData_coopAdminAuthAttemps_reset(player);
     setPlayerData_coopClientId(player,"");
-    setPlayerData_coopSetupStarted(player, true);
+    setPlayerData_coopSetupStarted(player, false);
     setPlayerData_coopSetupTries_reset(player);
     setPlayerData_coopSetupNextCheckTime_reset(player);
     setPlayerData_coopSetupDone(player, false);
@@ -1544,7 +1541,7 @@ void CoopManager::playerChangedModel(Player *player){
         //not a valid model, handle
         str sModel = player->model.c_str();
         if (coopManager_validPlayerModels.IndexOfObject(sModel.tolower()) == 0) {
-            DEBUG_LOG("NOT ALLOWED: %s\n", player->model.c_str());
+            //DEBUG_LOG("NOT ALLOWED: %s\n", player->model.c_str());
             sModel = multiplayerManager.getDefaultPlayerModel(player);
             multiplayerManager.changePlayerModel(player, va("%s", sModel.c_str()), true);
             return;
@@ -2053,9 +2050,10 @@ void CoopManager::setPlayerData_coopSetupTries_reset(Player* player) {
         return;
     }
     coopManager_client_persistant_t[player->entnum].coopSetupTries = 0;
+	coopManager_client_persistant_t[player->entnum].coopSetupNextCheckTime = -999.1f;
 }
 
-int CoopManager::getPlayerData_coopSetupNextCheckTime(Player* player) {
+float CoopManager::getPlayerData_coopSetupNextCheckTime(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopSetupNextCheckTime() nullptr player");
         return 0;
