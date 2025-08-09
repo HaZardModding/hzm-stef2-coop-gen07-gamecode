@@ -128,6 +128,7 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("!block");
 	gameFixAPI_clCmdsWhitheListAdd("!mapname");
 	gameFixAPI_clCmdsWhitheListAdd("!class");
+	gameFixAPI_clCmdsWhitheListAdd("!help");
 
 	gameFixAPI_clCmdsWhitheListAdd("coopinstalled");
 	gameFixAPI_clCmdsWhitheListAdd("coopcid");

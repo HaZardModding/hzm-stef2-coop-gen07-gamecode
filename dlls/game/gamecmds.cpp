@@ -85,6 +85,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!block",coop_playerBlock,true },
 	{ "!mapname",coop_playerMapname,true },
 	{ "!class",coop_playerClass,true },
+	{ "!help",coop_playerHelp,true },
 
 	{ "script",G_ScriptCmd,true },
 	{ "clientrunthread",G_ClientRunThreadCmd,true },
@@ -2950,6 +2951,49 @@ qboolean coop_playerClass(const gentity_t* ent)
 	return true;
 }
 
+qboolean coop_playerHelp(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || sv_cinematic->integer || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+	
+	if ((gamefix_getEntityVarFloat(ent->entity, "!help") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!help", level.time);
+
+	Player* player = (Player*)ent->entity;
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
+	{
+		int printedItems_max = 5;
+		int printedItems = 0;
+		str sPrintString = "";
+		player->hudPrint(_COOP_INFO_availableExclmationmarkCommands);
+		for (int i = 1; i < gameFixAPI_AllowedCmdsContainer.NumObjects();i++) {
+			if (gameFixAPI_AllowedCmdsContainer.ObjectAt(i).length()) {
+				if (gameFixAPI_AllowedCmdsContainer.ObjectAt(i)[0] == '!') {
+					if (printedItems >= printedItems_max) {
+						sPrintString = "";
+						printedItems = 0;
+					}
+					if (sPrintString.length()) {
+						sPrintString += ", ";
+					}
+					printedItems++;
+					sPrintString += gameFixAPI_AllowedCmdsContainer.ObjectAt(i);
+
+					if (printedItems >= printedItems_max) {
+						player->hudPrint(va("%s\n", sPrintString.c_str()));
+					}
+				}
+			}
+		}
+		if (printedItems > 0) {
+			player->hudPrint(va("%s\n", sPrintString.c_str()));
+		}
+	}
+	return true;
+}
 #endif
 
 

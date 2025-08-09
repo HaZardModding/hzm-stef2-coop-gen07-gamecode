@@ -64,6 +64,8 @@ constexpr auto _COOP_INFO_usedCommand_class2_deu = "^5Ihre aktuelle Klasse ist^5
 constexpr auto _COOP_INFO_usedCommand_class3 = "^3Invalid Classenname!^2 Valid: [^5t^2] $$Technician$$ [^5m^2] $$Medic$$ [^5h^2] $$HeavyWeapons$$\n";
 constexpr auto _COOP_INFO_usedCommand_class3_deu = "^3Invalider Klassenname!^2 Valide: [^5t^2] $$Technician$$ [^5m^2] $$Medic$$ [^5h^2] $$HeavyWeapons$$\n";
 
+constexpr auto _COOP_INFO_availableExclmationmarkCommands = "^5Available Commands:^8 ";
+
 constexpr auto _COOP_INFO_spawnspotNumberedNotFound = "Spawnspot (in script/bsp) with number %d was not found...\n";
 
 constexpr auto _COOP_INFO_radarFollowMarker_off = "^2Green ^5locaction ^5marker ^5on Radar ^1disabled\n";
