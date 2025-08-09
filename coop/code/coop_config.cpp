@@ -269,8 +269,11 @@ void CoopSettings::playerScriptThreadsAllow()
 }
 
 void CoopSettings::saveSettings() {
-	//grab gameplay options
+	//gameplay options
+	//gameplay options
+	//gameplay options
 	str fileContents;
+	str newFileContents;
 	gamefix_getFileContents(_COOP_FILE_settings, fileContents, true);
 	str sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay);
 
@@ -285,9 +288,38 @@ void CoopSettings::saveSettings() {
 		awardsString = "true";
 	}
 	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "awards", awardsString);
-
 	// Update section in full file content
-	str newFileContents = gamefix_iniSectionSet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay, newSectionContents);
+	newFileContents = gamefix_iniSectionSet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_gameplay, newSectionContents);
+
+	//missionstatus data
+	//missionstatus data
+	//missionstatus data
+	sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_missionstatus);
+	newSectionContents = "";
+	if (CoopManager::Get().getMapFlags().stockMap && CoopManager::Get().getMapFlags().coopSpMission ||
+		CoopManager::Get().getMapFlags().stockMap && CoopManager::Get().getMapFlags().coopSpIgm) {
+		ScriptVariable* var = gameVars.GetVariable("globalMissionEnterprise");
+		newSectionContents += va("globalMissionEnterprise=%d\n", var ? (int)var->floatValue() : 1);
+
+		newSectionContents += va("globalTurboliftRide=%d\n", (int)gamefix_getGameVarFloat("globalTurboliftRide"));
+		newSectionContents += va("globalKleeyaChoice=%d\n", (int)gamefix_getGameVarFloat("globalKleeyaChoice"));
+		newSectionContents += va("globalTelsiaChoice=%d\n", (int)gamefix_getGameVarFloat("globalTelsiaChoice"));
+		newSectionContents += va("globalNoneChoice=%d\n", (int)gamefix_getGameVarFloat("globalNoneChoice"));
+		newSectionContents += va("attrexianWeaponFound=%d\n", (int)gamefix_getGameVarFloat("attrexianWeaponFound"));
+		newSectionContents += va("secretWeapon_CompressionRifle=%d\n", (int)gamefix_getGameVarFloat("secretWeapon_CompressionRifle"));
+		newSectionContents += va("secretWeapon_IMOD=%d\n", (int)gamefix_getGameVarFloat("secretWeapon_IMOD"));
+		newSectionContents += va("secretWeapon_IdryllStaff=%d\n", (int)gamefix_getGameVarFloat("secretWeapon_IdryllStaff"));
+		newSectionContents += va("secretWeapon_RomulanExperimental=%d\n", (int)gamefix_getGameVarFloat("secretWeapon_RomulanExperimental"));
+		newSectionContents += va("igmRoomsVisited=%d\n", (int)gamefix_getGameVarFloat("igmRoomsVisited"));
+		newSectionContents += va("igmHolodeckSpawn=%d\n", (int)gamefix_getGameVarFloat("igmHolodeckSpawn"));
+		newSectionContents += va("igmTurboliftSpawn=%d\n", (int)gamefix_getGameVarFloat("igmTurboliftSpawn"));
+		newSectionContents += va("statusM5L2CUnlocked=%d\n", (int)gamefix_getGameVarFloat("statusM5L2CUnlocked"));
+
+		// Update section in full file content
+		newFileContents = gamefix_iniSectionSet(_COOP_FILE_settings, fileContents, _COOP_SETTINGS_CAT_missionstatus, newSectionContents);
+	}
+
+	//finally save ini file
 	if (!gamefix_setFileContents(_COOP_FILE_settings, newFileContents)) {
 		gi.Printf("CoopSettings::saveSettings() - Could not write: %s\n", _COOP_FILE_settings);
 		DEBUG_LOG("CoopSettings::saveSettings() - Could not write: %s", _COOP_FILE_settings);
@@ -304,28 +336,44 @@ void CoopSettings::loadSettings() {
 		}
 
 		str sTemp;
-		str section_contents;
+		str sectionContents;
 
-		//grab gameplay options 
-		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
 
-		if (!section_contents.length()) {
-			return;
-		}
-
-		friendlyFireMultiplicator	= setSetting_friendlyFireMultiplicator(atof(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "friendlyFireMultiplicator", "0.0")));
-		moveSpeed					= setSetting_maxSpeed(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "moveSpeed", "300")));
-		awards						= setSetting_awards(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "awards", "false") == "true");
-		difficulty					= setSetting_difficulty(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "difficulty", "1")));
-		airaccelerate				= setSetting_airaccelerate(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "airaccelerate", "1")));
-
-		//overwrite game settings
 		if (gameFixAPI_inMultiplayer()) {
-			skill->integer = difficulty;
-			sv_airaccelerate->integer = airaccelerate;
-			world->setPhysicsVar("maxspeed", moveSpeed);
-		}
 
+			//LOAD gameplay settings
+			sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+			if (sectionContents.length()) {
+				friendlyFireMultiplicator = setSetting_friendlyFireMultiplicator(atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "friendlyFireMultiplicator", "0.0")));
+				moveSpeed = setSetting_maxSpeed(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "moveSpeed", "300")));
+				awards = setSetting_awards(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "awards", "false") == "true");
+				difficulty = setSetting_difficulty(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "difficulty", "1")));
+				airaccelerate = setSetting_airaccelerate(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "airaccelerate", "1")));
+				skill->integer = difficulty;
+				sv_airaccelerate->integer = airaccelerate;
+				world->setPhysicsVar("maxspeed", moveSpeed);
+			}
+
+			//LOAD missionstatus data
+			sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_missionstatus);
+			if (CoopManager::Get().getMapFlags().stockMap && CoopManager::Get().getMapFlags().coopSpMission ||
+				CoopManager::Get().getMapFlags().stockMap && CoopManager::Get().getMapFlags().coopSpIgm) {
+				gameVars.SetVariable("globalMissionEnterprise", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "globalMissionEnterprise", "1")));
+				gameVars.SetVariable("globalTurboliftRide", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "globalTurboliftRide", "0")));
+				gameVars.SetVariable("globalKleeyaChoice", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "globalKleeyaChoice", "0")));
+				gameVars.SetVariable("globalTelsiaChoice", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "globalTelsiaChoice", "0")));
+				gameVars.SetVariable("globalNoneChoice", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "globalNoneChoice", "0")));
+				gameVars.SetVariable("attrexianWeaponFound", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "attrexianWeaponFound", "0")));
+				gameVars.SetVariable("secretWeapon_CompressionRifle", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "secretWeapon_CompressionRifle", "0")));
+				gameVars.SetVariable("secretWeapon_IMOD", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "secretWeapon_IMOD", "0")));
+				gameVars.SetVariable("secretWeapon_IdryllStaff", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "secretWeapon_IdryllStaff", "0")));
+				gameVars.SetVariable("secretWeapon_RomulanExperimental", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "secretWeapon_RomulanExperimental", "0")));
+				gameVars.SetVariable("igmRoomsVisited", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "igmRoomsVisited", "0")));
+				gameVars.SetVariable("igmHolodeckSpawn", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "igmHolodeckSpawn", "0")));
+				gameVars.SetVariable("igmTurboliftSpawn", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "igmTurboliftSpawn", "0")));
+				gameVars.SetVariable("statusM5L2CUnlocked", (float)atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "statusM5L2CUnlocked", "0")));
+			}
+		}
 
 		//lets review that some other time
 		if ( 1 ) {
@@ -333,14 +381,14 @@ void CoopSettings::loadSettings() {
 		}
 
 		// Boot section - settings usually managed during first load of dll and game init - requires server reboot
-		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_boot);
-		coopEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "coop_enabled", "false") == "true";
-		rpgEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "rpg_enabled", "false") == "true";
+		sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_boot);
+		coopEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "coop_enabled", "false") == "true";
+		rpgEnabled = gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "rpg_enabled", "false") == "true";
 
 		// Gameplay section - settings usually handled on the fly
-		section_contents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
-		rpgSpawnWeapons = gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "rpg_spawnWeapons", "false") == "true";
-		coopLastManStandingLifes = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, section_contents, "coop_lastManStandingLifes", "0"));
+		sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+		rpgSpawnWeapons = gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "rpg_spawnWeapons", "false") == "true";
+		coopLastManStandingLifes = atoi(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "coop_lastManStandingLifes", "0"));
 	}
 	catch (const char* error) {
 		gi.Printf(_COOP_ERROR_fatal, error);

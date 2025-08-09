@@ -168,6 +168,7 @@ public:
     void callvoteUpdateUiPlayer(Player* player, str sValue, str sWidget);
     bool callvoteSkipCinematicPlayer(Player* player);
 
+    MapFlags getMapFlags();
     float getSkillBasedDamage(float currentDamage);
     int getNumberOfPlayers(bool noDead, bool noSpectator);
     Entity* getSpawnSpecific(int spotNumber);

@@ -131,7 +131,7 @@ void coop_armoryEquipPlayerSingleplayer(Player* player)
 	coop_armoryEquipPlayer(player);
 
 	//make sure the coop objectives hud is displayed when we play a custom (coop) map
-	if (coopManager_mapSettings_t.stockMap) {
+	if (CoopManager::Get().getMapFlags().stockMap) {
 		gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc score\"\n");
 	}
 	else {

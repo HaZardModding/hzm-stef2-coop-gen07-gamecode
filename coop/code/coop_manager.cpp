@@ -420,6 +420,11 @@ bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
     }
 }
 
+CoopManager::MapFlags CoopManager::getMapFlags()
+{
+    return mapFlags;
+}
+
 float CoopManager::getSkillBasedDamage(float currentDamage) {
     GameplayManager* gpm = nullptr;
     float damageMultiplier;
@@ -545,7 +550,7 @@ void CoopManager::InitWorld() {
         str sAllowSpMaps = "0";
 
         //this early we can't use API - multiplayer manager has not been started yet
-        if (mapFlags.coopMap && g_gametype->integer == GT_MULTIPLAYER) { 
+        if (getMapFlags().coopMap && g_gametype->integer == GT_MULTIPLAYER) {
             sAllowSpMaps = "1";
             coopStatus = "ACTIVE";
             coopEnabled = true;
@@ -1091,9 +1096,9 @@ bool CoopManager::playerDataSave(Player* player) {
     if (!IsCoopLevel()) {
         return false;
     }
-    if (!mapFlags.coopSpMission &&
-        !mapFlags.coopMap &&
-        !mapFlags.rpgMap) {
+    if (!getMapFlags().coopSpMission &&
+        !getMapFlags().coopMap &&
+        !getMapFlags().rpgMap) {
         return false;
     }
 
@@ -1150,9 +1155,9 @@ bool CoopManager::playerDataRestore(Player* player) {
     if (!IsCoopLevel()) {
         return false;
     }
-    if (!mapFlags.coopSpMission &&
-        !mapFlags.coopMap &&
-        !mapFlags.rpgMap) {
+    if (!getMapFlags().coopSpMission &&
+        !getMapFlags().coopMap &&
+        !getMapFlags().rpgMap) {
         return false;
     }
 

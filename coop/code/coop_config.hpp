@@ -42,6 +42,7 @@ constexpr auto _COOP_SETTINGS_CAT_boot = "boot";
 constexpr auto _COOP_SETTINGS_CAT_level = "level";
 constexpr auto _COOP_SETTINGS_CAT_vote = "vote";
 constexpr auto _COOP_SETTINGS_CAT_gameplay = "gameplay";
+constexpr auto _COOP_SETTINGS_CAT_missionstatus = "missionstatus";
 
 constexpr auto _COOP_SETTINGS_server_configname = "server";
 
