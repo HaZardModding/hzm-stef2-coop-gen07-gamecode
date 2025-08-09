@@ -1716,10 +1716,8 @@ bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
         if (attacked->isSubclassOf(Player) && attacker->isSubclassOf(Player)) {
             Player* attackerPlayer = (Player*)attacker;
             Player* attackedPlayer = (Player*)attacked;
-            Team* teamAttacker;
-            Team* teamAttacked;
-            teamAttacker = multiplayerManager.getPlayersTeam(attackerPlayer);
-            teamAttacked = multiplayerManager.getPlayersTeam(attackedPlayer);
+            Team* teamAttacker = multiplayerManager.getPlayersTeam(attackerPlayer);
+            Team* teamAttacked = multiplayerManager.getPlayersTeam(attackedPlayer);
 
             //different teams
             if (teamAttacker && teamAttacked) {
