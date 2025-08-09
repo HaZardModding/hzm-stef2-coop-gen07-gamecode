@@ -645,6 +645,42 @@ str gamefix_getEntityVarString(Entity* e, str sVarName)
 }
 
 //--------------------------------------------------------------
+// GAMEFIX - Added: Function to return float value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+float gamefix_getGameVarFloat(str sVarName)
+{
+	ScriptVariable* var = gameVars.GetVariable(sVarName.c_str());
+	if (var) {
+		return var->floatValue();
+	}
+	return 0.0f;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return integer value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+int gamefix_getGameVarInt(str sVarName)
+{
+	ScriptVariable* var = gameVars.GetVariable(sVarName.c_str());
+	if (var) {
+		return var->intValue();
+	}
+	return 0;
+}
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return string value from entityVar - chrissstrahl
+//--------------------------------------------------------------
+str gamefix_getGameVarString(str sVarName)
+{
+	ScriptVariable* var = gameVars.GetVariable(sVarName.c_str());
+	if (var) {
+		return var->stringValue();
+	}
+	return "";
+}
+
+//--------------------------------------------------------------
 // GAMEFIX - Added: Function to return interger value from cVar - chrissstrahl
 //--------------------------------------------------------------
 int gamefix_getCvarInt(str cvarName)

@@ -180,6 +180,9 @@ void				gamefix_printAllClients(const str text);
 float				gamefix_getEntityVarFloat(Entity* e, str sVarName);
 int					gamefix_getEntityVarInt(Entity* e, str sVarName);
 str					gamefix_getEntityVarString(Entity* e, str sVarName);
+float				gamefix_getGameVarFloat(str sVarName);
+int					gamefix_getGameVarInt(str sVarName);
+str					gamefix_getGameVarString(str sVarName);
 
 int					gamefix_getCvarInt(str cvarName);
 float				gamefix_getCvarFloat(str cvarName);
