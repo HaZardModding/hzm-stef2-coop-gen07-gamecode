@@ -126,6 +126,10 @@ class Sentient : public Entity
 		//--------------------------------------------------------------
 		void coop_hasItem(Event* ev);
 		bool coop_hasItem(str sItemModel);
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - We want access to this so we changed it for coop - chrissstrahl
+		//--------------------------------------------------------------
+		void					ArmorDamage(::Damage& damage);
 #endif
 
 
@@ -179,7 +183,16 @@ class Sentient : public Entity
 		void					CheckAnimations			( Event *ev );
 
 		void					ArmorEvent				( Event *ev );
+
+
+#ifndef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.000 - We want access to this so we changed it for coop - chrissstrahl
+		//--------------------------------------------------------------
 		void					ArmorDamage				( ::Damage &damage );
+#endif
+
+
 		virtual void			ArmorDamage				( Event *ev );
 		void					ArmorDamage				( float damage, Entity *inflictor, Entity *attacker, const Vector &position, 
 														  const Vector &direction, const Vector &normal, int knockback, int dflags, 

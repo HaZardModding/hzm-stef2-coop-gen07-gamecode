@@ -110,7 +110,7 @@ float ModeCoop::playerDamaged(Player* damagedPlayer, Player* attackingPlayer, fl
 {
 	// Always take telefrag damage
 
-	if (meansOfDeath == MOD_TELEFRAG)
+	if (meansOfDeath == MOD_TELEFRAG || meansOfDeath == MOD_FALLING)
 		return damage;
 
 	// Player can always hurt himself
@@ -118,9 +118,17 @@ float ModeCoop::playerDamaged(Player* damagedPlayer, Player* attackingPlayer, fl
 	if (damagedPlayer == attackingPlayer)
 		return damage;
 
+	if (attackingPlayer) {
+		multiplayerManager.gameFixAPI_getMultiplayerAwardSystem()->playerFired(attackingPlayer);
+	}
+
+	if (!attackingPlayer) {
+		damage = CoopManager::Get().getSkillBasedDamage(damage);
+	}
+
 	//return friendly fire multiplicator settings
 	if (coopSettings.getSetting_friendlyFireMultiplicator() != 0.0f) {
-		return damage * coopSettings.getSetting_friendlyFireMultiplicator();
+		return damage *= coopSettings.getSetting_friendlyFireMultiplicator();
 	}
 
 	// If on same team and not allowing team damage

@@ -5,6 +5,7 @@
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/mp_modeBase.hpp"
+#include <qcommon/gameplaymanager.h>
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
 
@@ -167,6 +168,7 @@ public:
     void callvoteUpdateUiPlayer(Player* player, str sValue, str sWidget);
     bool callvoteSkipCinematicPlayer(Player* player);
 
+    float getSkillBasedDamage(float currentDamage);
     int getNumberOfPlayers(bool noDead, bool noSpectator);
     Entity* getSpawnSpecific(int spotNumber);
 
@@ -203,6 +205,7 @@ public:
     void playerChangedModel(Player* player);
     void playerChangedClass(Player* player);
     void playerKilledActor(Player* player, Actor* actor);
+    bool playerDamagedCoop(Player* damagedPlayer, Damage& damage);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 

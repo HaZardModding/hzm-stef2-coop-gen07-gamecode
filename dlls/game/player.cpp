@@ -11234,6 +11234,17 @@ void Player::ArmorDamage( Event *ev )
 
 	if ( multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator( this ) )
 		return;
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().playerDamagedCoop(this,damage)) {
+		return;
+	}
+#endif
+
 	
 	// Quick dirty hack to do no damage when you have the shield up.
 	if ( shield_active )
@@ -16117,5 +16128,15 @@ void Player::coop_updateStats()
 	client->ps.stats[STAT_LETTERBOX] = (int)((float)(frac * level.m_letterbox_fraction) * MAX_LETTERBOX_SIZE);
 }
 
+Powerup* Player::coop_getPowerup()
+{
+	return _powerup;
+}
+Rune* Player::coop_getRune() {
+	return _rune;
+}
+HoldableItem* Player::coop_returnHoldableItem() {
+	return _holdableItem;
+}
 
 #endif

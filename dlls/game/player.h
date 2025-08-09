@@ -79,7 +79,7 @@ extern Event EV_Player_gamefix_messageOfTheDay;
 
 
 //--------------------------------------------------------------
-// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
+// COOP Generation 7.000 - Added: Extern references - chrissstrahl
 //--------------------------------------------------------------
 extern Event EV_Player_coop_setKillThread;
 extern Event EV_Player_coop_getLanguage;
@@ -317,6 +317,9 @@ class Player : public Sentient
 		void coop_getCoopVersion(Event* ev);
 		bool coop_hasCoopInstalled();
 		bool coop_isAdmin();
+		Powerup* coop_getPowerup();
+		Rune* coop_getRune();
+		HoldableItem* coop_returnHoldableItem();
 
 		unsigned int coop_getObjectiveState();
 		void coop_setObjectiveState(unsigned int states, bool set);

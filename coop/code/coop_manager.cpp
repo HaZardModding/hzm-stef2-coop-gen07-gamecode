@@ -420,6 +420,32 @@ bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
     }
 }
 
+float CoopManager::getSkillBasedDamage(float currentDamage) {
+    GameplayManager* gpm = nullptr;
+    float damageMultiplier;
+    int skillLevel;
+
+    skillLevel = skill->integer;
+
+    gpm = GameplayManager::getTheGameplayManager();
+
+    if (gpm->hasObject("SkillLevel-PlayerDamage"))
+    {
+        if (skillLevel == 0)
+            damageMultiplier = gpm->getFloatValue("SkillLevel-PlayerDamage", "Easy");
+        else if (skillLevel == 1)
+            damageMultiplier = gpm->getFloatValue("SkillLevel-PlayerDamage", "Normal");
+        else if (skillLevel == 2)
+            damageMultiplier = gpm->getFloatValue("SkillLevel-PlayerDamage", "Hard");
+        else
+            damageMultiplier = gpm->getFloatValue("SkillLevel-PlayerDamage", "VeryHard");
+
+
+        currentDamage *= damageMultiplier;
+    }
+    return currentDamage;
+}
+
 //return player quanity based on certain parameters
 int CoopManager::getNumberOfPlayers(bool noDead, bool noSpectator) {
     int iNumberOfPlayer = 0;
@@ -1569,6 +1595,81 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
             multiplayerManager.gameFixAPI_getMultiplayerAwardSystem()->coop_awardEnemyKilled(player,(Entity*)actor);
         }
     }
+}
+
+bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
+    if (!IsCoopEnabled() || !IsCoopLevel()) {
+        return false;
+    }
+
+    float oldHealth = damagedPlayer->health;
+    Entity* actualAttacker = nullptr;
+    Player* attackingPlayer = nullptr;
+    float finalDamage = damage.damage;
+    int finalKnockBack = damage.knockback;
+
+    /*if (damagedPlayer->coop_getPowerup())
+        damage.damage = damagedPlayer->coop_getPowerup()->getDamageTaken(damage.attacker, damage.damage, damage.meansofdeath);
+
+    if (damagedPlayer->coop_getRune())
+        damage.damage = damagedPlayer->coop_getRune()->getDamageTaken(damage.attacker, damage.damage, damage.meansofdeath);
+    */
+
+    if (damage.attacker && damage.attacker != world) {
+        actualAttacker = damage.attacker;
+        if (actualAttacker->isSubclassOf(Player)) {
+            attackingPlayer = (Player*)actualAttacker;
+
+            // Change damage based on the mode
+            finalDamage = multiplayerManager.gameFixAPI_getMultiplayerGame()->playerDamaged(damagedPlayer, attackingPlayer, damage.damage, damage.meansofdeath);
+
+            //damage.damage = multiplayerManager.playerDamaged(this, (Player*)damage.attacker, damage.damage, damage.meansofdeath);
+            //finalKnockBack = (int)multiplayerManager.getModifiedKnockback(damagedPlayer, (Player*)damage.attacker, damage.knockback);
+
+			finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_PLAYER; //default knockback for player vs player
+        }
+        else {
+            //adjust damage for NPC and SCRIPT attacks
+            finalDamage = CoopManager::Get().getSkillBasedDamage(damage.damage);
+            if (damage.inflictor && damage.inflictor->isSubclassOf(Projectile)) {
+                finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_PROJECTILE; //reduce knockback for NPC and SCRIPT attacks
+            }
+            else {
+                finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_NPC_OBJECTS;
+            }
+        }
+    }
+
+    damage.damage = finalDamage;
+    damage.knockback = finalKnockBack;
+
+    // Inform the award system that someone was damaged
+    multiplayerManager.gameFixAPI_getMultiplayerAwardSystem()->playerDamaged(damagedPlayer, attackingPlayer, finalDamage, damage.meansofdeath);
+
+    Sentient* dammagedSent = (Sentient*)damagedPlayer;
+    dammagedSent->ArmorDamage(damage);
+
+    if (multiplayerManager.inMultiplayer()) {
+        float damageTaken;
+        damageTaken = oldHealth - damagedPlayer->getHealth();
+        if (damageTaken > 0.0f) {
+            // Increase victim's action level
+            if (damage.meansofdeath > MOD_LAST_SELF_INFLICTED) {
+                damagedPlayer->IncreaseActionLevel(damageTaken);
+            }
+
+            if (attackingPlayer && damage.attacker->isSubclassOf(Player)) {
+                // Tell the multiplayer system that the player took damage
+                multiplayerManager.playerTookDamage(damagedPlayer, attackingPlayer, damageTaken, damage.meansofdeath);
+
+                // Increase attacker's action level
+                if (attackingPlayer && attackingPlayer != damagedPlayer) {
+                    attackingPlayer->IncreaseActionLevel(damageTaken);
+                }
+            }
+        }
+    }
+    return true;
 }
 
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
