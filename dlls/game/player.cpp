@@ -11797,20 +11797,7 @@ void Player::SetupDialog( Entity *entity, const str &soundName )
 		return;
 	
 	//If we have an entity, then we are dealing with Dialog events.
-
-	//--------------------------------------------------------------
-	// GAMEFIX - Fixed: Crash in Multiplayer - chrissstrahl
-	// If _dialogEntnum is set the game crashes
-	// in while in VS-Debug it ends up in a assembly
-	//--------------------------------------------------------------
-	if ( entity && g_gametype->integer == GT_SINGLE_PLAYER )
-	{
-		handleDialogSetup(entity, soundName);
-	}
-	else
-	{
-		handleTextDialogSetup( soundName );
-	}
+	handleDialogSetup(entity, soundName);
 }
 
 

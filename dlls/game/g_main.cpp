@@ -1760,8 +1760,12 @@ extern "C" void G_ExtraEntitiesToSend( gentity_t *clientEntity, int *numExtraEnt
 	try
 	{
 		*numExtraEntities = 0;
-		
-		if ( !multiplayerManager.inMultiplayer() && clientEntity->entity && clientEntity->entity->isSubclassOf( Player ) )
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Actor playing a dialog will be send to player for headhud in Multiplayer - chrissstrahl
+		//--------------------------------------------------------------
+		if (/*!multiplayerManager.inMultiplayer() &&*/ clientEntity->entity && clientEntity->entity->isSubclassOf(Player))
 		{
 			Player *player;
 			
