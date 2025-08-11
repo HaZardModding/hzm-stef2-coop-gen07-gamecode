@@ -230,6 +230,7 @@ int					gamefix_countCharOccurrences(const char* str, const char& ch);
 
 char*				gamefix_duplicateString(const char* source);
 void				gamefix_replaceSubstring(char* str, const char* find, const char* replace);
+void				gamefix_replaceSubstring(str& source, const str& find, const str& replace);
 str					gamefix_getStringUntilChar(const str& source, const char& delimiter, unsigned int startPos);
 char*				gamefix_getStringUntilChar(const char* source, const char& delimiter, unsigned int startPos);
 str					gamefix_getStringUntil(const str& sString, const unsigned int iStart, const unsigned int iEnd);
@@ -244,6 +245,7 @@ str					gamefix_cleanMapKeepParameters(const str& mapname);
 str					gamefix_filterChars(const str filthy, str illegal);
 str					gamefix_stripDoubleChar(const str filthy, str illegal);
 str					gamefix_replaceForLabelText(str sPure);
+str					gamefix_replaceUmlautAndSpecials(str& text);
 
 str					gamefix_debugTextErrorMarker(unsigned int pos);
 
