@@ -150,6 +150,7 @@ GOBJ =\
 	$(B)/coop/code/coop_objectives.o \
 	$(B)/coop/code/coop_radar.o \
 	$(B)/coop/code/rpg_gametype.o \
+	$(B)/coop/code/coop_playdialog.o \
 	\
 	$(B)/game/gamefix.o \
 	$(B)/game/api_stef2.o \
@@ -333,6 +334,8 @@ $(B)/coop/code/coop_objectives.o : $(GDIRCOOP)/coop_objectives.cpp | $(B)/coop/c
 $(B)/coop/code/coop_radar.o : $(GDIRCOOP)/coop_radar.cpp | $(B)/coop/code/
 	$(DO_GAME_SHLIB_CC)
 $(B)/coop/code/rpg_gametype.o : $(GDIRCOOP)/rpg_gametype.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_playdialog.o : $(GDIRCOOP)/coop_playdialog.cpp | $(B)/coop/code/
 	$(DO_GAME_SHLIB_CC)
 $(B)/coop/code/:
 	mkdir -p $@

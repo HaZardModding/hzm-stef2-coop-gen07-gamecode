@@ -8,6 +8,7 @@
 #include <qcommon/gameplaymanager.h>
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
+#include "coop_playdialog.hpp"
 
 extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
@@ -160,6 +161,7 @@ public:
     bool entityUservarGetKillMessage(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     bool entityUservarGetName(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     int entityUservarContains(Entity* ent, const str &find);
+    void ActorThink(Actor* actor);
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);
 

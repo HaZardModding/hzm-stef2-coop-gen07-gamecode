@@ -397,6 +397,7 @@
     <ClCompile Include="..\..\coop\code\coop_manager.cpp" />
     <ClCompile Include="..\..\coop\code\coop_gametype.cpp" />
     <ClCompile Include="..\..\coop\code\coop_objectives.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_playdialog.cpp" />
     <ClCompile Include="..\..\coop\code\coop_radar.cpp" />
     <ClCompile Include="..\..\coop\code\rpg_gametype.cpp" />
     <ClCompile Include="api_stef2.cpp" />
@@ -1405,6 +1406,7 @@
     <ClInclude Include="..\..\coop\code\coop_manager.hpp" />
     <ClInclude Include="..\..\coop\code\coop_gametype.hpp" />
     <ClInclude Include="..\..\coop\code\coop_objectives.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_playdialog.hpp" />
     <ClInclude Include="..\..\coop\code\coop_radar.hpp" />
     <ClInclude Include="..\..\coop\code\rpg_gametype.hpp" />
     <ClInclude Include="..\..\Shared\qcommon\alias.h" />

@@ -11307,6 +11307,8 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		// COOP Generation 7.000 - Added: Removal of configstring, to prevent MAX_CONFIGSTRINGS error - chrissstrahl
 		//--------------------------------------------------------------
 		if (gameFixAPI_inMultiplayer() && CoopManager::Get().IsCoopEnabled()) {
+			coopPlaydialog.handleDialog(this,dialog_name,headDisplay, dialog_length);
+
 			Event* deleteConfigString = new Event(EV_World_coop_configstrRemove);
 			deleteConfigString->AddString(real_dialog);
 			world->PostEvent(deleteConfigString, dialog_length + 0.1);
@@ -13278,6 +13280,14 @@ void Actor::Think( void	)
 	// GAMEFIX - Added: Makesolid ASAP Handle for Actors - chrissstrahl
 	//--------------------------------------------------------------
 	gamefix_actorThink(this);
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Give Coop Access to Actor Think - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().ActorThink(this);
+#endif
 
 
 	/*

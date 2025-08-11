@@ -296,6 +296,13 @@ int CoopManager::entityUservarContains(Entity* ent, const str &find)
     return 0;
 }
 
+void CoopManager::ActorThink(Actor *actor) {
+    if (!CoopManager::Get().IsCoopEnabled()) {
+        return;
+    }
+    coopPlaydialog.ActorThink(actor);
+}
+
 void CoopManager::ClientThink(Player *player) {
     playerSetup(player);
     playerAdminThink(player);
@@ -573,6 +580,8 @@ void CoopManager::InitWorld() {
             coopSettings.playerScriptThreadsAllow();
             coopSettings.loadScoreList();
             coopSettings.loadDeathList();
+            coopPlaydialog.readDialogFile("loc/Eng/dialog/", gamefix_cleanMapName(level.mapname), CoopPlaydialog_dialogListContainer_eng);
+            coopPlaydialog.readDialogFile("loc/Deu/dialog/", gamefix_cleanMapName(level.mapname), CoopPlaydialog_dialogListContainer_deu);
 
             gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
         }
@@ -756,6 +765,8 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
         CoopSettings_deathList.FreeObjectList();
         CoopSettings_scoreKillList.FreeObjectList();
         CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
+		CoopPlaydialog_dialogListContainer_eng.FreeObjectList();
+		CoopPlaydialog_dialogListContainer_deu.FreeObjectList();
 
         //save settings to ini
         coopSettings.saveSettings();

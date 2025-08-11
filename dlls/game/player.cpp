@@ -11797,7 +11797,14 @@ void Player::SetupDialog( Entity *entity, const str &soundName )
 		return;
 	
 	//If we have an entity, then we are dealing with Dialog events.
-	handleDialogSetup(entity, soundName);
+	if (entity)
+	{
+		handleDialogSetup(entity, soundName);
+	}
+	else
+	{
+		handleTextDialogSetup(soundName);
+	}
 }
 
 
@@ -11885,6 +11892,8 @@ void Player::ClearDialog( Event *ev )
 
 void Player::ClearDialog( void )
 {
+	coopPlaydialog.stopDialog();
+
 	// Clear the dialog info
 	_dialogEntnum = ENTITYNUM_NONE;
 	_dialogSoundIndex = -1;
