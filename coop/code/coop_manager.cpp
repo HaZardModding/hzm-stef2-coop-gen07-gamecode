@@ -1420,6 +1420,12 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_objectives_reset(player);
     setPlayerData_cinematicEscapePressLastTime(player,0.0f);
 
+    setPlayerData_coopClassLastTimeChanged(player, -999.8f);
+    setPlayerData_coopClassLastTimeApplied(player, -998.7f);
+    setPlayerData_coopClassLastTimeUsedMsg(player,0.0f);
+    setPlayerData_revivedStepLasttime(player,-997.6);
+    setPlayerData_revivedStepCounter(player,0);
+
     //see also will be cleaned up in: playerLeft
 }
 
@@ -1639,16 +1645,16 @@ bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
             //damage.damage = multiplayerManager.playerDamaged(this, (Player*)damage.attacker, damage.damage, damage.meansofdeath);
             //finalKnockBack = (int)multiplayerManager.getModifiedKnockback(damagedPlayer, (Player*)damage.attacker, damage.knockback);
 
-			finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_PLAYER; //default knockback for player vs player
+			finalKnockBack *= _COOP_SETTINGS_KNOCKBACK_PLAYER; //default knockback for player vs player
         }
         else {
             //adjust damage for NPC and SCRIPT attacks
             finalDamage = CoopManager::Get().getSkillBasedDamage(damage.damage);
             if (damage.inflictor && damage.inflictor->isSubclassOf(Projectile)) {
-                finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_PROJECTILE; //reduce knockback for NPC and SCRIPT attacks
+                finalKnockBack *= _COOP_SETTINGS_KNOCKBACK_PROJECTILE; //reduce knockback for NPC and SCRIPT attacks
             }
             else {
-                finalKnockBack *= _COOP_SETTINGS_COOP_KNOCKBACK_NPC_OBJECTS;
+                finalKnockBack *= _COOP_SETTINGS_KNOCKBACK_NPC_OBJECTS;
             }
         }
     }
@@ -2414,6 +2420,173 @@ void CoopManager::setPlayerData_coopClass(Player* player, str className) {
     }
     coopManager_client_persistant_t[player->entnum].coopClass = className;
 }
+
+int CoopManager::getPlayerData_coopClassRegenerationCycles(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClassRegenerationCycles() nullptr player");
+        return 9999;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassRegenerationCycles;
+}
+void CoopManager::setPlayerData_coopClassRegenerationCycles(Player* player, int cycles) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassRegenerationCycles() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassRegenerationCycles = cycles;
+}
+void CoopManager::setPlayerData_coopClassRegenerationCycles_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassRegenerationCycles_update() nullptr player");
+        return;
+    }
+	int cycles = coopManager_client_persistant_t[player->entnum].coopClassRegenerationCycles;
+    
+    if (cycles > 0) {
+        cycles--;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassRegenerationCycles = cycles;
+}
+
+float CoopManager::getPlayerData_coopClassLastTimeChanged(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClassLastTimeChanged() nullptr player");
+        return 9999.9f;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassLastTimeChanged;
+}
+void CoopManager::setPlayerData_coopClassLastTimeChanged(Player* player, float lastTime) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLastTimeChanged() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLastTimeChanged = lastTime;
+}
+void CoopManager::setPlayerData_coopClassLastTimeChanged_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLastTimeChanged_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLastTimeChanged = level.time;
+}
+float CoopManager::getPlayerData_coopClassLastTimeApplied(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClassLastTimeApplied() nullptr player");
+        return 9999.9f;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassLastTimeApplied;
+}
+void CoopManager::setPlayerData_coopClassLastTimeApplied(Player* player, float lastTime) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLastTimeApplied() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLastTimeApplied = lastTime;
+}
+float CoopManager::getPlayerData_coopClasslastTimeUpdatedStat(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClasslastTimeUpdatedStat() nullptr player");
+        return 9999.9f;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClasslastTimeUpdatedStat;
+}
+void CoopManager::setPlayerData_coopClasslastTimeUpdatedStat(Player* player, float lastTime) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClasslastTimeUpdatedStat() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClasslastTimeUpdatedStat = lastTime;
+}
+
+
+float CoopManager::getPlayerData_revivedStepLasttime(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_revivedStepLasttime() nullptr player");
+        return 9999.9f;
+    }
+    return coopManager_client_persistant_t[player->entnum].revivedStepLasttime;
+}
+void CoopManager::setPlayerData_revivedStepLasttime(Player* player, float lastTime) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_revivedStepLasttime() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].revivedStepLasttime = lastTime;
+}
+void CoopManager::setPlayerData_revivedStepLasttime_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_revivedStepLasttime_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].revivedStepLasttime = level.time;
+}
+int CoopManager::getPlayerData_revivedStepCounter(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_revivedStepCounter() nullptr player");
+        return 0;
+    }
+    return coopManager_client_persistant_t[player->entnum].revivedStepCounter;
+}
+void CoopManager::setPlayerData_revivedStepCounter(Player* player, int count) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_revivedStepCounter() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].revivedStepCounter = count;
+}
+void CoopManager::setPlayerData_revivedStepCounter_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_revivedStepCounter_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].revivedStepCounter++;
+}
+float CoopManager::getPlayerData_coopClassLastTimeUsedMsg(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopClassLastTimeUsedMsg() nullptr player");
+        return 0.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassLastTimeUsedMsg;
+}
+void CoopManager::setPlayerData_coopClassLastTimeUsedMsg(Player* player, float last) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLastTimeUsedMsg() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLastTimeUsedMsg = last;
+}
+void CoopManager::setPlayerData_coopClassLastTimeUsedMsg_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClassLastTimeUsedMsg_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassLastTimeUsedMsg = level.time;
+}
+
+
+float CoopManager::getPlayerData_usingStepLasttime(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_usingStepLasttime() nullptr player");
+        return 0.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].usingStepLasttime;
+}
+void CoopManager::setPlayerData_usingStepLasttime(Player* player, float last) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_usingStepLasttime() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].revivedStepCounter = last;
+}
+void CoopManager::setPlayerData_usingStepLasttime_update(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_usingStepLasttime_update() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].usingStepLasttime = level.time;
+}
+
+
 
 int CoopManager::getPlayerData_coopVersion(Player* player) {
     if (!player) {

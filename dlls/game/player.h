@@ -81,6 +81,7 @@ extern Event EV_Player_gamefix_messageOfTheDay;
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: Extern references - chrissstrahl
 //--------------------------------------------------------------
+extern Event EV_Player_coop_classAbilityHudRecover;
 extern Event EV_Player_coop_setKillThread;
 extern Event EV_Player_coop_getLanguage;
 extern Event EV_Player_coop_getName;
@@ -262,6 +263,7 @@ class Player : public Sentient
 	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 	//--------------------------------------------------------------
 	public:
+		void coop_classAbilityHudRecover(Event* ev);
 		void coop_playerKillThread(Event* ev);
 		void coop_getLanguage(Event* ev);
 		void coop_getName(Event* ev);

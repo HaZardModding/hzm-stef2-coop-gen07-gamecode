@@ -46,9 +46,20 @@ struct coopManager_client_persistant_s
     bool		coopClientIdDone = false;
     bool        objectiveSetupDone = false;
 
-    str         coopClientId = "";
+
     str			coopClass = "Technician";
+    float       coopClassLastTimeApplied = -99.1f;
+    float       coopClassLastTimeChanged = -98.2f;
+    float       coopClassLastTimeUsedMsg = -97.3f;
+	float       coopClasslastTimeUpdatedStat = -96.4f;
+    int         coopClassRegenerationCycles = 9999;
     bool		coopClassLocked = false;
+
+	float       revivedStepLasttime = -799.0f;
+	int         revivedStepCounter = 0;
+    float       usingStepLasttime = 0.0f;
+
+    str         coopClientId = "";
     int         coopVersion = 0;
     bool        coopAdmin = false;
     int         coopAdminAuthAttemps = 0;
@@ -271,10 +282,36 @@ public:
     void setPlayerData_coopSetupDone(Player* player, bool state);
     bool getPlayerData_coopSetupStarted(Player* player);
     void setPlayerData_coopSetupStarted(Player* player, bool state);
+
     str getPlayerData_coopClass(Player* player);
     void setPlayerData_coopClass(Player* player, str className);
+    int getPlayerData_coopClassRegenerationCycles(Player* player);
+    void setPlayerData_coopClassRegenerationCycles(Player* player, int cycles);
+    void setPlayerData_coopClassRegenerationCycles_update(Player* player);
     bool getPlayerData_coopClassLocked(Player* player);
     void setPlayerData_coopClassLocked(Player* player, bool status);
+    float getPlayerData_coopClassLastTimeChanged(Player* player);
+    void setPlayerData_coopClassLastTimeChanged(Player* player, float lastTime);
+    void setPlayerData_coopClassLastTimeChanged_update(Player* player);
+    float getPlayerData_coopClassLastTimeApplied(Player* player);
+    void setPlayerData_coopClassLastTimeApplied(Player* player, float lastTime);
+    float getPlayerData_coopClasslastTimeUpdatedStat(Player* player);
+    void setPlayerData_coopClasslastTimeUpdatedStat(Player* player, float lastTime);
+    float getPlayerData_coopClassLastTimeUsedMsg(Player* player);
+    void setPlayerData_coopClassLastTimeUsedMsg(Player* player, float lastTime);
+    void setPlayerData_coopClassLastTimeUsedMsg_update(Player* player);
+
+    float getPlayerData_revivedStepLasttime(Player* player);
+    void setPlayerData_revivedStepLasttime(Player* player, float lastTime);
+    void setPlayerData_revivedStepLasttime_update(Player* player);
+    int getPlayerData_revivedStepCounter(Player* player);
+    void setPlayerData_revivedStepCounter(Player* player, int count);
+    void setPlayerData_revivedStepCounter_update(Player* player);
+
+    float getPlayerData_usingStepLasttime(Player* player);
+    void setPlayerData_usingStepLasttime(Player* player, float last);
+    void setPlayerData_usingStepLasttime_update(Player* player);
+
     str getPlayerData_coopClientId(Player* player);
     void setPlayerData_coopClientId(Player* player,str sClientId);
     int getPlayerData_coopVersion(Player* player);

@@ -1360,6 +1360,7 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 //--------------------------------------------------------------
+	{ &EV_Player_coop_classAbilityHudRecover, &Player::coop_classAbilityHudRecover },
 	{ &EV_Player_coop_setKillThread, &Player::coop_playerKillThread },
 	{ &EV_Player_coop_getLanguage, &Player::coop_getLanguage },
 	{ &EV_Player_coop_getName, &Player::coop_getName },
@@ -14759,6 +14760,30 @@ void Player::gamefix_messageOfTheDayEvent(Event* ev)
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 //--------------------------------------------------------------
+Event EV_Player_coop_classAbilityHudRecover
+(
+	"coop_classAbilityHudRecover",
+	EV_DEFAULT,
+	"s",
+	"string-widgetname",
+	"Recovers the class ability widget displayed at coop classhud"
+);
+void Player::coop_classAbilityHudRecover(Event* ev)
+{
+	//make sure we have at least widgetname and a commandparameter
+	if (ev->NumArgs() < 1) {
+		return;
+	}
+
+	str sWidgetName = ev->GetString(1);
+	coop_widgetCommand(sWidgetName, "enable");
+
+	//if fully regenerated execute CFG
+	if (sWidgetName == "coop_class100") {
+		gamefix_playerDelayedServerCommand(entnum, "exec co-op/cfg/coop_classReady.cfg");
+	}
+}
+
 Event EV_Player_coop_setKillThread
 (
 	"coop_playerKillThread",

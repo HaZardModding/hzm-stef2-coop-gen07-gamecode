@@ -393,6 +393,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\coop\code\coop_armory.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_class.cpp" />
     <ClCompile Include="..\..\coop\code\coop_config.cpp" />
     <ClCompile Include="..\..\coop\code\coop_manager.cpp" />
     <ClCompile Include="..\..\coop\code\coop_gametype.cpp" />
@@ -1401,6 +1402,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\coop\code\coop_armory.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_class.hpp" />
     <ClInclude Include="..\..\coop\code\coop_config.hpp" />
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp" />
     <ClInclude Include="..\..\coop\code\coop_manager.hpp" />

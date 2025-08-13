@@ -558,6 +558,9 @@
     <ClCompile Include="..\..\coop\code\coop_playdialog.cpp">
       <Filter>Coop Files\Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\coop\code\coop_class.cpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1164,6 +1167,9 @@
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\coop\code\coop_playdialog.hpp">
+      <Filter>Coop Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\coop\code\coop_class.hpp">
       <Filter>Coop Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
