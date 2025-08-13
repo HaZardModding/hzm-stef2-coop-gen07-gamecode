@@ -10,6 +10,13 @@
 #include "coop_generalstrings.hpp"
 
 
+struct CoopPlaydialog_dialogDataPlaying {
+	//allow dialog text to be splitup into 64 parts, totally unrealistic but safe
+	//long dialog with countdowns ?
+	float textDuration[64] = {0};
+	str dialogText[64] = {""};
+};
+
 struct CoopPlaydialog_dialogData {
 	int dialogTiming = 60;
 	str dialogPath = "";
@@ -30,8 +37,13 @@ public:
 	float currentDialogText_nextPrint = 0;
 	int currentDialogTextEng_containerPos = 1;
 	int currentDialogTextDeu_containerPos = 1;
-	Container<str> currentDialogTextEng;
-	Container<str> currentDialogTextDeu;
+	Container<CoopPlaydialog_dialogData> currentDialogTextEng;
+	Container<CoopPlaydialog_dialogData> currentDialogTextDeu;
+
+	Container <str> currentDialogTextSnippetsEng;
+	Container <float> currentDialogTimeSnippetsEng;
+	Container <str> currentDialogTextSnippetsDeu;
+	Container <float> currentDialogTimeSnippetsDeu;
 };
 extern CoopPlaydialog coopPlaydialog;
 

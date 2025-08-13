@@ -11,6 +11,7 @@
 #include "coop_config.hpp"
 #include "coop_gametype.hpp"
 #include "coop_manager.hpp"
+#include "coop_class.hpp"
 
 
 CLASS_DECLARATION(ModeTeamDeathmatch, ModeCoop, NULL)
@@ -196,8 +197,11 @@ void ModeCoop::playerKilled(Player* killedPlayer, Player* attackingPlayer, Entit
 		CoopManager::Get().setPlayerData_lastValidLocation(killedPlayer, killedPlayer->origin);
 	}
 
+
+	coopClass.playerKilled(killedPlayer);
 	handleKill(killedPlayer, attackingPlayer, inflictor, meansOfDeath, goodKill);
 	//MultiplayerModeBase::playerKilled( killedPlayer, attackingPlayer, inflictor, meansOfDeath );
+
 
 	if (!attackingPlayer)
 		attackingPlayer = killedPlayer;

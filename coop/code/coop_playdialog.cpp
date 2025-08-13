@@ -85,9 +85,13 @@ void CoopPlaydialog::handleDialog(Actor* actor, const char* dialog_name, qboolea
 			dialogTextDeu = CoopPlaydialog_dialogListContainer_deu.ObjectAt(j).dialogText;
 		}
 	}
+
+	str _DEBUG_path = "";
 	str dialogTextEng;
 	for (int j = 1; j <= CoopPlaydialog_dialogListContainer_eng.NumObjects(); j++) {
 		if (Q_stricmp(CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogPath.c_str(),dialog_name) == 0) {
+			_DEBUG_path = CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogPath;
+
 			dialogTextEng = CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogText;
 		}
 	}
@@ -103,15 +107,31 @@ void CoopPlaydialog::handleDialog(Actor* actor, const char* dialog_name, qboolea
 		return;
 	}
 
+	DEBUG_LOG("# handleDialog ------\n%s\n%s\n\n", _DEBUG_path.c_str(), dialogTextEng.c_str());
+
+	//reset dialog time lock
+	coopPlaydialog.currentDialogText_nextPrint = 0.0f;
+
 	//update current dialog text - we assume that there is never two dialogs with text at the same time
 	currentDialogTextEng.FreeObjectList();
 	currentDialogTextDeu.FreeObjectList();
 
-	//we should brake it up into smaller parts - starting at around 120 chars, we can look for a dot, exclamationmark or question mark to split up the text
-	//we should brake it up into smaller parts - starting at around 120 chars, we can look for a dot, exclamationmark or question mark to split up the text
-	//we should brake it up into smaller parts - starting at around 120 chars, we can look for a dot, exclamationmark or question mark to split up the text
-	currentDialogTextEng.AddObject(dialogTextEng);
-	currentDialogTextDeu.AddObject(dialogTextDeu);
+	//cut dialog into snippets and give each snippet a duration based on char length or snippet count
+	currentDialogTextSnippetsEng.FreeObjectList();
+	currentDialogTimeSnippetsEng.FreeObjectList();
+
+	gamefix_listSeperatedItems(currentDialogTextSnippetsEng, dialogTextEng, ".");
+	for(int i = 1; i <= currentDialogTextSnippetsEng.NumObjects(); i++) {
+		currentDialogTimeSnippetsEng.AddObject(dialogLength); //make sure the object exists at all
+
+		str currentSnippet = gamefix_trimWhitespace(currentDialogTextSnippetsEng.ObjectAt(i), false);
+		if (currentSnippet.length() > 0) {
+			//add the dot back in, it was removed during the split
+			currentSnippet += ".";
+			currentDialogTextSnippetsEng.ObjectAt(i) = currentSnippet;
+			currentDialogTimeSnippetsEng.ObjectAt(i) = dialogLength / currentDialogTextSnippetsEng.NumObjects();
+		}
+	}
 
 	currentDialogTextEng_containerPos = 1;
 	currentDialogTextDeu_containerPos = 1;
@@ -121,22 +141,50 @@ void CoopPlaydialog::ActorThink(Actor *actor)
 {
 	//this can be used to update the dialog text - after a certain time, grabbing the next part of the dialog text and showing it to the player.
 	if (actor->GetActorFlag(ACTOR_FLAG_DIALOG_PLAYING)) {
-		if (coopPlaydialog.currentDialogText_nextPrint > level.time) {
+		if (currentDialogText_nextPrint > level.time) {
 			return;
 		}
-		//coopPlaydialog.currentDialogText_nextPrint += (level.time + 0.1f);
+		currentDialogText_nextPrint = 9999.0f;
 
 		str dialogTextDeu = "";
-		if (coopPlaydialog.currentDialogTextDeu_containerPos <= coopPlaydialog.currentDialogTextDeu.NumObjects()) {
-			dialogTextDeu += coopPlaydialog.currentDialogTextDeu.ObjectAt(coopPlaydialog.currentDialogTextDeu_containerPos);
+		/*if (currentDialogTextDeu_containerPos <= currentDialogTextSnippetsDeu.NumObjects()) {
+			dialogTextDeu += currentDialogTextSnippetsDeu.ObjectAt(currentDialogTextDeu_containerPos);
 		}
-		coopPlaydialog.currentDialogTextDeu_containerPos++;
+		currentDialogTextDeu_containerPos++;*/
 
 		str dialogTextEng = "";
-		if (coopPlaydialog.currentDialogTextEng_containerPos <= coopPlaydialog.currentDialogTextEng.NumObjects()) {
-			dialogTextEng += coopPlaydialog.currentDialogTextEng.ObjectAt(coopPlaydialog.currentDialogTextEng_containerPos);
+		if (currentDialogTextEng_containerPos <= currentDialogTextSnippetsEng.NumObjects()) {
+			currentDialogText_nextPrint = level.time + currentDialogTimeSnippetsEng.ObjectAt(currentDialogTextEng_containerPos);
+
+			//grab last line of dialog text and add it infront of the current text
+			if (currentDialogTextEng_containerPos > 1) {
+				unsigned int oldStartPos = 0;
+				if ((currentDialogTextEng_containerPos - 1) > 0 && (currentDialogTextEng_containerPos - 1) <= currentDialogTextSnippetsEng.NumObjects()) {
+					str tempOldText = currentDialogTextSnippetsEng.ObjectAt(currentDialogTextEng_containerPos - 1);
+					if (tempOldText.length() > _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE) {
+						oldStartPos = (tempOldText.length() - 1) - _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE;
+						dialogTextEng += gamefix_getStringLength(tempOldText, oldStartPos, _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE);
+					}
+					else {
+						dialogTextEng += currentDialogTextSnippetsEng.ObjectAt(currentDialogTextEng_containerPos - 1);
+					}
+
+					if (dialogTextEng.length()) {
+						dialogTextEng += "~"; //add a line break
+					}
+				}
+				else {
+					DEBUG_LOG("# ActorThink - CONTAINETR OUT OF RANGE\n");
+				}
+			}
+		
+			dialogTextEng += currentDialogTextSnippetsEng.ObjectAt(currentDialogTextEng_containerPos);
 		}
-		coopPlaydialog.currentDialogTextEng_containerPos++;
+		else {
+			DEBUG_LOG("# [%d] dialog ActorThink out of bounds for %s\n", currentDialogTextEng_containerPos, dialogTextEng.c_str());
+			return;
+		}
+		currentDialogTextEng_containerPos++;
 
 		if (!dialogTextEng.length() && !dialogTextDeu.length()) {
 			return;
@@ -152,7 +200,7 @@ void CoopPlaydialog::ActorThink(Actor *actor)
 		coopPlaydialog.replaceForDialogText(dialogTextEng);
 		coopPlaydialog.replaceForDialogText(dialogTextDeu);
 
-		//DEBUG_LOG("# print %s\n", dialogTextEng.c_str());
+		DEBUG_LOG("# [%d] dialog %s\n", coopPlaydialog.currentDialogTextEng_containerPos, dialogTextEng.c_str());
 
 		Player* player = nullptr;
 		for (int i = 0; i < gameFixAPI_maxClients(); i++) {
@@ -160,7 +208,7 @@ void CoopPlaydialog::ActorThink(Actor *actor)
 			if (player) {
 				if (player->coop_hasLanguageGerman()) {
 					if (dialogTextDeu.length()) {
-						gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_dCns print %s", dialogTextDeu.c_str()));
+						gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_dCns labeltext %s", dialogTextDeu.c_str()));
 					}
 				}
 				else {
