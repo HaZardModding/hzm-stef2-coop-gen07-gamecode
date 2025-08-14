@@ -42,6 +42,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_playdialog.hpp"
 #endif
 
 
@@ -1951,7 +1952,12 @@ Event EV_World_coop_playDialogShowTextTextline
 void World::coop_playDialogShowNextTextLine(Event* ev)
 {
 	if (CoopManager::Get().IsCoopEnabled() && CoopManager::Get().IsCoopLevel()) {
-		coopPlaydialog.showNextTextLine(ev->GetString(1));
+		if (Q_stricmp(ev->GetString(1),"deu") == 0) {
+			coopPlaydialog.showNextTextLine("Deu", coopPlaydialog.currentDialogTextSnippetsDeu, coopPlaydialog.currentDialogTextDeu_containerPos);
+		}
+		else {
+			coopPlaydialog.showNextTextLine("Eng", coopPlaydialog.currentDialogTextSnippetsEng, coopPlaydialog.currentDialogTextEng_containerPos);
+		}
 	}
 }
 
