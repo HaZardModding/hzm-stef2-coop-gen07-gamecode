@@ -19672,7 +19672,10 @@ const str Actor::FindDialog( Sentient *user, DialogType_t dialogType , const str
 				//--------------------------------------------------------------
 				// COOP Generation 7.000 - Allow Teammate to follow player - chrissstrahl
 				//--------------------------------------------------------------
-				coop_followPlayer();
+				if (context.length() == 0) {
+					coop_followPlayer();
+				}
+				
 #endif
 
 
