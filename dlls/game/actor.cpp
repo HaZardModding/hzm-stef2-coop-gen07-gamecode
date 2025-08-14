@@ -11304,18 +11304,18 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 
 #ifdef ENABLE_COOP
 		//--------------------------------------------------------------
-		// COOP Generation 7.000 - Added: Removal of configstring, to prevent MAX_CONFIGSTRINGS error - chrissstrahl
+		// COOP Generation 7.000
+		// Added: Removal of configstring, to prevent MAX_CONFIGSTRINGS error - chrissstrahl
+		// Added: Coop Dialoghudtext will be shown to clients now in coop, we read the strings from the dlg files and send them to hud - chrissstrahl
 		//--------------------------------------------------------------
 		if (gameFixAPI_inMultiplayer() && CoopManager::Get().IsCoopEnabled()) {
-			coopPlaydialog.handleDialog(this,dialog_name,headDisplay, dialog_length);
+			coopPlaydialog.handleDialog(this, real_dialog.c_str(), headDisplay, dialog_length);
 
 			Event* deleteConfigString = new Event(EV_World_coop_configstrRemove);
 			deleteConfigString->AddString(real_dialog);
-			world->PostEvent(deleteConfigString, dialog_length + 0.1);
+			world->PostEvent(deleteConfigString, dialog_length + 0.15);
 		}
 #endif
-	
-	
 	}
 
 

@@ -474,7 +474,8 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 #ifdef ENABLE_COOP
 	{ &EV_World_coop_getPhysicsVar, & World::coop_getPhysicsVar },
 	{ &EV_World_coop_loadMap, & World::coop_loadMap },
-	{ &EV_World_coop_configstrRemove, & World::configstringRemove },
+	{ &EV_World_coop_configstrRemove, &World::configstringRemove },
+	{ &EV_World_coop_playDialogShowTextTextline, &World::coop_playDialogShowNextTextLine },
 #endif
 
 
@@ -1936,4 +1937,22 @@ void World::configstringRemove(Event* ev)
 	}
 	CoopManager::Get().configstringRemove(removeString);
 }
+
+
+Event EV_World_coop_playDialogShowTextTextline
+(
+	"coop_playDialogShowNextTextLine",
+	EV_DEFAULT,
+	"s",
+	"language",
+	"Prints next Dialog Text Line to player huds - Language: Eng or Deu"
+);
+
+void World::coop_playDialogShowNextTextLine(Event* ev)
+{
+	if (CoopManager::Get().IsCoopEnabled() && CoopManager::Get().IsCoopLevel()) {
+		coopPlaydialog.showNextTextLine(ev->GetString(1));
+	}
+}
+
 #endif

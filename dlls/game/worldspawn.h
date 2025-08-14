@@ -25,6 +25,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 extern Event EV_World_coop_loadMap;
+extern Event EV_World_coop_playDialogShowTextTextline;
 #endif
 
 
@@ -194,6 +195,7 @@ public:
 	void coop_loadMap(Event* ev);
 	void coop_getPhysicsVar(Event* ev);
 	void configstringRemove(Event* ev);
+	void coop_playDialogShowNextTextLine(Event* ev);
 #endif
 
 

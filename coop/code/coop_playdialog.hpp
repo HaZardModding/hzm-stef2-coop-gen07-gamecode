@@ -30,7 +30,8 @@ class CoopPlaydialog {
 public:
 	void readDialogFile(str pathName, str levelName, Container<CoopPlaydialog_dialogData>& data);
 	void handleDialog(Actor* actor, const char* dialog_name, qboolean headDisplay, float dialogLength);
-	void ActorThink(Actor* actor);
+	void showNextTextLine(const str &language);
+	void splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, float& dialogLengthActual);
 	void stopDialog();
 	void replaceForDialogText(str& sPure);
 public:
@@ -39,6 +40,8 @@ public:
 	int currentDialogTextDeu_containerPos = 1;
 	Container<CoopPlaydialog_dialogData> currentDialogTextEng;
 	Container<CoopPlaydialog_dialogData> currentDialogTextDeu;
+
+	int containerDebugPos = 0; //debugging variable to see which dialog text is currently used
 
 	Container <str> currentDialogTextSnippetsEng;
 	Container <float> currentDialogTimeSnippetsEng;
