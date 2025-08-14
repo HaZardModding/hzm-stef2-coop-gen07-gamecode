@@ -300,7 +300,6 @@ void CoopManager::ActorThink(Actor *actor) {
     if (!CoopManager::Get().IsCoopEnabled()) {
         return;
     }
-    coopPlaydialog.ActorThink(actor);
 }
 
 void CoopManager::ClientThink(Player *player) {
