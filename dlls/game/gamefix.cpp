@@ -893,7 +893,7 @@ qboolean gamefix_languageDeu(const gentity_t* ent)
 }
 
 //--------------------------------------------------------------
-// GAMEFIX - Added: Function returning player by giventargetname - chrissstrahl
+// GAMEFIX - Added: Function returning 2 given strings based on player language - chrissstrahl
 //--------------------------------------------------------------
 str gamefix_getLocalizedString(Player* player,const str sEnglish,const str sGerman)
 {
