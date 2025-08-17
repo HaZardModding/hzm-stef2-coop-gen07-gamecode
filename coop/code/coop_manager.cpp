@@ -308,6 +308,9 @@ void CoopManager::ClientThink(Player *player) {
     playerAdminThink(player);
     coop_objectivesUpdatePlayer(player);
     coop_radarUpdate(player);
+
+    coopClass.coop_classCheckUpdateStat(player);
+    coopClass.coop_classRegenerate(player);
 }
 
 bool CoopManager::callvoteManager(const str& _voteString) { 
@@ -862,6 +865,9 @@ void CoopManager::playerSetup(Player* player) {
     setPlayerData_coopSetupTries_update(player);
 
     if (!getPlayerData_coopSetupStarted(player)) {
+        player->entityVars.SetVariable("!ability", -9999.0f);
+        player->entityVars.SetVariable("!abilityPrintout", -9999.0f);
+
         //Client ID
         gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_cId");
         //Coop Version

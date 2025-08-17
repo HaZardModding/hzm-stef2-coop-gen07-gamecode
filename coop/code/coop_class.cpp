@@ -31,7 +31,7 @@ void CoopClass::coop_classAbilityRecoverHud(Player *player)
 
 	Event* recover50 = new Event(EV_Player_coop_classAbilityHudRecover);
 	recover50->AddString("coop_class50");
-	player->PostEvent(recover50, (EV_Player_coop_classAbilityHudRecover / 4) * 2);
+	player->PostEvent(recover50, (COOP_CLASS_REGENERATION_COOLDOWN / 4) * 2);
 
 	Event* recover75 = new Event(EV_Player_coop_classAbilityHudRecover);
 	recover75->AddString("coop_class75");
@@ -71,16 +71,20 @@ void CoopClass::coop_classCheckApplay( Player *player )
 
 void CoopClass::coop_classCheckUpdateStat( Player *player )
 {
-	//[b60014] chrissstrahl //[b60015] chrissstrahl - fixed bad check condition
-	if (multiplayerManager.inMultiplayer() && coopClass.lastUpdateSendAt > CoopManager::Get().getPlayerData_coopClasslastTimeUpdatedStat(player) ){
-		if ( CoopManager::Get().getPlayerData_coopVersion(player) && CoopManager::Get().getPlayerData_coopSetupDone(player)) {
-			CoopManager::Get().setPlayerData_coopClasslastTimeUpdatedStat(player,coopClass.lastUpdateSendAt);
-			//gi.Printf(va("COOPDEBUG coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname));
-			
-			//[b60014] chrissstrahl - fused multiple commands to one data burst
-			gamefix_playerDelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
-		}
+	if (!multiplayerManager.inMultiplayer()) {
+		return;
 	}
+	if (!CoopManager::Get().getPlayerData_coopSetupDone(player)) {
+		return;
+	}
+	if (!CoopManager::Get().getPlayerData_coopVersion(player)) {
+		return;
+	}
+	if (coopClass.lastUpdateSendAt > CoopManager::Get().getPlayerData_coopClasslastTimeUpdatedStat(player)) {
+		CoopManager::Get().setPlayerData_coopClasslastTimeUpdatedStat(player,coopClass.lastUpdateSendAt);
+		gamefix_playerDelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ) ,coop_classPlayersOfClass("Technician") , coop_classPlayersOfClass("Medic")));
+		//DEBUG_LOG("# coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname);
+	}	
 }
 
 void CoopClass::coop_classRegenerate( Player *player )
@@ -90,7 +94,6 @@ void CoopClass::coop_classRegenerate( Player *player )
 			!multiplayerManager.inMultiplayer() ||
 			!CoopManager::Get().IsCoopEnabled() ||
 			!CoopManager::Get().IsCoopLevel()
-			//(player->upgPlayerGetLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time
 			)
 	{
 		return;
@@ -101,7 +104,6 @@ void CoopClass::coop_classRegenerate( Player *player )
 		CoopManager::Get().setPlayerData_coopClassRegenerationCycles_update(player);
 
 		Entity* eOther = nullptr;
-
 		for (int i = 0; i < maxclients->integer; i++) {
 			eOther = (Player*)g_entities[i].entity;
 			if (!eOther || !eOther->isSubclassOf(Player)) {
@@ -194,13 +196,12 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	int classGiveAmmoPlasma = 0;
 	int classGiveAmmoIdryll = 0;
 
-	//[b60021] chrissstrahl - circle menu related
+	//circle menu related
 	str circleText1 = "";
 	str circleImg1 = "";
-
-	//[b60012] chrissstrahl - fix missing .c_str()
+	
 	if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_MEDIC) ){
-		//[b60021] chrissstrahl - handle circle menu
+		//handle circle menu
 		circleImg1 = COOP_CLASS_MEDIC_ICON;
 		if (player->coop_hasLanguageGerman()) {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_DEU;}
 		else {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_ENG;}
@@ -215,7 +216,7 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_MEDIC_MASS;
 	}
 	else if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
-		//[b60021] chrissstrahl - handle circle menu
+		//handle circle menu
 		circleImg1 = COOP_CLASS_HEAVYWEAPONS_ICON;
 		if (player->coop_hasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU; }
 		else { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG; }
@@ -230,7 +231,7 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_HEAVYWEAPONS_MASS;
 	}
 	else{ //technician
-		//[b60021] chrissstrahl - handle circle menu
+		//handle circle menu
 		circleImg1 = COOP_CLASS_TECHNICIAN_ICON;
 		if (player->coop_hasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU; }
 		else { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_ENG; }
@@ -305,26 +306,13 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	event->AddString( "stasis" );
 	event->AddInteger( 100 );
 	player->ProcessEvent( event );
-
-	//[b60013] chrissstrahl - added to have more control over attributes changing
+	
 	ExecuteThread("coop_justChangedClass", true, (Entity*)player);
 }
 
-
-//================================================================
-// Name:        coop_classPlayerUsed
-// Class:       -
-//              
-// Description: Called when a player gets used ( usebutton or tricorder)
-//              
-// Parameters:  Player *usedPlayer , Player *usingPlayer , Equipment *equipment
-//              
-// Returns:     bool
-//              
-//================================================================
 void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment *equipment )
 {
-	//[b60014] chrissstrahl - handle only in multiplayer
+	//handle only in multiplayer
 	if (	usedPlayer && usingPlayer &&
 			multiplayerManager.inMultiplayer() &&
 			!multiplayerManager.isPlayerSpectator( usedPlayer ) &&
@@ -339,7 +327,7 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 		}
 
 		//check if player was constantly revived or if it stopped
-		if ( !equipment ){ //[b60011] chrissstrahl - fixed forbidden check practise
+		if ( !equipment ){
 			if ( ( CoopManager::Get().getPlayerData_revivedStepLasttime(usedPlayer) + 0.1f ) > level.time ){
 				CoopManager::Get().setPlayerData_revivedStepLasttime_update(usedPlayer);
 				CoopManager::Get().setPlayerData_revivedStepCounter(usedPlayer, 0);
@@ -358,7 +346,7 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 		if ( (CoopManager::Get().getPlayerData_revivedStepLasttime(usedPlayer) + fMessageTime ) < level.time ){
 			CoopManager::Get().setPlayerData_revivedStepLasttime_update(usedPlayer);
 
-			if ( !equipment ){ //[b60011] chrissstrahl - fixed forbidden check practise
+			if ( !equipment ){
 				if ( usedPlayer->coop_hasLanguageGerman() ){
 					usedPlayer->hudPrint( va( "^5COOP^8 - You are beeing revived by: %s \n" , usingPlayer->client->pers.netname ) );
 				}else{
@@ -367,92 +355,8 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 			}
 			else{
 				if ( equipment ){
-					//[b60021] chrissstrahl - we are using the ability now, makes transition easier to the new way of doing it
 					gamefix_playerDelayedServerCommand(usingPlayer->entnum, "!ability");
-
-					/*if ( !Q_stricmp( CoopManager::Get().getPlayerData_coopClass(usingPlayer), COOP_CLASS_NAME_MEDIC) ){
-						if ( usedPlayer->health >= usedPlayer->max_health ){
-							return;
-						}
-
-						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
-							usedPlayer->hudPrint( va( "^5COOP^8 - Sie wurden geheilt von: %s\n" , usingPlayer->client->pers.netname ) );
-						}else{
-							usedPlayer->hudPrint( va( "^5COOP^8 - You have been healed by: %s\n" , usingPlayer->client->pers.netname ) );
-						}
-
-						//give full health
-						usedPlayer->health = usedPlayer->max_health;
-
-						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
-						usingPlayer->coop_classRegenerationCycleSet();
-					}
-					else if ( !Q_stricmp( CoopManager::Get().getPlayerData_coopClass(usingPlayer), COOP_CLASS_NAME_TECHNICIAN) ){
-						float fArmorToGive = _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX_TO_GIVE;
-						float fArmorToGive_max = _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX_TO_GIVE;
-						float fArmorCurrent = usedPlayer->GetArmorValue();
-						if ( fArmorCurrent >= _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX ){
-							return;
-						}
-						
-						//do not give more than 200 armor
-						if ( ( fArmorCurrent + fArmorToGive_max ) > _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX ){
-							fArmorToGive = fArmorToGive_max;
-							fArmorToGive -= ( ( fArmorCurrent + fArmorToGive_max ) - _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX );
-						}
-
-						if ( usedPlayer->upgPlayerHasLanguageGerman() ){//CHEKME
-							usedPlayer->hudPrint( va( "^5COOP^8 - Ihr Schild wurde aufgeladen von: %s\n" , usingPlayer->client->pers.netname ) );
-						}else{
-							usedPlayer->hudPrint( va( "^5COOP^8 - You shield was charged by: %s\n" , usingPlayer->client->pers.netname ) );
-						}
-						Event *armorEvent;
-						armorEvent = new Event( EV_Sentient_GiveArmor );
-						armorEvent->AddString( "BasicArmor" );
-						armorEvent->AddInteger( fArmorToGive );
-						usedPlayer->ProcessEvent( armorEvent );
-
-						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
-						usingPlayer->coop_classRegenerationCycleSet();
-						
-					}
-					else{
-						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
-							usedPlayer->hudPrint( va( "^5COOP^8 - Ihre Waffen wurden geladen von: %s\n" , usingPlayer->client->pers.netname ) );
-						}else{
-							usedPlayer->hudPrint( va( "^5COOP^8 - Your Weapons have been charged by: %s\n" , usingPlayer->client->pers.netname ) );
-						}
-						Event *ammoEvent;
-						ammoEvent = new Event( EV_Sentient_GiveAmmoOverTime );
-						ammoEvent->AddString( "Fed" );
-						ammoEvent->AddInteger( COOP_MAX_AMMO_TO_GIVE_FED );
-						ammoEvent->AddFloat( 1.5 );
-						usedPlayer->ProcessEvent( ammoEvent );
-						ammoEvent = new Event( EV_Sentient_GiveAmmoOverTime );
-						ammoEvent->AddString( "Plasma" );
-						ammoEvent->AddInteger( COOP_MAX_AMMO_TO_GIVE_PLASMA );
-						ammoEvent->AddFloat( 1.5 );
-						usedPlayer->ProcessEvent( ammoEvent );
-						ammoEvent = new Event( EV_Sentient_GiveAmmoOverTime );
-						ammoEvent->AddString( "Idryll" );
-						ammoEvent->AddInteger( COOP_MAX_AMMO_TO_GIVE_IDRYLL );
-						ammoEvent->AddFloat( 1.5 );
-						usedPlayer->ProcessEvent( ammoEvent );
-						//PostEvent( ammoEvent , level.frametime );
-
-						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
-						usingPlayer->coop_classRegenerationCycleSet();
-					}*/
-				}
-				else{
-					/*if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
-						usedPlayer->hudPrint( va( "^5COOP^8 - Sie wurden benutzt von: %s [%s]\n" , usingPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}
-					else{
-						usedPlayer->hudPrint( va( "^5COOP^8 - You have been used by: %s [%s]\n" , usingPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}*/
-				}
-				
+				}				
 			}
 
 		}
@@ -460,7 +364,7 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 		if ( (CoopManager::Get().getPlayerData_revivedStepLasttime(usingPlayer) + fMessageTime ) < level.time ){
 			CoopManager::Get().setPlayerData_revivedStepLasttime_update(usingPlayer);
 
-			if ( !equipment ){//[b60011] chrissstrahl - fixed forbidden check practise
+			if ( !equipment ){
 				if ( usedPlayer->coop_hasLanguageGerman() ){
 					usingPlayer->hudPrint( va( "^5COOP^8 - Wiederbeleben von: %s, bitte weitermachen!\n" , usedPlayer->client->pers.netname ) );
 				}else{
@@ -469,83 +373,8 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 			}
 			else{
 				if ( equipment ){
-					//[b60021] chrissstrahl - we are using the ability now, makes transition easier to the new way of doing it
 					gamefix_playerDelayedServerCommand(usingPlayer->entnum, "!ability");
-
-					/*if ( !Q_stricmp( CoopManager::Get().getPlayerData_coopClass(usingPlayer).c_str(), COOP_CLASS_NAME_MEDIC) ){
-						if ( usedPlayer->health >= usedPlayer->max_health ){
-
-							//[b60012][cleanup] chrissstrahl - this could be put into a func
-							if ( usingPlayer->upgPlayerHasLanguageGerman() ){//[b607] chrissstrahl - using now correct entity
-								usingPlayer->hudPrint( "^5COOP^8 - Spieler bereits bei voller Gesundheit!\n" );
-							}
-							else{
-								usingPlayer->hudPrint( "^5COOP^8 - Player already at full health!\n" );
-							}
-							return;
-						}
-
-						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
-							usingPlayer->hudPrint( va( "^5COOP^8 - Sie heilten: %s\n" , usedPlayer->client->pers.netname ) );
-						}else{
-							usingPlayer->hudPrint( va( "^5COOP^8 - You healed: %s\n" , usedPlayer->client->pers.netname ) );
-						}
-
-						//[b60014] chrissstrahl - give player health in return for his cooperation
-						if(usingPlayer->health < COOP_CLASS_MEDIC_MAX_HEALTH){
-							//give player 15% health back for his cooperation
-							float playerHealthNew = (usingPlayer->health + ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 15));
-							if (playerHealthNew > COOP_CLASS_MEDIC_MAX_HEALTH) {
-								playerHealthNew = COOP_CLASS_MEDIC_MAX_HEALTH;
-							}
-							usingPlayer->health = playerHealthNew;
-							
-							//if player has health below 50 up it to 50
-							if (usingPlayer->health < ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 50)) {
-								usingPlayer->health = ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 50);
-							}
-						}
-					}
-					else if ( !Q_stricmp( CoopManager::Get().getPlayerData_coopClass(usingPlayer).c_str(), COOP_CLASS_NAME_TECHNICIAN) ){
-						if ( usedPlayer->GetArmorValue() >= _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX ){
-
-							//[b60012][cleanup] chrissstrahl - this could be put into a func
-							if ( usingPlayer->upgPlayerHasLanguageGerman() ){//[b607] chrissstrahl - using now correct entity
-								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Schild ist bereits bei maximler Kapazitaet\n" , usedPlayer->client->pers.netname ) );
-							}else{
-								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Shield is already at maximum capacity\n" , usedPlayer->client->pers.netname ) );
-							}
-							return;
-						}
-
-						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
-							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Schild auf\n" , usedPlayer->client->pers.netname ) );
-						}else{
-							usingPlayer->hudPrint( va( "^5COOP^8 - You charged %ss shield\n" , usedPlayer->client->pers.netname ) );
-						}
-					}
-					else{
-
-						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
-							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Waffenenergie auf\n" , usedPlayer->client->pers.netname ) );
-						}else{
-							usingPlayer->hudPrint( va( "^5COOP^8 - You charged %ss ammo\n" , usedPlayer->client->pers.netname ) );
-						}
-					}
-				*/
 				}
-				else{
-					/* not shown to all players - something fishy here
-					if ( usingPlayer->upgPlayerHasLanguageGerman() ){
-						usingPlayer->hudPrint( va( "^5COOP^8 - Gebraucht: %s [%s]\n" , usedPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}else{
-						usingPlayer->hudPrint( va( "^5COOP^8 - USED: %s [%s]\n" , usedPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}*/
-				}
-				
 			}
 		}
 
@@ -559,11 +388,11 @@ void CoopClass::coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer ,
 
 int CoopClass::coop_classPlayersOfClass(str className)
 {
-	if ( className.length() < 1 )
+	if (className.length() < 1) {
 		return -1;
-
-	//[b60014] chrissstrahl - return default value if not in multiplayer or coop
-	if (!gameFixAPI_inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || CoopManager::Get().IsCoopLevel()) {
+	}
+	
+	if (!gameFixAPI_inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
 		return 0;
 	}
 
@@ -600,7 +429,7 @@ int CoopClass::coop_classPlayersOfClass(str className)
 
 void CoopClass::coop_classUpdateClassStats( void )
 {
-	//hzm coop mod chrissstrahl - set current time, so the client think function can send class statistics to each client
+	//set current time, so the client think function can send class statistics to each client
 	coopClass.lastUpdateSendAt = level.time;
 }
 

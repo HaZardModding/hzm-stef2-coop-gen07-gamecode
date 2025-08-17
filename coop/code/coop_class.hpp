@@ -95,7 +95,7 @@ public:
 extern CoopClass coopClass;
 
 
-#endif /* coopClass */
+#endif
 
 
 
