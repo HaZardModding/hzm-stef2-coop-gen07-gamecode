@@ -52,7 +52,7 @@ struct coopManager_client_persistant_s
     float       coopClassLastTimeChanged = -98.2f;
     float       coopClassLastTimeUsedMsg = -97.3f;
 	float       coopClasslastTimeUpdatedStat = -96.4f;
-    int         coopClassRegenerationCycles = 9999;
+    int         coopClassRegenerationCycles = 0;
     bool		coopClassLocked = false;
 
 	float       revivedStepLasttime = -799.0f;
