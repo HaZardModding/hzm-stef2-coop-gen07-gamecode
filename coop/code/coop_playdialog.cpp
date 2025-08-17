@@ -88,20 +88,18 @@ void CoopPlaydialog::handleDialog(Actor* actor, const char* dialog_name, qboolea
 	currentDialogTimeSnippetsEng.FreeObjectList();
 	world->CancelEventsOfType(EV_World_coop_playDialogShowTextTextline);
 
-
-	float dialogLengthActual = dialogLength;
 	str dialogTextDeu;
 	for (int j = 1; j <= CoopPlaydialog_dialogListContainer_deu.NumObjects(); j++) {
 		if (Q_stricmp(CoopPlaydialog_dialogListContainer_deu.ObjectAt(j).dialogPath.c_str(),dialog_name) == 0) {
 			dialogTextDeu = CoopPlaydialog_dialogListContainer_deu.ObjectAt(j).dialogText;
-			DEBUG_LOG("# DEU [%d] %s %s\n", containerDebugPos, CoopPlaydialog_dialogListContainer_deu.ObjectAt(j).dialogPath.c_str(), dialogTextDeu.c_str());
+			//DEBUG_LOG("# DEU [%d] %s %s\n", containerDebugPos, CoopPlaydialog_dialogListContainer_deu.ObjectAt(j).dialogPath.c_str(), dialogTextDeu.c_str());
 		}
 	}
 	str dialogTextEng;
 	for (int j = 1; j <= CoopPlaydialog_dialogListContainer_eng.NumObjects(); j++) {
 		if (Q_stricmp(CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogPath.c_str(),dialog_name) == 0) {
 			dialogTextEng = CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogText;
-			DEBUG_LOG("# ENG [%d] %s %s\n", containerDebugPos, CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogPath.c_str(), dialogTextEng.c_str());
+			//DEBUG_LOG("# ENG [%d] %s %s\n", containerDebugPos, CoopPlaydialog_dialogListContainer_eng.ObjectAt(j).dialogPath.c_str(), dialogTextEng.c_str());
 		}
 	}
 
@@ -120,25 +118,24 @@ void CoopPlaydialog::handleDialog(Actor* actor, const char* dialog_name, qboolea
 	gamefix_listSeperatedItems(currentDialogTextSnippetsEng, dialogTextEng, ".");
 	gamefix_listSeperatedItems(currentDialogTextSnippetsDeu, dialogTextDeu, ".");
 
-	splitTextIntoLines("Eng",currentDialogTextSnippetsEng, currentDialogTimeSnippetsEng, dialogLength, dialogLengthActual);
+	splitTextIntoLines("Eng",currentDialogTextSnippetsEng, currentDialogTimeSnippetsEng, dialogLength, dialogTextEng.length());
 	//DEBUG_LOG("# handleDialog: %f * %d = %f/%f - %s", dialogLengthActual, currentDialogTextSnippetsEng.NumObjects(), dialogLengthActual * currentDialogTextSnippetsEng.NumObjects(), dialogLength, dialogText.c_str());
-	splitTextIntoLines("Deu",currentDialogTextSnippetsDeu, currentDialogTimeSnippetsDeu, dialogLength, dialogLengthActual);
+	splitTextIntoLines("Deu",currentDialogTextSnippetsDeu, currentDialogTimeSnippetsDeu, dialogLength, dialogTextDeu.length());
 
 	showNextTextLine("Eng", currentDialogTextSnippetsEng, currentDialogTextEng_containerPos);
 	showNextTextLine("Deu", currentDialogTextSnippetsDeu, currentDialogTextDeu_containerPos);
 }
 
-void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &currentDialogTextSnippets, int &currentDialoContainerPos)
+void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &currentDialogTextSnippets, int &currentDialogContainerPos)
 {
 	str dialogText = "";
-	if (currentDialoContainerPos <= currentDialogTextSnippets.NumObjects()) {
+	if (currentDialogContainerPos <= currentDialogTextSnippets.NumObjects()) {
 		//grab last line of dialog text and add it infront of the current text
-		if (currentDialoContainerPos > 1) {
+		if (currentDialogContainerPos > 1) {
 			unsigned int oldStartPos = 0;
-			if ((currentDialoContainerPos - 1) > 0 && (currentDialoContainerPos - 1) <= currentDialogTextSnippets.NumObjects()) {
-				str tempOldText = currentDialogTextSnippets.ObjectAt(currentDialoContainerPos - 1);
+			if ((currentDialogContainerPos - 1) > 0 && (currentDialogContainerPos - 1) <= currentDialogTextSnippets.NumObjects()) {
+				str tempOldText = currentDialogTextSnippets.ObjectAt(currentDialogContainerPos - 1);
 				if (tempOldText.length() > _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE) {
-					//oldStartPos = (tempOldText.length() - 1) - _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE;
 					const char* oldTextPtr = tempOldText.c_str();
 					unsigned oldTextCutEndAt = _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE - (tempOldText.length() - 1);
 					unsigned oldTextCutStartingFrom = (tempOldText.length() - 1);
@@ -147,14 +144,14 @@ void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &curre
 				}
 				else {
 					//if we are dealing with short text, like a countdown, we can add a third line
-					if ((currentDialoContainerPos - 2) > 0 && (currentDialoContainerPos - 2) <= currentDialogTextSnippets.NumObjects()) {
-						str tempOldText_2 = currentDialogTextSnippets.ObjectAt(currentDialoContainerPos - 2);
+					if ((currentDialogContainerPos - 2) > 0 && (currentDialogContainerPos - 2) <= currentDialogTextSnippets.NumObjects()) {
+						str tempOldText_2 = currentDialogTextSnippets.ObjectAt(currentDialogContainerPos - 2);
 						if (tempOldText_2.length() < _COOP_SETTINGS_HEADHUD_CHARS_LINE_ACCEPTABLE) {
 							dialogText += va("%s~",tempOldText_2.c_str());
 						}
 					}
 
-					dialogText += currentDialogTextSnippets.ObjectAt(currentDialoContainerPos - 1);
+					dialogText += currentDialogTextSnippets.ObjectAt(currentDialogContainerPos - 1);
 				}
 
 				if (dialogText.length()) {
@@ -166,14 +163,14 @@ void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &curre
 			}
 		}
 		
-		dialogText += currentDialogTextSnippets.ObjectAt(currentDialoContainerPos);
+		dialogText += currentDialogTextSnippets.ObjectAt(currentDialogContainerPos);
 	}
 	else {
-		DEBUG_LOG("# [%d] CoopPlaydialog::showNextTextLine bounds for %s\n", currentDialoContainerPos, dialogText.c_str());
+		DEBUG_LOG("# [%d] CoopPlaydialog::showNextTextLine bounds for %s\n", currentDialogContainerPos, dialogText.c_str());
 		return;
 	}
 	
-	currentDialoContainerPos++;
+	currentDialogContainerPos++;
 
 	if (!dialogText.length()) {
 		return;
@@ -182,7 +179,7 @@ void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &curre
 	dialogText = gamefix_replaceUmlautAndSpecials(dialogText);
 	coopPlaydialog.replaceForDialogText(dialogText);
 
-	DEBUG_LOG("# [%d] [%s] dialog %s\n", currentDialoContainerPos, language.c_str(), dialogText.c_str());
+	//DEBUG_LOG("# showNextTextLine p[%d] l[%s] %s\n", currentDialogContainerPos, language.c_str(), dialogText.c_str());
 
 	Player* player = nullptr;
 	for (int i = 0; i < gameFixAPI_maxClients(); i++) {
@@ -195,8 +192,9 @@ void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &curre
 	}
 }
 
-void CoopPlaydialog::splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, float& dialogLengthActual)
+void CoopPlaydialog::splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, const int &totalLength)
 {
+	float dialogLengthActual = dialogLength;
 	for (int i = 1; i <= containerText.NumObjects(); i++) {
 		str currentSnippet = gamefix_trimWhitespace(containerText.ObjectAt(i), false);
 
@@ -210,17 +208,27 @@ void CoopPlaydialog::splitTextIntoLines(const str language, Container<str>& cont
 
 		containerText.ObjectAt(i) = currentSnippet;
 		if (containerText.NumObjects() > 1) {
-			//make sure the next line is automatically triggered
-			dialogLengthActual = dialogLength / containerText.NumObjects();
+			
+			//Total dialog playtime devided by total num of chars multiplied by number of chars
+			//providing a good estimate for how long each line should be visible for
+			dialogLengthActual = (dialogLength / totalLength) * currentSnippet.length();
+
+			//Total dialog playtime devided by number of lines
+			//dialogLengthActual = dialogLength / containerText.NumObjects();
+
 			float eventFireTime = 0;
 			for (int f = i; f > 0; f--) {
 				eventFireTime += dialogLengthActual;
 			}
-
+			
+			//make sure the next line is automatically triggered
 			Event* event = new Event(EV_World_coop_playDialogShowTextTextline);
 			event->AddString(language.c_str());
 			world->PostEvent(event, eventFireTime - 0.1);
 		}
+
+		//DEBUG_LOG("# tc[%f] tt[%f] %s\n", dialogLengthActual, dialogLength, currentSnippet.c_str());
+
 		containerLength.AddObject(dialogLengthActual); //make sure the object exists at all
 	}
 }

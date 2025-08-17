@@ -31,7 +31,7 @@ public:
 	void readDialogFile(str pathName, str levelName, Container<CoopPlaydialog_dialogData>& data);
 	void handleDialog(Actor* actor, const char* dialog_name, qboolean headDisplay, float dialogLength);
 	void showNextTextLine(const str& language, Container<str>& currentDialogTextSnippets, int& currentDialoContainerPos);
-	void splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, float& dialogLengthActual);
+	void splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, const int& totalLength);
 	void stopDialog();
 	void replaceForDialogText(str& sPure);
 public:
