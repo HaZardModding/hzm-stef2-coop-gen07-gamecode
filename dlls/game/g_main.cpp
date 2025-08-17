@@ -1111,8 +1111,18 @@ Returns a pointer to the structure with all entry points
 and global variables
 =================
 */
+
+int(*Engine_TIKI_FreeAll)(int);
+#ifdef WIN32
+#define Addr_TIKI_FreeAll             0x005040C0
+#else
+#define Addr_TIKI_FreeAll             0x080AA6A0
+#endif
+
 extern "C" game_export_t *GetGameAPI( game_import_t *import )
 {
+	Engine_TIKI_FreeAll = (int(*)(int))(Addr_TIKI_FreeAll);
+
 	gi = *import;
 	
 	globals.apiversion					= GAME_API_VERSION;

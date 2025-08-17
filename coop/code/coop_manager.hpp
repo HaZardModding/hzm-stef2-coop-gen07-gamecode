@@ -224,6 +224,7 @@ public:
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
+    void flushTikis();
     int configstringRemove(str sRem);
     void configstringCleanup();
 	void loadClientIniData();

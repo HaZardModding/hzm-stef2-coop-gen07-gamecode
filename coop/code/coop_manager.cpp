@@ -327,6 +327,10 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         }
         return false;
     }
+    if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_flushtikis") == 0) {
+        CoopManager::Get().flushTikis();
+        return true;
+    }
     if (voteStringList.NumObjects() >= 2) {
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_ff") == 0) {
             float firedlyFireVal = atof(voteStringList.ObjectAt(2));
@@ -1760,6 +1764,23 @@ bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
     }
 
     return true;
+}
+
+void CoopManager::flushTikis()
+//fixing animation issues of actor and other models, also disappearing models
+{
+    if (!gameFixAPI_inMultiplayer()) {
+        return;
+    }
+
+    if (gameFixAPI_isDedicatedServer()) {
+        Engine_TIKI_FreeAll(1);//call to function pointer
+        //gi.SendServerCommand(NULL, "stufftext flushtikis\n");
+    }
+    //listen servers - host + client in a singe game instance
+    else {
+        gi.SendServerCommand(0, "stufftext flushtikis\n");
+    }
 }
 
 //used to minimize the usage of configstrings due to cl_parsegamestate issue

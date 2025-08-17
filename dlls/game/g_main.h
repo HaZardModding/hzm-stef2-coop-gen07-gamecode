@@ -53,6 +53,10 @@ void			G_ExitWithError( const char *error );
 void G_CheckIntermissionExit( void );
 void G_BeginIntermission2( void );
 
+
+extern int(*Engine_TIKI_FreeAll)(int);
+
+
 extern "C" {
 	void		G_SpawnEntities( const char *mapname, const char *entities, int time );
 	void		G_PostLoad( void );

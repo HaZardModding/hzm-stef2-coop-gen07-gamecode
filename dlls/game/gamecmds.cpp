@@ -87,6 +87,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!mapname",coop_playerMapname,true },
 	{ "!class",coop_playerClass,true },
 	{ "!help",coop_playerHelp,true },
+	{ "!flushtikis",coop_playerFlushTikis,true },
 
 	{ "script",G_ScriptCmd,true },
 	{ "clientrunthread",G_ClientRunThreadCmd,true },
@@ -2982,6 +2983,21 @@ qboolean coop_playerHelp(const gentity_t* ent)
 			player->hudPrint(va("%s\n", sPrintString.c_str()));
 		}
 	}
+	return true;
+}
+
+qboolean coop_playerFlushTikis(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || sv_cinematic->integer || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!flushtikis") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!flushtikis", level.time);
+
+	gamefix_playerDelayedServerCommand(ent->entity->entnum, "callvote coop_flushtikis");
 	return true;
 }
 #endif
