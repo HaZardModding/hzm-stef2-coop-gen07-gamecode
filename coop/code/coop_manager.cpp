@@ -868,6 +868,9 @@ void CoopManager::playerSetup(Player* player) {
         player->entityVars.SetVariable("!ability", -9999.0f);
         player->entityVars.SetVariable("!abilityPrintout", -9999.0f);
 
+        //headhudtext widget hide in multiplayer, because it does not work right (flickering) - also coop mod has its own
+        gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
+
         //Client ID
         gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_cId");
         //Coop Version
