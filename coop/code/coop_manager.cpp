@@ -7,6 +7,7 @@
 #include "coop_armory.hpp"
 #include "coop_radar.hpp"
 #include "coop_manager.hpp"
+#include "coop_class.hpp"
 
 extern qboolean G_SetWidgetTextOfPlayer(const gentity_t* ent, const char* widgetName, const char* widgetText);
 
@@ -930,6 +931,7 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     setPlayerData_coopVersion(player, iVer);
     setPlayerData_coopSetupDone(player, true);
     setPlayerData_coopUpdateNoticeSend(player, false);
+    gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_class");
 
     if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
         //let player know that there is a newer version of the coop mod
@@ -1542,6 +1544,8 @@ void CoopManager::playerSpawned(Player* player) {
         coop_radarReset(player);
         gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
         playerAddMissionHuds(player);
+
+        coopClass.coop_classApplayAttributes(player, true);
     }
 
     gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);
@@ -1777,7 +1781,7 @@ int CoopManager::configstringRemove(str sRem)
             if (!Q_stricmpn(ss.c_str(), "localization/", 13)) {
                 //regular dialog
                 if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    //DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
@@ -1787,7 +1791,7 @@ int CoopManager::configstringRemove(str sRem)
                 memset(unlocal, 0, sizeof(unlocal));
                 Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
                 if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    //DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
@@ -1796,14 +1800,14 @@ int CoopManager::configstringRemove(str sRem)
                 memset(unlocal, 0, sizeof(unlocal));
                 Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
                 if (Q_stricmp(ss.c_str(), unlocal) == 0) {
-                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    //DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }
             }
             else {
                 if (Q_stricmp(ss.c_str(), sRem.c_str()) == 0) {
-                    DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+                    //DEBUG_LOG(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
                     gi.setConfigstring(i, "");
                     iRem++;
                 }

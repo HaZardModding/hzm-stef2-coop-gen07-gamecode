@@ -38,6 +38,7 @@
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
 #include "../../coop/code/coop_radar.hpp"
+#include "../../coop/code/coop_class.hpp"
 #endif
 
 
@@ -2446,11 +2447,7 @@ qboolean coop_playerAbility(const gentity_t* ent)
 	if (multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
-
-	player->hudPrint("!ability - Not Implemented\n");
-	gi.Printf("!ability - Not Implemented\n");
-
-	/*
+	
 	//deny usage of command if player executed command to quickly
 	float cooldownTime = gamefix_getEntityVarFloat((Entity*)player, "!ability");
 	cooldownTime += COOP_CLASS_REGENERATION_COOLDOWN;
@@ -2479,11 +2476,8 @@ qboolean coop_playerAbility(const gentity_t* ent)
 		player->hudPrint(va("^5Coop Class ability^2 used, ready again in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
 	}
 
-
-
 	//activate ability now
-	player->coop_classAbilityUse();
-	*/
+	coopClass.coop_classAbilityUse(player);
 	return true;
 }
 
@@ -2941,12 +2935,8 @@ qboolean coop_playerClass(const gentity_t* ent)
 		}
 	}
 
-	gi.Printf("!class not fully implemented\n");
-	player->hudPrint("!class not fully implemented\n");
-
-	//hzm coop mod chrissstrahl - set new class on player
-	//coop_classSet(player, classSelected);
-	//coop_classApplayAttributes(player, true);
+	coopClass.coop_classSet(player, classSelected);
+	coopClass.coop_classApplayAttributes(player, true);
 
 	return true;
 }

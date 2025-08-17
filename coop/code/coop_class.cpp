@@ -63,7 +63,6 @@ int CoopClass::coop_classRegenerationCycleGet(Player *player)
 
 void CoopClass::coop_classCheckApplay( Player *player )
 {
-	//[b60011] chrissstrahl - changing class disabled feature, is located in: G_coopCom_class
 	if (CoopManager::Get().getPlayerData_coopClassLastTimeChanged(player) != CoopManager::Get().getPlayerData_coopClassLastTimeApplied(player)){
 		coop_classApplayAttributes( player , false );
 		CoopManager::Get().setPlayerData_coopClassLastTimeApplied(player, CoopManager::Get().getPlayerData_coopClassLastTimeChanged(player));
@@ -178,14 +177,12 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	{
 		return;
 	}
-	coop_classSet( player , "current" );
 	str currentClass = CoopManager::Get().getPlayerData_coopClass(player);
+	if (currentClass.length()==0) {
+		DEBUG_LOG("coop_classApplayAttributes - no class set on player yet\n");
+		return;
+	}
 
-	//hzm coop mod chrissstrahl - we do no longer attach model, class is now shown with the player name when targeted
-	//hzm coop mod chrissstrahl - remove class indicator model
-	//player->removeAttachedModelByTargetname( "globalCoop_playerClassIndicator" );
-
-	//hzm coop mod chrissstrahl - definy class setup variables
 	float classMaxHealth = 100.0f;
 	float classStartArmor = 20.0f;
 	int classMaxAmmoPhaser = 1000;
