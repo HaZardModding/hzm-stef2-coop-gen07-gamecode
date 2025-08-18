@@ -2122,19 +2122,14 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	//--------------------------------------------------------------
 	if ( Q_stricmp( command.c_str(), "map" ) == 0 )
 	{
-		//--------------------------------------------------------------
-		// GAMEFIX - Added: Cleanup of mapname - chrissstrahl
-		//--------------------------------------------------------------
-		str cleanArgument = gamefix_cleanMapName(arg);
-
 		// If a map command was issued, preserve the nextmap cvar so we don't lose it
 		if ( strlen( sv_nextmap->string ) )
 		{
-			_voteString = va( "%s %s; set nextmap \"%s\"", command.c_str(), cleanArgument.c_str(), sv_nextmap->string );
+			_voteString = va( "map %s; set nextmap \"%s\"", arg.c_str(), sv_nextmap->string );
 		}
 		else
 		{
-			_voteString = va( "%s %s", command.c_str(), cleanArgument.c_str() );
+			_voteString = va( "map %s", arg.c_str() );
 		}
 	}
 	else
