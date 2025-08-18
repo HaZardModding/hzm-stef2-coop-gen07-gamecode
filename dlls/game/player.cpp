@@ -14377,7 +14377,7 @@ void Player::setVoteText( const str &voteText )
 		if (sv_cinematic->integer) {
 			char* locPrintText = (char*)va("%s",voteText.c_str());
 			gamefix_replaceSubstring(locPrintText, " ", "^0_^8");
-			gi.SendServerCommand(entnum, va("stufftext \"locationprint 220 455 %s\"", locPrintText));		
+			gi.SendServerCommand(entnum, va("stufftext \"locationprint 10 300 %s\"", locPrintText));		
 		}
 	}
 #endif
