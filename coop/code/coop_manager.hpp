@@ -149,6 +149,8 @@ public:
     bool IsSameEnviroment(str levelCurrent, str levelOther);
     bool getSkippingCinematics();
     void setSkippingCinematics(bool skipping);
+    float getskippingCinematicsLast();
+    void setskippingCinematicsLast(float timeLast);
 
     void Init();
     void InitWorld();

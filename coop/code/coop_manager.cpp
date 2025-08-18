@@ -47,9 +47,15 @@ bool CoopManager::IsSameEnviroment(str levelCurrent, str levelOther) {
 bool CoopManager::getSkippingCinematics() {
     return skippingCinematics;
 }
-
 void CoopManager::setSkippingCinematics(bool skipping) {
     skippingCinematics = skipping;
+}
+
+float CoopManager::getskippingCinematicsLast() {
+    return skippingCinematicsLast;
+}
+void CoopManager::setskippingCinematicsLast(float timeLast) {
+    skippingCinematicsLast = timeLast;
 }
 
 
@@ -327,7 +333,7 @@ bool CoopManager::callvoteManager(const str& _voteString) {
             world->skipthread = "";
             ExecuteThread(skipthread);
             setSkippingCinematics(false);
-            skippingCinematicsLast = level.time;
+            setskippingCinematicsLast(level.time);
             return true;
         }
         return true;
@@ -411,13 +417,13 @@ bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
 
     //don't execute skipcinematic to fast
     //this pervents that another vote will be started while the current one is being skipped
-    if ((skippingCinematicsLast + 1) > level.time) {
+    if ((getskippingCinematicsLast() + 0.5f) > level.time) {
         return false;
     }
 
     //player presses long or repeatedly ESC
     if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && !getSkippingCinematics()) {
-        skippingCinematicsLast = level.time;
+        setskippingCinematicsLast(level.time);
         setSkippingCinematics(true);
         setPlayerData_cinematicEscapePressLastTime(player,level.time);
         multiplayerManager.callVote(player, "skipcinematic", "");
@@ -760,7 +766,9 @@ void CoopManager::LevelStart(CThread* gamescript) {
 //Cleans up stuff while world and entities still exist - Not executed if game server is quit
 void CoopManager::LevelEndCleanup(qboolean temp_restart) {
     coop_objectives_reset();
+
     setSkippingCinematics(false);
+    setskippingCinematicsLast(-99.1f);
 
     Player* player = nullptr;
     for (int i = 0; i < gameFixAPI_maxClients(); i++) {
