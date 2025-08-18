@@ -342,6 +342,41 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         CoopManager::Get().flushTikis();
         return true;
     }
+    if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_next") == 0 || Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_prev") == 0) {
+        str prevVal, nextVal, mapName = "";
+        cvar_t* cvar = gi.cvar_get("mapname");
+        if (cvar) {
+			mapName = cvar->string;
+            mapName = gamefix_getStringUntilChar(mapName,'?', 0);
+        }
+
+        str categoryName = gamefix_iniFindSectionByValue(_COOP_FILE_maplist, coopManager_maplist_contents, mapName);
+
+        if (!gamefix_iniFindPrevNextValueWrap_maplist(
+            _COOP_FILE_maplist,
+            coopManager_maplist_contents,
+            categoryName,
+            mapName, //gamefix_cleanMapName(level.mapname)
+            &prevVal,
+            &nextVal
+        )) {
+			gi.Printf("CoopManager::callvoteManager: Failed to find previous or next map for %s.\n", level.mapname.c_str());
+            return true;
+        }
+
+        if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_next") == 0) {
+            if (nextVal.length()) {
+                gi.SendConsoleCommand(va("map %s", nextVal.c_str()));
+            }
+        }
+        else { // coop_prev
+            if (prevVal.length()) {
+                gi.SendConsoleCommand(va("map %s", prevVal.c_str()));
+            }
+        }
+        return true;
+    }
+
     if (voteStringList.NumObjects() >= 2) {
         if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_ff") == 0) {
             float firedlyFireVal = atof(voteStringList.ObjectAt(2));
