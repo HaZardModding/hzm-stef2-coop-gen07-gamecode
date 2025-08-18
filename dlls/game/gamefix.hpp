@@ -199,7 +199,6 @@ bool				gamefix_setFileContents(str sFile, str& contents);
 gamefix_iniFileSection* gamefix_iniSectionsParse(const str& file, const char* data, int* section_count);
 void				gamefix_iniSectionsNamesGet(const str& file, Container<str>& sectionList, const str& contents);
 str					gamefix_iniSectionGet(const str& file, const str& data, const char* section_name);
-str					gamefix_iniSectionGet(const str& file, const str& data, const char* section_name);
 str					gamefix_iniSectionSet(const str& file, const str& file_contents, const str& section_name, const str& new_section_contents);
 str					gamefix_iniSectionDelete(const str& file, const str& file_contents, const str& section_name);
 str					gamefix_iniKeyGet(const str& file, const str& section_contents, const str& key, const str& altVal);
@@ -208,6 +207,9 @@ str					gamefix_iniKeyDelete(const str& file, const str& section_contents, const
 str					gamefix_iniFindSectionByKey(const str& file, const str& file_contents, const str& key);
 str					gamefix_iniFindSectionByValue(const str& file, const str& file_contents, const str& value);
 bool				gamefix_iniExtractKeyAndValueFromLine(const str& file, const str& line, str& key, str& value);
+bool				gamefix_iniFindPrevNextValueWrap(const str& file, const str& file_contents, const str& section_name, const str& current_value, str* out_prev, str* out_next);
+bool				gamefix_iniFindPrevNextValueWrap_maplist(const str& file, const str& file_contents, const str& section_name, const str& current_value, str* out_prev, str* out_next);
+
 
 bool				gamefix_containsNonANSI(const unsigned char* buffer, size_t length);
 char*				gamefix_convertUtf8UmlautsToAnsi(const char* utf8_str);
