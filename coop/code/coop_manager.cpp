@@ -204,7 +204,7 @@ bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessag
         }
 
         entityValue = entityData->stringValue();
-        if (Q_stricmpn("killmessage", entityValue.c_str(), 11) == 0) {
+        if (Q_stricmpn("killmessage ", entityValue.c_str(), 12) == 0) {
             //"uservar1" "killmessage AbC"
             if (entityValue.length() > 12) {
                 killmessageEng = "";
@@ -215,7 +215,7 @@ bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessag
         }
 
         entityValue = entityData->stringValue();
-        if (Q_stricmpn("killmessage_de", entityValue.c_str(), 14) == 0) {
+        if (Q_stricmpn("killmessage_de ", entityValue.c_str(), 15) == 0) {
             //"uservar1" "killmessage_de AbC"
             if (entityValue.length() > 15) {
                 killmessageDeu = "";
