@@ -360,6 +360,7 @@ private:
     bool coopEnabled = false;
     bool rpgEnabled = false;
 
+    float skippingCinematicsLast = -99.0f;
     bool skippingCinematics = false;
 
     bool friendlyFire = false;

@@ -326,9 +326,11 @@ bool CoopManager::callvoteManager(const str& _voteString) {
             str skipthread = world->skipthread;
             world->skipthread = "";
             ExecuteThread(skipthread);
+            setSkippingCinematics(false);
+            skippingCinematicsLast = level.time;
             return true;
         }
-        return false;
+        return true;
     }
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_flushtikis") == 0) {
         CoopManager::Get().flushTikis();
@@ -400,21 +402,27 @@ void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
 
 bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
 {
-    if (!player || !level.cinematic || (world->skipthread.length() <= 0)) {
+    if (!player || !level.cinematic || world->skipthread.length() <= 0) {
         return false;
     }
     if (g_gametype->integer == GT_SINGLE_PLAYER) {
         return true;
     }
 
+    //don't execute skipcinematic to fast
+    //this pervents that another vote will be started while the current one is being skipped
+    if ((skippingCinematicsLast + 1) > level.time) {
+        return false;
+    }
+
     //player presses long or repeatedly ESC
     if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && !getSkippingCinematics()) {
+        skippingCinematicsLast = level.time;
         setSkippingCinematics(true);
         setPlayerData_cinematicEscapePressLastTime(player,level.time);
         multiplayerManager.callVote(player, "skipcinematic", "");
         return false;
     }
-
     //player presses long ESC and a cinematic skip vote is active
     else {
         //check if player has voted, if not make him vote yes for skip, if a vote is active, then exit
