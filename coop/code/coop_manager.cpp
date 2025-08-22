@@ -317,6 +317,8 @@ void CoopManager::ClientThink(Player *player) {
 
     coopClass.coop_classCheckUpdateStat(player);
     coopClass.coop_classRegenerate(player);
+
+	coopCircleMenu.circleMenuThink(player);
 }
 
 bool CoopManager::callvoteManager(const str& _voteString) { 
@@ -1491,7 +1493,9 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_revivedStepLasttime(player,-997.6);
     setPlayerData_revivedStepCounter(player,0);
 
-    //see also will be cleaned up in: playerLeft
+    coopCircleMenu.circleMenuReset(player);
+
+    //see also will cleanup in: playerLeft
 }
 
 //Executed only when player connects first time
