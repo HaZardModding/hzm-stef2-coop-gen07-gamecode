@@ -26,6 +26,7 @@ extern Event EV_Player_circleMenuClear;
 class CoopCircleMenu
 {
 public:
+	/*
 	int		active = 0;
 	int		numOfSegments = 4; //[b60021] chrissstrahl - changed so we can SETUP circlemenu without inizialising/opening it first
 	//viewangle - stored upon opening the menu
@@ -43,13 +44,12 @@ public:
 	Vector	longtimeViewangle = Vector(0, 0, 0);
 	str		lastWidget = "";
 	int		lastSegment = -1;
-	
-	//[b60021] chrissstrahl
 	str		lastWeapon = "None";
 	bool	holdingRightButton = false;
 	bool	holdingLeftButton = false;
 	str		optionTextLastSend[CIRCLEMENU_MAX_OPTIONS];
 	str		optionIconLastSend[CIRCLEMENU_MAX_OPTIONS];
+
 
 	//circlemenu options
 	str		optionThreadOrCommand	[CIRCLEMENU_MAX_OPTIONS];
@@ -63,7 +63,7 @@ public:
 	//circlemenu dialog options  - used for dialog selection
 	str		optionDialogThread	[CIRCLEMENU_MAX_OPTIONSDIALOG];
 	str		optionDialogText	[CIRCLEMENU_MAX_OPTIONSDIALOG];
-	str		optionDialogIcon	[CIRCLEMENU_MAX_OPTIONSDIALOG];
+	str		optionDialogIcon	[CIRCLEMENU_MAX_OPTIONSDIALOG];*/
 
 	void circleMenuCall(Player* player, int iType);
 	void circleMenuHud(Player* player, bool show);

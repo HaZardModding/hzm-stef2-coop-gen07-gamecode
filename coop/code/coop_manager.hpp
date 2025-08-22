@@ -95,7 +95,7 @@ struct coopManager_client_persistant_s
     float       objectiveItemPrintedTitleLastTime = -1.0f;
     str         objectiveItemPrintedTitleLast = "";
 
-    bool        circleMenuActive = false;
+    short       circleMenuActive = 0;
     float       circleMenuActivatingTime = 0.0f;
     Vector      circleMenuViewAngle = Vector(0, 0, 0);
     short       circleMenuNumOfSegments = CIRCLEMENU_MAX_OPTIONS;
