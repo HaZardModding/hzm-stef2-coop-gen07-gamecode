@@ -254,7 +254,7 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	if ( player->coop_hasCoopInstalled() ) {
 		//[b60021] chrissstrahl - add circlemenu features
 		/*Event* evCircleSet1;
-		evCircleSet1 = new Event(EV_Player_circleMenuSet);
+		evCircleSet1 = new Event(EV_Player_coop_circleMenuSet);
 		evCircleSet1->AddInteger(1);
 		evCircleSet1->AddString(circleText1.c_str());
 		evCircleSet1->AddString("!ability");

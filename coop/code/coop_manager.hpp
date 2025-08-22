@@ -9,6 +9,7 @@
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
 #include "coop_playdialog.hpp"
+#include "coop_circlemenu.hpp"
 
 extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
@@ -93,6 +94,33 @@ struct coopManager_client_persistant_s
     float       objectiveItemCompletedAt[_COOP_SETTINGS_OBJECTIVES_MAX] = { 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f };
     float       objectiveItemPrintedTitleLastTime = -1.0f;
     str         objectiveItemPrintedTitleLast = "";
+
+    bool        circleMenuActive = false;
+    float       circleMenuActivatingTime = 0.0f;
+    Vector      circleMenuViewAngle = Vector(0, 0, 0);
+    short       circleMenuNumOfSegments = CIRCLEMENU_MAX_OPTIONS;
+    Vector      circleMenuLastViewAngle = Vector(0, 0, 0);
+    Vector      circleMenuLongtimeViewangle = Vector(0, 0, 0);
+    float       circleMenuLastThinkTime = 0.0f;
+    float       circleMenuLastMessageTime = 0.0f;
+    str         circleMenuLastWidget = "";
+    int         circleMenuLastSegment = -1;
+    str         circleMenuLastWeapon = "None";
+    bool        circleMenuHoldingRightButton = false;
+    bool        circleMenuHoldingLeftButton = false;
+    str         circleMenuOptionIconLastSend[CIRCLEMENU_MAX_OPTIONS] = { "", "", "", "" };
+    str         circleMenuOptionTextLastSend[CIRCLEMENU_MAX_OPTIONS] = { "", "", "", "" };
+
+    str         circleMenuOptionThreadOrCommand[CIRCLEMENU_MAX_OPTIONS] = { "", "", "", "" };
+    str         circleMenuOptionText[CIRCLEMENU_MAX_OPTIONS] = { "", "", "", "" };
+    str         circleMenuOptionIcon[CIRCLEMENU_MAX_OPTIONS] = { "", "", "", "" };
+    bool        circleMenuOptionIsScript[CIRCLEMENU_MAX_OPTIONS] = { false, false, false, false };
+    int         circleMenuOptionAmmount[CIRCLEMENU_MAX_OPTIONS] = { 0, 0, 0, 0 };
+    int         circleMenuOptionCost[CIRCLEMENU_MAX_OPTIONS] = { 0, 0, 0, 0 };
+    str         circleMenuOptionCostType[CIRCLEMENU_MAX_OPTIONS] = { "none", "none", "none", "none" };
+    str         circleMenuOptionDialogThread[CIRCLEMENU_MAX_OPTIONSDIALOG] = { "", "", "", "" };
+    str         circleMenuOptionDialogText[CIRCLEMENU_MAX_OPTIONSDIALOG] = { "", "", "", "" };
+    str         circleMenuOptionDialogIcon[CIRCLEMENU_MAX_OPTIONSDIALOG] = { "", "", "", "" };
 };
 extern coopManager_client_persistant_s coopManager_client_persistant_t[MAX_CLIENTS];
 

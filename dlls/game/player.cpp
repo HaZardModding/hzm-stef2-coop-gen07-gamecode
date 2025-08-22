@@ -58,6 +58,7 @@
 #include "../../coop/code/coop_gametype.hpp"
 #include "../../coop/code/coop_objectives.hpp"
 #include "../../coop/code/coop_armory.hpp"
+#include "../../coop/code/coop_circlemenu.hpp"
 #endif
 
 
@@ -1360,6 +1361,11 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 //--------------------------------------------------------------
+	{ &EV_Player_coop_circleMenuClear, &Player::coop_circleMenuClearEvent },
+	{ &EV_Player_coop_circleMenuDialogClear, &Player::coop_circleMenuDialogClearEvent },
+	{ &EV_Player_circleMenuDialogSet, &Player::coop_circleMenuDialogSetEvent },
+	{ &EV_Player_coop_circleMenu, &Player::coop_circleMenuEvent },
+	{ &EV_Player_coop_circleMenuSet, &Player::coop_circleMenuSetEvent },
 	{ &EV_Player_coop_classAbilityHudRecover, &Player::coop_classAbilityHudRecover },
 	{ &EV_Player_coop_setKillThread, &Player::coop_playerKillThread },
 	{ &EV_Player_coop_getLanguage, &Player::coop_getLanguage },
@@ -16158,6 +16164,106 @@ Rune* Player::coop_getRune() {
 }
 HoldableItem* Player::coop_returnHoldableItem() {
 	return _holdableItem;
+}
+
+Event EV_Player_coop_circleMenu
+(
+	"coop_circleMenu",
+	EV_SCRIPTONLY,
+	"f",
+	"integer-menutype",
+	"Shows Circle Menu to player, 1=Normal, 2=Dialog."
+);
+void Player::coop_circleMenuEvent(Event* ev)
+{
+	coopCircleMenu.circleMenuCall(this, ev->GetInteger(1));
+}
+
+Event EV_Player_coop_circleMenuSet
+(
+	"coop_circleMenuSet",
+	EV_SCRIPTONLY,
+	"issSIIIS",
+	"optionnumber optiontext threadOrCommandName imageORshader isThread iAmmount iCost sCostType",
+	"Adds a option for player from circle menu"
+);
+void Player::coop_circleMenuSetEvent(Event* ev)
+{
+	int iOption = ev->GetInteger(1);
+	str sText = ev->GetString(2);
+	str sThread = ev->GetString(3);
+	str sImage = "";
+	bool bIsThread = false;
+	int iAmmount = 999999;
+	int iCost = 0;
+	str sCostType = "";
+	if (ev->NumArgs() > 3) {
+		sImage = ev->GetString(4);
+	}
+	if (ev->NumArgs() > 4) {
+		bIsThread = (bool)ev->GetInteger(5);
+	}
+	if (ev->NumArgs() > 5) {
+		iAmmount = ev->GetInteger(6);
+	}
+	if (ev->NumArgs() > 7) {
+		iCost = ev->GetInteger(7);
+		sCostType = ev->GetString(8);
+	}
+
+	//gi.Printf(va("upgCircleMenuSetEvent[%d]: %s, %s, %s, %d, %d, %d, %s, %s\n", iOption, sText.c_str(), sThread.c_str(),sImage.c_str(),(int)bIsThread,iAmmount,iCost,sCostType.c_str(),client->pers.netname));
+
+	coopCircleMenu.circleMenuSet(this, iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
+}
+
+Event EV_Player_circleMenuDialogSet
+(
+	"coop_circleMenuDialogSet",
+	EV_SCRIPTONLY,
+	"issS",
+	"optionnumber optiontext threadname imageORshader",
+	"Adds a dialog option for player to circle menu"
+);
+void Player::coop_circleMenuDialogSetEvent(Event* ev)
+{
+	int iOption = ev->GetInteger(1);
+	str sText = ev->GetString(2);
+	str sThread = ev->GetString(3);
+	str sImage = "";
+	if (ev->NumArgs() > 3) {
+		sImage = ev->GetString(4);
+	}
+	coopCircleMenu.circleMenuDialogSet(this, iOption, sText, sThread, sImage);
+}
+
+Event EV_Player_coop_circleMenuClear
+(
+	"coop_circleMenuClear",
+	EV_SCRIPTONLY,
+	"F",
+	"int-item-number",
+	"Clears a option if a number is given. otherwise it clears all options for player circle menu"
+);
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
+void Player::coop_circleMenuClearEvent(Event* ev)
+{
+	int iOption = ev->GetInteger(1);
+	coopCircleMenu.circleMenuClear(this, iOption);
+}
+
+Event EV_Player_coop_circleMenuDialogClear
+(
+	"coop_circleMenuDialogClear",
+	EV_SCRIPTONLY,
+	"F",
+	"int-dialog-number",
+	"Clears all circle menu dialog options from menu"
+);
+//hzm gameupdate chrissstrahl [b60011]  - clears dialog options from circle menu
+void Player::coop_circleMenuDialogClearEvent(Event* ev)
+{
+	int iOption = ev->GetInteger(1);
+	coopCircleMenu.circleMenuDialogClear(this, iOption);
 }
 
 #endif
