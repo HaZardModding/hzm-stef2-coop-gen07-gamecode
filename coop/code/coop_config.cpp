@@ -119,7 +119,8 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("!notransport");
 	gameFixAPI_clCmdsWhitheListAdd("!showspawn");
 	gameFixAPI_clCmdsWhitheListAdd("!transferlife");
-	//gameFixAPI_clCmdsWhitheListAdd("!ability");
+	gameFixAPI_clCmdsWhitheListAdd("!ability");
+	gameFixAPI_clCmdsWhitheListAdd("!circle");
 	gameFixAPI_clCmdsWhitheListAdd("!targetnames");
 	gameFixAPI_clCmdsWhitheListAdd("!levelend");
 	gameFixAPI_clCmdsWhitheListAdd("!drop");
@@ -136,6 +137,8 @@ void CoopSettings::playerCommandsAllow()
 	gameFixAPI_clCmdsWhitheListAdd("coopradarscale");
 	gameFixAPI_clCmdsWhitheListAdd("clientrunthread");
 	gameFixAPI_clCmdsWhitheListAdd("dialogrunthread");
+
+	gameFixAPI_clCmdsWhitheListAdd("script");
 }
 void CoopSettings::playerScriptThreadsAllow()
 {
