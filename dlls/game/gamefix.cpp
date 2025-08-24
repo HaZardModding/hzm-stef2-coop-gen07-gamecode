@@ -3111,6 +3111,12 @@ str gamefix_replaceForLabelText(str sPure)
 		// Space to caret
 		else if (ch == ' ')
 			sPure[i] = '^';
+		// percent to asterix
+		else if (ch == '%')
+			sPure[i] = '*';
+		// backslash to forwardslash
+		else if (ch == '\\')
+			sPure[i] = '/';
 	}
 
 	return sPure;
@@ -3146,7 +3152,26 @@ str gamefix_replaceUmlautAndSpecials(str& text)
 		case 0xB4: // accent
 		case 0x92: // apostrophe
 		case 0x60: // backtick 
+		case 0x91: // prime
+		case 0x22: // dqoute
+		case 0x93: // LEFT DOUBLE QUOTATION MARK
+		case 0x94: // RIGHT DOUBLE QUOTATION MARK
+		case 0x84: // DOUBLE LOW - 9 QUOTATION MARK
+		case 0xAB: // LEFT - POINTING DOUBLE ANGLE QUOTATION MARK
+		case 0xBB: // RIGHT - POINTING DOUBLE ANGLE QUOTATION MARK
 			result += "'"; break;
+
+		case 0x25: // percent to asterix
+			result += "*"; break;
+			
+		// dashes to normal dash
+		case 0x96: //
+		case 0x97: //
+			result += "-"; break;
+
+		// Ellipse / NBSP
+		case 0x85: result += "..."; break; // tree dots char
+		case 0xA0: result += " ";   break; // NBSP -> Space
 
 		default:
 			result += text[i]; // leave unchanged
