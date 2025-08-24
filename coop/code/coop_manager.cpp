@@ -340,10 +340,23 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         }
         return true;
     }
+
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_flushtikis") == 0) {
         CoopManager::Get().flushTikis();
         return true;
     }
+
+    if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_end") == 0) {
+        CThread* thread = ExecuteThread("coop_endLevel", true, (Entity*)world);
+        if (thread == NULL) {
+            gamefix_printAllClients(_COOP_INFO_usedCommand_levelend1);
+        }
+        else {
+            gamefix_printAllClients(_COOP_INFO_usedCommand_levelend2);
+        }
+        return true;
+    }
+
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_next") == 0 || Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_prev") == 0) {
         str prevVal, nextVal, mapName = "";
         cvar_t* cvar = gi.cvar_get("mapname");
