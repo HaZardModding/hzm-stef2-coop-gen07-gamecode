@@ -85,6 +85,7 @@ public:
 	void coop_classCheckUpdateStat(Player* player);
 	void coop_classRegenerate(Player* player);
 	void coop_classSet(Player* player, str classToSet);
+	void coop_classApplayCirleMenu(Player* player);
 	void coop_classApplayAttributes(Player* player, bool changeOnly);
 	void coop_classPlayerUsed(Player* usedPlayer, Player* usingPlayer, Equipment* equipment);
 	int coop_classPlayersOfClass(str className);

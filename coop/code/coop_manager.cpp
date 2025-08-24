@@ -994,6 +994,7 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     }   
     
     int iVer =  atoi(coopVer);
+    coopCircleMenu.circleMenuSetup(player);
     setPlayerData_coopVersion(player, iVer);
     setPlayerData_coopSetupDone(player, true);
     setPlayerData_coopUpdateNoticeSend(player, false);

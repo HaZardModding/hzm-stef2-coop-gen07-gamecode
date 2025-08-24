@@ -7,6 +7,7 @@
 
 constexpr auto _COOP_COOP_allowesOnlyBlue = "Coop Mod allowes only blue team.\n";
 constexpr auto _COOP_INFO_coopCommandOnly = "^3This command is only usable during Coop.\n";
+constexpr auto _COOP_INFO_coopneeded = "^3You need the Coop Mod to use: %s.\n";
 
 constexpr auto _COOP_NAME_CLASS_technician = "Technician";
 constexpr auto _COOP_NAME_CLASS_medic = "Medic";

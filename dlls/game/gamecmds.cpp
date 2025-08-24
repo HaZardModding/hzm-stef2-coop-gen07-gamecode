@@ -63,6 +63,9 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "coopinput",coop_playerInput,true },
 	{ "coopradarscale",coop_playerRadarScale,true },
 
+	{ "!circle",coop_playerCircleMenu,true },
+	{ "!circledialog",coop_playerCircleMenuDialog,true },
+
 	{ "!thread",coop_playerThread,true },
 	{ "!testspawn",coop_playerTestSpawn,true },
 	{ "!follow",coop_playerFollowMe,true },
@@ -1623,6 +1626,43 @@ qboolean coop_playerClientId(const gentity_t* ent) {
 	}
 
 	CoopManager::Get().playerClIdDetected(ent, gi.argv(1));
+	return true;
+}
+
+qboolean coop_playerCircleMenu(const gentity_t* ent) {
+	if (!ent || !ent->entity || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	if (!ent->entity->isSubclassOf(Player)) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if(!player->coop_hasCoopInstalled()){
+		player->hudPrint(va(_COOP_INFO_coopneeded,"!circle"));
+		return true;
+	}
+
+	coopCircleMenu.circleMenuCall(player, 1);
+	return true;
+}
+qboolean coop_playerCircleMenuDialog(const gentity_t* ent) {
+	if (!ent || !ent->entity || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	if (!ent->entity->isSubclassOf(Player)) {
+		return true;
+	}
+
+	Player* player = (Player*)ent->entity;
+	if(!player->coop_hasCoopInstalled()){
+		player->hudPrint(va(_COOP_INFO_coopneeded,"!circledialog"));
+		return true;
+	}
+
+	coopCircleMenu.circleMenuCall(player, 2);
 	return true;
 }
 

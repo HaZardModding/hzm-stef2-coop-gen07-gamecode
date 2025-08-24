@@ -9,6 +9,7 @@
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/gamefix.hpp"
 #include "coop_manager.hpp"
+#include "coop_class.hpp"
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
 #include "coop_circlemenu.hpp"
@@ -101,6 +102,9 @@ void CoopCircleMenu::circleMenuCall(Player* player, int iType)
 		Event* activateWeaponEv;
 		activateWeaponEv = new Event(EV_Player_ActivateNewWeapon);
 		player->PostEvent(activateWeaponEv, 0.1f);
+
+		//reset to normal circlemenu items - !ability, !communicator, !objectives
+		circleMenuSetup(player);
 	}
 }
 
@@ -259,12 +263,11 @@ void CoopCircleMenu::circleMenuSet(Player* player, int iOption, str sText, str s
 		coopManager_client_persistant_t[player->entnum].circleMenuOptionTextLastSend[iOptionToArrayNum] = sText;
 		sText = gamefix_replaceForLabelText(sText);
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
+		//DEBUG_LOG(va("circleMenuSet: %sText labeltext %s\n", sWidgetName.c_str(), sText.c_str()));
 	}
-	else {
+	//else {
 		//gi.Printf("circleMenuSet already set: %d\n", iOptionToArrayNum);
-	}
-
-	gi.Printf(va("COOPDEBUG - EV_Player_coop_circleMenuSet[%d] %s\n", iOptionToArrayNum, sThread.c_str()));
+	//}
 }
 
 void CoopCircleMenu::circleMenuReset(Player *player)
@@ -308,10 +311,62 @@ void CoopCircleMenu::circleMenuReset(Player *player)
 
 void CoopCircleMenu::circleMenuSetup(Player *player)
 {
-	for (short i = 0; i < CIRCLEMENU_MAX_OPTIONS;i++) {
-		coopManager_client_persistant_t[player->entnum].circleMenuOptionIconLastSend[i] = "";
-		coopManager_client_persistant_t[player->entnum].circleMenuOptionTextLastSend[i] = "";
+	circleMenuReset(player);
+
+	str circleText1 = "";
+	str circleText2_eng = "Mission\nObjective";
+	str circleText2_deu = "Missions\nZiele";
+	str circleText3_eng = "Communicator";
+	str circleText3_deu = "Kommunikator";
+	str circleText4 = "";
+	str circleCmd1 = "";
+	str circleCmd2 = "togglemenu coop_obj";
+	str circleCmd3 = "togglemenu coop_com";
+	str circleCmd4 = "";
+	str circleImg1 = "";
+	str circleImg2 = "sysimg/hud/radar/blip-obj.tga";
+	str circleImg3 = "sysimg/icons/levelawards/level_award1.tga";
+	str circleImg4 = "";
+
+	//class related !ability
+	coopClass.coop_classApplayCirleMenu(player);
+
+	Event* evCircleSet2;
+	evCircleSet2 = new Event(EV_Player_coop_circleMenuSet);
+	evCircleSet2->AddInteger(2);
+	if (player->coop_hasLanguageGerman()) {
+		evCircleSet2->AddString(circleText2_deu.c_str());
 	}
+	else {
+		evCircleSet2->AddString(circleText2_eng.c_str());
+	}
+	evCircleSet2->AddString(circleCmd2.c_str());
+	evCircleSet2->AddString(circleImg2.c_str());
+	evCircleSet2->AddInteger(0);
+	player->PostEvent(evCircleSet2,0.15f);
+
+	Event* evCircleSet3;
+	evCircleSet3 = new Event(EV_Player_coop_circleMenuSet);
+	evCircleSet3->AddInteger(3);
+	if (player->coop_hasLanguageGerman()) {
+		evCircleSet3->AddString(circleText3_deu.c_str());
+	}
+	else {
+		evCircleSet3->AddString(circleText3_eng.c_str());
+	}
+	evCircleSet3->AddString(circleCmd3.c_str());
+	evCircleSet3->AddString(circleImg3.c_str());
+	evCircleSet3->AddInteger(0);
+	player->PostEvent(evCircleSet3, 0.20f);
+
+	Event* evCircleSet4;
+	evCircleSet4 = new Event(EV_Player_coop_circleMenuSet);
+	evCircleSet4->AddInteger(4);
+	evCircleSet4->AddString(circleText4.c_str());
+	evCircleSet4->AddString(circleCmd4.c_str());
+	evCircleSet4->AddString(circleImg4.c_str());
+	evCircleSet4->AddInteger(0);
+	player->PostEvent(evCircleSet4,0.25);
 }
       
 // Description: This sends a command to enable/disable a widget in a single burst
@@ -396,19 +451,11 @@ int CoopCircleMenu::circleMenuGetSegmentNumForAngle(float fAngle)
 // Description:	Checks if circle menu is active and manages interactions
 void CoopCircleMenu::circleMenuThink(Player *player)
 {
-	//0 + = down
-	//0 - = up
-	//1 - = left
-	//1 + right
-	//1 179+ to 0 to -179
-
 	//detect which movedirection the player did move towards
 	//on menu show exec reset
 	if (coopManager_client_persistant_t[player->entnum].circleMenuActive <= 0 /* || coopCircleMenu.thinkTime > level.time */) {
 		return;
 	}
-	
-//gi.Printf(va("Player::upgCircleMenuThink()->circleMenuGetWidgetName %i - %f\n", coopCircleMenu.active, coopCircleMenu.thinkTime));
 
 	//make sure it can not be abused by spec
 	if (player->getHealth() <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
@@ -416,8 +463,6 @@ void CoopCircleMenu::circleMenuThink(Player *player)
 			circleMenuHud(player,false);
 			coopManager_client_persistant_t[player->entnum].circleMenuActive = 0;
 		}
-//hudPrint("upgCircleMenuThink - dead or spec\n");//hzm coopdebug circlemenu
-
 		return;
 	}
 
@@ -425,11 +470,8 @@ void CoopCircleMenu::circleMenuThink(Player *player)
 	if (player->GetLastUcmd().buttons & BUTTON_ATTACKLEFT) {
 		if (!coopManager_client_persistant_t[player->entnum].circleMenuHoldingLeftButton) {
 			coopManager_client_persistant_t[player->entnum].circleMenuHoldingLeftButton = true;
-//hudPrint("c select\n");
 			coopManager_client_persistant_t[player->entnum].circleMenuLastThinkTime = level.time;
 			circleMenuSelect(player, coopManager_client_persistant_t[player->entnum].circleMenuLastSegment);
-
-//hudPrint(va("upgCircleMenuThink - select %d\n", coopCircleMenu.lastSegment));//hzm coopdebug circlemenu
 			return;
 		}
 	}
@@ -442,23 +484,16 @@ void CoopCircleMenu::circleMenuThink(Player *player)
 	Vector vViewangle = Vector(0, 0, 0);
 	player->GetPlayerView(NULL, &vViewangle);
 
-	//if all the same, we can abbort ?
-	/* //[b60021] chrissstrahl - deactivated to allow attackright button test
-	if (vViewangle == coopCircleMenu.lastViewangle) {
-		coopCircleMenu.thinkTime = level.time;
-		return;
-	}*/
-
 
 	if ((coopManager_client_persistant_t[player->entnum].circleMenuLastThinkTime + 0.05) > level.time) { return; }
 	coopManager_client_persistant_t[player->entnum].circleMenuLastThinkTime = level.time;
 
 	str sWidgetName;
 	int fSegmentNum = coopManager_client_persistant_t[player->entnum].circleMenuLastSegment;
-	//[b60021] chrissstrahl - select widget by right click
+
+	//select widget by right click
 	if (player->GetLastUcmd().buttons & BUTTON_ATTACKRIGHT) {
 		if (coopManager_client_persistant_t[player->entnum].circleMenuHoldingRightButton) {
-//hudPrint("upgCircleMenuThink - holding right\n");//hzm coopdebug circlemenu
 			return;
 		}
 
@@ -467,15 +502,12 @@ void CoopCircleMenu::circleMenuThink(Player *player)
 		if (fSegmentNum >= 4) {
 			fSegmentNum = 0;
 		}
-//hudPrint(va("upgCircleMenuThink - next %d\n",fSegmentNum));//hzm coopdebug circlemenu
 	}
 	else {
 		coopManager_client_persistant_t[player->entnum].circleMenuHoldingRightButton = false;
 	}
 
 	sWidgetName = circleMenuGetWidgetName(player, fSegmentNum);
-	//gi.Printf("Player::upgCircleMenuThink()->circleMenuGetWidgetName\n");
-
 	if (sWidgetName != "" && sWidgetName != coopManager_client_persistant_t[player->entnum].circleMenuLastWidget) {
 		str sCmd;
 		G_SendCommandToPlayer(player->edict, va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
@@ -483,59 +515,9 @@ void CoopCircleMenu::circleMenuThink(Player *player)
 			G_SendCommandToPlayer(player->edict, va("globalwidgetcommand %s shadercolor 0.5 0.5 0.5 1", coopManager_client_persistant_t[player->entnum].circleMenuLastWidget.c_str()));
 		}
 	}
-
-	//gi.Printf(va("Reset: %s\n", coopCircleMenu.lastWidget));
-	//str sPrint = va("prev: %s curr: %s\n", coopCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
+	
 	coopManager_client_persistant_t[player->entnum].circleMenuLastWidget = sWidgetName;
 	coopManager_client_persistant_t[player->entnum].circleMenuLastSegment = fSegmentNum;
-
-	/* OLD CODE WITH MOUSE MOVE DETECTION - janky!!!
-	//get difference - remember last viewangle
-	vDifference = (coopCircleMenu.lastViewangle - vViewangle);
-	coopCircleMenu.lastViewangle = vViewangle;
-
-	coopCircleMenu.longtimeViewangle[0] += vDifference[0];
-	coopCircleMenu.longtimeViewangle[1] += vDifference[1];
-
-	//angle on 2d screen - circle menu
-	float fAngle;
-	if ((coopCircleMenu.thinkTime + 0.05) > level.time) { return; }
-	coopCircleMenu.thinkTime = level.time;
-
-	//here is where the magic happens
-	float radians = atan2(coopCircleMenu.longtimeViewangle[1], coopCircleMenu.longtimeViewangle[0]);
-	float degrees = RAD2DEG(radians);
-	fAngle = AngleNormalize360( degrees );
-	fSegmentNum = upgCircleMenuGetSegmentNumForAngle(fAngle);
-
-
-//gi.Printf("Player::upgCircleMenuThink()->circleMenuGetWidgetName\n");
-	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
-
-	//reset
-	coopCircleMenu.longtimeViewangle = Vector(0,0,0);
-
-	//make sure we only react if it seams like a legit move - this will need more love
-	if (vDifference.length() < 0.1 || fSegmentNum < 0) { return; }
-
-	if (sWidgetName != "" && sWidgetName != coopCircleMenu.lastWidget) {
-		str sCmd;
-		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
-		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 1 1 1 1", coopCircleMenu.lastWidget.c_str()));
-	}
-
-	//gi.Printf(va("Reset: %s\n", coopCircleMenu.lastWidget));
-	//str sPrint = va("prev: %s curr: %s\n", coopCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
-	coopCircleMenu.lastWidget = sWidgetName;
-
-	/*if (fAngle != 0) {
-		sPrint = va("%s - '%d'\n",fSegmentNum);
-		gi.Printf(va(": %s\n", sPrint));
-	}
-	gi.Printf(va("Angle: %d\n", fAngle));
-	gi.Printf(va("length: %f\n", vDifference.length()));
-	
-	coopCircleMenu.lastSegment = fSegmentNum;*/
 }
 
 // Description:	Manages if the player has selected a item on the circle menu
@@ -579,8 +561,6 @@ void CoopCircleMenu::circleMenuSelect(Player* player, int iOption)
 		sThread = coopManager_client_persistant_t[player->entnum].circleMenuOptionDialogThread[iOption];
 	}
 
-	//gi.Printf(va("upgCircleMenuSelect: %i selected\n", (iOption + 1)));
-
 	if (bIsScript) {
 		ExecuteThread(sThread, true, player);
 	}
@@ -591,7 +571,7 @@ void CoopCircleMenu::circleMenuSelect(Player* player, int iOption)
 	circleMenuCall(player, coopManager_client_persistant_t[player->entnum].circleMenuActive);
 }
 
-//hzm gameupdate chrissstrahl [b60011]  - clears dialog option from circle menu
+//clears dialog option from circle menu
 void CoopCircleMenu::circleMenuClear(Player *player, int iOption)
 {
 	if (coopManager_client_persistant_t[player->entnum].circleMenuActive <= 0) {
@@ -617,7 +597,7 @@ void CoopCircleMenu::circleMenuClear(Player *player, int iOption)
 	}
 }
 
-//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
+//adds dialog option to circle menu
 void CoopCircleMenu::circleMenuDialogSet(Player *player, int iOption, str sText, str sThread, str sImage)
 {
 	//range 1 to CIRCLEMENU_MAX_OPTIONSDIALOG
@@ -627,7 +607,7 @@ void CoopCircleMenu::circleMenuDialogSet(Player *player, int iOption, str sText,
 	}
 
 	//if (coopCircleMenu.active <= 0) {
-		//gi.Printf(va("%s.upgCircleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
+		//gi.Printf(va("%s.CircleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
 	//}
 
 	int iOptionToArrayNum = (iOption - 1); //make it so that players can start with 1 instead of 0, substract 1
@@ -638,7 +618,6 @@ void CoopCircleMenu::circleMenuDialogSet(Player *player, int iOption, str sText,
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }
 
-	//gi.Printf("Player::upgCircleMenuDialogSet()->circleMenuGetWidgetName\n");
 	str sWidgetName = circleMenuGetWidgetName(player, iOptionToArrayNum);
 
 	//send commands to menu

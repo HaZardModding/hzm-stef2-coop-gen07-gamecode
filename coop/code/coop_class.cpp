@@ -169,6 +169,60 @@ void CoopClass::coop_classSet( Player *player , str classToSet )
 	gi.Printf(va("%s: %s\n", classToSet.c_str(), player->client->pers.netname));
 }
 
+void CoopClass::coop_classApplayCirleMenu(Player* player)
+{
+	if (!CoopManager::Get().getPlayerData_coopSetupDone(player)) {
+		return;
+	}
+	if (!player->coop_hasCoopInstalled()) {
+		return;
+	}
+	str currentClass = CoopManager::Get().getPlayerData_coopClass(player);
+	
+	str circleText1 = "";
+	str circleImg1 = "";
+	if (!Q_stricmp(currentClass.c_str(), COOP_CLASS_NAME_MEDIC)) {
+		//handle circle menu
+		circleImg1 = COOP_CLASS_MEDIC_ICON;
+		if (player->coop_hasLanguageGerman()) {
+			circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_DEU;
+		}
+		else {
+			circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_ENG;
+		}
+	}
+	else if (!Q_stricmp(currentClass.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS)) {
+		//handle circle menu
+		circleImg1 = COOP_CLASS_HEAVYWEAPONS_ICON;
+		if (player->coop_hasLanguageGerman()) {
+			circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU;
+		}
+		else {
+			circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG;
+		}
+	}
+	else { //technician
+		//handle circle menu
+		circleImg1 = COOP_CLASS_TECHNICIAN_ICON;
+		if (player->coop_hasLanguageGerman()) {
+			circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU;
+		}
+		else {
+			circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_ENG;
+		}
+	}
+
+	//set circle menu
+	Event* evCircleSet1;
+	evCircleSet1 = new Event(EV_Player_coop_circleMenuSet);
+	evCircleSet1->AddInteger(1);
+	evCircleSet1->AddString(circleText1.c_str());
+	evCircleSet1->AddString("!ability");
+	evCircleSet1->AddString(circleImg1.c_str());
+	evCircleSet1->AddInteger(0);
+	player->PostEvent(evCircleSet1,0.10);
+}
+
 void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 {
 	if (	!player ||
@@ -195,17 +249,8 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	int classGiveAmmoFed = 0;
 	int classGiveAmmoPlasma = 0;
 	int classGiveAmmoIdryll = 0;
-
-	//circle menu related
-	str circleText1 = "";
-	str circleImg1 = "";
 	
 	if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_MEDIC) ){
-		//handle circle menu
-		circleImg1 = COOP_CLASS_MEDIC_ICON;
-		if (player->coop_hasLanguageGerman()) {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_DEU;}
-		else {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_ENG;}
-
 		classMaxHealth		= COOP_CLASS_MEDIC_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_MEDIC_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_MEDIC_MAX_AMMO_PHASER;
@@ -216,11 +261,6 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_MEDIC_MASS;
 	}
 	else if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
-		//handle circle menu
-		circleImg1 = COOP_CLASS_HEAVYWEAPONS_ICON;
-		if (player->coop_hasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU; }
-		else { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG; }
-
 		classMaxHealth		= COOP_CLASS_HEAVYWEAPONS_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_HEAVYWEAPONS_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
@@ -231,11 +271,6 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_HEAVYWEAPONS_MASS;
 	}
 	else{ //technician
-		//handle circle menu
-		circleImg1 = COOP_CLASS_TECHNICIAN_ICON;
-		if (player->coop_hasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU; }
-		else { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_ENG; }
-
 		currentClass		= COOP_CLASS_NAME_TECHNICIAN;
 		classMaxHealth		= COOP_CLASS_TECHNICIAN_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_TECHNICIAN_START_ARMOR;
@@ -252,16 +287,7 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 
 	//hzm coop mod chrissstrahl - add a background shader to the hud, this shows the player his current class
 	if ( player->coop_hasCoopInstalled() ) {
-		//[b60021] chrissstrahl - add circlemenu features
-		/*Event* evCircleSet1;
-		evCircleSet1 = new Event(EV_Player_coop_circleMenuSet);
-		evCircleSet1->AddInteger(1);
-		evCircleSet1->AddString(circleText1.c_str());
-		evCircleSet1->AddString("!ability");
-		evCircleSet1->AddString(circleImg1.c_str());
-		evCircleSet1->AddInteger(0);
-		player->ProcessEvent(evCircleSet1);
-		*/
+		coop_classApplayCirleMenu(player);
 
 		//DelayedServerCommand( player->entnum , va( "globalwidgetcommand classBg shader coop_%s" , currentClass.c_str() ) );
 		gamefix_playerDelayedServerCommand( player->entnum , va( "exec co-op/cfg/%s.cfg" , currentClass.c_str() ) );
