@@ -935,7 +935,7 @@ void gamefix_aiTurnOff()
 //--------------------------------------------------------------
 void gamefix_aiTurnOn()
 {
-	if (!level.ai_on && gameFixAPI_inMultiplayer() && gamefix_getPlayers(true) <= 0) {
+	if (!level.ai_on && gameFixAPI_inMultiplayer()) {
 		level.ai_on = true;
 		gi.Printf(_GFixEF2_INFO_FUNC_ClientBegin);
 	}
