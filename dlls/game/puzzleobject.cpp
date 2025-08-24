@@ -666,9 +666,9 @@ void PuzzleObject::normalUse( void )
 	}
 
 	Entity *ent = gameFixAPI_getActivator(this);
-	if (ent && ent->isSubclassOf(Player) && _hudOn) {
-		gi.SendServerCommand(ent->entnum, va("stufftext \"popmenu %s 1\"\n", _hudName.c_str()));
-		entityVars.SetVariable("_activator", (float)ent->entnum);
+	if (ent && ent->isSubclassOf(Player) && !_hudOn) {
+		//gi.SendServerCommand(ent->entnum, va("stufftext \"popmenu %s 1\"\n", _hudName.c_str()));
+		entityVars.SetVariable("_activator", ent->entnum);
 	}	
 
 	// let script take it from here
