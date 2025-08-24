@@ -158,15 +158,11 @@ void CoopPlaydialog::showNextTextLine(const str &language, Container<str> &curre
 					dialogText += "~"; //add a line break
 				}
 			}
-			else {
-				DEBUG_LOG("# CoopPlaydialog::showNextTextLine - CONTAINETR OUT OF RANGE\n");
-			}
 		}
 		
 		dialogText += currentDialogTextSnippets.ObjectAt(currentDialogContainerPos);
 	}
 	else {
-		DEBUG_LOG("# [%d] CoopPlaydialog::showNextTextLine bounds for %s\n", currentDialogContainerPos, dialogText.c_str());
 		return;
 	}
 	
