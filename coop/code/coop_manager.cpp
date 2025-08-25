@@ -843,6 +843,9 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
 
         //save settings to ini
         coopSettings.saveSettings();
+
+        //make sure the model cache is cleared, so that removed models and animations are not still in memory
+        CoopManager::Get().flushTikis();
     }
 }
 
