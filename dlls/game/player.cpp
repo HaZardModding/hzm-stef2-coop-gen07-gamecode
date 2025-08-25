@@ -1361,6 +1361,7 @@ CLASS_DECLARATION( Sentient, Player, "player" )
 //--------------------------------------------------------------
 // COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 //--------------------------------------------------------------
+	{ &EV_Player_coop_classLocked, &Player::coop_classLockedEvent },
 	{ &EV_Player_coop_circleMenuClear, &Player::coop_circleMenuClearEvent },
 	{ &EV_Player_coop_circleMenuDialogClear, &Player::coop_circleMenuDialogClearEvent },
 	{ &EV_Player_circleMenuDialogSet, &Player::coop_circleMenuDialogSetEvent },
@@ -16244,7 +16245,7 @@ Event EV_Player_coop_circleMenuClear
 	"int-item-number",
 	"Clears a option if a number is given. otherwise it clears all options for player circle menu"
 );
-//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
+//adds dialog option to circle menu
 void Player::coop_circleMenuClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
@@ -16259,11 +16260,28 @@ Event EV_Player_coop_circleMenuDialogClear
 	"int-dialog-number",
 	"Clears all circle menu dialog options from menu"
 );
-//hzm gameupdate chrissstrahl [b60011]  - clears dialog options from circle menu
+//clears dialog options from circle menu
 void Player::coop_circleMenuDialogClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
 	coopCircleMenu.circleMenuDialogClear(this, iOption);
+}
+
+Event EV_Player_coop_classLocked
+(
+	"coop_classLocked",
+	EV_SCRIPTONLY,
+	"f",
+	"bool-yes-or-no",
+	"Locks/Unlocks player to their current Coop class"
+);
+void Player::coop_classLockedEvent(Event* ev)
+{
+	if (!gameFixAPI_inMultiplayer()) {
+		return;
+	}
+	bool lock = ev->GetBoolean(1);
+	CoopManager::Get().setPlayerData_coopClassLocked(this, lock);
 }
 
 #endif
