@@ -15,6 +15,7 @@
 extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
 extern Event EV_World_coop_configstrRemove;
+extern Event EV_Trigger_GetLastActivatingEntity;
 
 
 //windows/linux+other handle

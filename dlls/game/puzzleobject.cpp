@@ -25,6 +25,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 Event EV_PuzzleObject_SetOpenDistance
 (
 	"puzzleobject_opendistance",
@@ -188,6 +196,7 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_coop_setItemUsedThread, & PuzzleObject::coop_setItemUsedThread }, //This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
 	{ &EV_PuzzleObject_coop_setUsedStartThread, &PuzzleObject::coop_setUsedStartThread }, //thread called when puzzle is started to be used
 	{ &EV_PuzzleObject_coop_getLastActivatingEntity, &PuzzleObject::coop_getLastActivatingEntity },
+	{ &EV_Trigger_GetLastActivatingEntity, &PuzzleObject::coop_getLastActivatingEntity },
 #endif
 
 
@@ -715,6 +724,21 @@ void PuzzleObject::timedUse( void )
 
 	if ( !_hudOn )
 	{
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		if (CoopManager::Get().IsCoopEnabled()) {
+			ScriptVariable *usedThread = entityVars.GetVariable("coop_usedStartThread");
+			if (usedThread && usedThread->stringValue() != "") {
+				ExecuteThread(usedThread->stringValue(), true, this);
+			}
+		}
+#endif
+
+
 		showTimerHud();
 	}
 
