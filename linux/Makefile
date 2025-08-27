@@ -153,6 +153,7 @@ GOBJ =\
 	$(B)/coop/code/coop_playdialog.o \
 	$(B)/coop/code/coop_class.o \
 	$(B)/coop/code/coop_circlemenu.o \
+	$(B)/coop/code/coop_forcefield.o \
 	\
 	$(B)/game/gamefix.o \
 	$(B)/game/api_stef2.o \
@@ -342,6 +343,8 @@ $(B)/coop/code/coop_playdialog.o : $(GDIRCOOP)/coop_playdialog.cpp | $(B)/coop/c
 $(B)/coop/code/coop_class.o : $(GDIRCOOP)/coop_class.cpp | $(B)/coop/code/
 	$(DO_GAME_SHLIB_CC)
 $(B)/coop/code/coop_circlemenu.o : $(GDIRCOOP)/coop_circlemenu.cpp | $(B)/coop/code/
+	$(DO_GAME_SHLIB_CC)
+$(B)/coop/code/coop_forcefield.o : $(GDIRCOOP)/coop_forcefield.cpp | $(B)/coop/code/
 	$(DO_GAME_SHLIB_CC)
 $(B)/coop/code/:
 	mkdir -p $@

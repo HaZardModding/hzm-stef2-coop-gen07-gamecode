@@ -38,6 +38,16 @@ extern Event EV_ScriptSlave_NewOrders;
 
 class ScriptSlave : public Trigger
 	{
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	public:
+		float				coop_scriptSlaveGetForcefieldNumber( void );
+#endif
+
+
 	private:
 		//--------------------------------------------------------------
 		// GAMEFIX - Fixed: Warning C26495: The Variable ? was not initialized. A Membervariable needs always to be initialized (type.6) - chrissstrahl

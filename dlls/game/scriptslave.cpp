@@ -2755,3 +2755,13 @@ void ScriptSlave::setCanBeAttackedByOtherSlaves(Event *ev)
 {
 	_canBeAttackedByOtherScriptSlaves = ev->GetBoolean( 1 );
 }
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - Allow Access - chrissstrahl
+	//--------------------------------------------------------------
+	float ScriptSlave::coop_scriptSlaveGetForcefieldNumber(void) {
+		return _forcefieldNumber;
+	}
+#endif

@@ -19,6 +19,16 @@
 #include "player.h"
 #include "weaputils.h"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		#include "../../coop/code/coop_forcefield.hpp"
+		extern CoopForcefield coopForcefield;
+#endif
+
+
 #define DETAILED_SCAN_TIME 1.5
 #define MAX_TARGET_DISTANCE			600.0f
 #define MAX_TARGET_DISTANCE_SQUARED	MAX_TARGET_DISTANCE * MAX_TARGET_DISTANCE
@@ -355,6 +365,17 @@ void Equipment::scanStart(Event* ev)
 	if(_scanEndFrame == level.framenum)
 	{
 		PostEvent( EV_Scan, 0.05f );
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		//allow scanning forcefileds
+		coopForcefield.scan(owner, this);
+#endif
+
+
 		return;
 	}
 
@@ -381,12 +402,20 @@ void Equipment::scanEnd(Event* ev)
 	if ( shootingSkin )
 		ChangeSkin( shootingSkin, false );
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	coopForcefield.scanEnd(owner, this);
+#endif
+
+
 	CancelEventsOfType( EV_Scan );
 }
 
 void Equipment::scan( Event *ev )
 {
-	
 	if ( owner && owner->isSubclassOf( Player ) )
 	{
 		Event *newEvent;
@@ -399,7 +428,6 @@ void Equipment::scan( Event *ev )
 	
 	CancelEventsOfType( EV_Scan );
 	PostEvent( EV_Scan, 0.05f );
-	
 }
 
 

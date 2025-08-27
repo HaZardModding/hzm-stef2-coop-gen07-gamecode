@@ -29,6 +29,15 @@
 
 
 //--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+	#include "../../coop/code/coop_forcefield.hpp"
+	extern CoopForcefield coopForcefield;
+#endif
+
+
+//--------------------------------------------------------------
 // GAMEFIX - Fixed: Phaser shots and hits being count on a per bullet rather as per beam basis - chrissstrahl
 //--------------------------------------------------------------
 #include "gamefix.hpp"
@@ -2289,7 +2298,16 @@ float BulletAttack(
 		decal->setDirection( trace.plane.normal );
 		decal->setOrientation( "random" );
 		decal->setRadius( 8 );*/
-		
+
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+		coopForcefield.passthroughBullettAtack(owner, trace, start, end, meansofdeath);
+#endif
+
+
 		if ( trace.ent )
 			ent = trace.ent->entity;
 

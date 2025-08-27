@@ -396,6 +396,7 @@
     <ClCompile Include="..\..\coop\code\coop_circlemenu.cpp" />
     <ClCompile Include="..\..\coop\code\coop_class.cpp" />
     <ClCompile Include="..\..\coop\code\coop_config.cpp" />
+    <ClCompile Include="..\..\coop\code\coop_forcefield.cpp" />
     <ClCompile Include="..\..\coop\code\coop_manager.cpp" />
     <ClCompile Include="..\..\coop\code\coop_gametype.cpp" />
     <ClCompile Include="..\..\coop\code\coop_objectives.cpp" />
@@ -1406,6 +1407,7 @@
     <ClInclude Include="..\..\coop\code\coop_circlemenu.hpp" />
     <ClInclude Include="..\..\coop\code\coop_class.hpp" />
     <ClInclude Include="..\..\coop\code\coop_config.hpp" />
+    <ClInclude Include="..\..\coop\code\coop_forcefield.hpp" />
     <ClInclude Include="..\..\coop\code\coop_generalstrings.hpp" />
     <ClInclude Include="..\..\coop\code\coop_manager.hpp" />
     <ClInclude Include="..\..\coop\code\coop_gametype.hpp" />

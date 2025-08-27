@@ -10,6 +10,7 @@
 #include "coop_generalstrings.hpp"
 #include "coop_playdialog.hpp"
 #include "coop_circlemenu.hpp"
+#include "coop_forcefield.hpp"
 
 extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
