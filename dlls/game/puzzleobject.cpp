@@ -718,6 +718,9 @@ void PuzzleObject::timedUse( void )
 	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
 	//--------------------------------------------------------------
 	player = gameFixAPI_getActivator(this);
+	if (!player) {
+		return;
+	}
 
 
 	// Turn on the timed hud if we haven't yet
