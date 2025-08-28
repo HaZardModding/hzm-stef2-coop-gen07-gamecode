@@ -46,6 +46,9 @@ void ModeCoop::init(int maxPlayers)
 	gi.cvar_set("g_aimviewangles", "1");
 
 	gi.Printf("ModeCoop: Coop gametype initialized.\n");
+
+	//clear all tikis
+	CoopManager::Get().flushTikis();
 }
 
 //Executed from: MultiplayerManager::initItems - only if gamemode is coop
