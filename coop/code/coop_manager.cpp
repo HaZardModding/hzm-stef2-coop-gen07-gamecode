@@ -503,6 +503,19 @@ bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
     }
 }
 
+void CoopManager::puzzleObjectUsedstartthread(PuzzleObject *puzzle)
+{
+    if (CoopManager::Get().IsCoopEnabled()) {
+        ScriptVariable* usedThread = puzzle->entityVars.GetVariable("coop_usedStartThread");
+        if (usedThread) {
+            str threadName = usedThread->stringValue();
+            if (threadName.length()) {
+                ExecuteThread(threadName, true, puzzle);
+            }
+        }
+    }
+}
+
 CoopManager::MapFlags CoopManager::getMapFlags()
 {
     return mapFlags;

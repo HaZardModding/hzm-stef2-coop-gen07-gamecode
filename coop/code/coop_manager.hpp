@@ -5,6 +5,7 @@
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/mp_modeBase.hpp"
+#include "../../dlls/game/puzzleobject.hpp"
 #include <qcommon/gameplaymanager.h>
 #include "coop_config.hpp"
 #include "coop_generalstrings.hpp"
@@ -16,7 +17,6 @@ extern Event EV_Player_DeactivateWeapon;
 extern Event EV_Player_ActivateNewWeapon;
 extern Event EV_World_coop_configstrRemove;
 extern Event EV_Trigger_GetLastActivatingEntity;
-
 
 //windows/linux+other handle
 #ifdef WIN32
@@ -212,6 +212,8 @@ public:
     void callvoteUpdateUi(str sText, str sValue, str sWidget);
     void callvoteUpdateUiPlayer(Player* player, str sValue, str sWidget);
     bool callvoteSkipCinematicPlayer(Player* player);
+
+    void puzzleObjectUsedstartthread(PuzzleObject* puzzle);
 
     MapFlags getMapFlags();
     float getSkillBasedDamage(float currentDamage);

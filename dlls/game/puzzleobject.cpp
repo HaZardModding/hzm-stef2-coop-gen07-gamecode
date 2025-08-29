@@ -733,12 +733,7 @@ void PuzzleObject::timedUse( void )
 // COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
-		if (CoopManager::Get().IsCoopEnabled()) {
-			ScriptVariable *usedThread = entityVars.GetVariable("coop_usedStartThread");
-			if (usedThread && usedThread->stringValue() != "") {
-				ExecuteThread(usedThread->stringValue(), true, this);
-			}
-		}
+		CoopManager::Get().puzzleObjectUsedstartthread(this);
 #endif
 
 
