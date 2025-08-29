@@ -1,10 +1,3 @@
-//-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// E-Mail:	chrissstrahl@yahoo.de
-//
-// Circle Menu Related Code, used to add New Mewnu Type to the game, like known from modern games.
-//-----------------------------------------------------------------------------------
-
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/gamefix.hpp"
@@ -387,18 +380,6 @@ void CoopCircleMenu::circleMenuSwitchWidgets(Player *player, str widget1, str wi
 	G_SendCommandToPlayer(player->edict, command.c_str());
 }
 
-//[b60011] chrissstrahl
-//================================================================
-// Name:        upgCircleMenuIsActive
-// Class:       -
-//              
-// Description: Checks if coopCircleMenu is active for player
-//              
-// Parameters:  -
-//              
-// Returns:     bool
-//              
-//================================================================
 bool CoopCircleMenu::circleMenuIsActive(Player* player)
 {
 	if (player) {
