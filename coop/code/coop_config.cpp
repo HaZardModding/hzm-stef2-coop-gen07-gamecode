@@ -143,6 +143,12 @@ void CoopSettings::playerCommandsAllow()
 void CoopSettings::playerScriptThreadsAllow()
 {
 	//Allowed script threads in coop multiplayer
+	CoopSettings_clientThreads_s tricorderModSolve;
+	tricorderModSolve.command = "clientrunthread";
+	tricorderModSolve.thread = "tricorderModSolve";
+	tricorderModSolve.adminRequired = true;
+	CoopSettings_playerScriptThreadsAllowList.AddObject(tricorderModSolve);
+
 	CoopSettings_clientThreads_s trirteClick;
 	trirteClick.command = "clientrunthread";
 	trirteClick.thread = "trirteClick";

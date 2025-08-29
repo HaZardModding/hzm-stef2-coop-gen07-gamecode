@@ -108,6 +108,7 @@ struct CoopSettings_killScore_s {
 extern Container<CoopSettings_killScore_s> CoopSettings_scoreKillList;
 
 struct CoopSettings_clientThreads_s {
+	bool adminRequired = false;
 	str command = "";
 	str command2 = "";
 	str thread = "";
