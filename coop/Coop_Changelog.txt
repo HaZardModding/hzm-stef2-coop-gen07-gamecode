@@ -63,6 +63,7 @@ $entityModel.coop_traceHitsSky("tag_horizontal" , 99999) - Does a trace to check
 $entity.coop_getLastAttacker() - Returns last Attacker of this entity
 $entity.coop_removeViewmode(viewModeName) - Removes viewmode visibilty from entity
 $entity.coop_boosterNearbyPlayer(boostType,range,amount,max) - Boots player within range with ammo or health or armor
+$player.coop_classLocked(bool-int) - sets if player can switch his class or if it is lockedin
 $player.coop_playerKillThread(threadName) - sets thread to run when player gets killed
 $player.coop_getLanguage() - gets Language string of player (Deu/Eng)
 $player.coop_getName() - gets Player Multiplayer name
@@ -130,6 +131,8 @@ coopradarscale			//allowing player to set the scale of the radar hud
 !skill					//allowing player to see and set skill level
 !info					//allowing player to retrive detailed informations from server
 !mapname				//allowing player to get map name
+!circle					//access circle menu
+!circledialog			//access circle dialog menu
 
 !login					//Admin - login
 !logout					//Admin - logout
