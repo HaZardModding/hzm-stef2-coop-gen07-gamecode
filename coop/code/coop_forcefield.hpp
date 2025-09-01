@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 
 class CoopForcefield
@@ -10,3 +12,5 @@ public:
 	void scan(Entity* owner, Equipment* scanner);
 	void scanEnd(Entity* owner, Equipment* scanner);
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/gamefix.hpp"
@@ -100,3 +102,5 @@ void CoopForcefield::scanEnd(Entity* owner, Equipment* scanner)
 	Player* player = (Player*)owner;
 	player->removeHud("coop_tricorderFreq");
 }
+
+#endif

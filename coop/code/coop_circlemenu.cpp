@@ -1,3 +1,5 @@
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "../../dlls/game/mp_manager.hpp"
 #include "../../dlls/game/gamefix.hpp"
@@ -633,3 +635,5 @@ void CoopCircleMenu::circleMenuDialogClear(Player *player, int iOption)
 		}
 	}
 }
+
+#endif

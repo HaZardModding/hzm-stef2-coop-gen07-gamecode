@@ -6,6 +6,8 @@
 //-----------------------------------------------------------------------------------
 #pragma once
 
+#ifdef ENABLE_COOP
+
 #include "../../dlls/game/_pch_cpp.h"
 #include "coop_manager.hpp"
 
@@ -43,3 +45,5 @@ public:
 	void circleMenuDialogClear(Player* player, int iOption);
 };
 extern CoopCircleMenu coopCircleMenu;
+
+#endif

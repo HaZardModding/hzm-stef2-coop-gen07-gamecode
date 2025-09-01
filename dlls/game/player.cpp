@@ -11900,7 +11900,14 @@ void Player::ClearDialog( Event *ev )
 
 void Player::ClearDialog( void )
 {
+
+//--------------------------------------------------------------
+// COOP Generation 7.000 - Run coop stop Dialog Code - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
 	coopPlaydialog.stopDialog();
+#endif
+
 
 	// Clear the dialog info
 	_dialogEntnum = ENTITYNUM_NONE;
