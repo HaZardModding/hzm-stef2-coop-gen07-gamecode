@@ -153,10 +153,7 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
         CoopSettings_clientThreads_s threadListTemp;
         threadListTemp = CoopSettings_playerScriptThreadsAllowList.ObjectAt(i);
 
-        //check if admin is required
-        if (threadListTemp.adminRequired && !player->coop_isAdmin()) {
-            continue;
-        }
+
 
         //command match
         if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
@@ -180,6 +177,12 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
                         return false;
                     }
                 }
+
+                //check if admin is required
+                if (threadListTemp.adminRequired && !player->coop_isAdmin()) {
+                    return true;
+                }
+
                 ExecuteThread(threadName, true, entPlayer);
                 return true;
             }
