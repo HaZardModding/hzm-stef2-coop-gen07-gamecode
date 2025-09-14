@@ -186,7 +186,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\..\Shared;..\..\DLLs;..\..\Executable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENABLE_COOP;NDEBUG;WIN32;_WINDOWS;_USRDLL;FGAME_EXPORTS;GAME_DLL;MISSIONPACK;ENABLE_ALTROUTING;MSVC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\./Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\./Release\game.pch</PrecompiledHeaderOutputFile>
