@@ -462,6 +462,12 @@ void MultiplayerManager::initMultiplayerGame( void )
 				_multiplayerGame = nullptr;
 			}
 
+			//--------------------------------------------------------------
+			// COOP Generation 7.00.01 - Fixed: Game using dm game type, we need team for coop - chrissstrahl
+			// Also fixes that players are not able to join coop games
+			//--------------------------------------------------------------
+			gi.cvar_set("mp_gametype", "1");
+
 			_multiplayerGame = new ModeCoop();
 			
 			//activate coop only if this is a coop level
