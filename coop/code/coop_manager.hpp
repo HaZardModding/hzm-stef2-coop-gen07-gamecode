@@ -75,7 +75,10 @@ struct coopManager_client_persistant_s
 
     bool        targetedShow = false;
     int         targetedLastEntNum = -1;
-    
+
+    str         communicatorSendNames[_COOP_SETTINGS_PLAYER_SUPPORT_MAX]{ "", "", "", "", "", "", "", "" };
+    bool        disconnecting = false;
+
     Vector      radarBlipPositionLast[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f),Vector(0.0f, -999.0f, -999.0f) };
     bool        radarBlipActive[_COOP_SETTINGS_RADAR_BLIPS_MAX] = { false,false,false,false,false,false,false,false,false };
     bool        radarSelectedActive = false;
@@ -181,6 +184,7 @@ public:
     void setSkippingCinematics(bool skipping);
     float getskippingCinematicsLast();
     void setskippingCinematicsLast(float timeLast);
+    void communicatorTransporterUiUpdate();
 
     void Init();
     void InitWorld();
@@ -207,6 +211,7 @@ public:
     void ActorThink(Actor* actor);
     void ClientThink(Player* player);
     void playerAdminThink(Player* player);
+    void communicatorUpdateUi();
 
     bool callvoteManager(const str& _voteString);
     void callvoteUpdateUi(str sText, str sValue, str sWidget);
@@ -383,6 +388,11 @@ public:
     bool getPlayerData_targetedShow(Player* player);
     void setPlayerData_targetedShow(Player* player, bool status);
 
+    void setPlayerData_communicatorSendNames_reset(Player *player);
+
+    void setPlayerData_disconnecting(int clientNum, bool status);
+    bool getPlayerData_disconnecting(int clientNum);
+
 private:
     CoopManager() = default;
 
@@ -402,6 +412,8 @@ private:
 
     int enemyKillPoints = 0;
     int playerKillPenalty = 0;
+    
+	bool communicatorTransporterUiUpdateCheck = true;
 
     // Possibly other future flags...
 };

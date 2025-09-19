@@ -57,6 +57,9 @@ float CoopManager::getskippingCinematicsLast() {
 void CoopManager::setskippingCinematicsLast(float timeLast) {
     skippingCinematicsLast = timeLast;
 }
+void CoopManager::communicatorTransporterUiUpdate() {
+    communicatorTransporterUiUpdateCheck = true;
+}
 
 
 
@@ -322,6 +325,7 @@ void CoopManager::ClientThink(Player *player) {
     playerAdminThink(player);
     coop_objectivesUpdatePlayer(player);
     coop_radarUpdate(player);
+    communicatorUpdateUi();
 
     coopClass.coop_classCheckUpdateStat(player);
     coopClass.coop_classRegenerate(player);
@@ -1036,6 +1040,7 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     setPlayerData_coopSetupDone(player, true);
     setPlayerData_coopUpdateNoticeSend(player, false);
     gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_class");
+    communicatorTransporterUiUpdate();
 
     if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
         //let player know that there is a newer version of the coop mod
@@ -1410,6 +1415,50 @@ void CoopManager::playerAdminThink(Player* player) {
     }
 }
 
+void CoopManager::communicatorUpdateUi()
+{
+    if (!communicatorTransporterUiUpdateCheck) {
+        return;
+    }
+    communicatorTransporterUiUpdateCheck = false;
+
+    Player* player = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+
+        player = GetPlayer(i);
+        if (!player || gameFixAPI_isBot(player) || player->coop_getCoopVersion() == 0) {
+            continue;
+        }
+
+        if (i >= _COOP_SETTINGS_PLAYER_SUPPORT_MAX) {
+            break;
+        }
+
+        Player* otherPlayer = nullptr;
+        
+        for (int j = 0; j < _COOP_SETTINGS_PLAYER_SUPPORT_MAX; j++) {
+            otherPlayer = GetPlayer(j);
+            if (otherPlayer && otherPlayer->client && coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != otherPlayer->client->pers.netname || coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != "") {
+                str send = "$$Empty$$";
+                if (otherPlayer && otherPlayer->client && getPlayerData_disconnecting(otherPlayer->entnum) == false) {
+                    send = otherPlayer->client->pers.netname;
+                    coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] = otherPlayer->client->pers.netname;
+                }
+                else {
+                    coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] == "";
+                }
+
+				char* name = (char*)send.c_str();
+                Q_CleanStr(name);
+                gamefix_replaceSubstring(name, " ", "_");
+
+                gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand coop_comTran%d title %s", j, send.c_str()));
+            }
+
+        }
+    }
+}
+
 void CoopManager::playerMoveToSpawn(Player* player) {
     Entity* spawnPoint = multiplayerManager.gameFixAPI_getMultiplayerGame()->getSpawnPoint(player);
     if (!spawnPoint) {
@@ -1532,6 +1581,7 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_revivedStepCounter(player,0);
 
     coopCircleMenu.circleMenuReset(player);
+    setPlayerData_communicatorSendNames_reset(player);
 
     //see also will cleanup in: playerLeft
 }
@@ -1547,6 +1597,9 @@ void CoopManager::playerConnect(int clientNum) {
     if (level.time > 30.0f) {
         configstringCleanup();
     }
+
+    setPlayerData_disconnecting(clientNum,false);
+    communicatorTransporterUiUpdate();
     
 
     DEBUG_LOG("# playerConnect\n");
@@ -1558,6 +1611,9 @@ void CoopManager::playerDisconnect(Player* player) {
         return;
     }
     DEBUG_LOG("# playerDisconnect\n");
+
+    setPlayerData_disconnecting(player->entnum, true);
+    communicatorTransporterUiUpdate();
 
     //update player data, so that it can be written to ini
     playerDataSave(player);
@@ -1607,6 +1663,8 @@ void CoopManager::playerJoined(Player* player) {
 void CoopManager::playerEntered(gentity_t* ent) {
     if (ent && ent->entity) {
         ExecuteThread("coop_justEntered", true, ent->entity);
+
+        communicatorTransporterUiUpdate();
     }
     DEBUG_LOG("# playerEntered\n");
 }
@@ -3025,6 +3083,36 @@ void CoopManager::setPlayerData_coopClassLocked(Player* player, bool status)
         return;
     }
     coopManager_client_persistant_t[player->entnum].coopClassLocked = status;
+}
+
+void CoopManager::setPlayerData_communicatorSendNames_reset(Player* player)
+{
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_communicatorSendNames_reset() nullptr player");
+        return;
+    }
+    
+    for (int i = 0; i < _COOP_SETTINGS_PLAYER_SUPPORT_MAX; i++) {
+        coopManager_client_persistant_t[player->entnum].communicatorSendNames[i] = "";
+    }
+}
+
+void CoopManager::setPlayerData_disconnecting(int clientNum, bool status)
+{
+    if (clientNum < 0 || clientNum >= gameFixAPI_maxClients()) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_disconnecting() clientNum out of range");
+        return;
+    }
+    coopManager_client_persistant_t[clientNum].disconnecting = status;
+}
+
+bool CoopManager::getPlayerData_disconnecting(int clientNum)
+{
+    if (clientNum < 0 || clientNum >= gameFixAPI_maxClients()) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_disconnecting() clientNum out of range");
+        return true;
+    }
+    return coopManager_client_persistant_t[clientNum].disconnecting;
 }
 
 #endif

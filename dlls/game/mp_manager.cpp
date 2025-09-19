@@ -1064,8 +1064,17 @@ void MultiplayerManager::changePlayerName( Player *player, const str &playerName
 	{
 		if ( _playerData[ player->entnum ]._named && ( _playerData[ player->entnum ]._name != playerName ) )
 		{
-			// Inform all of the players that the player has changed his name
 
+
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.00.01 - Update Communictator Transporter Playernames - chrissstrahl
+			//--------------------------------------------------------------
+			CoopManager::Get().communicatorTransporterUiUpdate();
+#endif
+
+
+			// Inform all of the players that the player has changed his name
 			multiplayerManager.HUDPrintAllClients( va( "%s $$ChangedName$$ %s\n", _playerData[ player->entnum ]._name.c_str(), playerName.c_str() ) );
 		}
 
