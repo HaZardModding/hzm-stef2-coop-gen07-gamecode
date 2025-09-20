@@ -470,7 +470,7 @@ void CoopManager::callvoteUpdateUi(str sText, str sValue, str sWidget)
 
 bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
 {
-    if (!player || !level.cinematic || world->skipthread.length() <= 0) {
+    if (!player || !level.cinematic) {
         return false;
     }
     if (g_gametype->integer == GT_SINGLE_PLAYER) {
@@ -484,7 +484,7 @@ bool CoopManager::callvoteSkipCinematicPlayer(Player* player)
     }
 
     //player presses long or repeatedly ESC
-    if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && !getSkippingCinematics()) {
+    if ((getPlayerData_cinematicEscapePressLastTime(player) + 0.25) > level.time && !getSkippingCinematics() && world->skipthread.length() > 0) {
         setskippingCinematicsLast(level.time);
         setSkippingCinematics(true);
         setPlayerData_cinematicEscapePressLastTime(player,level.time);
