@@ -4,8 +4,8 @@
 #include "../../dlls/game/_pch_cpp.h"
 #include "coop_generalstrings.hpp"
 
-constexpr auto _COOP_THIS_VERSION = 70000;
-constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70000;
+constexpr auto _COOP_THIS_VERSION = 70001;
+constexpr auto _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION = 70001;
 
 constexpr auto _COOP_SCRIPT_main = "globalCoop_main";
 
