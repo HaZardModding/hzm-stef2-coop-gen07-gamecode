@@ -341,7 +341,7 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     gamefix_listSeperatedItems(voteStringList, _voteString," ");
 
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "skipcinematic") == 0) {
-        if (level.cinematic && (world->skipthread.length() > 0)) {
+        if (level.cinematic && world->skipthread && (world->skipthread.length() > 0)) {
             G_ClearFade();
             str skipthread = world->skipthread;
             world->skipthread = "";
