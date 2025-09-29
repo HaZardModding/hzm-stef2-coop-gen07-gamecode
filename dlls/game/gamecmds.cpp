@@ -2273,10 +2273,6 @@ qboolean coop_playerTransport(const gentity_t* ent)
 	activateWeaponEv = new Event(EV_Player_ActivateNewWeapon);
 	player->PostEvent(activateWeaponEv, 1.9f);
 
-
-	player->client->ps.pm_time = 100;
-	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
-
 	player->client->ps.pm_time = 100;
 	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
 
@@ -2287,6 +2283,8 @@ qboolean coop_playerTransport(const gentity_t* ent)
 
 	player->origin = targetPlayer->origin;
 	player->SetViewAngles(targetPlayer->angles);
+
+	player->enableInventory();
 
 	CoopManager::Get().playerTransported(player);
 	return true;
