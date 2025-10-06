@@ -376,16 +376,81 @@ void G_DeAllocGameData( void )
 	}
 }
 
-extern "C" void G_SpawnEntities( const char *mapname, const char *entities, int levelTime )
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Support for <mapname>.ent file, allowing to overwrite level entities - chrissstrahl
+// Generated with Genimi 2.5 Pro
+//--------------------------------------------------------------
+extern "C" void G_SpawnEntities(const char* mapname, const char* entities, int levelTime)
 {
+	char ent_filename[MAX_QPATH];
+	char* ent_buffer_original = NULL;
+	char* ent_buffer_processed = NULL;
+	char* combined_entities = NULL;
+	const char* final_entities = entities;
+	int file_len;
+
+	COM_StripExtension(mapname, ent_filename, sizeof(ent_filename));
+	strcat(ent_filename, ".ent");
+
+	file_len = gi.FS_ReadFile(va("maps/%s", ent_filename), (void**)&ent_buffer_original, qtrue);
+
+	if (file_len > 0)
+	{
+		// A .ent file exists, so it is now the authority for all entities.
+		ent_buffer_processed = ent_buffer_original;
+
+		// Remove UTF-8 BOM if present
+		if (file_len > 2 && (unsigned char)ent_buffer_processed[0] == 0xEF && (unsigned char)ent_buffer_processed[1] == 0xBB && (unsigned char)ent_buffer_processed[2] == 0xBF) {
+			ent_buffer_processed += 3;
+			file_len -= 3;
+		}
+
+		// CASE 1: The .ent file has a worldspawn. It is a complete override.
+		if (strstr(ent_buffer_processed, "\"classname\" \"worldspawn\"")) {
+			Com_Printf("--- Using .ent file as a complete entity replacement. ---\n");
+			// Make a copy of the buffer so we can safely free the original.
+			combined_entities = (char*)malloc(file_len + 1);
+			if (combined_entities) {
+				memcpy(combined_entities, ent_buffer_processed, file_len);
+				combined_entities[file_len] = '\0';
+				final_entities = combined_entities;
+			}
+		}
+		// CASE 2: The .ent file has no worldspawn. Borrow it from the BSP.
+		else {
+			Com_Printf("--- Borrowing worldspawn from BSP, replacing all other entities with .ent file. ---\n");
+			const char* end_of_worldspawn = strchr(entities + 1, '}');
+			if (end_of_worldspawn) {
+				size_t worldspawn_len = (end_of_worldspawn - entities) + 1;
+				combined_entities = (char*)malloc(worldspawn_len + 1 + file_len + 1);
+				if (combined_entities) {
+					memcpy(combined_entities, entities, worldspawn_len);
+					combined_entities[worldspawn_len] = '\n';
+					memcpy(combined_entities + worldspawn_len + 1, ent_buffer_processed, file_len);
+					combined_entities[worldspawn_len + 1 + file_len] = '\0';
+					final_entities = combined_entities;
+				}
+			}
+		}
+	}
+
 	try
 	{
-		level.NewMap( mapname, entities, levelTime );
+		level.NewMap(mapname, final_entities, levelTime);
 	}
-	
-	catch( const char *error )
+	catch (const char* error)
 	{
-		G_ExitWithError( error );
+		G_ExitWithError(error);
+	}
+
+	if (ent_buffer_original)
+	{
+		gi.FS_FreeFile(ent_buffer_original);
+	}
+	if (combined_entities)
+	{
+		free(combined_entities);
 	}
 }
 
