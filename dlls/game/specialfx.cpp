@@ -375,8 +375,32 @@ Event EV_RunThrough_SetOffset
 	"When triggered, what to offset the spawned object by."
 );
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+// Added: Support for scale attribute, setting scale of spawned models
+// Added: Support for fadeouttime attribute of spawned models
+//--------------------------------------------------------------
+Event EV_RunThrough_SetFadeTime
+(
+	"fadetime",
+	EV_DEFAULT,
+	"f",
+	"fadetime",
+	"time after which the spawned model should start to faded out and get removed "
+);
+
+
 CLASS_DECLARATION( Entity, RunThrough, "func_runthrough" )
 {
+	//--------------------------------------------------------------
+	// GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+	// Added: Support for scale attribute, setting scale of spawned models
+	// Added: Support for fadeouttime attribute of spawned models
+	//--------------------------------------------------------------
+	{ &EV_RunThrough_SetFadeTime,				&RunThrough::SetFadeTime },
+
+
 	{ &EV_RunThrough_SetSpeed,					&RunThrough::SetSpeed },
 	{ &EV_RunThrough_SetDelay,					&RunThrough::SetDelay },
 	{ &EV_RunThrough_SetChance,					&RunThrough::SetChance },
@@ -405,6 +429,19 @@ RunThrough::RunThrough()
 	setMoveType( MOVETYPE_NONE );
 	setSolidType( SOLID_TRIGGER );
 }
+
+
+//--------------------------------------------------------------
+// GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+// Added: Support for scale attribute, setting scale of spawned models
+// Added: Support for fadeouttime attribute of spawned models
+//--------------------------------------------------------------
+void RunThrough::SetFadeTime(Event* ev)
+{
+	//abusing a varaible to store the fade time
+	movetype = int(ev->GetFloat(1));
+}
+
 
 void RunThrough::SetSpeed( Event *ev )
 {
@@ -488,11 +525,34 @@ void RunThrough::Touched( Event *ev )
 		args.setArg( "origin", va( "%f %f %f", org[ 0 ], org[ 1 ], org[ 2 ] ) );
 		args.setArg( "angles", va( "%f %f %f", ang[ 0 ], ang[ 1 ], ang[ 2 ] ) );
 		args.setArg( "model", spawnmodel.c_str() );
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+		// Added: Support for scale attribute, setting scale of spawned models
+		// Added: Support for fadeouttime attribute of spawned models
+		//--------------------------------------------------------------
+		args.setArg("scale", va("%f", edict->s.scale));
+
 		
 		ent = args.Spawn();
 		if ( ent )
 		{
 			ent->ProcessPendingEvents();
+
+
+			//--------------------------------------------------------------
+			// GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+			// Added: Support for scale attribute, setting scale of spawned models
+			// Added: Support for fadeouttime attribute of spawned models
+			//--------------------------------------------------------------
+			if ( ent ) {
+				if (movetype > 0) {
+					ent->PostEvent(EV_FadeOut, float(movetype));
+				}
+			}
+
+
 		}
 	}
 	// set trigger time for next time

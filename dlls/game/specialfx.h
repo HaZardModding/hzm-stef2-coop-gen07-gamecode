@@ -87,6 +87,15 @@ class RunThrough : public Entity
 
       str         spawnmodel;
 
+
+      //--------------------------------------------------------------
+      // GAMEFIX - Upgraded: func_runthrough - chrissstrahl
+      // Added: Support for scale attribute, setting scale of spawned models
+      // Added: Support for fadeouttime attribute of spawned models
+      //--------------------------------------------------------------
+      void        SetFadeTime(Event* ev);
+
+
       void        SetSpeed( Event *ev );
       void        SetChance( Event *ev );
       void        SetDelay( Event *ev );
