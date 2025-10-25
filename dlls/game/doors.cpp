@@ -30,6 +30,14 @@
 #include "g_utils.h"
 #include <qcommon/gameplaymanager.h>
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: to make gamefix functionality available - chrissstrahl
+//--------------------------------------------------------------
+#include "gamefix.hpp"
+extern Event EV_AffectingViewMode;
+
+
 Event EV_Door_StopSound
 (
 	"sound_stop",
@@ -843,6 +851,22 @@ void Door::TryOpen( Event *ev )
 	{
 		return;
 	}
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.02.00 - Added: Support for welding doors shut - chrissstrahl
+	//--------------------------------------------------------------
+	#ifdef ENABLE_COOP
+	if ( gamefix_getEntityVarFloat(master, "isWelded")== 1.0f) {
+		// Always increment next locked time
+		if (other->isSubclassOf(Player) && next_locked_time <= level.time) {
+			next_locked_time = level.time + 5.0f;
+			//other->Sound("sound/ships/forever/for_brokendoor.wav", CHAN_VOICE);		
+		}
+		return;
+	}
+	#endif
+
 
 	if ( locked )
 	{

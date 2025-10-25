@@ -24,6 +24,14 @@
 #include "gamefix.hpp"
 
 
+//--------------------------------------------------------------
+// COOP Generation 7.02.00 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 //======================================
 // LocomotionController Implementation
 //=====================================
@@ -1373,6 +1381,16 @@ qboolean MovementSubsystem::_isBlockedByDoor( trace_t &trace ) const
 			if (!door->isOpen() && !door->CanBeOpenedBy((Entity*)act)) {
 				return true;
 			}
+
+
+			//--------------------------------------------------------------
+			// COOP Generation 7.02.00 - Added: Support for welding doors shut - chrissstrahl
+			//--------------------------------------------------------------
+			#ifdef ENABLE_COOP
+			if (gamefix_getEntityVarFloat(door, "isWelded") == 1.0f) {
+				return true;
+			}
+			#endif
 
 
 		}
