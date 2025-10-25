@@ -17,6 +17,13 @@
 #include "player.h"
 #include "object.h"
 
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: to make gamefix functionality available - chrissstrahl
+//--------------------------------------------------------------
+#include "gamefix.hpp"
+
+
 //======================================
 // LocomotionController Implementation
 //=====================================
@@ -748,6 +755,16 @@ stepmoveresult_t MovementSubsystem::IsMoveValid( trace_t &horizontalTrace, trace
 		{
 			result = STEPMOVE_BLOCKED_BY_WORLD;
 		}
+
+
+		//--------------------------------------------------------------
+		// GAMEFIX - Fixed: Doors blocking not returning the correct STATE - chrissstrahl
+		//--------------------------------------------------------------
+		else if (horizontalTrace.ent && horizontalTrace.ent->entity && horizontalTrace.ent->entity->isSubclassOf(Door)) {
+			return STEPMOVE_BLOCKED_BY_DOOR;
+		}
+
+
 		else
 		{
 			result = STEPMOVE_BLOCKED_BY_ENTITY;
@@ -834,6 +851,16 @@ stepmoveresult_t MovementSubsystem::TryMove ( void	)
 	{
 		act->AddStateFlag( STATE_FLAG_STUCK );
 	}
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Doors blocking not returning the correct STATE - chrissstrahl
+	//--------------------------------------------------------------
+	else if (returnValue == STEPMOVE_BLOCKED_BY_DOOR) {
+		act->AddStateFlag( STATE_FLAG_BLOCKED_BY_ENTITY );
+	}
+
+
 	return returnValue;
 }
 
@@ -1335,8 +1362,19 @@ qboolean MovementSubsystem::_isBlockedByDoor( trace_t &trace ) const
 		if ( trace.ent->entity->isSubclassOf( Door ) )
 		{
 			door = ( Door * )trace.ent->entity;
-			if ( !door->locked && !door->isOpen() )
+
+
+			//--------------------------------------------------------------
+			// GAMEFIX - Fixed: Not checking correctly for locked door or if the door can even be opened by entity - chrissstrahl
+			//--------------------------------------------------------------
+			if (door->locked && !door->isOpen()) {
 				return true;
+			}
+			if (!door->isOpen() && !door->CanBeOpenedBy((Entity*)act)) {
+				return true;
+			}
+
+
 		}
 	}
 	

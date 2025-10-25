@@ -748,6 +748,15 @@ const Steering::ReturnValue FollowPath::GotoGoal( Actor &self )
 		return AvoidObstacle( self, horizontalTrace, true );
 	}
 
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: AI/NPC trying to walk trough locked or blocked doors - chrissstrahl
+	//--------------------------------------------------------------
+	if ( result == STEPMOVE_BLOCKED_BY_DOOR) {
+		return AvoidObstacle( self, horizontalTrace, true );
+	}
+
+
 	SetSteeringForceAndDesiredHeading
 									( 
 										self, 
