@@ -374,7 +374,7 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         cvar_t* cvar = gi.cvar_get("mapname");
         if (cvar) {
 			mapName = cvar->string;
-            mapName = gamefix_getStringUntilChar(mapName,'?', 0);
+            mapName = gamefix_getStringUntilChar(mapName,'$', 0);
         }
 
         str categoryName = gamefix_iniFindSectionByValue(_COOP_FILE_maplist, coopManager_maplist_contents, mapName);
