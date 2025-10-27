@@ -3590,7 +3590,19 @@ void Player::Init( void )
 void Player::InitEdict( void )
 {
 	// entity state stuff
-	setSolidType( SOLID_BBOX );
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Players not becoming solid during cinematic in multiplayer - chrissstrahl
+	//--------------------------------------------------------------
+	if (level.cinematic == qtrue && g_gametype->integer != GT_SINGLE_PLAYER) {
+		setSolidType(SOLID_NOT);
+	}
+	else {
+		setSolidType(SOLID_BBOX);
+	}
+
+
 	setMoveType( MOVETYPE_WALK );
 	setSize( Vector( MINS_X, MINS_Y, 0.0f ), Vector( MAXS_X, MAXS_Y, MAXS_Z ) );
 	edict->clipmask	 = MASK_PLAYERSOLID;

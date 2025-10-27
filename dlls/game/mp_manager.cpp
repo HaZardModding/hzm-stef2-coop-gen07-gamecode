@@ -3286,7 +3286,18 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	// Make sure player is solid and can take damage
 
 	player->takedamage = DAMAGE_YES;
-	player->setSolidType( SOLID_BBOX );
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Players not becoming solid during cinematic in multiplayer - chrissstrahl
+	//--------------------------------------------------------------
+	if (level.cinematic == qtrue && g_gametype->integer != GT_SINGLE_PLAYER) {
+		player->setSolidType( SOLID_NOT );
+	}
+	else {
+		player->setSolidType( SOLID_BBOX );
+	}
+	
 
 	// Show the player
 

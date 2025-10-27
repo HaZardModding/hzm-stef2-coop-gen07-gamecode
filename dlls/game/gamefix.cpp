@@ -179,7 +179,11 @@ bool gamefix_makeSolidAsapThink(Entity* eCheck)
 
 	if (!bInside) {
 		//gi.Printf("asap made solid: %s\n", eCheck->targetname.c_str());
-		eCheck->setSolidType(SOLID_BBOX);
+
+		//Added: Players not becoming solid during cinematic in multiplayer - chrissstrahl
+		if (level.cinematic == qfalse) {
+			eCheck->setSolidType(SOLID_BBOX);
+		}
 		gamefix_setMakeSolidAsap(eCheck, false, 0.0f);
 	}
 
