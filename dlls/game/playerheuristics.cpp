@@ -155,7 +155,18 @@ void PlayerHeuristics::SaveHeuristics( const Player *player )
 	playerHealth = player->health;
 	ping = player->client->ping;
 	skillLevel = CalculateSkillLevel();
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Game silently Crashing without any information if heuristics.log file can not be found - chrissstrahl
+	//--------------------------------------------------------------
+	if (!gi.FS_Exists(heuristicFileName.c_str())) {
+		gi.Printf("GAMEFIX: '%s' not found!\nGAMEFIX: Please try to start the game once again.\n", heuristicFileName.c_str());
+		CreateInitialHeuristicFile();
+		return;
+	}
 	
+
 	script.LoadFile( heuristicFileName );
 	
 	OpenPlayerHeuristicFile();
