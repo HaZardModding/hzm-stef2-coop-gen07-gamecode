@@ -660,8 +660,9 @@ void CoopManager::InitWorld() {
         }
         gi.cvar_set("gfix_allowSpMaps", sAllowSpMaps);
 
-        //notify scripts - is a coop level
+        //notify scripts - is a coop level, is a coop server
         levelVars.SetVariable("isCoopLevel",float(int(coopEnabled)));
+        levelVars.SetVariable("isCoopServer", float(int(coopEnabled)));
 
 
         if (coopEnabled) {
@@ -680,10 +681,6 @@ void CoopManager::InitWorld() {
             coopPlaydialog.readDialogFile("loc/Deu/dialog/", gamefix_cleanMapName(level.mapname), CoopPlaydialog_dialogListContainer_deu);
 
             gi.Printf(_COOP_INFO_INIT_status, coopStatus.c_str(), level.mapname.c_str());
-        }
-        else {
-            assert(!coopEnabled);
-            gi.Printf("NOT A CO-OP LEVEL but coop is active!!?\n");
         }
     }
     catch (const char* error) {
