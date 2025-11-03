@@ -6031,6 +6031,14 @@ void Player::SetTargetedEntity(EntityPtr entity)
 //-----------------------------------------------------
 void Player::ProcessTargetedEntity( void )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - Add: Tricorder Scan Hud Overlay, showing Archetype text via a hud - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerTricorderScanUiHandle(this, _targetedEntity);
+#endif
+
+
 	if(_targetedEntity == 0)
 		return;	
 	

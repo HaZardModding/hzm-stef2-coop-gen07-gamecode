@@ -49,6 +49,14 @@ struct coopManager_client_persistant_s
     bool		coopClientIdDone = false;
     bool        objectiveSetupDone = false;
 
+	float       entityTargetedSince = 0.0f;
+	Entity*     entityTargetedLast = nullptr;
+    
+	bool        coopTricorderScanHudOn = false;
+	float       coopTricorderScanLastSend = 0.0f;
+	str         coopTricorderScanData1 = "";
+	str         coopTricorderScanData2 = "";
+	str         coopTricorderScanData3 = "";
 
     str			coopClass = "Technician";
     float       coopClassLastTimeApplied = -99.1f;
@@ -238,6 +246,8 @@ public:
     void playerAddMissionHuds(Player* player);
     void playerRemoveMissionHuds(Player* player);
     void playerUpdateNoticeUi(Player* player);
+    void playerTricorderScanUi(Player* player, bool);
+    void playerTricorderScanUiHandle(Player* player, Entity* ent);
 
 	bool playerDataReset(Player* player);
 	bool playerDataSave(Player* player);
@@ -260,6 +270,8 @@ public:
     void playerKilledActor(Player* player, Actor* actor);
     bool playerDamagedCoop(Player* damagedPlayer, Damage& damage);
     void playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed);
+    bool playerOtherThanTargetingEntity(const Player* player, const Entity* entityTarget);
+    bool playerHaveArchetypeEntityRespond(Player* player, Entity* entityTarget);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
@@ -392,6 +404,17 @@ public:
 
     void setPlayerData_disconnecting(int clientNum, bool status);
     bool getPlayerData_disconnecting(int clientNum);
+
+    void setPlayerData_entityTargetedSince_reset(Player* player);
+    void setPlayerData_entityTargetedSince(Player* player, Entity* lastTarget);
+    float getPlayerData_entityTargetedSince(Player* player, Entity* lastTarget);
+
+    void setPlayerData_coopTricorderScanHudOn(Player* player, bool on);
+    bool getPlayerData_coopTricorderScanHudOn(Player* player);
+    void setPlayerData_coopTricorderScanData_reset(Player* player);
+    void setPlayerData_coopTricorderScanData(Player* player, short int dataIndex, str scanData);
+    str getPlayerData_coopTricorderScanData(Player* player, short int dataIndex);
+
 
 private:
     CoopManager() = default;

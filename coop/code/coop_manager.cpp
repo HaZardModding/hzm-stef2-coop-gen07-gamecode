@@ -1159,6 +1159,106 @@ void CoopManager::playerUpdateNoticeUi(Player* player)
     gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand OkDialogTitle labeltext %s~Server:^%d~Client:^%d", gamefix_replaceForLabelText(infoText).c_str(), _COOP_THIS_VERSION, player->coop_getCoopVersion()));
 }
 
+void CoopManager::playerTricorderScanUi(Player* player, bool add)
+{
+    if(!player || player->coop_getCoopVersion() == 0) {
+        return;
+    }
+
+    if (getPlayerData_coopTricorderScanHudOn(player) && !add) {
+        gamefix_playerDelayedServerCommand(player->entnum, "ui_removehud coop_scan");
+        setPlayerData_coopTricorderScanHudOn(player, false);
+    }
+    else if(!getPlayerData_coopTricorderScanHudOn(player) && add) {
+        gamefix_playerDelayedServerCommand(player->entnum, "ui_addhud coop_scan");
+        setPlayerData_coopTricorderScanHudOn(player, true);
+    }
+}
+
+void CoopManager::playerTricorderScanUiHandle(Player* player, Entity* ent)
+//sets menu text
+{
+    if(!player || player->coop_getCoopVersion() == 0) {
+        return;
+    }
+
+    bool isScanning = false;
+    Equipment* equipment = nullptr;
+    Weapon* weapon = player->GetActiveWeapon(WEAPON_DUAL);
+    if (weapon && weapon->isSubclassOf(Equipment)) {
+        equipment = (Equipment*)weapon;
+        isScanning = equipment->isScanning();
+    }
+
+    if (!isScanning) {
+        playerTricorderScanUi(player, false);
+        return;
+    }
+
+    if (!player->GetTargetedEntity()) {
+        return;
+    }
+
+    if ((coopManager_client_persistant_t[player->entnum].coopTricorderScanLastSend + 0.5) >= level.time) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanLastSend = level.time;
+
+    GameplayManager* gpm = GameplayManager::getTheGameplayManager();
+    str type = player->GetTargetedEntity()->getArchetype();
+    str descr1 = gpm->getStringValue(type, "Description1");
+    str descr2 = gpm->getStringValue(type, "Description2");
+    str descr3 = gpm->getStringValue(type, "Description3");
+
+    if (!descr1.length() && !descr2.length() && !descr3.length()) {
+        return;
+    }
+
+    playerTricorderScanUi(player, true);
+
+    str sInteractiveType = gpm->getStringValue(type, "InteractiveType");
+    str sRed = "1";
+    str sBlue = "1";
+    str sGreen = "1";
+
+    if (sInteractiveType.length()) {
+        sRed = gamefix_getStringLength(gpm->getFloatValue(sInteractiveType, "Red"), 0, 4);
+        sBlue = gamefix_getStringLength(gpm->getFloatValue(sInteractiveType, "Blue"), 0, 4);
+        sGreen = gamefix_getStringLength(gpm->getFloatValue(sInteractiveType, "Green"), 0, 4);
+    }
+
+    if (descr1 != coopManager_client_persistant_t[player->entnum].coopTricorderScanData1) {
+        coopManager_client_persistant_t[player->entnum].coopTricorderScanData1 = descr1;
+        if (descr1 == "") {
+            gamefix_playerDelayedServerCommand(player->entnum, "set coop_scan0 $$TriPuz_Default$$");
+        }
+        else {
+            gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand Descr1 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+            gamefix_playerDelayedServerCommand(player->entnum, va("set coop_scan0 $$%s$$", descr1.c_str()));
+        }
+    }
+    if (descr2 != coopManager_client_persistant_t[player->entnum].coopTricorderScanData2) {
+        coopManager_client_persistant_t[player->entnum].coopTricorderScanData2 = descr2;
+        if (descr2 == "") {
+            gamefix_playerDelayedServerCommand(player->entnum, "set coop_scan1 $$TriPuz_Default$$");
+        }
+        else {
+            gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand Descr2 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+            gamefix_playerDelayedServerCommand(player->entnum, va("set coop_scan1 $$%s$$", descr2.c_str()));
+        }
+    }
+    if (descr3 != coopManager_client_persistant_t[player->entnum].coopTricorderScanData3) {
+        coopManager_client_persistant_t[player->entnum].coopTricorderScanData3 = descr3;
+        if (descr3 == "") {
+            gamefix_playerDelayedServerCommand(player->entnum, "set coop_scan2 $$TriPuz_Default$$");
+        }
+        else {
+            gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand Descr3 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+            gamefix_playerDelayedServerCommand(player->entnum, va("set coop_scan2 $$%s$$", descr3.c_str()));
+        }
+    }
+}
+
 bool CoopManager::playerDataReset(Player* player) {
 
     if (!player ||
@@ -1579,6 +1679,8 @@ void CoopManager::playerReset(Player* player) {
 
     coopCircleMenu.circleMenuReset(player);
     setPlayerData_communicatorSendNames_reset(player);
+    setPlayerData_entityTargetedSince_reset(player);
+    setPlayerData_coopTricorderScanData_reset(player);
 
     //see also will cleanup in: playerLeft
 }
@@ -1677,6 +1779,11 @@ void CoopManager::playerDied(Player *player) {
 
     playerRemoveMissionHuds(player);
     ExecuteThread("coop_justDied", true, player);
+
+    //entity archetype info reset
+    setPlayerData_entityTargetedSince_reset(player);
+
+    playerTricorderScanUi(player, false);
 }
 //Executed when player gets transported - Always (Multiplayer + Singleplayer)
 void CoopManager::playerTransported(Entity *entity){
@@ -1689,6 +1796,9 @@ void CoopManager::playerTransported(Entity *entity){
     gamefix_setMakeSolidAsap(entity, true, level.time + FRAMETIME);
     
     if (entity->isSubclassOf(Player)) {
+        //entity archetype info reset
+        setPlayerData_entityTargetedSince_reset((Player*)entity);
+
         ExecuteThread("coop_justTransported", true, (Player*)entity);
     }
 }
@@ -1699,6 +1809,9 @@ void CoopManager::playerSpawned(Player* player) {
 
     if (!gameFixAPI_isSpectator_stef2(player)) {
         coop_armoryEquipPlayer(player);
+
+        //entity archetype info reset
+        setPlayerData_entityTargetedSince_reset(player);
 
         playerDataRestore(player);
 
@@ -1717,6 +1830,11 @@ void CoopManager::playerBecameSpectator(Player *player){
     if (player) {
         coopManager_client_persistant_t[player->entnum].spawnLocationSpawnForced = true;
         coopManager_client_persistant_t[player->entnum].respawnLocationSpawn = true;
+
+        //entity archetype info reset
+        setPlayerData_entityTargetedSince_reset(player);
+
+        playerTricorderScanUi(player, false);
 
         ExecuteThread("coop_justBecameSpectator", true, player);
     }
@@ -1877,6 +1995,58 @@ void CoopManager::playerSharePickedUpAmmo(const Player* player, const str& itemN
 
         amountUsed += coopPlayer->GiveAmmo(itemName, (int)amount, true);
     }
+}
+
+bool CoopManager::playerOtherThanTargetingEntity(const Player* player, const Entity* entityTarget)
+{
+    if (!player || !entityTarget || g_gametype->integer == GT_SINGLE_PLAYER) {
+        return false;
+    }
+
+    Player* playerOther = nullptr;
+    for (int i = 0; i < maxclients->integer; i++) {
+        playerOther = gamefix_getPlayer(i);
+        
+        //nullptr, same player, dead, spec, bot or not targeting anything (world)
+        if (!playerOther || playerOther->entnum == player->entnum || playerOther->getHealth() <= 0 || gameFixAPI_isSpectator_stef2(playerOther) || (playerOther->edict->svflags & SVF_BOT) || !playerOther->GetTargetedEntity()) {
+            continue;
+        }
+
+        if (playerOther->GetTargetedEntity()->entnum == entityTarget->entnum) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool  CoopManager::playerHaveArchetypeEntityRespond(Player* player, Entity* entityTarget)
+{
+    if (!player || !entityTarget) {
+        return false;
+    }
+    if (g_gametype->integer == GT_SINGLE_PLAYER) {
+        return true;
+    }
+
+	float timePlayerTargeting = getPlayerData_entityTargetedSince(player, entityTarget);
+
+    Player* playerOther = nullptr;
+	Player* playerLongestTargeting = nullptr;
+    for (int i = 0; i < maxclients->integer; i++) {
+        playerOther = gamefix_getPlayer(i);
+
+        //nullptr, same player, dead, spec, bot or not targeting anything (world)
+        if (!playerOther || playerOther->entnum == player->entnum || playerOther->getHealth() <= 0 || gameFixAPI_isSpectator_stef2(playerOther) || (playerOther->edict->svflags & SVF_BOT) || !playerOther->GetTargetedEntity()) {
+            continue;
+        }
+
+        if (playerOther->GetTargetedEntity()->entnum == entityTarget->entnum) {
+            if (getPlayerData_entityTargetedSince(playerOther, playerOther->GetTargetedEntity()) > timePlayerTargeting) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
@@ -3110,6 +3280,108 @@ bool CoopManager::getPlayerData_disconnecting(int clientNum)
         return true;
     }
     return coopManager_client_persistant_t[clientNum].disconnecting;
+}
+
+void CoopManager::setPlayerData_entityTargetedSince_reset(Player* player)
+{
+    if (!player) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].entityTargetedSince = 0.0f;
+    coopManager_client_persistant_t[player->entnum].entityTargetedLast = nullptr;
+}
+
+void CoopManager::setPlayerData_entityTargetedSince(Player* player, Entity* lastTarget)
+{
+    if (!player) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].entityTargetedSince = level.time;
+
+    if (lastTarget) {
+        coopManager_client_persistant_t[player->entnum].entityTargetedLast = lastTarget;
+    }
+    else {
+        coopManager_client_persistant_t[player->entnum].entityTargetedLast = nullptr;
+    }
+}
+
+float CoopManager::getPlayerData_entityTargetedSince(Player* player, Entity *lastTarget)
+{
+    if (!player) {
+        return 0.0f;
+    }
+
+    if (lastTarget) {
+        if (lastTarget == coopManager_client_persistant_t[player->entnum].entityTargetedLast) {
+            return coopManager_client_persistant_t[player->entnum].entityTargetedSince;
+        }
+    }
+    return 0.0f;
+}
+
+void CoopManager::setPlayerData_coopTricorderScanHudOn(Player* player, bool on)
+{
+    if (!player) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanHudOn = on;
+}
+
+bool CoopManager::getPlayerData_coopTricorderScanHudOn(Player* player)
+{
+    if (!player) {
+        return false;
+    }
+
+    return coopManager_client_persistant_t[player->entnum].coopTricorderScanHudOn;
+}
+
+void CoopManager::setPlayerData_coopTricorderScanData_reset(Player* player)
+{
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanData1 = "";
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanData2 = "";
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanData2 = "";
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanLastSend = 0.0f;
+    coopManager_client_persistant_t[player->entnum].coopTricorderScanHudOn = false;
+}
+
+void CoopManager::setPlayerData_coopTricorderScanData(Player* player, short int dataIndex, str scanData)
+{
+    if (!player) {
+        return;
+    }
+    if (dataIndex < 1 || dataIndex > 3) {
+        gi.Error(ERR_DROP, "CoopManager::setPlayerData_coopTricorderScanData() dataIndex out of range\n");
+    }
+    if (dataIndex == 1) {
+       coopManager_client_persistant_t[player->entnum].coopTricorderScanData1 = scanData;
+    }
+    if (dataIndex == 2) {
+       coopManager_client_persistant_t[player->entnum].coopTricorderScanData2 = scanData;
+    }
+    if (dataIndex == 3) {
+       coopManager_client_persistant_t[player->entnum].coopTricorderScanData2 = scanData;
+    }
+}
+
+str CoopManager::getPlayerData_coopTricorderScanData(Player* player, short int dataIndex)
+{
+    if (player) {
+        if (dataIndex < 1 || dataIndex > 3) {
+            gi.Error(ERR_DROP, "CoopManager::getPlayerData_coopTricorderScanData() dataIndex out of range\n");
+        }
+        if (dataIndex == 1) {
+            return coopManager_client_persistant_t[player->entnum].coopTricorderScanData1;
+        }
+        if (dataIndex == 2) {
+            return coopManager_client_persistant_t[player->entnum].coopTricorderScanData2;
+        }
+        if (dataIndex == 3) {
+            return coopManager_client_persistant_t[player->entnum].coopTricorderScanData2;
+        }
+    }
+    return "";
 }
 
 #endif
