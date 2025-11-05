@@ -75,7 +75,7 @@ constexpr auto _COOP_SETTINGS_PLAYER_BLOCK_NOTSOLID_TIME = 7.0f;
 constexpr auto _COOP_SETTINGS_PLAYER_PENALTY_BADKILL = 4;
 constexpr auto _COOP_SETTINGS_DIALOG_FAILSAFE_TIMEOUT = 45.0f;
 
-constexpr auto _COOP_SETTINGS_MOVEMENT_SPEED_DEFAULT = 400;
+constexpr auto _COOP_SETTINGS_MOVEMENT_SPEED_DEFAULT = 300;
 constexpr auto _COOP_SETTINGS_DAMAGE_MULTIPLAYER_DEFAULT = 0.25f;
 constexpr auto _COOP_SETTINGS_KNOCKBACK_NPC_OBJECTS = 0.75f;
 constexpr auto _COOP_SETTINGS_KNOCKBACK_PROJECTILE = 0.35f;
@@ -138,6 +138,7 @@ public:
 	bool awards = false;
 	short int difficulty = 0;
 	short int airaccelerate = 2;
+	bool strafeJumpingAllowedWasOn = true;
 
 	int scoreKilledPlayer = 0;
 	int scoreKilledFriendly = 0;
@@ -154,6 +155,8 @@ public:
 	int setSetting_difficulty(int newValue);
 	int getSetting_airaccelerate();
 	int setSetting_airaccelerate(int newValue);
+	int getSetting_strafeJumpingAllowedWasOn();
+	void setSetting_strafeJumpingAllowedWasOn(bool newValue);
 
 	void serverConfigCheck();
 	void playerCommandsAllow();

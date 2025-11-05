@@ -854,7 +854,11 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
     }
 
     if (coopEnabled) {
-		//make sure to save client data to ini file
+        if (coopSettings.getSetting_strafeJumpingAllowedWasOn()) {
+            sv_strafeJumpingAllowed->integer = 1;
+        }
+        
+        //make sure to save client data to ini file
         saveClientIniData();
 
         CoopSettings_deathList.FreeObjectList();

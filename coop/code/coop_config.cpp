@@ -88,6 +88,16 @@ int CoopSettings::setSetting_airaccelerate(int newValue)
 	return airaccelerate;
 }
 
+int CoopSettings::getSetting_strafeJumpingAllowedWasOn()
+{
+	return strafeJumpingAllowedWasOn;
+}
+
+void CoopSettings::setSetting_strafeJumpingAllowedWasOn(bool newValue)
+{
+	strafeJumpingAllowedWasOn = newValue;
+}
+
 void CoopSettings::serverConfigCheck()
 {
 	//make sure dedicated server is not using the same config as the player on windows
@@ -291,6 +301,7 @@ void CoopSettings::saveSettings() {
 	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "moveSpeed", va("%d",coopSettings.getSetting_maxSpeed()));
 	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "difficulty", va("%d",coopSettings.getSetting_difficulty()));
 	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "airaccelerate", va("%d", coopSettings.getSetting_airaccelerate()));
+	newSectionContents = gamefix_iniKeySet(_COOP_FILE_settings, newSectionContents, "strafeJumpingAllowedWasOn", va("%d", coopSettings.getSetting_strafeJumpingAllowedWasOn()));
 	
 	str awardsString = "false";
 	if (coopSettings.getSetting_awards()) {
@@ -352,6 +363,10 @@ void CoopSettings::loadSettings() {
 
 			//LOAD gameplay settings
 			sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_gameplay);
+			
+			//set strafejumping setting here - after section data is read and before sv_strafeJumpingAllowed is changed
+			setSetting_strafeJumpingAllowedWasOn(sv_strafeJumpingAllowed->integer);
+
 			if (sectionContents.length()) {
 				friendlyFireMultiplicator = setSetting_friendlyFireMultiplicator(atof(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "friendlyFireMultiplicator", "0.0")));
 				moveSpeed = setSetting_maxSpeed(atoi(gamefix_iniKeyGet(_COOP_FILE_settings, sectionContents, "moveSpeed", "300")));
@@ -362,6 +377,14 @@ void CoopSettings::loadSettings() {
 				sv_airaccelerate->integer = airaccelerate;
 				world->setPhysicsVar("maxspeed", moveSpeed);
 			}
+			//first run - no settings
+			else {
+				world->setPhysicsVar("maxspeed", 300.0f);
+				strafeJumpingAllowedWasOn = bool(sv_strafeJumpingAllowed->integer);
+			}
+
+			//disable strafejump
+			sv_strafeJumpingAllowed->integer = 0;
 
 			//LOAD missionstatus data
 			sectionContents = gamefix_iniSectionGet(_COOP_FILE_settings, contents, _COOP_SETTINGS_CAT_missionstatus);
