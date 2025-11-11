@@ -15742,14 +15742,13 @@ bool Player::coop_isAdmin()
 		return true;
 	}
 	
-	/* DISABLED FOR COOP DEVELOPMENT - TESTING
 	if (gameFixAPI_isHost(this)) {
 		CoopManager::Get().setPlayerData_coopAdmin(this,true);
 		gamefix_playerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", gamefix_replaceForLabelText(_COOP_INFO_adminAuto).c_str()));
 		hudPrint(_COOP_INFO_adminLoggedInHost);
 		DEBUG_LOG("# Admin auto loggedin player%d\n",this->entnum);
 		return true;
-	}*/
+	}
 
 	return false;
 }
