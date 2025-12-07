@@ -1612,6 +1612,48 @@ Entity* CoopManager::getSpawnSpecific(int spotNumber){
     return ent;
 }
 
+void CoopManager::ActorDamage(Actor* actor, Entity* enemy, float& damage)
+{
+    //Scale Damage Actors recieve from players
+    if (!actor || !enemy || !IsCoopEnabled()) {
+        return;
+    }
+
+    /* //check against (Team) ai
+    if (enemy->isSubclassOf(Actor)) {
+        Actor* enemyActor = (Actor*)enemy;
+        if (enemyActor->actortype == actor->actortype) {
+            return;
+        }
+    } else */
+
+    if(!enemy->isSubclassOf(Player)) {
+        return;
+    }
+
+    if (damage < actor->max_health) {//check if enemy can't be killed with one hit - like small bugs and such
+        int iPlayerNum = gamefix_getPlayers(true);
+
+        float fMultiplicator = 1;
+
+        //this is a boss - scale damage with the number of players
+        if (actor->GetActorFlag(ACTOR_FLAG_UPDATE_BOSS_HEALTH)) {
+            fMultiplicator = ( 1.0f / (float)iPlayerNum );
+        }
+        //regular enemies - make enemies take slightly less damage
+        else {
+            if (iPlayerNum <= 1) fMultiplicator = 1.0f;
+            else if (iPlayerNum == 2)fMultiplicator = 0.90f;
+            else if (iPlayerNum == 3)fMultiplicator = 0.85f;
+            else if (iPlayerNum == 4)fMultiplicator = 0.80f;
+            else if (iPlayerNum == 5)fMultiplicator = 0.75f;
+            else fMultiplicator = 0.70f;
+        }
+
+        damage = (damage * fMultiplicator);
+    }
+}
+
 bool CoopManager::playerMoveToSpawnSpecific(Player* player, int spotNumber)
 {
     if (!player) {

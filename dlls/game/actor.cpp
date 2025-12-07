@@ -13969,6 +13969,15 @@ void Actor::ArmorDamage( Event *ev )
 
 	::Damage damage(ev);
 
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 70300 - Scale Damage Actors recieve from players - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().ActorDamage(this, enemy, damage.damage);
+#endif
+	
+
 	// Only react to an attack if we respond to pain
 	if ( sensoryPerception && sensoryPerception->ShouldRespondToStimuli( STIMULI_PAIN ) )
 	{

@@ -233,6 +233,8 @@ public:
     int getNumberOfPlayers(bool noDead, bool noSpectator);
     Entity* getSpawnSpecific(int spotNumber);
 
+    void ActorDamage(Actor* actor, Entity* enemy, float& damage);
+
     void playerConnect(int clientNum);
     void playerDisconnect(Player* player);
     void playerJoined(Player* player);
