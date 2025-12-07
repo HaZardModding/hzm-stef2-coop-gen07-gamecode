@@ -34,6 +34,7 @@ public:
 	void splitTextIntoLines(const str language, Container<str>& containerText, Container<float>& containerLength, const float& dialogLength, const int& totalLength);
 	void stopDialog();
 	void replaceForDialogText(str& sPure);
+	void listDialogText(Container<str>& container, const str& source);
 public:
 	float currentDialogText_nextPrint = 0;
 	int currentDialogTextEng_containerPos = 1;

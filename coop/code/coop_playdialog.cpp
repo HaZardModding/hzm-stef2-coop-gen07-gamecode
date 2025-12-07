@@ -115,11 +115,10 @@ void CoopPlaydialog::handleDialog(Actor* actor, const char* dialog_name, qboolea
 	}
 
 	//cut dialog into snippets and give each snippet a duration based on char length or snippet count
-	gamefix_listSeperatedItems(currentDialogTextSnippetsEng, dialogTextEng, ".");
-	gamefix_listSeperatedItems(currentDialogTextSnippetsDeu, dialogTextDeu, ".");
+	listDialogText(currentDialogTextSnippetsEng, dialogTextEng);
+	listDialogText(currentDialogTextSnippetsDeu, dialogTextDeu);
 
 	splitTextIntoLines("Eng",currentDialogTextSnippetsEng, currentDialogTimeSnippetsEng, dialogLength, dialogTextEng.length());
-	//DEBUG_LOG("# handleDialog: %f * %d = %f/%f - %s", dialogLengthActual, currentDialogTextSnippetsEng.NumObjects(), dialogLengthActual * currentDialogTextSnippetsEng.NumObjects(), dialogLength, dialogText.c_str());
 	splitTextIntoLines("Deu",currentDialogTextSnippetsDeu, currentDialogTimeSnippetsDeu, dialogLength, dialogTextDeu.length());
 
 	showNextTextLine("Eng", currentDialogTextSnippetsEng, currentDialogTextEng_containerPos);
@@ -193,14 +192,6 @@ void CoopPlaydialog::splitTextIntoLines(const str language, Container<str>& cont
 	float dialogLengthActual = dialogLength;
 	for (int i = 1; i <= containerText.NumObjects(); i++) {
 		str currentSnippet = gamefix_trimWhitespace(containerText.ObjectAt(i), false);
-
-		//add the dot back in, it was removed during the split
-		if (currentSnippet[currentSnippet.length() - 1] != '?' &&
-			currentSnippet[currentSnippet.length() - 1] != '!' &&
-			currentSnippet[currentSnippet.length() - 1] != '-' &&
-			currentSnippet[currentSnippet.length() - 1] != '.') {
-			currentSnippet += ".";
-		}
 
 		containerText.ObjectAt(i) = currentSnippet;
 		if (containerText.NumObjects() > 1) {
@@ -281,6 +272,50 @@ void CoopPlaydialog::replaceForDialogText(str& sPure)
 	}
 
 	sPure = result;
+}
+
+//Split dialog text into separate lines based on dots - and handle exceptions
+void CoopPlaydialog::listDialogText(Container<str>& container, const str& source)
+{
+	container.FreeObjectList();
+	if (!source.length()) {
+		return;
+	}
+
+	const str& seperatorn = ".";
+
+	str dotStart = "";
+	bool dotStarted = false;
+	str item = "";
+	for (int i = 0; i < source.length(); i++) {
+		bool add = false;
+
+
+
+		if (source[i] == '.') {
+			dotStarted = true;
+			//make into a own line only if next char is space or end of string but not when I.S.S or U.S.S is detected as in U.S.S. Dallas (ent-deck1_bridge.dlg)
+			if (i == (source.length() - 1) || source[(i+1)] == ' ' && dotStart != ".S.S") {
+				add = true;
+			}
+		}
+
+		if (dotStarted) {
+			dotStart += source[i];
+		}
+
+		item += source[i];
+
+		if (add || i == (source.length() - 1)) {
+			if (item.length()) {
+				container.AddObject(item);
+				dotStarted = false;
+				dotStart = "";
+			}
+			item = "";
+			continue;
+		}
+	}
 }
 
 #endif
