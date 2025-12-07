@@ -1826,7 +1826,7 @@ void CoopManager::playerSpawned(Player* player) {
         coopClass.coop_classApplayAttributes(player, true);
     }
 
-    gamefix_setMakeSolidAsap((Entity*)player, true, 0.0f);
+    gamefix_setMakeSolidAsap((Entity*)player, true, level.time + FRAMETIME);
     ExecuteThread("coop_justSpawned", true, player);
 }
 //Executed on death - Multiplayer
