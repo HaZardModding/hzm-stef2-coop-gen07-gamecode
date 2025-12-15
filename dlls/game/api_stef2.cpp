@@ -1176,9 +1176,10 @@ Player* gameFixAPI_getActivator(Entity* entity)
 
 		Player *player = (Player*)(Entity*)gamefix_entity_extraData_t[entity->entnum].activator;
 
-		if (!gameFixAPI_isDead((Entity*)player) && !gameFixAPI_isSpectator_stef2((Entity*)player)) {
+		//Disabled, because sometimes we need the activator even if dead/spectator
+		//if (!gameFixAPI_isDead((Entity*)player) && !gameFixAPI_isSpectator_stef2((Entity*)player)) {
 			return player;
-		}		
+		//}		
 	}
 	return nullptr;
 }

@@ -821,23 +821,27 @@ void PuzzleObject::showTimerHud( void )
 
 void PuzzleObject::hideTimerHud( void )
 {
+	_hudOn = false;
+	
 	Player *player;
 	str commandString;
 
 
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: multiplayer compatibility - chrissstrahl
+	// GAMEFIX - Fixed: Chrash if activator is missing, dead or spectator - chrissstrahl
+	// GAMEFIX - Added: Clear activator now - chrissstrahl
 	//--------------------------------------------------------------
 	player = gameFixAPI_getActivator(this);
-
+	gameFixAPI_setActivator((Entity*)this, nullptr);
+	if (!player) {
+		return;
+	}
 
 	commandString = "popmenu ";
 	commandString += _hudName;
 	commandString += " 1\n";
-
 	G_SendCommandToPlayer( player->edict, commandString.c_str() );
-
-	_hudOn = false;
 
 
 	//--------------------------------------------------------------
