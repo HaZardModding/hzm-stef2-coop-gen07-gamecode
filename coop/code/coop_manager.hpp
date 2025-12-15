@@ -52,6 +52,7 @@ struct coopManager_client_persistant_s
 	float       entityTargetedSince = 0.0f;
 	Entity*     entityTargetedLast = nullptr;
     
+    bool        coopTricorderPuzzleing = false;
 	bool        coopTricorderScanHudOn = false;
 	float       coopTricorderScanLastSend = 0.0f;
 	str         coopTricorderScanData1 = "";
@@ -274,6 +275,8 @@ public:
     void playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed);
     bool playerOtherThanTargetingEntity(const Player* player, const Entity* entityTarget);
     bool playerHaveArchetypeEntityRespond(Player* player, Entity* entityTarget);
+    bool playerGetDoingPuzzle(Player* player);
+    void playerSetDoingPuzzle(Player* player,bool doingPuzzle);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
@@ -416,6 +419,8 @@ public:
     void setPlayerData_coopTricorderScanData_reset(Player* player);
     void setPlayerData_coopTricorderScanData(Player* player, short int dataIndex, str scanData);
     str getPlayerData_coopTricorderScanData(Player* player, short int dataIndex);
+    void setPlayerData_coopTricorderPuzzleing(Player* player, bool doingAPuzzle);
+    bool getPlayerData_coopTricorderPuzzleing(Player* player);
 
 
 private:

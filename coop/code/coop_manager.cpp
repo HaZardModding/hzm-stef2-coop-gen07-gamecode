@@ -341,14 +341,14 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     gamefix_listSeperatedItems(voteStringList, _voteString," ");
 
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "skipcinematic") == 0) {
-        if (level.cinematic && world->skipthread && (world->skipthread.length() > 0)) {
+        if (level.cinematic && world->skipthread && (world->skipthread.length() > 0) && Q_stricmp(world->skipthread.c_str(), "null") != 0) {
             G_ClearFade();
             str skipthread = world->skipthread;
             world->skipthread = "";
             ExecuteThread(skipthread);
             setSkippingCinematics(false);
             setskippingCinematicsLast(level.time);
-            return true;
+            //return true;
         }
         return true;
     }
@@ -1194,7 +1194,7 @@ void CoopManager::playerTricorderScanUiHandle(Player* player, Entity* ent)
         isScanning = equipment->isScanning();
     }
 
-    if (!isScanning) {
+    if (!isScanning || playerGetDoingPuzzle(player)) {
         playerTricorderScanUi(player, false);
         return;
     }
@@ -2093,6 +2093,18 @@ bool  CoopManager::playerHaveArchetypeEntityRespond(Player* player, Entity* enti
         }
     }
     return true;
+}
+
+bool CoopManager::playerGetDoingPuzzle(Player* player)
+{
+    if (!player) {
+        return false;
+	}
+    return getPlayerData_coopTricorderPuzzleing(player);
+}
+void CoopManager::playerSetDoingPuzzle(Player* player, bool doingPuzzle)
+{
+    setPlayerData_coopTricorderPuzzleing(player, doingPuzzle);
 }
 
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
@@ -3429,5 +3441,27 @@ str CoopManager::getPlayerData_coopTricorderScanData(Player* player, short int d
     }
     return "";
 }
+
+void CoopManager::setPlayerData_coopTricorderPuzzleing(Player* player, bool doingAPuzzle)
+{
+    if (!player) {
+        return;
+    }
+    player->entityVars.SetVariable("_playerIsModulatingPuzzle", (float)(int)doingAPuzzle);
+	coopManager_client_persistant_t[player->entnum].coopTricorderPuzzleing = doingAPuzzle;
+}
+
+bool CoopManager::getPlayerData_coopTricorderPuzzleing(Player* player)
+{
+    if (!player) {
+        return false;
+    }
+
+    if (coopManager_client_persistant_t[player->entnum].coopTricorderPuzzleing) {
+		return true;
+    }
+    return (bool)(int)gamefix_getEntityVarFloat(player, "_playerIsModulatingPuzzle");
+}
+
 
 #endif

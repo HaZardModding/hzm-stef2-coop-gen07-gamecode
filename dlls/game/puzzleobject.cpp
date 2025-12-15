@@ -811,6 +811,12 @@ void PuzzleObject::showTimerHud( void )
 	G_SendCommandToPlayer( player->edict, commandString.c_str() );
 
 	_hudOn = true;
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - update puzzle status for player - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerSetDoingPuzzle(player, true);
 }
 
 void PuzzleObject::hideTimerHud( void )
@@ -832,6 +838,12 @@ void PuzzleObject::hideTimerHud( void )
 	G_SendCommandToPlayer( player->edict, commandString.c_str() );
 
 	_hudOn = false;
+
+
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - update puzzle status for player - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerSetDoingPuzzle(player, false);
 }
 
 //-----------------------------------------------------

@@ -201,15 +201,13 @@ void coop_radarUpdate(Player* player)
 	//- for spectators
 	//- for dead
 	//- when doing tricorder puzzle
-	ScriptVariable* solvingPuzzle = NULL;
-	solvingPuzzle = player->entityVars.GetVariable("_playerIsSolvingPuzzle");
 	if (level.mission_failed ||
 		player->health <= 0.0f ||
 		gameFixAPI_isSpectator_stef2(player) ||
 		//(player->upgPlayerGetLevelTimeEntered() + 3) > level.time ||
 		//(player->coop_getSpawnedLastTime() + 1.5) > level.time ||
 		(CoopManager::Get().getPlayerData_radarUpdatedLast(player) + _COOP_SETTINGS_RADAR_TIMECYCLE) > level.time ||
-		solvingPuzzle && solvingPuzzle->floatValue() == 1.0f)
+		CoopManager::Get().playerGetDoingPuzzle(player))
 	{
 		return;
 	}
