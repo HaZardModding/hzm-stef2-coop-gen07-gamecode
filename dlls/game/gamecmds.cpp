@@ -1742,7 +1742,8 @@ qboolean coop_playerInput(const gentity_t* ent)
 	}
 
 	//limit of data that can be actually used
-	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
+	//COOP Generation 7.03.00 - Changed: check from > to >=, just to make sure - chrissstrahl
+	if (inputData.length() >= 260) { //(264) make sure we have space for linebreak
 		inputData = gamefix_getStringLength(inputData,0,259);
 	}
 
