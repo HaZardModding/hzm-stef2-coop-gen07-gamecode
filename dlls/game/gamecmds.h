@@ -63,6 +63,7 @@ qboolean coop_playerMapname(const gentity_t* ent);
 qboolean coop_playerClass(const gentity_t* ent);
 qboolean coop_playerHelp(const gentity_t* ent);
 qboolean coop_playerFlushTikis(const gentity_t* ent);
+qboolean coop_playerReboot(const gentity_t* ent);
 #endif
 
 

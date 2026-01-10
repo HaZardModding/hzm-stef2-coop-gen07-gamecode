@@ -358,6 +358,11 @@ bool CoopManager::callvoteManager(const str& _voteString) {
         return true;
     }
 
+    if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_quit") == 0) {
+        gi.SendConsoleCommand("quit");
+        return true;
+    }
+
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "coop_end") == 0) {
         CThread* thread = ExecuteThread("coop_endLevel", true, (Entity*)world);
         if (thread == NULL) {
@@ -2079,7 +2084,6 @@ bool  CoopManager::playerHaveArchetypeEntityRespond(Player* player, Entity* enti
 	float timePlayerTargeting = getPlayerData_entityTargetedSince(player, entityTarget);
 
     Player* playerOther = nullptr;
-	Player* playerLongestTargeting = nullptr;
     for (int i = 0; i < maxclients->integer; i++) {
         playerOther = gamefix_getPlayer(i);
 

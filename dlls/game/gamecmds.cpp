@@ -92,6 +92,8 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!help",coop_playerHelp,true },
 	{ "!flushtikis",coop_playerFlushTikis,true },
 
+	{ "!reboot",coop_playerReboot,true },
+
 	{ "script",G_ScriptCmd,true },
 	{ "clientrunthread",G_ClientRunThreadCmd,true },
 	{ "dialogrunthread",G_DialogRunThread,true },
@@ -3037,6 +3039,21 @@ qboolean coop_playerFlushTikis(const gentity_t* ent)
 	ent->entity->entityVars.SetVariable("!flushtikis", level.time);
 
 	gamefix_playerDelayedServerCommand(ent->entity->entnum, "callvote coop_flushtikis");
+	return true;
+}
+
+qboolean coop_playerReboot(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || sv_cinematic->integer || !multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!reboot") + 3) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!reboot", level.time);
+
+	gamefix_playerDelayedServerCommand(ent->entity->entnum, "callvote coop_quit");
 	return true;
 }
 #endif
