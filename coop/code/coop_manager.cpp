@@ -615,7 +615,9 @@ void CoopManager::LoadPlayerModelsFromINI() {
         while (skinName.length()) {
             skinName = gamefix_iniKeyGet(_COOP_FILE_validPlayerModels, sectionContents,va("%d",i), "");
             if (skinName.length()) {
-                coopManager_validPlayerModels.AddUniqueObject(skinName);
+                
+                //COOP Generation 7.03.00 - Fixed: skinlist.ini entries are case sensitive - chrissstrahl
+                coopManager_validPlayerModels.AddUniqueObject(skinName.tolower());
                 
                 //DEBUG_LOG("%s\n",skinName.c_str());
             }
