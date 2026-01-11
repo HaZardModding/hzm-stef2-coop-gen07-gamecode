@@ -21,9 +21,6 @@ CoopManager& CoopManager::Get() {
 
 
 bool CoopManager::IsCoopEnabled() const {
-    if (!gameFixAPI_inMultiplayer()) {
-        return false;
-    }
     return coopEnabled;
 }
 
@@ -1918,7 +1915,7 @@ void CoopManager::playerChangedClass(Player* player) {
 }
 
 void CoopManager::playerKilledActor(Player* player, Actor* actor) {
-    if (!player || !actor || !player->isSubclassOf(Player)) {
+    if (!player || !actor || !player->isSubclassOf(Player) || !gameFixAPI_inMultiplayer()) {
         return;
     }
 
@@ -1956,7 +1953,7 @@ void CoopManager::playerKilledActor(Player* player, Actor* actor) {
 }
 
 bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
-    if (!IsCoopEnabled() || !IsCoopLevel()) {
+    if (!gameFixAPI_inMultiplayer() || !IsCoopEnabled() || !IsCoopLevel()) {
         return false;
     }
 
@@ -2032,7 +2029,7 @@ bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
 
 void CoopManager::playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed)
 {
-    if (!IsCoopEnabled() || !IsCoopLevel()) {
+    if (!gameFixAPI_inMultiplayer() || !IsCoopEnabled() || !IsCoopLevel()) {
         return;
     }
 
