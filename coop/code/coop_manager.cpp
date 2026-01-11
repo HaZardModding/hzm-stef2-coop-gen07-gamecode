@@ -967,9 +967,6 @@ void CoopManager::playerSetup(Player* player) {
     setPlayerData_coopSetupTries_update(player);
 
     if (!getPlayerData_coopSetupStarted(player)) {
-        player->entityVars.SetVariable("!ability", -9999.0f);
-        player->entityVars.SetVariable("!abilityPrintout", -9999.0f);
-
         //headhudtext widget hide in multiplayer, because it does not work right (flickering) - also coop mod has its own
         gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
 
@@ -1874,6 +1871,10 @@ void CoopManager::playerSpawned(Player* player) {
 
         coopClass.coop_classApplayAttributes(player, true);
     }
+
+    //make sure ability can be used right after every spawn
+    player->entityVars.SetVariable("!ability", -9999.0f);
+    player->entityVars.SetVariable("!abilityPrintout", -9999.0f);
 
     gamefix_setMakeSolidAsap((Entity*)player, true, level.time + FRAMETIME);
     ExecuteThread("coop_justSpawned", true, player);
