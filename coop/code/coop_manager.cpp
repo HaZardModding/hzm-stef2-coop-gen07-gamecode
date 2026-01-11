@@ -21,6 +21,9 @@ CoopManager& CoopManager::Get() {
 
 
 bool CoopManager::IsCoopEnabled() const {
+    if (!gameFixAPI_inMultiplayer()) {
+        return false;
+    }
     return coopEnabled;
 }
 
