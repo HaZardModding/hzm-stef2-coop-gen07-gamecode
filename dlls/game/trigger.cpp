@@ -984,8 +984,10 @@ void Trigger::ActivateTargets( Event *ev )
 			//--------------------------------------------------------------
 			// GAMEFIX - Changed: importance to high - chrissstrahl
 			//--------------------------------------------------------------
-			if (g_gametype->integer != GT_SINGLE_PLAYER) {
-				gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_HIGH, message.c_str());
+			if (g_gametype->integer == GT_SINGLE_PLAYER) {
+				if (GetPlayer(0)) {
+					gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_HIGH, message.c_str());
+				}
 			}
 			//--------------------------------------------------------------
 			// GAMEFIX - Added: Made Message print out multiplayer compatible if activator is a camera - chrissstrahl
@@ -994,9 +996,8 @@ void Trigger::ActivateTargets( Event *ev )
 				Player* player;
 				for (int i = 0; i < maxclients->integer; i++) {
 					player = GetPlayer(i);
-					if (player && !multiplayerManager.isPlayerSpectator(player)) {
+					if (player && !multiplayerManager.isPlayerSpectator(player) && !gameFixAPI_isBot(player)) {
 						gi.centerprintf( &g_entities[ i ], CENTERPRINT_IMPORTANCE_HIGH, message.c_str() );
-						player->hudPrint(va("%s\n", message.c_str()));
 					}
 				}
 			}
@@ -1006,14 +1007,20 @@ void Trigger::ActivateTargets( Event *ev )
 			//--------------------------------------------------------------
 			// GAMEFIX - Changed: importance to high - chrissstrahl
 			//--------------------------------------------------------------
-			gi.centerprintf( other->edict, CENTERPRINT_IMPORTANCE_HIGH, message.c_str() );
+			if (g_gametype->integer == GT_SINGLE_PLAYER) {
+				if (GetPlayer(0)) {
+					gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_HIGH, message.c_str());
+				}
+			}
 
 			//--------------------------------------------------------------
 			// GAMEFIX - Added: print to hud for multiplayer - chrissstrahl
 			//--------------------------------------------------------------
-			if (g_gametype->integer != GT_SINGLE_PLAYER){
+			else if (other){
 				Player* player = (Player*)other;
-				player->hudPrint(va("%s\n", message.c_str()));
+				if (player && !gameFixAPI_isBot(player)) {
+					gi.centerprintf(other->edict, CENTERPRINT_IMPORTANCE_HIGH, message.c_str());
+				}
 			}
 		}
 		if ( Noise().length() )
