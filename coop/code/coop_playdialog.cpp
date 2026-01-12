@@ -282,8 +282,6 @@ void CoopPlaydialog::listDialogText(Container<str>& container, const str& source
 		return;
 	}
 
-	const str& seperatorn = ".";
-
 	str dotStart = "";
 	bool dotStarted = false;
 	str item = "";
