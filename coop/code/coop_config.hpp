@@ -22,6 +22,7 @@ constexpr auto _COOP_FILE_validPlayerModels = "co-op/config/skinlist.ini";
 constexpr auto _COOP_FILE_voteList = "co-op/config/votelist.ini";
 constexpr auto _COOP_FILE_scorelist = "co-op/config/scorelist.ini";
 constexpr auto _COOP_FILE_deathlist = "co-op/config/deathlist.ini";
+constexpr auto _COOP_FILE_configstring = "co-op/config/configstringlist.ini";
 constexpr auto _COOP_FILE_spawninventory = "co-op/config/spawninventory.cfg";
 
 constexpr auto _COOP_UI_NAME_communicator = "coop_com";

@@ -160,6 +160,7 @@ public:
     str coopManager_maplist_contents = "";
     Container<str> coopManager_validPlayerModels;
     Container<coopManager_clientIniData_s> CoopManager_clientIniData;
+    Container<str> CoopManager_configstringList;
 
     class MapFlags {
     public:
@@ -426,6 +427,7 @@ public:
 private:
     CoopManager() = default;
 
+    void CreateConfigstringList();
     void LoadPlayerModelsFromINI();
     void LoadMapListFromINI();
 

@@ -591,6 +591,7 @@ void CoopManager::Init() {
 
         LoadMapListFromINI();
         LoadPlayerModelsFromINI();
+        CreateConfigstringList();
 
         gi.Printf(_COOP_INFO_INIT_gamedone);
     }
@@ -601,34 +602,162 @@ void CoopManager::Init() {
 }
 
 //executed once, only on game server start/load
-//loads coop valid model list for players from ini
-void CoopManager::LoadPlayerModelsFromINI() {
+//creates a list of all possible player models
+//- will allow to remove all unused from configstrings
+void CoopManager::CreateConfigstringList() {
+    str contents = "";
+    str section_contents = "";
+    if (!gamefix_getFileContents(_COOP_FILE_configstring, contents, true)) {
+        gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_configstring);
+        return;
+    }
 
-    //default fallback hardcoded model - if coop gamefiles are missing
-    str skinName = "models/char/munro.tik";
-    coopManager_validPlayerModels.AddUniqueObject(skinName);
+    section_contents = gamefix_iniSectionGet(_COOP_FILE_configstring, contents, "remove");
+    gamefix_listSeperatedItems(CoopManager_configstringList, section_contents, "\n");
+    section_contents = "";
+    contents = "";
 
-    str contents;
-    if (gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
-        str sectionContents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
-        
-        //DEBUG_LOG("Valid Player Models\n");       
-        //DEBUG_LOG("%s\n",skinName.c_str());
+    str skinFile = "";
+    const int limitofChars = 131072;
+    char filename[128];
+    int numdirs;
+    char dirlist[limitofChars];
+    char* dirptr;
+    int i;
+    int dirlen;
+    bool validPlayerModel = false;
 
-        //get models by number, starting with 1
-        int i = 1;
-        while (skinName.length()) {
-            skinName = gamefix_iniKeyGet(_COOP_FILE_validPlayerModels, sectionContents,va("%d",i), "");
-            if (skinName.length()) {
-                
-                //COOP Generation 7.03.00 - Fixed: skinlist.ini entries are case sensitive - chrissstrahl
-                coopManager_validPlayerModels.AddUniqueObject(skinName.tolower());
-                
-                //DEBUG_LOG("%s\n",skinName.c_str());
+    numdirs = gi.FS_GetFileList("models/char", ".tik", dirlist, limitofChars);
+    dirptr = dirlist;
+
+    for (i = 0; i < numdirs; i++, dirptr += dirlen + 1) {
+        validPlayerModel = false;
+        dirlen = strlen(dirptr);
+        strcpy(filename, dirptr);
+        char* data = NULL;
+        int len = gi.FS_ReadFile(va("models/char/%s", filename), (void**)&data, qtrue);
+
+        //TIKI
+        //$include models/char/playerdata.tik
+        //init { server { ... validPlayerModel
+        if (len > 0 && data) {
+            const char* parse = data;
+            const char* token;
+
+            bool token_tiki_found = false;
+            bool token_include_open = false;
+            bool token_init_open = false;
+            bool token_server_open = false;
+
+            while ((token = COM_Parse(&parse)) && token[0]) {
+                //gi.Printf("TOKEN: %s\n", token);
+
+                //check tiki
+                if (!token_tiki_found) {
+                    if (Q_stricmp(token, va("tiki")) == 0) {
+                        token_tiki_found = true;
+                        //gi.Printf(" - FOUND: %s\n", token);
+                    }
+                    continue;
+                }
+
+                //check include
+                if (!token_include_open) {
+                    if (Q_stricmp(token, va("$include")) == 0) {
+                        token_include_open = true;
+                        //gi.Printf(" - FOUND: %s\n", token);
+                        continue;
+                    }
+                }
+                else {
+                    if (Q_stricmp(token, va("models/char/playerdata.tik")) == 0) {
+                        validPlayerModel = true;
+                        token_include_open = false;
+                        //gi.Printf(" - FOUND: %s\n", token);
+                        break;
+                    }
+
+                    //unexpected token - end here
+                    token_include_open = false;
+                    continue;
+                }
+
+                //check valid player model string
+                if (!token_init_open) {
+                    if (Q_stricmp(token, "init") == 0) {
+                        token_init_open = true;
+                        //gi.Printf(" - FOUND: %s\n", token);
+                        continue;
+                    }
+                }
+                else {
+                    //skip open brakets
+                    if (Q_stricmp(token, "{") == 0) {
+                        continue;
+                    }
+
+                    //exepecting server
+                    if (!token_server_open) {
+                        //found server
+                        if (Q_stricmp(token, "server") == 0) {
+                            token_server_open = true;
+                            //gi.Printf(" - FOUND: %s\n", token);
+                            continue;
+                        }
+
+                        //unexpected token - end here
+                        token_init_open = false;
+                        token_server_open = false;
+                        continue;
+                    }
+                    //expecting validPlayerModel
+                    else {
+                        //section ends
+                        if (Q_stricmp(token, "}") == 0) {
+                            token_server_open = false;
+                            token_init_open = false;
+                            validPlayerModel = false;
+                            break;
+                        }
+
+                        //found validPlayerModel
+                        if (Q_stricmp(token, "validplayermodel") == 0) {
+                            token_server_open = false;
+                            token_init_open = false;
+                            validPlayerModel = true;
+                            //gi.Printf(" - FOUND: %s\n", token);
+                            break;
+                        }
+                    }
+                }
             }
-            i++;
+        }
+        if (data) {
+            gi.FS_FreeFile(data);
+        }
+
+        if (validPlayerModel) {
+            CoopManager_configstringList.AddUniqueObject(va("models/char/%s", filename));
         }
     }
+}
+
+//executed once, only on game server start/load
+//loads coop valid model list for players from ini
+void CoopManager::LoadPlayerModelsFromINI() {
+    str contents;
+    str section_contents;
+    if (!gamefix_getFileContents(_COOP_FILE_validPlayerModels, contents, true)) {
+        gi.Printf(_COOP_WARNING_FILE_failed, _COOP_FILE_validPlayerModels);
+        //default fallback hardcoded model - if coop gamefiles are missing
+        coopManager_validPlayerModels.AddUniqueObject("models/char/munro.tik");
+        return;
+    }
+
+    section_contents = gamefix_iniSectionGet(_COOP_FILE_validPlayerModels, contents, "coopSkins");
+	section_contents = section_contents.tolower();
+    gamefix_listSeperatedItems(coopManager_validPlayerModels, section_contents, "\n");
+    coopManager_validPlayerModels.AddUniqueObject("models/char/munro.tik");
 }
 
 //executed once, only on game server start/load
@@ -1902,6 +2031,10 @@ void CoopManager::playerChangedModel(Player *player){
             //DEBUG_LOG("NOT ALLOWED: %s\n", player->model.c_str());
             sModel = multiplayerManager.getDefaultPlayerModel(player);
             multiplayerManager.changePlayerModel(player, va("%s", sModel.c_str()), true);
+
+            //show visual feedback in menu and reset model with some delay
+            gamefix_playerDelayedServerCommand(player->entnum, "globalwidgetcommand playersetup_coopWarn enable");
+            gamefix_playerDelayedServerCommand(player->entnum,va("set mp_playermodel %s", sModel.c_str()),1.0f);
             return;
         }
         ExecuteThread("coop_justChangedModel", true, player);
@@ -2236,98 +2369,32 @@ void CoopManager::configstringCleanup()
     if (g_gametype->integer == GT_SINGLE_PLAYER || !IsCoopEnabled()) {
         return;
     }
-    //mp taunts we do not use in coop
-    configstringRemove("localization/sound/dialog/dm/mp_andor1.mp3");
-    configstringRemove("localization/sound/dialog/m10l1/romgate3_cred.mp3");
-    configstringRemove("localization/sound/dialog/m10l1/outrom1_ohno.mp3");
 
-    configstringRemove("localization/sound/dialog/dm/mp_andor2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_attrexf1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_attrexf2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_attrexm1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_attrexm2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_borgf1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_borgf2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_borgm1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_borgm2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_kleeya1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_kleeya2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_krindo1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_krindo2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_omag1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_omag2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_lurok1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_lurok2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_klingf1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_klingf2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_naus1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_naus2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_picard1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_picard2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_inform1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_inform2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_rene1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_rene2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_rom1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_rom2.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_tuvok1.mp3");
-    configstringRemove("localization/sound/dialog/dm/mp_tuvok2.mp3");
+    if (CoopManager_configstringList.NumObjects() < 1) {
+        return;
+    }
 
-    //mp player models we do not allow in coop
-    configstringRemove("models/char/dm_andorian_merc-male.tik");
-    configstringRemove("models/char/dm_picard.tik");
+    for (int i = 1; i <= CoopManager_configstringList.NumObjects(); i++) {
+        str sConfigstring = CoopManager_configstringList.ObjectAt(i);
+        bool modelInuse = false;
+        Player* player = nullptr;
+        for (int j = 0; j < gameFixAPI_maxClients(); j++) {
+            player = gamefix_getPlayer(j);
 
-    configstringRemove("models/char/dm_attrexian_command-female.tik");
-    configstringRemove("models/char/dm_attrexian_security-male.tik");
-    configstringRemove("models/char/dm_borg_female.tik");
-    configstringRemove("models/char/dm_borg_male.tik");
-    configstringRemove("models/char/dm_drull_kleeya.tik");
-    configstringRemove("models/char/dm_drull_krindo.tik");
-    configstringRemove("models/char/dm_ferengi_oolpax.tik");
-    configstringRemove("models/char/dm_klingon_merc-boss.tik");
-    configstringRemove("models/char/dm_klingon_merc-female.tik");
-    configstringRemove("models/char/dm_nausicaan_male-merc.tik");
-    configstringRemove("models/char/dm_romulan_informant-boss.tik");
-    configstringRemove("models/char/dm_romulan_rebel-commander.tik");
-    configstringRemove("models/char/dm_romulan_rebel-guard-snow.tik");
-    configstringRemove("models/char/dm_romulan_stx-female.tik");
-    configstringRemove("models/char/dm_stalker.tik");
-    configstringRemove("models/char/dm_tuvok.tik");
+            if (!player) {
+                continue;
+            }
+            if (Q_stricmp(sConfigstring.c_str(), player->model.c_str()) == 0) {
+                modelInuse = true;
+                break;
+            }
+        }
 
-    //awards we do not use in coop
-    configstringRemove("sysimg/icons/mp/award_sharpshooter");
-    configstringRemove("sysimg/icons/mp/award_untouchable");
-    configstringRemove("sysimg/icons/mp/award_logistics");
-    configstringRemove("sysimg/icons/mp/award_tactician");
-    configstringRemove("sysimg/icons/mp/award_demolitionist");
-    configstringRemove("sysimg/icons/mp/award_mvp");
-    configstringRemove("sysimg/icons/mp/award_defender");
-    configstringRemove("sysimg/icons/mp/award_warrior");
-    configstringRemove("sysimg/icons/mp/award_carrier");
-    configstringRemove("sysimg/icons/mp/award_interceptor");
-    configstringRemove("sysimg/icons/mp/award_bravery");
-    configstringRemove("sysimg/icons/mp/award_firstStrike");
-
-    //mp computer voice we do not use in coop
-    configstringRemove("localization/sound/dialog/dm/comp_5mins.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_2mins.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_1min.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_500pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_100pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_25pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_10pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_5pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_4pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_3pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_2pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_1pointsleft.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_mats.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_tiedfirst.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_winn.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_second.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_third.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_didnotrank.mp3");
-    configstringRemove("localization/sound/dialog/dm/comp_matover.mp3");
+        if (modelInuse) {
+            continue;
+        }
+        configstringRemove(sConfigstring);
+    }
 }
 
 void CoopManager::loadClientIniData()
