@@ -74,6 +74,7 @@ constexpr auto _COOP_INFO_radarFollowMarker_off_deu = "^2Gruene ^5Positions ^5Ma
 constexpr auto _COOP_INFO_radarFollowMarker_on = "^5Locaction marked ^2green ^5on Radar of^8";
 constexpr auto _COOP_INFO_radarFollowMarker_on_deu = "^5Position ^2gruen ^5markiert auf Radar von^8";
 
+constexpr auto _COOP_INFO_coopInput_cantDirectly = "You can not bypass access to menu: '%s'!\n";
 
 constexpr auto _COOP_INFO_adminLogin_needAdminUse = "You need to !login as Admin to use '%s'!\n";
 constexpr auto _COOP_INFO_adminAuto = "Automatically logged you in as Host.";
