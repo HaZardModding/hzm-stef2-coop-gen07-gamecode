@@ -269,6 +269,7 @@ class Player : public Sentient
 	// COOP Generation 7.000 - Added: coop script functions - chrissstrahl
 	//--------------------------------------------------------------
 	public:
+		bool coop_hudActive(const str& hudName);
 		void coop_classLockedEvent(Event* ev);
 		void coop_circleMenuClearEvent(Event* ev);
 		void coop_circleMenuDialogClearEvent(Event* ev);

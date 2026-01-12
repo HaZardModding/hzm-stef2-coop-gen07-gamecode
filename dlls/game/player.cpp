@@ -16310,4 +16310,12 @@ void Player::coop_classLockedEvent(Event* ev)
 	CoopManager::Get().setPlayerData_coopClassLocked(this, lock);
 }
 
+bool Player::coop_hudActive(const str& hudName)
+{
+	if (_hudList.ObjectInList(hudName)) {
+		return true;
+	}
+	return false;
+}
+
 #endif
