@@ -332,9 +332,9 @@ Item::Item()
 
 #ifdef ENABLE_COOP
 	//--------------------------------------------------------------
-	// COOP Generation 7.000 - Do not animate items, keep them like in singleplayer in coop - chrissstrahl
+	// COOP Generation 7.000 - Do not animate/spin/rotate items, keep them like in singleplayer in coop - chrissstrahl
 	//--------------------------------------------------------------
-	if (multiplayerManager.inMultiplayer() && CoopManager::Get().IsCoopEnabled()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() && CoopManager::Get().IsCoopLevel()) {
 		edict->s.eType = ET_MODELANIM;
 	}
 	else {
