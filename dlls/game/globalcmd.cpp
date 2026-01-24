@@ -5112,7 +5112,7 @@ void CThread::coop_objectiveUpdate(Event* ev)
 {
 	str itemStatus = ev->GetString(1);
 	int itemNumber = (int)ev->GetFloat(2);
-	bool itemShow = (bool)(int)ev->GetFloat(2);
+	bool itemShow = (bool)(int)ev->GetFloat(3);
 	coop_objectivesUpdate(itemStatus, itemNumber, itemShow);
 }
 
