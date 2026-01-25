@@ -1145,6 +1145,11 @@ void CoopManager::playerSetupCoopUi(Player* player) {
     if (!player || !player->coop_hasCoopInstalled()) {
         return;
     }
+
+    if (gameFixAPI_inSingleplayer()) {
+        return;
+    }
+
     //populate ui
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %d", skill->integer));
     gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", coopSettings.getSetting_awards()));
@@ -1870,14 +1875,16 @@ void CoopManager::playerConnect(int clientNum) {
         return;
     }
 
-    //used to minimize the usage of configstrings due to cl_parsegamestate issue
-    //if a new player connects mid game
-    if (level.time > 30.0f) {
-        configstringCleanup();
-    }
+    if (gameFixAPI_inMultiplayer()) {
+        //used to minimize the usage of configstrings due to cl_parsegamestate issue
+        //if a new player connects mid game
+        if (level.time > 30.0f) {
+            configstringCleanup();
+        }
 
-    setPlayerData_disconnecting(clientNum,false);
-    communicatorTransporterUiUpdate();
+        setPlayerData_disconnecting(clientNum, false);
+        communicatorTransporterUiUpdate();
+    }
     
 
     DEBUG_LOG("# playerConnect\n");
