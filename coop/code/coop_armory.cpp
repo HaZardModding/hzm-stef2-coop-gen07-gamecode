@@ -121,25 +121,22 @@ void coop_armoryEquipPlayerSingleplayer(Player* player)
 		return;
 	}
 
-	ScriptVariable* var = player->entityVars.GetVariable("_spArmoryEquiped");
-
-	if(var && var->intValue()  == 1) {
+	if(gamefix_getEntityVarInt(player, "_spArmoryEquiped")) {
 		return;
 	}
 
 	player->entityVars.SetVariable("_spArmoryEquiped", "1");
 	coop_armoryEquipPlayer(player);
 
-	//make sure the coop objectives hud is displayed when we play a custom (coop) map
-	if (CoopManager::Get().getMapFlags().stockMap) {
-		gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc score\"\n");
-	}
-	else {
-		gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc pushmenu coop_obj\"\n");
-		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objAuthor title %s", gamefix_replaceForLabelText(coopObjectives_t.levelAuthor).c_str()));
-		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
-		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %d",skill->integer));
-	}
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objAuthor labeltext %s", gamefix_replaceForLabelText(coopObjectives_t.levelAuthor).c_str()));
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
+	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %d",skill->integer));
+
+	CoopManager::Get().setPlayerData_objectives_reset(player);
+	coop_objectivesSetup(player);
+
+	//make sure the objectives are synced
+	coop_objectivesUpdatePlayer(player);
 }
 
 //================================================================
