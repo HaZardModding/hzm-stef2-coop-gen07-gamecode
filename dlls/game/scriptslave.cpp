@@ -931,7 +931,16 @@ void ScriptSlave::DoMove( Event *ev )
 
 
 	temp_thread = ev->GetThread();
-	assert( temp_thread );
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Added: Clean exit, instead of triggering a assert - chrissstrahl
+	//--------------------------------------------------------------
+	if (!temp_thread) {
+		return;
+	}
+
+
 	if ( temp_thread && temp_thread->WaitingFor( this ) )
 	{
 		if ( movethread && ( movethread != temp_thread ) )
