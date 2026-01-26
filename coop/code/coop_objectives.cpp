@@ -112,10 +112,12 @@ void coop_objectivesStorySet(Player* player)
 
 	//Set story if there is none set already by script
 	//this is just a backup if someone forgot to set it or if the var gets inizialised late
-	if (!coop_objectivesStoryGet("Eng").length()) {
+	str storyEng = coop_objectivesStoryGet("Eng");
+	str storyDeu = coop_objectivesStoryGet("Deu");
+	if (!storyEng.length() || Q_stricmp(storyEng.c_str(), "$$Empty$$") == 0) {
 		coop_objectivesStorySet(program.coop_getStringVariableValue("coop_string_story"),"Eng");
 	}
-	if (!coop_objectivesStoryGet("Deu").length()) {
+	if (!storyDeu.length() || Q_stricmp(storyDeu.c_str(), "$$Empty$$") == 0) {
 		coop_objectivesStorySet( program.coop_getStringVariableValue("coop_string_story_deu"),"Deu");
 	}
 
@@ -131,7 +133,7 @@ void coop_objectivesStorySet(Player* player)
 	}
 	//if that failed set empty
 	if (!sStory.length()) {
-		sStory = "Kaboom";
+		sStory = "$$Empty$$";
 	}
 
 	//send story
@@ -259,15 +261,24 @@ void coop_objectivesSetup( Player *player)
 		return;
 	}
 
-	int i;
 	str sCvar;
 //reset objectives and tactical info
-	for ( i = 1; i < 12; i++ ){
+	for (int i = 1; i < 12; i++ ){
 		sCvar = coop_getObjectivesCvarName( i );
 		if ( i < 9){
 			gamefix_playerDelayedServerCommand( player->entnum , va( "set %s_s 0" , sCvar.c_str() ) );
 		}else{
 			gamefix_playerDelayedServerCommand( player->entnum , va( "set %s ^0" , sCvar.c_str() ) );
+		}
+	}
+	
+	if (gameFixAPI_inSingleplayer()) {
+		//make sure the coop objectives hud is displayed when we play a custom (coop) map
+		if (CoopManager::Get().getMapFlags().stockMap) {
+			gamefix_playerDelayedServerCommand(player->entnum, "set coop_oExc score");
+		}
+		else {
+			gamefix_playerDelayedServerCommand(player->entnum,"set coop_oExc pushmenu coop_obj");
 		}
 	}
 	
@@ -287,7 +298,7 @@ void coop_objectivesSetup( Player *player)
 	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
 	gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %d", skill->integer));
 	
-	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
+	//hzm coop mod chrissstrahl - set story right away
 	coop_objectivesStorySet( player );
 
 	CoopManager::Get().setPlayerData_objectives_setupDone(player);
@@ -375,14 +386,15 @@ void coop_objectivesUpdatePlayer( Player* player )
 	if ( !player )
 		return;
 
-	if (!CoopManager::Get().getPlayerData_coopSetupDone(player) || !CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
-		coop_objectivesSetup(player);
-		CoopManager::Get().playerSetupCoopUi(player);
-		return;
+	if (gameFixAPI_inMultiplayer()){
+		if (!CoopManager::Get().getPlayerData_coopSetupDone(player) || !CoopManager::Get().getPlayerData_objectives_setupDone(player)) {
+			coop_objectivesSetup(player);
+			CoopManager::Get().playerSetupCoopUi(player);
+			return;
+		}
 	}
-	
 
-	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() /* && coopSetupDone*/ ) {
+	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer()) {
 		if (!player->coop_getObjectivesCycle() /* && (CoopManager::Get().getPlayerData_lastSpawned(player) + 3.0f) < level.time*/) {
 			player->coop_setObjectivesCycle();
 
@@ -643,8 +655,11 @@ void coop_objectivesUpdate( str sObjectiveState, int iObjectiveNumber, int  bSho
 	gentity = &g_entities[0];
 	if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
 		player = (Player*)gentity->entity;
+
+		coop_objectivesShow(player, iObjectiveNumber, iObjectivteStatus, 1);
+		//coop_objectivesNotify(player);
 	}
-	coop_objectivesShow(player, iObjectiveNumber, iObjectivteStatus, 1);
+
 
 //handle singleplayer objectives, this only works, if the objectives are default game objectives
 /*	if ( player && g_gametype->integer == GT_SINGLE_PLAYER){
@@ -663,7 +678,7 @@ void coop_objectivesUpdate( str sObjectiveState, int iObjectiveNumber, int  bSho
 //================================================================
 void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveState , bool bfObjectiveShow )
 {
-	if ( !player || level.mission_failed || !CoopManager::Get().getPlayerData_coopSetupDone(player)){
+	if ( !player || level.mission_failed || multiplayerManager.inMultiplayer() && !CoopManager::Get().getPlayerData_coopSetupDone(player) || g_gametype->integer == GT_SINGLE_PLAYER && gamefix_getEntityVarFloat(player,"_spArmoryEquiped") != 1.0f) {
 		return;
 	}
 
