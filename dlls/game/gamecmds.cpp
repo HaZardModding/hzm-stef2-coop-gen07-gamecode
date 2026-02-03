@@ -1727,24 +1727,6 @@ qboolean coop_playerInput(const gentity_t* ent)
 
 	Player* player = (Player*)ent->entity;
 
-	//add security check here
-	//there should be no way for a normal player to execute arbitrary threads
-	//limit the possible thread names to coop_ and rpg_ prefixes
-	//check the thread names against existing menu files
-	if (Q_stricmpn(menuName.c_str(), "coop_", 5) != 0 && Q_stricmpn(menuName.c_str(), "rpg_", 4) != 0) {
-		return true;
-	}
-	if (!player->coop_hudActive(menuName)) {
-		//deny usage of command if player executed command to quickly
-		if ((gamefix_getEntityVarFloat((Entity*)player, "!coopInputInfo") + 3) > level.time) {
-			return true;
-		}
-		player->entityVars.SetVariable("!coopInputInfo", level.time);
-
-		player->hudPrint(va(_COOP_INFO_coopInput_cantDirectly, menuName.c_str()));
-		return true;
-	}
-
 	//if !login is active add input to coopPlayer.adminAuthString instead
 	//also update the cvar that is shown in the login menu of the communicator
 	if (multiplayerManager.inMultiplayer() && CoopManager::Get().getPlayerData_coopAdminAuthStarted(player)) {
@@ -1759,6 +1741,26 @@ qboolean coop_playerInput(const gentity_t* ent)
 		}
 
 		gamefix_playerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n", authStringPlayerNew.c_str()));
+		return true;
+	}
+
+
+	//add security check here
+	//there should be no way for a normal player to execute arbitrary threads
+	//limit the possible thread names to coop_ and rpg_ prefixes
+	//check the thread names against existing menu files
+	if (Q_stricmpn(menuName.c_str(), "coop_", 5) != 0 && Q_stricmpn(menuName.c_str(), "rpg_", 4) != 0) {
+		return true;
+	}
+
+	if (!player->coop_hudActive(menuName)) {
+		//deny usage of command if player executed command to quickly
+		if ((gamefix_getEntityVarFloat((Entity*)player, "!coopInputInfo") + 3) > level.time) {
+			return true;
+		}
+		player->entityVars.SetVariable("!coopInputInfo", level.time);
+
+		player->hudPrint(va(_COOP_INFO_coopInput_cantDirectly, menuName.c_str()));
 		return true;
 	}
 
