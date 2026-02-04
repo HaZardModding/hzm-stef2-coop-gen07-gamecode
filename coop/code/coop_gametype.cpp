@@ -12,6 +12,7 @@
 #include "coop_gametype.hpp"
 #include "coop_manager.hpp"
 #include "coop_class.hpp"
+#include "coop_radar.hpp"
 
 
 CLASS_DECLARATION(ModeTeamDeathmatch, ModeCoop, NULL)
@@ -725,7 +726,14 @@ int ModeCoop::getTeamPoints(Player* player)
 void ModeCoop::setupMultiplayerUI(Player* player)
 {
 	if (multiplayerManager.inMultiplayer()) {
-		gi.SendServerCommand(player->entnum, "stufftext \"ui_removehuds all\"\n");	
+		gi.SendServerCommand(player->entnum, "stufftext \"ui_removehuds all\"\n");
+
+		//this is a failsafe, because sometimes it happens that this is executed after player was spawned
+		if (CoopManager::Get().getPlayerData_coopSetupUiSpawnedDone(player)) {
+			coop_radarReset(player);
+			gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
+			CoopManager::Get().playerAddMissionHuds(player);
+		}
 		
 		//multiplayerManager.gameFixAPI_setTeamHud(player, true);
 		Team* team = getPlayersTeam(player);

@@ -46,6 +46,7 @@ struct coopManager_client_persistant_s
     short		coopSetupTries = 0;
     bool		coopSetupStarted = false;
     bool		coopSetupDone = false;
+    bool		coopSetupUiSpawnedDone = false;
     bool		coopClientIdDone = false;
     bool        objectiveSetupDone = false;
 
@@ -338,6 +339,8 @@ public:
     void setPlayerData_coopClientIdDone(Player* player, bool state);
     bool getPlayerData_coopSetupDone(Player* player);
     void setPlayerData_coopSetupDone(Player* player, bool state);
+    bool getPlayerData_coopSetupUiSpawnedDone(Player* player);
+    void setPlayerData_coopSetupUiSpawnedDone(Player* player, bool state);
     bool getPlayerData_coopSetupStarted(Player* player);
     void setPlayerData_coopSetupStarted(Player* player, bool state);
 

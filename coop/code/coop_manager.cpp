@@ -1866,6 +1866,8 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_entityTargetedSince_reset(player);
     setPlayerData_coopTricorderScanData_reset(player);
 
+    setPlayerData_coopSetupUiSpawnedDone(player, false);
+
     //see also will cleanup in: playerLeft
 }
 
@@ -2004,6 +2006,8 @@ void CoopManager::playerSpawned(Player* player) {
         coop_radarReset(player);
         gamefix_playerDelayedServerCommand(player->entnum, "exec co-op/cfg/ea.cfg");
         playerAddMissionHuds(player);
+
+        setPlayerData_coopSetupUiSpawnedDone(player, true);
 
         coopClass.coop_classApplayAttributes(player, true);
     }
@@ -2881,6 +2885,21 @@ void CoopManager::setPlayerData_coopSetupDone(Player* player, bool state) {
     coopManager_client_persistant_t[player->entnum].coopSetupDone = state;
 }
 
+bool CoopManager::getPlayerData_coopSetupUiSpawnedDone(Player* player) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopSetupUiDone() nullptr player");
+        return false;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopSetupUiSpawnedDone;
+}
+void CoopManager::setPlayerData_coopSetupUiSpawnedDone(Player* player, bool state) {
+    if (!player) {
+        gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopSetupUiDone() nullptr player");
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopSetupUiSpawnedDone = state;
+}
+
 bool CoopManager::getPlayerData_coopSetupStarted(Player* player) {
     if (!player) {
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_coopSetupStarted() nullptr player");
@@ -2908,6 +2927,14 @@ void CoopManager::setPlayerData_coopClass(Player* player, str className) {
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_coopClass() nullptr player");
         return;
     }
+
+    //no known class matches, force technician
+    if (Q_stricmp(className,_COOP_NAME_CLASS_heavyWeapons)  != 0 && 
+        Q_stricmp(className, _COOP_NAME_CLASS_medic)        != 0 && 
+        Q_stricmp(className, _COOP_NAME_CLASS_technician)   != 0 ){
+        className = _COOP_NAME_CLASS_technician;
+    }
+
     coopManager_client_persistant_t[player->entnum].coopClass = className;
 }
 
