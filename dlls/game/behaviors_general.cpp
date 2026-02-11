@@ -3551,14 +3551,19 @@ CLASS_DECLARATION( Behavior, GroupFollow, NULL )
 float GetAnimationRate( Entity &entity, const int animation )
 {
 	const float time = gi.Anim_Time( entity.edict->s.modelindex, animation );
-	assert( time != 0.0f ); //GAMEFIX - This assert fired when player died and Korban keept on walking in place ignoring enemies until player respawned, the walkbehaviour was some kind of closein, the ai was set to follow target
+	
+	
+	//GAMEFIX - This assert fired when player died and Korban keept on walking in place ignoring enemies until player respawned, the walkbehaviour was some kind of closein, the ai was set to follow target
+	//Disabled Assert - As it will force a Application Error Dialog Prompt when using the Debug DLL and there is already a check in place
+	//assert( time != 0.0f );
+
 
 	if ( time == 0.0f )
 	{
 		//--------------------------------------------------------------
 		// GAMEFIX - Changed: Printout to always print - chrissstrahl
 		//--------------------------------------------------------------
-		gi.Printf( "Invalid animation for %d\n", entity.entnum );
+		gi.DPrintf( "Invalid animation for %d\n", entity.entnum );
 
 
 		return 0.0f;
