@@ -1855,6 +1855,9 @@ void CoopManager::playerReset(Player* player) {
     setPlayerData_objectives_reset(player);
     setPlayerData_cinematicEscapePressLastTime(player,0.0f);
 
+    setPlayerData_coopTricorderPuzzleing(player, false);
+    setPlayerData_coopClassLocked(player, false);
+
     setPlayerData_coopClassLastTimeChanged(player, -999.8f);
     setPlayerData_coopClassLastTimeApplied(player, -998.7f);
     setPlayerData_coopClassLastTimeUsedMsg(player,0.0f);
