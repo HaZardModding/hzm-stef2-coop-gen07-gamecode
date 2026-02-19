@@ -2336,8 +2336,8 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 			//--------------------------------------------------------------
 			if (strlen(password->string) && strcmp(password->string, value) != 0)
 			{
-				multiplayerManager.HUDPrintAllClients(va("%s ^3faild to connect: $$InvalidPassword$$\n", Info_ValueForKey(userinfo, "name")));
-				gi.Printf("%s faild to connect: $$InvalidPassword$$\n", Info_ValueForKey(userinfo, "name"));
+				multiplayerManager.HUDPrintAllClients(va("%s ^3failed to connect: $$InvalidPassword$$\n", Info_ValueForKey(userinfo, "name")));
+				gi.Printf("%s failed to connect: $$InvalidPassword$$\n", Info_ValueForKey(userinfo, "name"));
 				return "$$InvalidPassword$$";
 			}
 		}
