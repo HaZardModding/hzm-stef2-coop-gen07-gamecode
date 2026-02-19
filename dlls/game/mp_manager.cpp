@@ -1071,6 +1071,7 @@ void MultiplayerManager::changePlayerName( Player *player, const str &playerName
 			// COOP Generation 7.00.01 - Update Communictator Transporter Playernames - chrissstrahl
 			//--------------------------------------------------------------
 			CoopManager::Get().communicatorTransporterUiUpdate();
+			CoopManager::Get().communicatorUpdateUi();
 #endif
 
 

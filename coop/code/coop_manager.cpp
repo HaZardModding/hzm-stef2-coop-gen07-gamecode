@@ -1661,7 +1661,9 @@ void CoopManager::communicatorUpdateUi()
     }
     communicatorTransporterUiUpdateCheck = false;
 
+    str emptyName = "$$Empty$$";
     Player* player = nullptr;
+
     for (int i = 0; i < gameFixAPI_maxClients(); i++) {
 
         player = GetPlayer(i);
@@ -1674,26 +1676,29 @@ void CoopManager::communicatorUpdateUi()
         }
 
         Player* otherPlayer = nullptr;
-        
         for (int j = 0; j < _COOP_SETTINGS_PLAYER_SUPPORT_MAX; j++) {
             otherPlayer = GetPlayer(j);
-            if (otherPlayer && otherPlayer->client && coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != otherPlayer->client->pers.netname || coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != "") {
-                str send = "$$Empty$$";
-                if (otherPlayer && otherPlayer->client && getPlayerData_disconnecting(otherPlayer->entnum) == false) {
-                    send = otherPlayer->client->pers.netname;
-                    coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] = otherPlayer->client->pers.netname;
-                }
-                else {
-                    coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] == "";
-                }
 
-				char* name = (char*)send.c_str();
-                Q_CleanStr(name);
-                gamefix_replaceSubstring(name, " ", "_");
-
-                gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand coop_comTran%d title %s", j, send.c_str()));
+            //set empty for name if player not valid or disconnecting - clear old name
+            if (!otherPlayer || !otherPlayer->client || getPlayerData_disconnecting(otherPlayer->entnum)) {
+                if (coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != emptyName) {
+                    coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] = emptyName;
+                    gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand coop_comTran%d title %s", j, emptyName.c_str()));
+                }
+                continue;
             }
 
+            //set name if player valid and name changed or not yet send to user
+            if (coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != otherPlayer->client->pers.netname ) { //|| coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] != ""
+               
+                str sendPlayerName = otherPlayer->client->pers.netname;
+                coopManager_client_persistant_t[player->entnum].communicatorSendNames[j] = sendPlayerName;
+                char* name = (char*)sendPlayerName.c_str();
+
+                Q_CleanStr(name);
+                gamefix_replaceSubstring(name, " ", "_");
+                gamefix_playerDelayedServerCommand(player->entnum, va("globalWidgetCommand coop_comTran%d title %s", j, sendPlayerName.c_str()));
+            }
         }
     }
 }
