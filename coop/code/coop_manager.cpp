@@ -3440,7 +3440,7 @@ void CoopManager::setPlayerData_communicatorSendNames_reset(Player* player)
 
 void CoopManager::setPlayerData_disconnecting(int clientNum, bool status)
 {
-    if (clientNum < 0 || clientNum >= gameFixAPI_maxClients()) {
+    if (clientNum < 0 || clientNum >= MAX_CLIENTS) { //needs to use MAX_CLIENTS because connecting clients might exceed the dynamic max clients
         gi.Error(ERR_FATAL, "CoopManager::setPlayerData_disconnecting() clientNum out of range");
         return;
     }
@@ -3449,7 +3449,7 @@ void CoopManager::setPlayerData_disconnecting(int clientNum, bool status)
 
 bool CoopManager::getPlayerData_disconnecting(int clientNum)
 {
-    if (clientNum < 0 || clientNum >= gameFixAPI_maxClients()) {
+    if (clientNum < 0 || clientNum >= MAX_CLIENTS) { //needs to use MAX_CLIENTS because connecting clients might exceed the dynamic max clients
         gi.Error(ERR_FATAL, "CoopManager::getPlayerData_disconnecting() clientNum out of range");
         return true;
     }
