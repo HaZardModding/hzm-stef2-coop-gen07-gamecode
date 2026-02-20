@@ -670,7 +670,7 @@ void PuzzleObject::normalUse( void )
 		usedStartThread = entityData->stringValue();
 	}
 
-	if (usedStartThread.length() && !_itemUsedThread.length()) {
+	if (!usedStartThread.length() && !_itemUsedThread.length()) {
 		return;
 	}
 
