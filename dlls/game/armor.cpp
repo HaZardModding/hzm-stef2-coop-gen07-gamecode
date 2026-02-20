@@ -21,6 +21,15 @@
 #include "player.h"
 #include "mp_manager.hpp"
 
+
+//--------------------------------------------------------------
+// COOP Generation 7.03.00 - Added Include - chrissstrahl
+//--------------------------------------------------------------
+#ifdef ENABLE_COOP
+#include "../../coop/code/coop_manager.hpp"
+#endif
+
+
 extern cvar_t *g_armoradaptionlimit;
 extern Event EV_SetOriginEveryFrame;
 
@@ -905,6 +914,16 @@ float BasicArmor::ResolveDamage( float damage , int meansOfDeath , const Vector 
 
 void BasicArmor::Think( void )
 {
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - We don't want any armor loss over time on Coop Levels - chrissstrahl
+	//--------------------------------------------------------------
+	if (CoopManager::Get().IsCoopEnabled() || level.cinematic) {
+		return;
+	}
+#endif
+
+
 	if ( ( level.time > _lastAddTime + 1.0f ) && ( amount > _normalMaxAmount ) )
 	{
 		amount -= level.frametime * _lossRate;
