@@ -1862,6 +1862,7 @@ void CoopManager::playerReset(Player* player) {
 
     setPlayerData_coopTricorderPuzzleing(player, false);
     setPlayerData_coopClassLocked(player, false);
+    setPlayerData_coopClasslastTimeUpdatedStat(player, -1.0f);
 
     setPlayerData_coopClassLastTimeChanged(player, -999.8f);
     setPlayerData_coopClassLastTimeApplied(player, -998.7f);
@@ -1908,7 +1909,6 @@ void CoopManager::playerDisconnect(Player* player) {
     DEBUG_LOG("# playerDisconnect\n");
 
     setPlayerData_disconnecting(player->entnum, true);
-    communicatorTransporterUiUpdate();
 
     //update player data, so that it can be written to ini
     playerDataSave(player);
@@ -1928,6 +1928,10 @@ void CoopManager::playerDisconnect(Player* player) {
     setPlayerData_coopClass(player, "");
     
     //rest will be cleaned up in: playerLeft
+
+    //update stats for all other players
+    communicatorTransporterUiUpdate();
+    coopClass.coop_classUpdateClassStats();
 }
 
 //Executed when player object is detroyed, every map reload or exit or disconnect - Always (Multiplayer + Singleplayer)
