@@ -2125,9 +2125,9 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 		//--------------------------------------------------------------
 		// GAMEFIX - Added: Warning if a non standard/stock map is voted - chrissstrahl
 		//--------------------------------------------------------------
-		if (!gameFixAPI_mapIsStock(cleanArgument.c_str())) {
-			multiplayerManager.HUDPrintAllClients(va(_GFixEF2_WARN_CALLVOTE_map_NOTSTOCK, cleanArgument.c_str()));
-		}
+		//if (!gameFixAPI_mapIsStock(cleanArgument.c_str())) {
+			//multiplayerManager.HUDPrintAllClients(va(_GFixEF2_WARN_CALLVOTE_map_NOTSTOCK, cleanArgument.c_str()));
+		//}
 	}
 
 	// Build the vote string for later use and to tell all clients about
