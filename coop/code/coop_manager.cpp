@@ -1781,7 +1781,13 @@ void CoopManager::ActorDamage(Actor* actor, Entity* enemy, float& damage)
 
         //this is a boss - scale damage with the number of players
         if (actor->GetActorFlag(ACTOR_FLAG_UPDATE_BOSS_HEALTH)) {
-            fMultiplicator = ( 1.0f / (float)iPlayerNum );
+            if (iPlayerNum <= 1) fMultiplicator = 1.0f;
+            else if (iPlayerNum == 2)fMultiplicator = 0.70f;
+            else if (iPlayerNum == 3)fMultiplicator = 0.60f;
+            else if (iPlayerNum == 4)fMultiplicator = 0.50f;
+            else if (iPlayerNum == 5)fMultiplicator = 0.40f;
+            else if (iPlayerNum == 6)fMultiplicator = 0.30f;
+            else fMultiplicator = 0.25f;
         }
         //regular enemies - make enemies take slightly less damage
         else {
@@ -1790,7 +1796,8 @@ void CoopManager::ActorDamage(Actor* actor, Entity* enemy, float& damage)
             else if (iPlayerNum == 3)fMultiplicator = 0.85f;
             else if (iPlayerNum == 4)fMultiplicator = 0.80f;
             else if (iPlayerNum == 5)fMultiplicator = 0.75f;
-            else fMultiplicator = 0.70f;
+            else if (iPlayerNum == 6)fMultiplicator = 0.70f;
+            else fMultiplicator = 0.65f;
         }
 
         damage = (damage * fMultiplicator);
