@@ -2142,22 +2142,10 @@ qboolean coop_playerTransport(const gentity_t* ent)
 		return true;
 	}
 
-	if (sv_cinematic->integer) {
-		return true;
-	}
-
-	if (ent->entity->getHealth() <= 0) {
-		return true;
-	}
 
 	Player* player = (Player*)ent->entity;
-	if ((gamefix_getEntityVarFloat((Entity*)player, "!transport") + 5) > level.time) {
-		if (player->coop_hasLanguageGerman()) {
-			player->hudPrint(_COOP_INFO_usedCommand_transport1_deu);
-		}
-		else {
-			player->hudPrint(_COOP_INFO_usedCommand_transport1);
-		}
+	//deny request during cinematic or when dead or in spec
+	if (sv_cinematic->integer || ent->entity->getHealth() <= 0 || multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
 
@@ -2167,8 +2155,13 @@ qboolean coop_playerTransport(const gentity_t* ent)
 		return true;
 	}
 
-	//deny request during cinematic and in spec [b607] chrissstrahl - moved health check here
-	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player) || player->health <= 0) {
+	if ((gamefix_getEntityVarFloat((Entity*)player, "!transport") + 5) > level.time) {
+		if (player->coop_hasLanguageGerman()) {
+			player->hudPrint(_COOP_INFO_usedCommand_transport1_deu);
+		}
+		else {
+			player->hudPrint(_COOP_INFO_usedCommand_transport1);
+		}
 		return true;
 	}
 
@@ -2259,6 +2252,20 @@ qboolean coop_playerTransport(const gentity_t* ent)
 
 	if (bTransportFailed) {
 		return true;
+	}
+
+	//this level does not allow player to player transport
+	if (gamefix_getEntityVarFloat((Entity*)world, "globalCoop_noTransportAllowed") == 1) {
+		if (gamefix_getEntityVarFloat((Entity*)player, "!insideTransportArea_active") == 0 ||
+			gamefix_getEntityVarFloat((Entity*)targetPlayer, "!insideTransportArea_active") == 0) {
+			if (player->coop_hasLanguageGerman()) {
+				player->hudPrint("Site-to-site Transport not possible.\n"/*_COOP_INFO_usedCommand_transportNoLevel_deu*/);
+			}
+			else {
+				player->hudPrint("Site-to-site Transport not possible.\n"/*_COOP_INFO_usedCommand_transportNoLevel*/);
+			}
+			return true;
+		}
 	}
 
 	player->entityVars.SetVariable("!transport", level.time);
