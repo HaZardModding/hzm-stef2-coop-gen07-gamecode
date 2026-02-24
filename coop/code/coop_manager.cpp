@@ -1575,6 +1575,13 @@ bool CoopManager::playerItemPickup(Entity* player, Item* item)
         return true;
     }
 
+    // fire off any pickup_thread's
+    str pickupThread = item->GetPickupThread();
+    
+    if (pickupThread.length()) {
+        ExecuteThread(pickupThread, qtrue, (Entity*)player);
+    }
+
     if (!item->isSubclassOf(Weapon)) {
         return true;
     }
