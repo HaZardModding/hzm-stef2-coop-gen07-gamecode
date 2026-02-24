@@ -2259,7 +2259,7 @@ qboolean coop_playerTransport(const gentity_t* ent)
 		if (gamefix_getEntityVarFloat((Entity*)player, "!insideTransportArea_active") == 0 ||
 			gamefix_getEntityVarFloat((Entity*)targetPlayer, "!insideTransportArea_active") == 0) {
 			if (player->coop_hasLanguageGerman()) {
-				player->hudPrint("Site-to-site Transport not possible.\n"/*_COOP_INFO_usedCommand_transportNoLevel_deu*/);
+				player->hudPrint("Direkttransport nicht machbar.\n"/*_COOP_INFO_usedCommand_transportNoLevel_deu*/);
 			}
 			else {
 				player->hudPrint("Site-to-site Transport not possible.\n"/*_COOP_INFO_usedCommand_transportNoLevel*/);
