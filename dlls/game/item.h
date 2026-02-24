@@ -81,6 +81,11 @@ class Item : public Trigger
 		qboolean				has_been_looked_at = qfalse;
 		float					_nextPickupTime = 0.0f;
 
+		//--------------------------------------------------------------
+		// GAMEFIX - Added: Function to return the pickup_thread from a item - chrissstrahl
+		//--------------------------------------------------------------
+		str						GetPickupThread();
+
 
 		CLASS_PROTOTYPE( Item );
 

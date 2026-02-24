@@ -1184,3 +1184,12 @@ Item* SecretItem::ItemPickup( Entity *other, qboolean add_to_inventory = true, q
 void SecretItem::cacheStrings( void )
 {
 }
+
+
+//--------------------------------------------------------------
+// GAMEFIX - Added: Function to return the pickup_thread from a item - chrissstrahl
+//--------------------------------------------------------------
+str Item::GetPickupThread()
+{
+	return pickup_thread;
+}
