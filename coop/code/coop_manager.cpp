@@ -57,7 +57,7 @@ float CoopManager::getskippingCinematicsLast() {
 void CoopManager::setskippingCinematicsLast(float timeLast) {
     skippingCinematicsLast = timeLast;
 }
-void CoopManager::communicatorTransporterUiUpdate() {
+void CoopManager::setCommunicatorTransporterUiUpdate() {
     communicatorTransporterUiUpdateCheck = true;
 }
 
@@ -1179,7 +1179,7 @@ void CoopManager::playerCoopDetected(const gentity_t* ent, const char* coopVer) 
     setPlayerData_coopSetupDone(player, true);
     setPlayerData_coopUpdateNoticeSend(player, false);
     gamefix_playerDelayedServerCommand(player->entnum, "vstr coop_class");
-    communicatorTransporterUiUpdate();
+    setCommunicatorTransporterUiUpdate();
 
     if (iVer < _COOP_CLIENT_MINIMUM_COMPATIBELE_VERSION) {
         //let player know that there is a newer version of the coop mod
@@ -1548,6 +1548,8 @@ bool CoopManager::playerDataRestore(Player* player) {
             player->ProcessEvent(armorEvent);
             //sentPlayer->SetMyArmorAmount();
 
+gi.Printf("CoopManager::playerDataRestore Add BasicArmor: %f %s\n",float(clientIniData.armor - curArmor), player->client->pers.netname);
+
             sentPlayer->GiveAmmo("Phaser", ((clientIniData.phaser) - player->AmmoCount("Phaser")), false, -1);
             sentPlayer->GiveAmmo("Plasma", ((clientIniData.plasma) - player->AmmoCount("Plasma")), false, -1);
             sentPlayer->GiveAmmo("Fed", ((clientIniData.fed) - player->AmmoCount("Fed")), false, -1);
@@ -1908,7 +1910,7 @@ void CoopManager::playerConnect(int clientNum) {
         }
 
         setPlayerData_disconnecting(clientNum, false);
-        communicatorTransporterUiUpdate();
+        setCommunicatorTransporterUiUpdate();
     }
     
 
@@ -1944,7 +1946,7 @@ void CoopManager::playerDisconnect(Player* player) {
     //rest will be cleaned up in: playerLeft
 
     //update stats for all other players
-    communicatorTransporterUiUpdate();
+    setCommunicatorTransporterUiUpdate();
     coopClass.coop_classUpdateClassStats();
 }
 
@@ -1977,7 +1979,7 @@ void CoopManager::playerEntered(gentity_t* ent) {
     if (ent && ent->entity) {
         ExecuteThread("coop_justEntered", true, ent->entity);
 
-        communicatorTransporterUiUpdate();
+        setCommunicatorTransporterUiUpdate();
     }
     DEBUG_LOG("# playerEntered\n");
 }

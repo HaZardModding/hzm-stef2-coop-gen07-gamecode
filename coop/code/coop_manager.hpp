@@ -195,7 +195,7 @@ public:
     void setSkippingCinematics(bool skipping);
     float getskippingCinematicsLast();
     void setskippingCinematicsLast(float timeLast);
-    void communicatorTransporterUiUpdate();
+    void setCommunicatorTransporterUiUpdate();
 
     void Init();
     void InitWorld();
