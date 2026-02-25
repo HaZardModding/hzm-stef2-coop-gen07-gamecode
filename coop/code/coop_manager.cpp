@@ -114,86 +114,6 @@ bool CoopManager::IncludedScriptCoop() {
     return mapFlags.scriptIncludedCoopMain;
 }
 
-str CoopManager::playerScriptCallValidateThreadname(str threadName)
-{
-    str threadToCall = "";
-    for (unsigned int i = 0; i < strlen(threadName); i++) {
-        if (threadName[i] == '"' ||
-            threadName[i] == '%' ||
-            threadName[i] == ';' ||
-            threadName[i] == ' ')
-        {
-            break;
-        }
-        threadToCall += threadName[i];
-    }
-    return threadToCall;
-}
-
-//checks if this player is allowed to call this thread at this time and circumstance - security measurs
-bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed)
-{
-    if (g_gametype->integer == GT_SINGLE_PLAYER) {
-        return true;
-    }
-
-    if (!entPlayer || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || !entPlayer->isSubclassOf(Player)) {
-        return false;
-    }
-
-
-    threadName = playerScriptCallValidateThreadname(threadName);
-    
-
-    Player* player = (Player*)entPlayer;
-    /*Deactivated for testing
-    if (player->coop_isAdmin()) {
-        ExecuteThread(threadName, true,entPlayer);
-        return true;
-    }*/
-
-    for (int i = CoopSettings_playerScriptThreadsAllowList.NumObjects(); i > 0; i--) {
-        CoopSettings_clientThreads_s threadListTemp;
-        threadListTemp = CoopSettings_playerScriptThreadsAllowList.ObjectAt(i);
-
-
-
-        //command match
-        if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
-            //dialog active check
-            if (entUsed && entUsed->isSubclassOf(Actor) && Q_stricmpn(threadListTemp.command.c_str(), "dialogrunthread", strlen(threadListTemp.command.c_str()))) {
-                Actor* actor = (Actor*)entUsed;
-                str sDialogName = actor->coop_getBranchDialogName();
-                if (!strlen(sDialogName)) {
-                    return false;
-                }
-            }
-            //thread match
-            if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread.c_str())) == 0) {
-                //item check
-                if (strlen(threadListTemp.item) && threadListTemp.item != "None") {
-                    str itemName = "";
-                    weaponhand_t	hand = WEAPON_ANY;
-                    player->getActiveWeaponName(hand, itemName);
-                    //mismatch - just skip
-                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), strlen(threadListTemp.item.c_str())) != 0) {
-                        return false;
-                    }
-                }
-
-                //check if admin is required
-                if (threadListTemp.adminRequired && !player->coop_isAdmin()) {
-                    return true;
-                }
-
-                ExecuteThread(threadName, true, entPlayer);
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 bool CoopManager::entityUservarGetKillMessage(Entity* inflictor, str& killmessageEng, str& killmessageDeu)
 {
     int uservarsNumHandeled = 10;
@@ -1566,49 +1486,6 @@ gi.Printf("CoopManager::playerDataRestore Add BasicArmor: %f %s\n",float(clientI
 	return false;
 }
 
-bool CoopManager::playerItemPickup(Entity* player, Item* item)
-{
-    //allow to pick up item if all other players have that item
-    if (!player || !item || !player->isSubclassOf(Player)) {
-        return false;
-    }
-
-    if (!IsCoopEnabled()) {
-        return true;
-    }
-
-    // fire off any pickup_thread's
-    str pickupThread = item->GetPickupThread();
-    
-    if (pickupThread.length()) {
-        ExecuteThread(pickupThread, qtrue, (Entity*)player);
-    }
-
-    if (!item->isSubclassOf(Weapon)) {
-        return true;
-    }
-
-    Sentient* sent = (Sentient*)player;
-    if (!sent->coop_hasItem(item->model)) {
-        return true;
-    }
-
-    Player* other = nullptr;
-    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
-        other = gamefix_getPlayer(i);
-
-        if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
-            continue;
-        }
-        
-        if (!(Sentient*)other->coop_hasItem(item->model)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void CoopManager::playerAdminThink(Player* player) {
     if (getPlayerData_coopAdmin(player)) {
         return;
@@ -1712,16 +1589,6 @@ void CoopManager::communicatorUpdateUi()
     }
 }
 
-void CoopManager::playerMoveToSpawn(Player* player) {
-    Entity* spawnPoint = multiplayerManager.gameFixAPI_getMultiplayerGame()->getSpawnPoint(player);
-    if (!spawnPoint) {
-        spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
-    }
-    if (spawnPoint) {
-        player->WarpToPoint(spawnPoint);
-    }
-}
-
 Entity* CoopManager::getSpawnSpecific(int spotNumber){
     Entity* ent = nullptr;
 
@@ -1810,6 +1677,16 @@ void CoopManager::ActorDamage(Actor* actor, Entity* enemy, float& damage)
         }
 
         damage = (damage * fMultiplicator);
+    }
+}
+
+void CoopManager::playerMoveToSpawn(Player* player) {
+    Entity* spawnPoint = multiplayerManager.gameFixAPI_getMultiplayerGame()->getSpawnPoint(player);
+    if (!spawnPoint) {
+        spawnPoint = gamefix_returnInfoPlayerStart(_GFixEF2_INFO_GAMEFIX_spawnlocations_TeamBaseAddPlayerToTeam);
+    }
+    if (spawnPoint) {
+        player->WarpToPoint(spawnPoint);
     }
 }
 
@@ -2285,6 +2162,129 @@ void CoopManager::playerSetDoingPuzzle(Player* player, bool doingPuzzle)
 {
     setPlayerData_coopTricorderPuzzleing(player, doingPuzzle);
 }
+
+str CoopManager::playerScriptCallValidateThreadname(str threadName)
+{
+    str threadToCall = "";
+    for (unsigned int i = 0; i < strlen(threadName); i++) {
+        if (threadName[i] == '"' ||
+            threadName[i] == '%' ||
+            threadName[i] == ';' ||
+            threadName[i] == ' ')
+        {
+            break;
+        }
+        threadToCall += threadName[i];
+    }
+    return threadToCall;
+}
+
+//checks if this player is allowed to call this thread at this time and circumstance - security measurs
+bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed)
+{
+    if (g_gametype->integer == GT_SINGLE_PLAYER) {
+        return true;
+    }
+
+    if (!entPlayer || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || !entPlayer->isSubclassOf(Player)) {
+        return false;
+    }
+
+
+    threadName = playerScriptCallValidateThreadname(threadName);
+
+
+    Player* player = (Player*)entPlayer;
+    /*Deactivated for testing
+    if (player->coop_isAdmin()) {
+        ExecuteThread(threadName, true,entPlayer);
+        return true;
+    }*/
+
+    for (int i = CoopSettings_playerScriptThreadsAllowList.NumObjects(); i > 0; i--) {
+        CoopSettings_clientThreads_s threadListTemp;
+        threadListTemp = CoopSettings_playerScriptThreadsAllowList.ObjectAt(i);
+
+
+
+        //command match
+        if (Q_stricmp(commandName.c_str(), threadListTemp.command.c_str()) == 0) {
+            //dialog active check
+            if (entUsed && entUsed->isSubclassOf(Actor) && Q_stricmpn(threadListTemp.command.c_str(), "dialogrunthread", strlen(threadListTemp.command.c_str()))) {
+                Actor* actor = (Actor*)entUsed;
+                str sDialogName = actor->coop_getBranchDialogName();
+                if (!strlen(sDialogName)) {
+                    return false;
+                }
+            }
+            //thread match
+            if (strlen(threadListTemp.thread) && Q_stricmpn(threadName.c_str(), threadListTemp.thread.c_str(), strlen(threadListTemp.thread.c_str())) == 0) {
+                //item check
+                if (strlen(threadListTemp.item) && threadListTemp.item != "None") {
+                    str itemName = "";
+                    weaponhand_t	hand = WEAPON_ANY;
+                    player->getActiveWeaponName(hand, itemName);
+                    //mismatch - just skip
+                    if (Q_stricmpn(threadListTemp.item.c_str(), threadListTemp.item.c_str(), strlen(threadListTemp.item.c_str())) != 0) {
+                        return false;
+                    }
+                }
+
+                //check if admin is required
+                if (threadListTemp.adminRequired && !player->coop_isAdmin()) {
+                    return true;
+                }
+
+                ExecuteThread(threadName, true, entPlayer);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool CoopManager::playerItemPickup(Entity* player, Item* item)
+{
+    //allow to pick up item if all other players have that item
+    if (!player || !item || !player->isSubclassOf(Player)) {
+        return false;
+    }
+
+    if (!IsCoopEnabled()) {
+        return true;
+    }
+
+    // fire off any pickup_thread's
+    str pickupThread = item->GetPickupThread();
+    if (pickupThread.length()) {
+        ExecuteThread(pickupThread, qtrue, (Entity*)player);
+    }
+
+    if (item->isSubclassOf(Weapon)) {
+        return true;
+    }
+
+    Sentient* sent = (Sentient*)player;
+    if (!sent->coop_hasItem(item->model)) {
+        return true;
+    }
+
+    Player* other = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        other = gamefix_getPlayer(i);
+
+        if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
+            continue;
+        }
+
+        if (!(Sentient*)other->coop_hasItem(item->model)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 bool CoopManager::sentientHandleStasis(Sentient* attacked, Entity* attacker)
 {

@@ -213,9 +213,6 @@ public:
     void IncludeScriptCheck(str &sLex);
     bool IncludedScriptCoop();
 
-    str playerScriptCallValidateThreadname(str threadName);
-    bool playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed);
-
     bool entityUservarGetKillMessage(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     bool entityUservarGetName(Entity* inflictor,str &killmessageEng, str &killmessageDeu);
     int entityUservarContains(Entity* ent, const str &find);
@@ -257,19 +254,18 @@ public:
 	bool playerDataReset(Player* player);
 	bool playerDataSave(Player* player);
 	bool playerDataRestore(Player* player);
-    bool playerItemPickup(Entity* player, Item *item);
 
     void playerMoveToSpawn(Player* player);
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
-    void playerTargetnames(Player *player, Entity* viewTrace);
+    void playerTargetnames(Player* player, Entity* viewTrace);
 
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);
     void playerDied(Player* player);
     void playerLeft(Player* player);
-    void playerTransported(Entity* entity);
     void playerBecameSpectator(Player* player);
+    void playerTransported(Entity* entity);
     void playerChangedModel(Player* player);
     void playerChangedClass(Player* player);
     void playerKilledActor(Player* player, Actor* actor);
@@ -279,6 +275,9 @@ public:
     bool playerHaveArchetypeEntityRespond(Player* player, Entity* entityTarget);
     bool playerGetDoingPuzzle(Player* player);
     void playerSetDoingPuzzle(Player* player,bool doingPuzzle);
+    str playerScriptCallValidateThreadname(str threadName);
+    bool playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed);
+    bool playerItemPickup(Entity* player, Item* item);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
