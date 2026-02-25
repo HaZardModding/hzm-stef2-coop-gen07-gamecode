@@ -115,7 +115,7 @@ void CoopClass::coop_classRegenerate( Player *player )
 			Player* other = (Player*)eOther;
 
 			//criteria that prevent player getting regenerated
-			if (gameFixAPI_isBot(other) || other->getHealth() < 1 || gameFixAPI_isBot(other) || gameFixAPI_isSpectator_stef2(other)) {
+			if (gameFixAPI_isBot(other) || other->getHealth() <= 0 || gameFixAPI_isBot(other) || gameFixAPI_isSpectator_stef2(other)) {
 				continue;
 			}
 
@@ -126,13 +126,20 @@ void CoopClass::coop_classRegenerate( Player *player )
 			//technician
 			else if (!Q_stricmp(CoopManager::Get().getPlayerData_coopClass(player).c_str(), COOP_CLASS_NAME_TECHNICIAN)) {
 				float fArmorCurrent = other->GetArmorValue();
-				if ((fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR) <= _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX) {
-					fArmorCurrent++;
+				if (fArmorCurrent < _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX) {
+					//make sure we never go over the limit
+					float armorToGive = COOP_CLASS_REGENERATE_ARMOR;
+					if (fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR > _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX) {
+						armorToGive = (_COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX - fArmorCurrent);
+					}
+
 					Event* armorEvent;
 					armorEvent = new Event(EV_Sentient_GiveArmor);
 					armorEvent->AddString("BasicArmor");
-					armorEvent->AddInteger(COOP_CLASS_REGENERATE_ARMOR);
+					armorEvent->AddInteger(armorToGive);
 					other->ProcessEvent(armorEvent);
+
+gi.Printf("CoopClass::coop_classRegenerate Add BasicArmor: %d %s\n", armorToGive, other->client->pers.netname);
 				}
 			}
 			//heavy weapons
