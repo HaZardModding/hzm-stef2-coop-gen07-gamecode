@@ -10615,15 +10615,15 @@ void Entity::coop_boosterNearbyPlayer(Event* ev)
 			if (!Q_stricmp(sBoostType.c_str(), "ammo")) {
 				bool bGiveAmmo = false;
 				if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma")) {
-					player->GiveAmmo("Plasma", 10, 0);
+					player->GiveAmmo("Plasma", 10, false);
 					bGiveAmmo = true;
 				}
 				if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
-					player->GiveAmmo("Idryll", 10, 0);
+					player->GiveAmmo("Idryll", 10, false);
 					bGiveAmmo = true;
 				}
 				if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
-					player->GiveAmmo("Federation", 10, 0);
+					player->GiveAmmo("Federation", 10, false);
 					bGiveAmmo = true;
 				}
 				if (bGiveAmmo) {
