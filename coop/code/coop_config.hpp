@@ -146,6 +146,9 @@ public:
 	int scoreKilledEnemy = 0;
 	int scoreKilledBoss = 0;
 
+	const int gameAmmoTypesNum = 8;
+	const str gameAmmoTypes[8] = { "Plasma","Fed","Idryll","Phaser","Disruptor","Enterprise","EnterpriseAlt","None"};
+
 	int getSetting_awards();
 	int setSetting_awards(bool newValue);
 	int getSetting_maxSpeed();
