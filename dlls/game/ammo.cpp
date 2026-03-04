@@ -75,15 +75,6 @@ Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean
 	// Give the ammo to the player
 	amountUsed = player->GiveAmmo( item_name, (int) amount, true );
 
-
-#ifdef ENABLE_COOP
-	//--------------------------------------------------------------
-	// COOP Generation 7.000 - item is picked up if any player could use it - give ammo to all players - chrissstrahl
-	//--------------------------------------------------------------
-	CoopManager::Get().playerSharePickedUpAmmo((Player*)player, item_name,(int)amount, amountUsed);
-#endif
-
-
 	if ( amountUsed == 0 )
 	{
 		if ( level.time > _lastPrintTime + 1.0f )
@@ -95,6 +86,15 @@ Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean
 
 		return NULL;
 	}
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.000 - item is picked up if any player could use it - give ammo to all players - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerItemPickupShareAmmo((Player*)player, item_name, (int)amount, amountUsed);
+#endif
+
 	
 	// Play pickup sound
 	realname = GetRandomAlias( "snd_pickup" );
