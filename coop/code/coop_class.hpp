@@ -90,6 +90,7 @@ public:
 	void coop_classPlayerUsed(Player* usedPlayer, Player* usingPlayer, Equipment* equipment);
 	int coop_classPlayersOfClass(str className);
 	void coop_classUpdateClassStats(void);
+	float playerGetHealthMax(Player* player);
 
 	float lastUpdateSendAt = 0.0f;
 };

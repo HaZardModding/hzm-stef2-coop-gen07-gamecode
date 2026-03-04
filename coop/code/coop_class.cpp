@@ -75,11 +75,11 @@ void CoopClass::coop_classCheckUpdateStat( Player *player )
 		return;
 	}
 	if (!CoopManager::Get().getPlayerData_coopSetupDone(player)) {
-		DEBUG_LOG("# coop_classCheckUpdateStat SETUPnotDONE %s\n", player->client->pers.netname);
+		//DEBUG_LOG("# coop_classCheckUpdateStat SETUPnotDONE %s\n", player->client->pers.netname);
 		return;
 	}
 	if (!CoopManager::Get().getPlayerData_coopVersion(player)) {
-		DEBUG_LOG("# coop_classCheckUpdateStat NO-COOP %s\n", player->client->pers.netname);
+		//DEBUG_LOG("# coop_classCheckUpdateStat NO-COOP %s\n", player->client->pers.netname);
 		return;
 	}
 	if (coopClass.lastUpdateSendAt != CoopManager::Get().getPlayerData_coopClasslastTimeUpdatedStat(player)) {
@@ -240,6 +240,7 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 			level.time < mp_warmUpTime->integer ||
 			!CoopManager::Get().getPlayerData_coopSetupDone(player))
 	{
+		DEBUG_LOG("coop_classApplayAttributes - abborted\n");
 		return;
 	}
 	str currentClass = CoopManager::Get().getPlayerData_coopClass(player);
@@ -341,6 +342,8 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	event->AddString( "stasis" );
 	event->AddInteger( 100 );
 	player->ProcessEvent( event );
+
+	DEBUG_LOG("coop_classApplayAttributes - DONE\n");
 	
 	ExecuteThread("coop_justChangedClass", true, (Entity*)player);
 }
@@ -467,6 +470,21 @@ void CoopClass::coop_classUpdateClassStats( void )
 	//set current time, so the client think function can send class statistics to each client
 	coopClass.lastUpdateSendAt = level.time;
 	DEBUG_LOG("# coop_classUpdateClassStats - updated class stats at %f\n", coopClass.lastUpdateSendAt);
+}
+
+float CoopClass::playerGetHealthMax(Player* player)
+{
+	float maxHealth = COOP_CLASS_TECHNICIAN_MAX_HEALTH;
+	str playerClassName = CoopManager::Get().getPlayerData_coopClass(player);
+
+	if (playerClassName == COOP_CLASS_NAME_HEAVYWEAPONS) {
+		maxHealth = COOP_CLASS_HEAVYWEAPONS_MAX_HEALTH;
+	}
+	else if (playerClassName == COOP_CLASS_NAME_MEDIC) {
+		maxHealth = COOP_CLASS_MEDIC_MAX_HEALTH;
+	}
+	
+	return maxHealth;
 }
 
 #endif
