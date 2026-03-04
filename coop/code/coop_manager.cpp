@@ -3,6 +3,9 @@
 #include "../../dlls/game/gamefix.hpp"
 #include "../../dlls/game/level.h"
 #include "../../dlls/game/mp_manager.hpp"
+#include "../../dlls/game/armor.h"
+#include "../../dlls/game/health.h"
+#include "../../dlls/game/powerups.h"
 #include "coop_objectives.hpp"
 #include "coop_armory.hpp"
 #include "coop_radar.hpp"
@@ -2076,30 +2079,6 @@ bool CoopManager::playerDamagedCoop(Player* damagedPlayer, Damage& damage) {
     return true;
 }
 
-void CoopManager::playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed)
-{
-    if (!gameFixAPI_inMultiplayer() || !IsCoopEnabled() || !IsCoopLevel()) {
-        return;
-    }
-
-    Player* coopPlayer = nullptr;
-    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
-        coopPlayer = GetPlayer(i);
-
-       
-        if (!coopPlayer || gameFixAPI_isBot(coopPlayer) || gameFixAPI_isSpectator_stef2(coopPlayer)) {
-            continue;
-        }
-
-        //skip the player who picked the ammo up
-        if (coopPlayer == player) {
-            continue;
-        }
-
-        amountUsed += coopPlayer->GiveAmmo(itemName, (int)amount, true);
-    }
-}
-
 bool CoopManager::playerOtherThanTargetingEntity(const Player* player, const Entity* entityTarget)
 {
     if (!player || !entityTarget || g_gametype->integer == GT_SINGLE_PLAYER) {
@@ -2243,10 +2222,51 @@ bool CoopManager::playerScriptCallExecute(Entity* entPlayer, str commandName, st
     return false;
 }
 
+void CoopManager::playerItemPickupShareAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed)
+{
+    if (!gameFixAPI_inMultiplayer() || !IsCoopEnabled() || !IsCoopLevel()) {
+        return;
+    }
+
+    Player* coopPlayer = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        coopPlayer = GetPlayer(i);
+
+        if (!coopPlayer || gameFixAPI_isBot(coopPlayer) || gameFixAPI_isSpectator_stef2(coopPlayer)) {
+            continue;
+        }
+
+        //skip the player who picked the ammo up
+        if (coopPlayer == player) {
+            continue;
+        }
+
+        amountUsed += coopPlayer->GiveAmmo(itemName, (int)amount, true);
+    }
+}
+
 bool CoopManager::playerItemPickup(Entity* player, Item* item)
 {
-    //allow to pick up item if all other players have that item
-    if (!player || !item || !player->isSubclassOf(Player)) {
+    //HERE IS THE PLAN:
+    // CAN'T PICKUP IF:
+    // ammo - full
+    // weapon - already have it and someone else does not have it and it is not set as part of the inventory variables coop_string_weapon1 - ...15 
+    // shield - full
+    // health - full
+    // holdable - already have it
+    // other pickup - no limits 
+    // 
+    // WILL SHARE ON PICKUP:
+    // ammo 50%
+    // shield 50%
+    // health 0%
+    // weapon 0%
+    // holdable 0%
+    // other pickup 0%
+    //
+    //(Model vs FileName)
+
+    if (!player || !item || !player->client || !player->isSubclassOf(Player) || gameFixAPI_isBot(((Player*)player))){
         return false;
     }
 
@@ -2254,34 +2274,141 @@ bool CoopManager::playerItemPickup(Entity* player, Item* item)
         return true;
     }
 
-    // fire off any pickup_thread's
-    str pickupThread = item->GetPickupThread();
-    if (pickupThread.length()) {
-        ExecuteThread(pickupThread, qtrue, (Entity*)player);
+    Sentient* sent = (Sentient*)player;
+
+    if (item->isSubclassOf(HoldableItem)) {
+        //pickup weapon if not in player inventory
+        if (sent->coop_hasItem(item->model)) {
+            return false;
+        }
+        return true;
+    }
+
+    if (item->isSubclassOf(AmmoEntity)) {
+        //handled in: playerItemPickupShareAmmo
+        return true;
     }
 
     if (item->isSubclassOf(Weapon)) {
+        //pickup weapon if not in player inventory
+        if (!sent->coop_hasItem(item->model)) {
+            return true;
+        }
+
+        //pickup if part of the regular script defined start weapons
+        str modelFileName = gamefix_getFileName(item->model.c_str());
+        for (int iTemporary = 1; iTemporary <= _COOP_SETTINGS_WEAPONS_MAX; iTemporary++) {
+            str varName = "coop_string_weapon";
+            varName += iTemporary;
+            str sTikiName = program.coop_getVariableValueAsString(varName.c_str());
+
+            //sanity check
+            if (sTikiName.length() < 4 || sTikiName == "<NULL>") {
+                continue;
+            }
+
+            //part of spawn weapons/script defined/mission weapons
+            if (Q_stricmp(gamefix_getFileName(sTikiName).c_str(),modelFileName.c_str()) == 0) {
+                return true;
+            }
+        }
+
+        //everyone already has this weapon
+        if (playerItemDoesEveryoneHave(item)){
+            return true;
+        }
+
+        return false;
+    }
+
+    if (item->isSubclassOf(BasicArmor)) {
+        if (sent->GetArmorValue() >= _COOP_SETTINGS_PLAYER_ITEM_ARMOR_MAX) {
+            return false;
+        }
+
+        DEBUG_LOG("Pickedup armor %s\n", player->client->pers.netname);
+
+        //share with all other players
+        Player* other = nullptr;
+        for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+            other = gamefix_getPlayer(i);
+
+            if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
+                continue;
+            }
+            if (other->entnum == player->entnum) {
+                continue;
+            }
+			DEBUG_LOG("Adding armor to %s\n", other->client->pers.netname);
+
+            Event* armorEvent;
+            armorEvent = new Event(EV_Sentient_GiveArmor);
+            armorEvent->AddString("BasicArmor");
+            armorEvent->AddInteger((item->getAmount() / 2));
+            other->ProcessEvent(armorEvent);
+        }
         return true;
     }
 
-    Sentient* sent = (Sentient*)player;
-    if (!sent->coop_hasItem(item->model)) {
+    if (item->isSubclassOf(Health)) {
+        if (player->getHealth() >= coopClass.playerGetHealthMax((Player*)player)) {
+            return false;
+        }
+
+        //share with all other players
+        Player* other = nullptr;
+        for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+            other = gamefix_getPlayer(i);
+
+            if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
+                continue;
+            }
+            if (other->entnum == player->entnum) {
+                continue;
+            }
+            other->AddHealth((item->getAmount() / 2), coopClass.playerGetHealthMax(other));
+        }
         return true;
     }
 
-    Player* other = nullptr;
+    return true;
+}
+
+bool CoopManager::playerItemDoesAnyoneHave(Item* item)
+{
+    Player* player = nullptr;
     for (int i = 0; i < gameFixAPI_maxClients(); i++) {
-        other = gamefix_getPlayer(i);
+        player = gamefix_getPlayer(i);
 
-        if (!other || gameFixAPI_isSpectator_stef2((Entity*)other) || gameFixAPI_isDead((Entity*)other)) {
+        if (!player || gameFixAPI_isSpectator_stef2((Entity*)player) || gameFixAPI_isDead((Entity*)player) || gameFixAPI_isBot(player)) {
             continue;
         }
 
-        if (!(Sentient*)other->coop_hasItem(item->model)) {
-            return false;
+        Sentient* sent = (Sentient*)player;
+        if (sent->coop_hasItem(item->model)) {
+            return true;
         }
     }
+    return false;
+}
 
+bool CoopManager::playerItemDoesEveryoneHave(Item* item)
+{
+    if (item && item->model.length()) {
+        Player* player = nullptr;
+        for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+            player = gamefix_getPlayer(i);
+
+            if (!player || gameFixAPI_isSpectator_stef2((Entity*)player) || gameFixAPI_isDead((Entity*)player) || gameFixAPI_isBot(player)) {
+                continue;
+            }
+
+            Sentient* sent = (Sentient*)player;
+            if (!sent->coop_hasItem(item->model)) {
+                return false;
+            }
+        }
+    }
     return true;
 }
 

@@ -270,14 +270,16 @@ public:
     void playerChangedClass(Player* player);
     void playerKilledActor(Player* player, Actor* actor);
     bool playerDamagedCoop(Player* damagedPlayer, Damage& damage);
-    void playerSharePickedUpAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed);
     bool playerOtherThanTargetingEntity(const Player* player, const Entity* entityTarget);
     bool playerHaveArchetypeEntityRespond(Player* player, Entity* entityTarget);
     bool playerGetDoingPuzzle(Player* player);
     void playerSetDoingPuzzle(Player* player,bool doingPuzzle);
     str playerScriptCallValidateThreadname(str threadName);
     bool playerScriptCallExecute(Entity* entPlayer, str commandName, str threadName, Entity* entUsed);
+    void playerItemPickupShareAmmo(const Player* player, const str& itemName, const int& amount, int& amountUsed);
     bool playerItemPickup(Entity* player, Item* item);
+    bool playerItemDoesAnyoneHave(Item* item);
+    bool playerItemDoesEveryoneHave(Item* item);
 
     bool sentientHandleStasis(Sentient *attacked, Entity *attacker);
 
