@@ -45,6 +45,7 @@
 //--------------------------------------------------------------
 #ifdef ENABLE_COOP
 #include "../../coop/code/coop_manager.hpp"
+#include "../../coop/code/coop_class.hpp"
 #include "item.h"
 #endif
 
@@ -3788,7 +3789,16 @@ int Sentient::GiveAmmo( const str &type, int amount, bool pickedUp, int maxamoun
 	int amountLeft;
 	
 	ammo = FindAmmoByName( type );
-	
+
+
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - Added coop class based ammo limits - chrissstrahl
+	//--------------------------------------------------------------
+	maxamount = coopClass.playerGetAmmoMaxForType(((Player*)this), type);
+#endif
+
+
 	if ( ammo )
 	{
 		// Add amount to current amount
