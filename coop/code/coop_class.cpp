@@ -83,7 +83,7 @@ void CoopClass::coop_classCheckUpdateStat( Player *player )
 	if (coopClass.lastUpdateSendAt != CoopManager::Get().getPlayerData_coopClasslastTimeUpdatedStat(player)) {
 		CoopManager::Get().setPlayerData_coopClasslastTimeUpdatedStat(player,coopClass.lastUpdateSendAt);
 		gamefix_playerDelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ) ,coop_classPlayersOfClass("Technician") , coop_classPlayersOfClass("Medic")));
-		DEBUG_LOG("# coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname);
+		//DEBUG_LOG("# coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname);
 	}	
 }
 
@@ -463,7 +463,7 @@ void CoopClass::coop_classUpdateClassStats( void )
 {
 	//set current time, so the client think function can send class statistics to each client
 	coopClass.lastUpdateSendAt = level.time;
-	DEBUG_LOG("# coop_classUpdateClassStats - updated class stats at %f\n", coopClass.lastUpdateSendAt);
+	//DEBUG_LOG("# coop_classUpdateClassStats - updated class stats at %f\n", coopClass.lastUpdateSendAt);
 }
 
 float CoopClass::playerGetHealthMax(Player* player)
