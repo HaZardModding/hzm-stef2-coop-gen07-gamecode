@@ -75,11 +75,9 @@ void CoopClass::coop_classCheckUpdateStat( Player *player )
 		return;
 	}
 	if (!CoopManager::Get().getPlayerData_coopSetupDone(player)) {
-		//DEBUG_LOG("# coop_classCheckUpdateStat SETUPnotDONE %s\n", player->client->pers.netname);
 		return;
 	}
 	if (!CoopManager::Get().getPlayerData_coopVersion(player)) {
-		//DEBUG_LOG("# coop_classCheckUpdateStat NO-COOP %s\n", player->client->pers.netname);
 		return;
 	}
 	if (coopClass.lastUpdateSendAt != CoopManager::Get().getPlayerData_coopClasslastTimeUpdatedStat(player)) {
@@ -240,12 +238,10 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 			level.time < mp_warmUpTime->integer ||
 			!CoopManager::Get().getPlayerData_coopSetupDone(player))
 	{
-		DEBUG_LOG("coop_classApplayAttributes - abborted\n");
 		return;
 	}
 	str currentClass = CoopManager::Get().getPlayerData_coopClass(player);
 	if (currentClass.length()==0) {
-		DEBUG_LOG("coop_classApplayAttributes - no class set on player yet\n");
 		return;
 	}
 
@@ -342,8 +338,6 @@ void CoopClass::coop_classApplayAttributes( Player *player , bool changeOnly )
 	event->AddString( "stasis" );
 	event->AddInteger( 100 );
 	player->ProcessEvent( event );
-
-	DEBUG_LOG("coop_classApplayAttributes - DONE\n");
 	
 	ExecuteThread("coop_justChangedClass", true, (Entity*)player);
 }
@@ -487,13 +481,11 @@ float CoopClass::playerGetHealthMax(Player* player)
 	return maxHealth;
 }
 
-float CoopClass::playerGetAmmoMaxForType(Player* player, str ammoType)
+int CoopClass::playerGetAmmoMaxForType(Player* player, str ammoType, int maxamount)
 {
-	float maxAmmo = 44.0f; //use a irregular number for debugging
+	int maxAmmo = maxamount; //use given default
 	str playerClassName = CoopManager::Get().getPlayerData_coopClass(player);
 	bool ammoTypeFound = false;
-
-	//coopSettings.gameAmmoTypes[...]{ "Plasma","Fed","Idryll","Phaser","Disruptor","Enterprise","EnterpriseAlt","None"};
 
 	if (Q_stricmp(playerClassName.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) == 0) {
 		if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[0]) == 0) { //Plasma
@@ -509,6 +501,10 @@ float CoopClass::playerGetAmmoMaxForType(Player* player, str ammoType)
 			ammoTypeFound = true;
 		}
 		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[3]) == 0) { //Phaser
+			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[4]) == 0) { //Disruptor
 			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
 			ammoTypeFound = true;
 		}
@@ -550,9 +546,10 @@ float CoopClass::playerGetAmmoMaxForType(Player* player, str ammoType)
 		}
 	}
 
-	if (!ammoTypeFound) {
-		DEBUG_LOG("CoopClass::playerGetAmmoMax - TYPE NOT FOUND: player: %s, class: %s, ammoType: %s, maxAmmo: %f\n", player->client->pers.netname, playerClassName.c_str(), ammoType.c_str(), maxAmmo);
-	}
+	//if (!ammoTypeFound) {
+		//coopSettings.gameAmmoTypes[...]{ "Plasma","Fed","Idryll","Phaser","Disruptor","Enterprise","EnterpriseAlt","None"};
+		//DEBUG_LOG("CoopClass::playerGetAmmoMax - TYPE NOT FOUND: player: %s, class: %s, ammoType: %s, maxAmmo: %d\n", player->client->pers.netname, playerClassName.c_str(), ammoType.c_str(), maxAmmo);
+	//}
 
 	return maxAmmo;
 }

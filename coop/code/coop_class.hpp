@@ -91,7 +91,7 @@ public:
 	int coop_classPlayersOfClass(str className);
 	void coop_classUpdateClassStats(void);
 	float playerGetHealthMax(Player* player);
-	float playerGetAmmoMaxForType(Player* player, str ammoType);
+	int playerGetAmmoMaxForType(Player* player, str ammoType, int maxamount);
 
 	float lastUpdateSendAt = 0.0f;
 };

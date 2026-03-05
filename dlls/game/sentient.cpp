@@ -3795,7 +3795,7 @@ int Sentient::GiveAmmo( const str &type, int amount, bool pickedUp, int maxamoun
 	//--------------------------------------------------------------
 	// COOP Generation 7.03.00 - Added coop class based ammo limits - chrissstrahl
 	//--------------------------------------------------------------
-	maxamount = coopClass.playerGetAmmoMaxForType(((Player*)this), type);
+	maxamount = coopClass.playerGetAmmoMaxForType(((Player*)this), type, maxamount);
 #endif
 
 
