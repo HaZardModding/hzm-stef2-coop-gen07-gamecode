@@ -144,9 +144,9 @@ gi.Printf("CoopClass::coop_classRegenerate Add BasicArmor: %d %s\n", armorToGive
 			}
 			//heavy weapons
 			else if (!Q_stricmp(CoopManager::Get().getPlayerData_coopClass(player).c_str(), COOP_CLASS_NAME_HEAVYWEAPONS)) {
-				other->GiveAmmo("Fed", COOP_CLASS_REGENERATE_AMMO, false, _COOP_CLASS_HW_AMMO_FED_MAX);
-				other->GiveAmmo("Plasma", COOP_CLASS_REGENERATE_AMMO, false, _COOP_CLASS_HW_AMMO_PLASMA_MAX);
-				other->GiveAmmo("Idryll", COOP_CLASS_REGENERATE_AMMO, false, _COOP_CLASS_HW_AMMO_IDRYLL_MAX);
+				other->GiveAmmo("Fed", COOP_CLASS_REGENERATE_AMMO, false);
+				other->GiveAmmo("Plasma", COOP_CLASS_REGENERATE_AMMO, false);
+				other->GiveAmmo("Idryll", COOP_CLASS_REGENERATE_AMMO, false);
 			}
 		}
 	}
@@ -485,6 +485,76 @@ float CoopClass::playerGetHealthMax(Player* player)
 	}
 	
 	return maxHealth;
+}
+
+float CoopClass::playerGetAmmoMaxForType(Player* player, str ammoType)
+{
+	float maxAmmo = 44.0f; //use a irregular number for debugging
+	str playerClassName = CoopManager::Get().getPlayerData_coopClass(player);
+	bool ammoTypeFound = false;
+
+	//coopSettings.gameAmmoTypes[...]{ "Plasma","Fed","Idryll","Phaser","Disruptor","Enterprise","EnterpriseAlt","None"};
+
+	if (Q_stricmp(playerClassName.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) == 0) {
+		if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[0]) == 0) { //Plasma
+			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PLASMA;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[1]) == 0) { //Fed
+			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_FED;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[2]) == 0) { //Idryll
+			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_IDRYLLUM;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[3]) == 0) { //Phaser
+			maxAmmo = COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
+			ammoTypeFound = true;
+		}
+	}
+	else if (Q_stricmp(playerClassName.c_str(), COOP_CLASS_NAME_MEDIC) == 0) {
+		if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[0]) == 0) { //Plasma
+			maxAmmo = COOP_CLASS_MEDIC_MAX_AMMO_PLASMA;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[1]) == 0) { //Fed
+			maxAmmo = COOP_CLASS_MEDIC_MAX_AMMO_FED;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[2]) == 0) { //Idryll
+			maxAmmo = COOP_CLASS_MEDIC_MAX_AMMO_IDRYLLUM;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[3]) == 0) { //Phaser
+			maxAmmo = COOP_CLASS_MEDIC_MAX_AMMO_PHASER;
+			ammoTypeFound = true;
+		}
+	}
+	else if (Q_stricmp(playerClassName.c_str(), COOP_CLASS_NAME_TECHNICIAN) == 0) {
+		if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[0]) == 0) { //Plasma
+			maxAmmo = COOP_CLASS_TECHNICIAN_MAX_AMMO_PLASMA;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[1]) == 0) { //Fed
+			maxAmmo = COOP_CLASS_TECHNICIAN_MAX_AMMO_FED;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[2]) == 0) { //Idryll
+			maxAmmo = COOP_CLASS_TECHNICIAN_MAX_AMMO_IDRYLLUM;
+			ammoTypeFound = true;
+		}
+		else if (Q_stricmp(ammoType.c_str(), coopSettings.gameAmmoTypes[3]) == 0) { //Phaser
+			maxAmmo = COOP_CLASS_TECHNICIAN_MAX_AMMO_PHASER;
+			ammoTypeFound = true;
+		}
+	}
+
+	if (!ammoTypeFound) {
+		DEBUG_LOG("CoopClass::playerGetAmmoMax - TYPE NOT FOUND: player: %s, class: %s, ammoType: %s, maxAmmo: %f\n", player->client->pers.netname, playerClassName.c_str(), ammoType.c_str(), maxAmmo);
+	}
+
+	return maxAmmo;
 }
 
 #endif
