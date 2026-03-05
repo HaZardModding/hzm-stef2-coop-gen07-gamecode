@@ -2241,30 +2241,20 @@ void CoopManager::playerItemPickupShareAmmo(const Player* player, const str& ite
             continue;
         }
 
-        amountUsed += coopPlayer->GiveAmmo(itemName, (int)amount, true);
+        amountUsed += coopPlayer->GiveAmmo(itemName, ((int)amount / 2), true);
     }
 }
 
 bool CoopManager::playerItemPickup(Entity* player, Item* item)
 {
-    //HERE IS THE PLAN:
     // CAN'T PICKUP IF:
-    // ammo - full
-    // weapon - already have it and someone else does not have it and it is not set as part of the inventory variables coop_string_weapon1 - ...15 
-    // shield - full
-    // health - full
-    // holdable - already have it
-    // other pickup - no limits 
+	// full: ammo, shield, health
+	// have it: holdable
+	// have it and everyone else has it, unless part part of global inventory: weapon
+	// other pickups have no limits
     // 
     // WILL SHARE ON PICKUP:
-    // ammo 50%
-    // shield 50%
-    // health 0%
-    // weapon 0%
-    // holdable 0%
-    // other pickup 0%
-    //
-    //(Model vs FileName)
+    // ammo 50%, shield 50%
 
     if (!player || !item || !player->client || !player->isSubclassOf(Player) || gameFixAPI_isBot(((Player*)player))){
         return false;
