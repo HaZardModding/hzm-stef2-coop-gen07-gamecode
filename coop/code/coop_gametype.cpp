@@ -137,7 +137,7 @@ float ModeCoop::playerDamaged(Player* damagedPlayer, Player* attackingPlayer, fl
 	}
 
 	// If on same team and not allowing team damage
-	if ((_playerGameData[damagedPlayer->entnum]._currentTeam == _playerGameData[attackingPlayer->entnum]._currentTeam) &&
+	if (damagedPlayer && attackingPlayer && (_playerGameData[damagedPlayer->entnum]._currentTeam == _playerGameData[attackingPlayer->entnum]._currentTeam) &&
 		(!multiplayerManager.checkFlag(MP_FLAG_FRIENDLY_FIRE)))
 		return 0;
 	else
