@@ -999,7 +999,14 @@ Program::Program()
 
 Program::~Program()
 {
-	FreeData();
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Chrash when shutting down the game application after loading a level with a script file - chrissstrahl
+	// FreeData() is already called in Program::Load() and G_ArchiveLevel()
+	// by the time we get to the constructor the data is already freed
+	// 
+	// Leave FreeData(); disabled
+	//--------------------------------------------------------------
+	//FreeData();
 }
 
 // Stuff From .h File
