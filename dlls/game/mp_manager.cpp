@@ -906,7 +906,9 @@ void MultiplayerManager::addPlayer( Player *player )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific function - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerJoined(player);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerJoined(player);
+	}
 #endif
 
 
@@ -1070,8 +1072,10 @@ void MultiplayerManager::changePlayerName( Player *player, const str &playerName
 			//--------------------------------------------------------------
 			// COOP Generation 7.00.01 - Update Communictator Transporter Playernames - chrissstrahl
 			//--------------------------------------------------------------
-			CoopManager::Get().setCommunicatorTransporterUiUpdate();
-			CoopManager::Get().communicatorUpdateUi();
+			if (CoopManager::Get().IsCoopEnabled()) {
+				CoopManager::Get().setCommunicatorTransporterUiUpdate();
+				CoopManager::Get().communicatorUpdateUi();
+			}
 #endif
 
 
@@ -3166,7 +3170,9 @@ void MultiplayerManager::makePlayerSpectator( Player *player, SpectatorTypes spe
 		//--------------------------------------------------------------
 		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 		//--------------------------------------------------------------
-		CoopManager::Get().playerBecameSpectator(player);
+		if (CoopManager::Get().IsCoopEnabled()) {
+			CoopManager::Get().playerBecameSpectator(player);
+		}
 #endif
 	}
 }

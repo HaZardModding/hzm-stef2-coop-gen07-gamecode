@@ -176,7 +176,7 @@ void MultiplayerModeBase::init( int maxPlayers )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+	if (!CoopManager::Get().IsCoopEnabled()) {
 		multiplayerManager.cacheMultiplayerFiles("mp_general");
 	}
 #else
@@ -1150,7 +1150,7 @@ void MultiplayerModeBase::startMatch( void )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+	if (!CoopManager::Get().IsCoopEnabled()) {
 		// Tell everyone the match started
 		multiplayerManager.centerPrintAllClients("$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH);
 		multiplayerManager.broadcastSound("localization/sound/dialog/dm/comp_mats.mp3", CHAN_AUTO, DEFAULT_VOL, DEFAULT_MIN_DIST, NULL, 1.5f);

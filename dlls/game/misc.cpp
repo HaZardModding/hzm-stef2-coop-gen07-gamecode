@@ -1000,7 +1000,9 @@ void Teleporter::StopTeleport( Event *ev )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerTransported(other);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerTransported(other);
+	}
 #endif
 
 	

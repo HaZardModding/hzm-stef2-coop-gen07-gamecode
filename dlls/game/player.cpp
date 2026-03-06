@@ -3476,7 +3476,9 @@ Player::~Player()
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerLeft(this);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerLeft(this);
+	}
 #endif
 
 
@@ -4027,7 +4029,9 @@ void Player::Killed( Event *ev )
 	//--------------------------------------------------------------
 	// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerDied(this);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerDied(this);
+	}
 #endif
 
 	
@@ -5868,9 +5872,7 @@ void Player::ClientThink( Event *ev )
 	//--------------------------------------------------------------
 #ifdef ENABLE_COOP
 	if (CoopManager::Get().IsCoopEnabled()) {
-		if (CoopManager::Get().IsCoopLevel()) {
-			CoopManager::Get().ClientThink(this);
-		}
+		CoopManager::Get().ClientThink(this);
 	}
 	else if(gameFixAPI_inSingleplayer()) {
 		coop_armoryEquipPlayerSingleplayer(this);
@@ -5982,7 +5984,9 @@ void Player::CheckForTargetedEntity( void )
 		//--------------------------------------------------------------
 		// COOP Generation 7.000 - Run coop event specific script function - chrissstrahl
 		//--------------------------------------------------------------
-		CoopManager::Get().playerTargetnames(this, viewTrace.ent->entity);
+		if (CoopManager::Get().IsCoopEnabled()) {
+			CoopManager::Get().playerTargetnames(this, viewTrace.ent->entity);
+		}
 #endif
 		
 
@@ -6035,7 +6039,9 @@ void Player::ProcessTargetedEntity( void )
 	//--------------------------------------------------------------
 	// COOP Generation 7.03.00 - Add: Tricorder Scan Hud Overlay, showing Archetype text via a hud - chrissstrahl
 	//--------------------------------------------------------------
-	CoopManager::Get().playerTricorderScanUiHandle(this, _targetedEntity);
+	if (CoopManager::Get().IsCoopEnabled()) {
+		CoopManager::Get().playerTricorderScanUiHandle(this, _targetedEntity);
+	}
 #endif
 
 

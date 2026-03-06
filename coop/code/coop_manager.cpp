@@ -873,7 +873,7 @@ void CoopManager::LoadLevelScript(str mapname) {
 //Executed ONLY on game shutdown
 void CoopManager::Shutdown() {
 
-    if (coopEnabled) {
+    if (IsCoopEnabled()) {
         CoopSettings_playerScriptThreadsAllowList.FreeObjectList();
     }
 
@@ -935,7 +935,9 @@ void CoopManager::LevelEndCleanup(qboolean temp_restart) {
 }
 
 void CoopManager::MissionFailed(const str & reason) {
-    if (g_gametype->integer == GT_SINGLE_PLAYER) { return; }
+    if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+        return;
+    }
 
     str sReason = reason;
     if (reason.length() == 0) {
@@ -982,7 +984,9 @@ str CoopManager::MissionFailureConfigString(const str& reason)
 
 void CoopManager::MissionFailureLoadMap()
 {
-    if (!multiplayerManager.inMultiplayer()) { return; }
+    if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+        return;
+    }
 
     Event* ev_loadMap = new Event(EV_World_coop_loadMap);
     str sParameters = "";
@@ -1856,6 +1860,10 @@ void CoopManager::playerJoined(Player* player) {
 
 //Executed upon entering server - Always (Multiplayer + Singleplayer)
 void CoopManager::playerEntered(gentity_t* ent) {
+    if (!IsCoopEnabled() || !IsCoopLevel() ) {
+        return;
+    }
+
     if (ent && ent->entity) {
         ExecuteThread("coop_justEntered", true, ent->entity);
 
@@ -1866,6 +1874,10 @@ void CoopManager::playerEntered(gentity_t* ent) {
 
 //Executed on death - Always (Multiplayer + Singleplayer)
 void CoopManager::playerDied(Player *player) {
+    if (!IsCoopEnabled() || !IsCoopLevel()) {
+        return;
+    }
+
     if (!player) {
         return;
     }
@@ -1967,6 +1979,10 @@ void CoopManager::playerChangedClass(Player* player) {
 }
 
 void CoopManager::playerKilledActor(Player* player, Actor* actor) {
+    if (!IsCoopEnabled()) {
+        return;
+    }
+
     if (!player || !actor || !player->isSubclassOf(Player) || !gameFixAPI_inMultiplayer()) {
         return;
     }
@@ -2260,7 +2276,7 @@ bool CoopManager::playerItemPickup(Entity* player, Item* item)
         return false;
     }
 
-    if (!IsCoopEnabled()) {
+    if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !IsCoopEnabled()) {
         return true;
     }
 
