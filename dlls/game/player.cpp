@@ -15536,11 +15536,10 @@ void Player::coop_hasLanguageGermanEvent(Event* ev)
 }
 bool Player::coop_hasLanguageGerman()
 {
-	bool bLangMatch = false;
 	if (gamefix_getLanguage(this) == "Deu") {
-		bLangMatch = true;
+		return true;
 	}
-	return bLangMatch;
+	return false;
 }
 
 Event EV_Player_coop_hasLanguageEnglish
@@ -15557,11 +15556,10 @@ void Player::coop_hasLanguageEnglishEvent(Event* ev)
 }
 bool Player::coop_hasLanguageEnglish()
 {
-	bool bLangMatch = false;
 	if (gamefix_getLanguage(this) == "Eng") {
-		bLangMatch = true;
+		return true;
 	}
-	return bLangMatch;
+	return false;
 }
 
 Event EV_Player_coop_getCoopClass
@@ -15577,11 +15575,10 @@ void Player::coop_getCoopClass(Event* ev)
 	if (gameFixAPI_inMultiplayer()) {
 		if (CoopManager::Get().IsCoopEnabled()) {
 			ev->ReturnString(CoopManager::Get().getPlayerData_coopClass(this));
+			return;
 		}
 	}
-	else {
-		ev->ReturnString("");
-	}
+	ev->ReturnString("");
 }
 
 Event EV_Player_coop_isTechnician
