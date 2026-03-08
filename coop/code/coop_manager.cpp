@@ -1826,6 +1826,8 @@ void CoopManager::playerDisconnect(Player* player) {
     setPlayerData_coopSetupDone(player, false);
     setPlayerData_coopVersion(player, -1);
     setPlayerData_coopClass(player, "");
+    setPlayerData_targetedPlayerCoopClassTime(player,-9.987f);
+    setPlayerData_targetedPlayerCoopClass(player,"");
     
     //rest will be cleaned up in: playerLeft
 
@@ -3645,6 +3647,38 @@ float CoopManager::getPlayerData_entityTargetedSince(Player* player, Entity *las
         }
     }
     return 0.0f;
+}
+
+void CoopManager::setPlayerData_targetedPlayerCoopClass(Player* player, str lastSend)
+{
+    if (!player) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassTargetedLast = lastSend;
+}
+
+str CoopManager::getPlayerData_targetedPlayerCoopClass(Player* player)
+{
+    if (!player) {
+        return "";
+    }
+	return coopManager_client_persistant_t[player->entnum].coopClassTargetedLast;
+}
+
+void CoopManager::setPlayerData_targetedPlayerCoopClassTime(Player* player, float levelTime)
+{
+    if (!player) {
+        return;
+    }
+    coopManager_client_persistant_t[player->entnum].coopClassTargetedLastSend = levelTime;
+}
+
+float CoopManager::getPlayerData_targetedPlayerCoopClassTime(Player* player)
+{
+    if (!player) {
+        return 99999.0f;
+    }
+    return coopManager_client_persistant_t[player->entnum].coopClassTargetedLastSend;
 }
 
 void CoopManager::setPlayerData_coopTricorderScanHudOn(Player* player, bool on)

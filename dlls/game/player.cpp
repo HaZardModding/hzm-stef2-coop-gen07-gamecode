@@ -15761,6 +15761,39 @@ void Player::coop_updateStats()
 	// Deathmatch stats for arena mode
 	if (multiplayerManager.inMultiplayer())
 	{
+
+		//SEND HEALTH OF TARGETED PLAYER TO CLIENT FOR DISPLAY IN HUD
+		//SEND CLASS SYMBOL OF TARGETED PLAYER TO CLIENT FOR DISPLAY IN HUD
+		if (this->coop_hasCoopInstalled()) {
+			Entity* targetedPlayer = GetTargetedEntity();
+			if (targetedPlayer && targetedPlayer->isSubclassOf(Player)) {
+				int value = ceil(targetedPlayer->getHealth());
+				client->ps.stats[STAT_MP_GENERIC4] = value;
+			}
+			else {
+				targetedPlayer = nullptr;
+			}
+
+			//CLASS SYMBOL
+			if (CoopManager::Get().getPlayerData_targetedPlayerCoopClassTime(this) + 0.3f < level.time) { //check for update time
+				str targetPlayerClassName;
+				if (targetedPlayer) {
+					targetPlayerClassName = "sysimg/icons/mp/specialty_";
+					targetPlayerClassName += CoopManager::Get().getPlayerData_coopClass(((Player*)targetedPlayer));
+				}
+				else {
+					targetPlayerClassName = "weapons/empty";
+				}
+
+				if (CoopManager::Get().getPlayerData_targetedPlayerCoopClass(this) != targetPlayerClassName) { //last class send to player is different than current class
+					CoopManager::Get().setPlayerData_targetedPlayerCoopClass(this, targetPlayerClassName);
+					gamefix_playerDelayedServerCommand(this->entnum, va("globalwidgetcommand targetNameHudS shader %s", targetPlayerClassName.c_str()));
+				}
+
+				CoopManager::Get().setPlayerData_targetedPlayerCoopClassTime(this,level.time);
+			}
+		}
+
 		//client->ps.stats[STAT_RED_TEAM_SCORE] = multiplayerManager.getTeamPoints("Red");
 		//client->ps.stats[STAT_BLUE_TEAM_SCORE] = multiplayerManager.getTeamPoints("Blue");
 

@@ -60,6 +60,9 @@ struct coopManager_client_persistant_s
 	str         coopTricorderScanData2 = "";
 	str         coopTricorderScanData3 = "";
 
+	str         coopClassTargetedLast = "";
+	float       coopClassTargetedLastSend = -90.89f;
+
     str			coopClass = "Technician";
     float       coopClassLastTimeApplied = -99.1f;
     float       coopClassLastTimeChanged = -98.2f;
@@ -418,6 +421,11 @@ public:
     void setPlayerData_entityTargetedSince_reset(Player* player);
     void setPlayerData_entityTargetedSince(Player* player, Entity* lastTarget);
     float getPlayerData_entityTargetedSince(Player* player, Entity* lastTarget);
+
+    void setPlayerData_targetedPlayerCoopClass(Player* player, str lastSend);
+    str getPlayerData_targetedPlayerCoopClass(Player* player);
+    void setPlayerData_targetedPlayerCoopClassTime(Player* player, float levelTime);
+    float getPlayerData_targetedPlayerCoopClassTime(Player* player);
 
     void setPlayerData_coopTricorderScanHudOn(Player* player, bool on);
     bool getPlayerData_coopTricorderScanHudOn(Player* player);
