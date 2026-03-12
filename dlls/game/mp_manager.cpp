@@ -2388,7 +2388,7 @@ void MultiplayerManager::checkVote( void )
 			//--------------------------------------------------------------
 			// GAMEFIX - Added: Votes that pass will not count towards player max vote limit  - chrissstrahl
 			//--------------------------------------------------------------
-			if (gamefixEF2_voteStartedByClient != -1 && gamefixEF2_voteStartedByClient < maxclients->integer) {
+			if (gamefixEF2_voteStartedByClient > -1 && gamefixEF2_voteStartedByClient < maxclients->integer) {
 				Player* player = getPlayer(gamefixEF2_voteStartedByClient);
 				if (player && _playerData[gamefixEF2_voteStartedByClient]._valid) {
 					_playerData[gamefixEF2_voteStartedByClient]._votecount--;
