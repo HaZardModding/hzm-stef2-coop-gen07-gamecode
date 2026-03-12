@@ -262,6 +262,11 @@ public:
     bool playerMoveToSpawnSpecific(Player* player, int spotNumber);
     void playerTargetnames(Player* player, Entity* viewTrace);
 
+    void playerVoted(Player* player, bool votedYes);
+    void playerVoteFailed();
+    void playerVotePassed();
+    void playerVoteStart(Player *player);
+
     void playerReset(Player* player);
     void playerEntered(gentity_t* ent);
     void playerSpawned(Player* player);

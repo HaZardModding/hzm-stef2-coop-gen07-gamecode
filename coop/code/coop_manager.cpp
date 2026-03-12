@@ -263,6 +263,15 @@ bool CoopManager::callvoteManager(const str& _voteString) {
     Container<str> voteStringList;
     gamefix_listSeperatedItems(voteStringList, _voteString," ");
 
+    //reset vote status
+    Player* player = nullptr;
+    for (int i = 0; i < gameFixAPI_maxClients(); i++) {
+        player = GetPlayer(i);
+        if (player) {
+            player->entityVars.SetVariable("_playerHasVoted", "0");
+        }
+    }
+
     if (Q_stricmp(voteStringList.ObjectAt(1).c_str(), "skipcinematic") == 0) {
         if (level.cinematic && world->skipthread && (world->skipthread.length() > 0) && Q_stricmp(world->skipthread.c_str(), "null") != 0) {
             G_ClearFade();
@@ -1742,6 +1751,36 @@ void CoopManager::playerTargetnames(Player *player, Entity* viewTrace)
             player->hudPrint(va("^5Object:^3 $%s, ^5Class:^3 %s\n", viewTrace->targetname.c_str(), viewTrace->getClassname()));
         }
     }
+}
+
+//Executed if a player casts a vote - Multiplayer
+void CoopManager::playerVoted(Player* player, bool votedYes) {
+    if (player) {
+        if (votedYes) {
+            player->entityVars.SetVariable("_playerHasVoted", "1");
+            DEBUG_LOG("# playerVoted YES\n");
+        }
+        else {
+            player->entityVars.SetVariable("_playerHasVoted", "2");
+            DEBUG_LOG("# playerVoted NO\n");
+        }
+        ExecuteThread("coop_justVoted", true, (Entity*)player);
+    }
+}
+
+void CoopManager::playerVoteFailed()
+{
+    ExecuteThread("coop_justVoteFailed", true, nullptr);
+}
+
+void CoopManager::playerVotePassed()
+{
+    ExecuteThread("coop_justVotePassed", true, nullptr);
+}
+
+void CoopManager::playerVoteStart(Player* player)
+{
+    ExecuteThread("coop_justVoteStarted", true, ((Entity*)player));
 }
 
 //Executed every level restart/reload or when player disconnects

@@ -2181,6 +2181,18 @@ void MultiplayerManager::callVote( Player *player, const str &command, const str
 	_playerData[ player->entnum ]._votecount++;
 
 
+#ifdef ENABLE_COOP
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerVoteStart(player);
+	//--------------------------------------------------------------
+	// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+	//--------------------------------------------------------------
+	CoopManager::Get().playerVoted(player, true);
+#endif
+
+
 	//--------------------------------------------------------------
 	// GAMEFIX - Added: Votes that pass will not count towards player max vote limit  - chrissstrahl
 	//--------------------------------------------------------------
@@ -2256,12 +2268,28 @@ void MultiplayerManager::vote( Player *player, const str &vote )
 		_voteYes++;
 
 		HUDPrint( player->entnum, "$$VoteCast$$ - $$Yes$$\n" );
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerVoted(player, true);
+#endif
 	}
 	else
 	{
 		_voteNo++;
 
 		HUDPrint( player->entnum, "$$VoteCast$$ - $$No$$\n" );
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerVoted(player, false);
+#endif
 	}
 
 	// NOTE: a majority will be determined in checkVote
@@ -2307,6 +2335,14 @@ void MultiplayerManager::checkVote( void )
 	if ( level.time - _voteTime >= _maxVoteTime )
 	{
 		multiplayerManager.HUDPrintAllClients( "$$VoteFailed$$\n" );
+
+
+#ifdef ENABLE_COOP
+		//--------------------------------------------------------------
+		// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+		//--------------------------------------------------------------
+		CoopManager::Get().playerVoteFailed();
+#endif
 	}
 	else
 	{
@@ -2339,6 +2375,11 @@ void MultiplayerManager::checkVote( void )
 			else {
 				gi.SendConsoleCommand(va("%s\n", _voteString.c_str()));
 			}
+
+			//--------------------------------------------------------------
+			// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+			//--------------------------------------------------------------
+			CoopManager::Get().playerVotePassed();
 #else
 			gi.SendConsoleCommand(va("%s\n", _voteString.c_str()));
 #endif
@@ -2360,6 +2401,14 @@ void MultiplayerManager::checkVote( void )
 		{
 			// Vote failed - same behavior as a timeout
 			multiplayerManager.HUDPrintAllClients( "$$VoteFailed$$\n" );
+
+
+#ifdef ENABLE_COOP
+			//--------------------------------------------------------------
+			// COOP Generation 7.03.00 - Run coop script function notify the script of vote - chrissstrahl
+			//--------------------------------------------------------------
+			CoopManager::Get().playerVoteFailed();
+#endif
 		}
 		else
 		{
