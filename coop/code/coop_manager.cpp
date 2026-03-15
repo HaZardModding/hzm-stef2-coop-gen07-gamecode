@@ -22,7 +22,7 @@ CoopManager& CoopManager::Get() {
     return instance;
 }
 
-
+//Checks if coop is allowed/enabled in ini
 bool CoopManager::IsCoopEnabled() const {
     return coopEnabled;
 }
@@ -31,10 +31,12 @@ void CoopManager::DisableCoop() {
     coopEnabled = false;
 }
 
+//checks if the current level is a coop level (coop_ or from ini list)
 bool CoopManager::IsCoopLevel() {
     return mapFlags.coopMap;
 }
 
+//Checks if rpg is allowed/enabled in ini
 bool CoopManager::IsRpgEnabled() const {
     return rpgEnabled;
 }
@@ -2020,7 +2022,7 @@ void CoopManager::playerChangedClass(Player* player) {
 }
 
 void CoopManager::playerKilledActor(Player* player, Actor* actor) {
-    if (!IsCoopEnabled()) {
+    if (!IsCoopEnabled() || !IsCoopLevel()) {
         return;
     }
 
@@ -2317,7 +2319,7 @@ bool CoopManager::playerItemPickup(Entity* player, Item* item)
         return false;
     }
 
-    if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !IsCoopEnabled()) {
+    if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !IsCoopEnabled() || !IsCoopLevel()) {
         return true;
     }
 

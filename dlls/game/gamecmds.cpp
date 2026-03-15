@@ -2056,7 +2056,11 @@ qboolean coop_playerNoclip(const gentity_t* ent)
 
 qboolean coop_playerStuck(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
+		return true;
+	}
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return true;
 	}
 
@@ -2075,7 +2079,7 @@ qboolean coop_playerStuck(const gentity_t* ent)
 
 
 	Player* player = (Player*)ent->entity;
-	if (!CoopManager::Get().IsCoopEnabled()) {
+	if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
 		return true;
 	}
@@ -2138,10 +2142,13 @@ qboolean coop_playerStuck(const gentity_t* ent)
 
 qboolean coop_playerTransport(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity){
 		return true;
 	}
 
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+		return true;
+	}
 
 	Player* player = (Player*)ent->entity;
 	//deny request during cinematic or when dead or in spec
@@ -2553,7 +2560,7 @@ qboolean coop_playerAbility(const gentity_t* ent)
 
 qboolean coop_playerTargetnames(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity ) {
 		return true;
 	}
 
@@ -2571,9 +2578,11 @@ qboolean coop_playerTargetnames(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!targetnames", level.time);
 
-	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
-		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse, "!targetnames"));
-		return qtrue;
+	if (multiplayerManager.inMultiplayer()) {
+		if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
+			player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse, "!targetnames"));
+			return qtrue;
+		}
 	}
 
 	if (CoopManager::Get().getPlayerData_targetedShow(player)) {
@@ -2593,22 +2602,24 @@ qboolean coop_playerLevelend(const gentity_t* ent)
 		return true;
 	}
 
-	if ((gamefix_getEntityVarFloat(ent->entity, "!levelend") + 10) > level.time) {
-		return true;
-	}
-	ent->entity->entityVars.SetVariable("!levelend", level.time);
-
 	Player* player = (Player*)ent->entity;
 
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
-		player->hudPrint(_COOP_INFO_coopCommandOnly);
-		return true;
+	if (multiplayerManager.inMultiplayer()) {
+		if (!CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
+			player->hudPrint(_COOP_INFO_coopCommandOnly);
+			return true;
+		}
 	}
 
 	if (!CoopManager::Get().getPlayerData_coopAdmin(player)) {
 		player->hudPrint(va(_COOP_INFO_adminLogin_needAdminUse,"!levelend"));
 		return true;
 	}
+
+	if ((gamefix_getEntityVarFloat(ent->entity, "!levelend") + 10) > level.time) {
+		return true;
+	}
+	ent->entity->entityVars.SetVariable("!levelend", level.time);
 
 	CThread* thread = ExecuteThread("coop_endLevel", true, (Entity*)player);
 	if (thread == NULL) {
@@ -2768,7 +2779,7 @@ qboolean coop_playerSkill(const gentity_t* ent)
 
 qboolean coop_playerInfo(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || !multiplayerManager.inMultiplayer()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
 		return true;
 	}
 
@@ -2787,7 +2798,7 @@ qboolean coop_playerInfo(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!info", level.time);
 
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
+	if (!multiplayerManager.inMultiplayer() || !CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
 		return true;
 	}
@@ -2865,7 +2876,11 @@ qboolean coop_playerInfo(const gentity_t* ent)
 
 qboolean coop_playerBlock(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || sv_cinematic->integer || !multiplayerManager.inMultiplayer()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
+		return true;
+	}
+
+	if (sv_cinematic->integer) {
 		return true;
 	}
 
@@ -2873,7 +2888,7 @@ qboolean coop_playerBlock(const gentity_t* ent)
 	if (multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
 		return true;
 	}
@@ -2939,12 +2954,12 @@ qboolean coop_playerMapname(const gentity_t* ent)
 
 qboolean coop_playerClass(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client || !ent->entity || !multiplayerManager.inMultiplayer()) {
+	if (!ent || !ent->inuse || !ent->client || !ent->entity) {
 		return true;
 	}
 
 	Player* player = (Player*)ent->entity;
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !CoopManager::Get().IsCoopEnabled() || !CoopManager::Get().IsCoopLevel()) {
 		player->hudPrint(_COOP_INFO_coopCommandOnly);
 		return true;
 	}
