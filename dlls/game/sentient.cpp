@@ -3794,7 +3794,7 @@ int Sentient::GiveAmmo( const str &type, int amount, bool pickedUp, int maxamoun
 #ifdef ENABLE_COOP
 	//--------------------------------------------------------------
 	// COOP Generation 7.03.00 - Added coop class based ammo limits - chrissstrahl
-	// Fixed: Crash in Singleplayer when fakeplayer() is used (m1l1b_borg_sphere - lift down) - chrissstrahl
+	// Fixed: Crash in Singleplayer when fakeplayer() is used (m1l1b-borg_sphere - lift down) - chrissstrahl
 	//--------------------------------------------------------------
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		maxamount = coopClass.playerGetAmmoMaxForType(((Player*)this), type, maxamount);
