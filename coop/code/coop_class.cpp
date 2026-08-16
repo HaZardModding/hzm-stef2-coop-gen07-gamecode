@@ -136,8 +136,6 @@ void CoopClass::coop_classRegenerate( Player *player )
 					armorEvent->AddString("BasicArmor");
 					armorEvent->AddInteger(armorToGive);
 					other->ProcessEvent(armorEvent);
-
-gi.Printf("CoopClass::coop_classRegenerate Add BasicArmor: %d %s\n", armorToGive, other->client->pers.netname);
 				}
 			}
 			//heavy weapons
